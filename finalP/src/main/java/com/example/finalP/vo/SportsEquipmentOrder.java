@@ -15,7 +15,6 @@ public class SportsEquipmentOrder {
 	private int branchNo;
 	private int sportsEquipmentNo;
 	private int quantity;
-	private int totalPrice;
 	private String createdate;
 	private String updatedate;
 	private String orderStatus;
