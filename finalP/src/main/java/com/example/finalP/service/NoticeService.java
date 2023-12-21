@@ -5,6 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CustomerService {
+public class NoticeService {
 
 }
