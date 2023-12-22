@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 public class SportsEquipment {
 	private int sportsEquipmentNo;
+	private int employeeNo;
 	private String itemName;
 	private String createdate;
 	private String updatedate;

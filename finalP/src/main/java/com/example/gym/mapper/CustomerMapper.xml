@@ -1,3 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.gym.mapper.CustomerMapper"></mapper>
+<mapper namespace="com.example.gym.mapper.CustomerMapper">
+	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
+						resultType="com.example.gym.vo.Customer">
+			<!-- 프로세스 자체는 회원가입 시 모든 정보 입력해야하나 추후 선택정보 입력으로 기능 변경될 수 있어 INNER 아닌 OUTER JOIN으로 작성 + 탈퇴회원 조회기능 필요 -->
+		SELECT
+				customer_no AS customerNo,
+				customer_id AS customerId,
+				customer_active AS customerActive,
+				createdate, updatedate
+		FROM customer
+	
+	WHERE customer_id = #{customerId}
+	AND customer_pw = PASSWORD(#{customerPw})
+	</select>
+	
+	<!-- 가입 프로세스 시작 -->
+	<insert id="insertCustomer" parameterType="java.util.Map">
+			<selectKey order="AFTER" resultType="Integer">SELECT last_insert_id()</selectKey>
+		INSERT INTO customer (
+			customer_id,
+			customer_pw
+		) VALUES (
+			#{customerId},
+			PASSWORD(#{customerPw})
+		)	
+	</insert>
+	
+	<insert id="insertCustomerDetail" parameterType="java.util.Map">
+		INSERT INTO customer_detail (
+			customer_no,
+			customer_name,
+			customer_gender,
+			customer_height,
+			customer_weight,
+			customer_phone,
+			customer_address,
+			customer_email
+		) VALUES (
+			#{customerNo},
+			#{customerName},
+			#{customerGender},
+			#{customerHeight},
+			#{customerWeight},
+			#{customerPhone},
+			#{customerAddress},
+			#{customerEmail}
+		)			
+	</insert>	
+	<!-- 가입 프로세스 종료 -->
+	
+	<!-- 선택정보(Img) INSERT 시작 -->
+	<insert id="insertCustomerImg" parameterType="java.util.Map">
+		INSERT INTO customer_img (
+			customer_no,
+			customer_img_origin_name,
+			customer_img_file_name,
+			customer_img_size,
+			customer_img_type			
+		) VALUES (
+			#{customerNo},
+			#{customerImgOriginName},
+			#{customerImgFileName},
+			#{customerImgSize},
+			#{customerImgType}
+		)			
+	</insert>
+	<!-- 선택정보(Img) INSERT 종료 -->
+	
+	<!-- 탈퇴 프로세스 시작 -->
+	<update id="updateCustomerActive" parameterType="com.example.gym.vo.Customer">
+		UPDATE customer SET
+			customer_active = 'N'
+		WHERE customer_no = #{customerNo}
+		AND customer_pw = PASSWORD(#{customerPw})
+	</update>
+	
+	<delete id="deleteCustomerImg" parameterType="com.example.gym.vo.Customer">
+		DELETE FROM custome_img
+		WHERE customer_no = #{customerNo}
+	</delete>
+	
+	<delete id="deleteCustomerDetail" parameterType="com.example.gym.vo.Customer">
+		DELETE FROM custome_detail
+		WHERE customer_no = #{customerNo}
+	</delete>	
+	<!-- 탈퇴 프로세스 종료 -->
+	
+	<!-- 수정 프로세스 시작 -->
+	
+	
+	
+	<!-- 수정 프로세스 종료 -->
+</mapper>
