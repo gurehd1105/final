@@ -10,9 +10,4 @@ public class HomeController {
     public String home() {
         return "home";
     }
-
-    @GetMapping("/sample")
-    public String sample() {
-        return "vue-sample/sample";
-    }
 }
