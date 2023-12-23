@@ -38,7 +38,7 @@ public class EmployeeController {
 	public String insertEmployee(Employee employee) {
 		
 	//Service호출
-	employeeService.insertEmployee(employee);
+//	employeeService.insertEmployee(employee);
 	return "redirect:/home";
 	}
  	
@@ -53,7 +53,7 @@ public class EmployeeController {
 	}
 	@PostMapping("/login")
 	public String login(HttpSession session , Employee paramEmployee) {
-	 	Employee loginEmployee = employeeService.loginEmployee(paramEmployee);
+	 	Employee loginEmployee = null; //employeeService.loginEmployee(paramEmployee);
 	 	if (loginEmployee == null) {
 	 		//로그인 실패
 	 		return "redirect:/login";
