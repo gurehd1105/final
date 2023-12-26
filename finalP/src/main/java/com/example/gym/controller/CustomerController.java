@@ -1,17 +1,20 @@
 package com.example.gym.controller;
 
-import com.example.gym.service.CustomerService;
-import com.example.gym.vo.Customer;
-import com.example.gym.vo.CustomerDetail;
-import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example.gym.service.CustomerService;
+import com.example.gym.vo.Customer;
+import com.example.gym.vo.CustomerDetail;
+import com.example.gym.vo.CustomerForm;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
@@ -25,7 +28,7 @@ public class CustomerController {
     return "customer/loginCustomer";
   }
 
-  // login 후 Act -> home.jsp로 이동
+  // login 후 Act -> session 세팅 후 home.jsp로 이동
   @PostMapping("/loginCustomer")
   public String loginCustomer(Model model, HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
@@ -43,19 +46,32 @@ public class CustomerController {
 
   // insert (회원가입) Act
   @PostMapping("/insertCustomer")
-  public String insertCustomer(Customer customer,CustomerDetail customerDetail) {
-	customerService.insertCustomer(customer, customerDetail);
+  public String insertCustomer(CustomerForm customerForm, HttpSession session) {
+	String path = session.getServletContext().getRealPath("/customerImg");
+	customerService.insertCustomer(customerForm, path);
 	
 		return "customer/loginCustomer";	
   }
 
-  // delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail)
-  // 완료 후 loginForm으로 이동
+  // delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail) 
   @GetMapping("/deleteCustomer")
-  public String deleteCustomer(Customer customer) {
-    customerService.deleteCustomer(customer);
+  public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
+	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+    model.addAttribute("loginCustomer" , loginCustomer);
+    return "customer/deleteCustomer";
+  }
+  
+  
+  	//완료 후 loginForm으로 이동  
+  @PostMapping("/deleteCustomer")
+  public String deleteCustomer(String customerId, String CustomerPw) {
+	 Customer paramCustomer = new Customer();
+	 paramCustomer.setCustomerId(customerId);
+	 paramCustomer.setCustomerPw(CustomerPw);
+	 customerService.deleteCustomer(paramCustomer);
     return "customer/loginCustomer";
   }
+  
   
   @GetMapping("/customerOne")
   public String customerOne(Customer customer, HttpSession session, Model model) {
@@ -65,6 +81,12 @@ public class CustomerController {
 	  
 	  return "customer/customerOne";
   }
+  
+  
+  
+  
+  
+  
   
   @GetMapping("/updateCustomerOne")
   public String updateCustomerOne(Customer customer, HttpSession session, Model model) {
