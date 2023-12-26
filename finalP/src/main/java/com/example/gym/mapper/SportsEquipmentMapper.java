@@ -24,12 +24,12 @@ public interface SportsEquipmentMapper {
 	SportsEquipment selectSportsEquipmentOne(int sportsEquipmentNo);
 	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
-	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
-	int deleteSportsEquipmentImg(int sportsEquipmentNo);
-	
-	//sportsEquipment 삭제
-	int deleteSportsEquipment(int sportsEquipmentNo);
-	
-	//sportsEquipmentImg 개별 삭제
-	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
+//	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
+//	int deleteSportsEquipmentImg(int sportsEquipmentNo);
+//	
+//	//sportsEquipment 삭제
+//	int deleteSportsEquipment(int sportsEquipmentNo);
+//	
+//	//sportsEquipmentImg 개별 삭제
+//	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
 }
