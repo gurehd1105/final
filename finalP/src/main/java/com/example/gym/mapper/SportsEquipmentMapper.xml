@@ -42,4 +42,31 @@
 	    )
 	</insert>
 
+	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			sports_equipment_no sportsEquipmentNo,
+			employee_no employeeNo,
+			item_name itemName,
+			item_price itemPrice,
+			updatedate updatedate,
+			createdate createdate
+		FROM sports_equipment
+		<where>
+			<if test="searchWord != ''">
+				item_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+	
+	<select id="selectSportsEquipmentCnt" parameterType="String" resultType="int">
+		SELECT 
+			COUNT(sports_equipment_no)
+		FROM sports_equipment
+		<where>
+			<if test="searchWord != ''">
+				item_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+	</select>
 </mapper>

@@ -18,7 +18,10 @@ public interface SportsEquipmentMapper {
 	int insertSportsEquipmentImg(SportsEquipmentImg sportsEquipmentImg);
 	
 	//sportsEquipment 목록 + 검색 + 페이징
-	List<Map<String,Object>> selectSportsEquipment(Map<String,Object> paramMap);
+	List<Map<String,Object>> selectSportsEquipmentByPage(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipment 수
+	int selectSportsEquipmentCnt(String searchWord);
 	
 	//sportsEquipment 상세보기(selectSportsEquipmentOne + selectSportsEquipmentImgOne)
 	SportsEquipment selectSportsEquipmentOne(int sportsEquipmentNo);

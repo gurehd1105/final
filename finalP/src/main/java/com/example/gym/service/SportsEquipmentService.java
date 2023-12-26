@@ -1,8 +1,10 @@
 package com.example.gym.service;
 
 import java.io.File;
-
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.gym.controller.SportsEquipmentController;
 import com.example.gym.mapper.SportsEquipmentMapper;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
@@ -83,4 +84,40 @@ public class SportsEquipmentService {
 		}
 	}
 
+	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
+													int currentPage,
+													String searchWord) {
+		//디버깅
+		log.info(searchWord);
+		log.info("Current page: {}", currentPage);
+		
+		//페이징
+		int rowPerPage = 5; //한 페이지에 표시할 equipment 수 
+		int beginRow = (currentPage - 1) * rowPerPage;
+		
+		//mapper 호출 
+		int sportsEquipmentCnt = sportsEquipmentMapper.selectSportsEquipmentCnt(searchWord);
+		int lastPage = sportsEquipmentCnt/rowPerPage;
+		
+		if(sportsEquipmentCnt%rowPerPage != 0) {
+			lastPage = lastPage + 1;
+		}
+		
+		//mapper의 매개변수로 들어갈 paramMap 생성
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("searchWord", searchWord);
+		paramMap.put("beginRow", beginRow);
+		paramMap.put("rowPerPage", rowPerPage);
+		
+		//mapper 호출
+		List<Map<String,Object>> sportsEquipmentList = sportsEquipmentMapper.selectSportsEquipmentByPage(paramMap);
+		
+		//controller에 보내줄 resultMap 생성
+		Map<String,Object> resultMap = new HashMap<>();
+		
+		resultMap.put("lastPage", lastPage);
+		resultMap.put("sportsEquipmentList", sportsEquipmentList);
+		
+		return resultMap;
+	}
 }
