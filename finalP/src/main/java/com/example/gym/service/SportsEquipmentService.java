@@ -92,7 +92,7 @@ public class SportsEquipmentService {
 		log.info("Current page: {}", currentPage);
 		
 		//페이징
-		int rowPerPage = 5; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper 호출 
@@ -115,6 +115,7 @@ public class SportsEquipmentService {
 		//controller에 보내줄 resultMap 생성
 		Map<String,Object> resultMap = new HashMap<>();
 		
+		resultMap.put("searchWord", searchWord);
 		resultMap.put("lastPage", lastPage);
 		resultMap.put("sportsEquipmentList", sportsEquipmentList);
 		

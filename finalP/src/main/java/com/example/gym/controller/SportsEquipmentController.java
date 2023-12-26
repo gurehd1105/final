@@ -44,7 +44,7 @@ public class SportsEquipmentController {
 	    //service 호출
 	    sportsEquipmentService.insertSportsEquipmentService(session, path, itemName, itemPrice, sportsEquipmentImgList);
 
-	    return "sportsEquipment/sportsEquipmentList";
+		return "sportsEquipment/sportsEquipmentList";
 	}
 	
 	@GetMapping("SportsEquipmentList")
@@ -63,6 +63,7 @@ public class SportsEquipmentController {
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
 		model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("searchWord", map.get("searchWord"));
 		
 		return "sportsEquipment/sportsEquipmentList";
 	}

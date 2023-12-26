@@ -44,13 +44,19 @@
 
 	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
-			sports_equipment_no sportsEquipmentNo,
-			employee_no employeeNo,
-			item_name itemName,
-			item_price itemPrice,
-			updatedate updatedate,
-			createdate createdate
-		FROM sports_equipment
+			se.sports_equipment_no sportsEquipmentNo,
+			se.employee_no employeeNo,
+			se.item_name itemName,
+			se.item_price itemPrice,
+			se.updatedate updatedate,
+			se.createdate createdate,
+			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			e.employee_id employeeId
+		FROM sports_equipment se
+		INNER JOIN sports_equipment_img sei
+		ON se.sports_equipment_no=sei.sports_equipment_no
+		INNER JOIN employee e
+		ON se.employee_no = e.employee_no
 		<where>
 			<if test="searchWord != ''">
 				item_name LIKE CONCAT('%',#{searchWord},'%')
@@ -69,4 +75,5 @@
 			</if>
 		</where>
 	</select>
+	
 </mapper>
