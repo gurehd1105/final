@@ -160,11 +160,15 @@ public class CustomerService {
 		 	customerDetail.setCustomerEmail(customerForm.getCustomerEmail());
 		 	int row = customerMapper.updateCustomerOne(customerDetail);
 		 	System.out.println(row + " <-- row / updateCustomerOne");
-		 	if(row!=7) {
+		 	if(row!=1) {
 		 		throw new RuntimeException();
 		 	}
 		 	
+		 	
+		 	
 		 	MultipartFile mf = customerForm.getCustomerImg();
+		 	System.out.println(mf.getSize());
+		 	if(mf.getSize()!=0) {
 		 	CustomerImg customerImg = new CustomerImg();
 		 	customerImg.setCustomerNo(customerNo);
 		 	customerImg.setCustomerImgOriginName(mf.getOriginalFilename());
@@ -175,13 +179,29 @@ public class CustomerService {
 		 	
 		 	String oName = mf.getOriginalFilename();
 		 	String fileName2 = oName.substring(oName.lastIndexOf("."));
-		 	customerImg.setCustomerImgFileName(fileName + fileName2);
+		 	customerImg.setCustomerImgFileName(fileName + fileName2); // CustomerImg 매개값 세팅
 		 	
-		 	int row2 = customerMapper.updateCustomerImg(customerImg);
-		 	if(row2!=4) {
+		 // null 값이더라도 고객 customerImg정보가 있는지 확인
+		 	Customer checkImgCustomer = new Customer();
+		 	checkImgCustomer.setCustomerNo(customerNo);		 	
+		 	CustomerImg check = customerMapper.checkCustomerImg(checkImgCustomer);	
+		 	System.out.println(check + " <-- check");
+		 // 확인 후 조건에 따른 분기
+		 	int row2 = 0;
+		 	if(check == null) {	// 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
+		 		row2 = customerMapper.insertCustomerImg(customerImg);
+		 	} else {			// 원래 등록된 Image 정보가 있다면
+		 		row2 = customerMapper.updateCustomerImg(customerImg);
+		 	}	 	
+		 	
+		 	if(row2!=1) {
 		 		throw new RuntimeException();
 		 	}
-		
+		 	} else {	// 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
+		 		Customer deleteImg = new Customer();
+		 		deleteImg.setCustomerNo(customerNo);
+		 		customerMapper.deleteCustomerImg(deleteImg);
+		 	}
 	 } 
 	 	
 	 

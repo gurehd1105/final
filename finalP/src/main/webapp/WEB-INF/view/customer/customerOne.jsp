@@ -10,9 +10,9 @@
 <body>
 	<h1>customer One</h1>
 	
-			
-			<div>${resultMap.customerImgFileName}</div><!-- 프로필사진/임시 -->
-		
+				<c:if test="${resultMap.customerImgFileName != null}">
+			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
+				</c:if>
 	
 		<table>
 		<tr>
@@ -57,6 +57,6 @@
 		<tr>		
 	</table>
 		<a href="${ctp}/updateCustomerPw">PW 수정</a>
-		<a href="${ctp}/updateCustomerOne">정보 수정</a>
+		<a href="${ctp}/updateCustomerOneForPw">정보 수정</a>
 </body>
 </html>

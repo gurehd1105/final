@@ -70,7 +70,8 @@
 	<!-- 탈퇴 프로세스 시작 -->
 	<update id="updateCustomerActive" parameterType="com.example.gym.vo.Customer">
 		UPDATE customer SET
-			customer_active = 'N'
+			customer_active = 'N',
+			updatedate = NOW()
 		WHERE customer_no = #{customerNo}
 	</update>
 	
@@ -133,22 +134,38 @@
 			customer_weight = #{customerWeight},
 			customer_phone = #{customerPhone},
 			customer_address = #{customerAddress},
-			customer_email = #{customerEmail}
+			customer_email = #{customerEmail},
+			updatedate = NOW()
 		WHERE customer_no = #{customerNo}
 	</update>
 		<!-- 이미지 변경 -->
 	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
 		UPDATE customer_img SET
-			customer_img_origin_name = #{customerImgOriginName}
-			customer_img_file_name = #{customerImgFileName}
-			customer_img_size = #{customerImgSize}
-			customer_img_type = #{customerImgtype}
+			customer_img_origin_name = #{customerImgOriginName},
+			customer_img_file_name = #{customerImgFileName},
+			customer_img_size = #{customerImgSize},
+			customer_img_type = #{customerImgType},
+			updatedate = NOW()
 		WHERE customer_no = #{customerNo}		
 	</update>
+	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"
+									resultType="com.example.gym.vo.CustomerImg">
+		SELECT
+			customer_img_no AS customerImgNo,
+			customer_no AS customerNo,
+			customer_img_origin_name AS customerImgOriginName,
+			customer_img_file_name AS customerImgFileName,
+			customer_img_size AS customerImgSize,
+			customer_img_type AS customerImgType,
+			createdate, updatedate
+		FROM customer_img
+			WHERE customer_no = #{customerNo}
+	</select>
 		<!-- 비밀번호 변경 -->
 	<update id="updateCustomerPw" parameterType="com.example.gym.vo.Customer">
 		UPDATE customer SET
-			customer_pw = PASSWORD(#{customerPw})
+			customer_pw = PASSWORD(#{customerPw}),
+			updatedate = now()
 		WHERE customer_no = #{customerNo}
 	</update>	
 		

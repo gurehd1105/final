@@ -60,7 +60,17 @@
 		
 		<tr>
 			<td>Email</td>
-			<td><input type="text" name="customerEmail"></td>
+			<td>	
+					<input type="text" name="customerEmailId">@
+				<select name="customerEmailJuso">
+					<option value="naver.com">naver.com</option>
+					<option value="gmail.com">gmail.com</option>
+					<option value="hanmail.net">hanmail.net</option>
+					<option value="nate.com">nate.com</option>
+					<option value="kakao.com">kakao.com</option>
+					<option value="icloud.com">icloud.com</option>
+				</select>
+			</td>
 		<tr>
 		
 		<tr>

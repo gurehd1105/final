@@ -32,13 +32,16 @@ public class CustomerController {
   @PostMapping("/loginCustomer")
   public String loginCustomer(Model model, HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
-    if(loginCustomer.getCustomerActive().equals("Y")) { // 활성화 회원
-    	 session.setAttribute("loginCustomer", loginCustomer);
-    	 return "home";
-    } else { // 정보 있으나 탈퇴회원
+    if(loginCustomer != null) {
+	    if(loginCustomer.getCustomerActive().equals("Y")) { // 로그인 성공
+	    	 session.setAttribute("loginCustomer", loginCustomer);
+	    	 return "home";
+	    } else { // 정보 있으나 탈퇴회원
+	    	return "redirect:/loginCustomer";
+	    }
+    } else { // 회원정보 불일치 -> 정보없음
     	return "redirect:/loginCustomer";
     }
-   
   }
 
   // insert (회원가입) Form
@@ -49,8 +52,10 @@ public class CustomerController {
 
   // insert (회원가입) Act
   @PostMapping("/insertCustomer")
-  public String insertCustomer(CustomerForm customerForm, HttpSession session) {
+  public String insertCustomer(CustomerForm customerForm, String customerEmailId, 
+		  						String customerEmailJuso, HttpSession session) {
 	String path = session.getServletContext().getRealPath("/customerImg");
+	customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailJuso);
 	customerService.insertCustomer(customerForm, path);
 	
 		return "customer/loginCustomer";	
@@ -87,20 +92,53 @@ public class CustomerController {
   }  
   
   // 내정보 수정 Form
-  @GetMapping("/updateCustomerOne")
-  public String updateCustomerOne(HttpSession session, Model model) {
+  @GetMapping("/updateCustomerOneForPw")
+  public String customerOneForCheckPw() {
+	  return "customer/updateCustomerOneForPw";
+  }
+  @PostMapping("/updateCustomerOneForm")
+  public String updateCustomerOne(HttpSession session, Model model, String customerPw) {
 	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  loginCustomer.setCustomerPw(customerPw);
+	  Customer checkCustomer = customerService.loginCustomer(loginCustomer);
+	  if(checkCustomer == null) {
+		  return "customer/updateCustomerOneForPw";
+	  } else {
 	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 	  model.addAttribute("resultMap", resultMap);
 	  
 	  return "customer/updateCustomerOne";
-  }
-  
+	  }
+  }  
   // 내정보 수정 Act
   @PostMapping("/updateCustomerOne")
-  public String updateCustomerOne(CustomerDetail customerDetail) {
+  public String updateCustomerOne(HttpSession session, CustomerForm customerForm) {
+	  String path = session.getServletContext().getRealPath("/customerImg");
+	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo());
+	  return "redirect:/customerOne";
+  }
+  
+  // Pw 수정 Form
+  @GetMapping("/updateCustomerPw")
+  public String updateCustomerPw(HttpSession session, Model model) {
+	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  model.addAttribute("loginCustomer", loginCustomer);
+	  return "customer/updateCustomerPw";
+  }
+  // Pw 수정 Act
+  @PostMapping("/updateCustomerPw")
+  public String updateCustomerPw(HttpSession session, String customerPw, String customerNewPw) {
+	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  loginCustomer.setCustomerPw(customerPw);
 	  
-	  return "redirect:/updateCustomerOne";
+	  int result = customerService.updateCustomerPw(loginCustomer, customerNewPw);
+	  if(result==0) {
+		  return "customer/updateCustomerPw";
+	  } else {
+	  session.invalidate();
+	  return "customer/loginCustomer";
+	  }
   }
   
   // logout -> login.jsp로 이동

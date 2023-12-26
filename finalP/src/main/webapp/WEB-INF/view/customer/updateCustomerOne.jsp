@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,15 +9,13 @@
 </head>
 <body>
 <h1>update CustomerOne</h1>
-	
-			
-			<div><input type="hidden" value="" name="">${resultMap.customerImgFileName}</div><!-- 프로필사진/임시 -->
-		
-	
-		<table>
+<form action="${ctp}/updateCustomerOne" method="post" enctype="multipart/form-data">			
+			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
+		미선택 시 프로필 사진 없음<br><input type="file" name="customerImg"> 
+			<table>
 		<tr>
 			<td>Id</td>
-			<td><input type="text" value="${resultMap.customerId}" name="customerId"></td>			
+			<td><input type="text" value="${resultMap.customerId}" name="customerId" readonly></td>			
 		<tr>
 		
 		
@@ -55,5 +54,7 @@
 			<td><input type="text" value="${resultMap.customerEmail}" name="customerEmail"></td>
 		<tr>		
 	</table>
+	<button type="submit">저장</button>
+</form>
 </body>
 </html>
