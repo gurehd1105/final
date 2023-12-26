@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
+	
+	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	
+		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
+		SELECT last_insert_id();<!-- 제일 마지막에 입력된 키값을 받아옴 -->
+		</selectKey>
+		INSERT INTO sports_equipment(
+				employee_no,
+				item_name,
+				item_price,
+				createdate,
+				updatedate
+			)VALUES(
+				#{employeeNo},
+				#{itemName},
+				#{itemPrice},
+				NOW(),
+				NOW()
+			)
+	</insert> 
+	
+	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
+	    INSERT INTO sports_equipment_img(
+	        sports_equipment_no,
+	        sports_equipment_img_origin_name,
+	        sports_equipment_img_file_name,
+	        sports_equipment_img_size,
+	        sports_equipment_img_type,
+	        createdate,
+	        updatedate
+	    ) VALUES (
+	        #{sportsEquipmentNo},
+	        #{sportsEquipmentImgOriginName},
+	        #{sportsEquipmentImgFileName},
+	        #{sportsEquipmentImgSize},
+	        #{sportsEquipmentImgType},
+	        NOW(),
+	        NOW()
+	    )
+	</insert>
+
 </mapper>
