@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
   <head>
@@ -20,7 +22,7 @@
     </div>
 
     <script>
-      // Vue 3 인스턴스 생성
+      // Vue 3 ì¸ì¤í´ì¤ ìì±
       const app = Vue.createApp({
         data() {
           return {
@@ -37,10 +39,10 @@
         },
       });
 
-      // Element Plus를 사용하기 위해 전역으로 등록
+      // Element Plusë¥¼ ì¬ì©íê¸° ìí´ ì ì­ì¼ë¡ ë±ë¡
       app.use(ElementPlus);
 
-      // Vue 인스턴스를 마운트
+      // Vue ì¸ì¤í´ì¤ë¥¼ ë§ì´í¸
       app.mount("#app");
     </script>
   </body>

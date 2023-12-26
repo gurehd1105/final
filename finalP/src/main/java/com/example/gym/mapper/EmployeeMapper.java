@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.EmployeeDetail;
 
 @Mapper
 public interface EmployeeMapper {
@@ -18,7 +19,9 @@ public interface EmployeeMapper {
    // 총 직원수 확인을 위한 카운트
    int EmployeeCount();
    // 직원 추가
-   int insertEmployee(Employee employee);
+   int insertEmployee(Map<String, Object> paramMap);
+   
+   int insertEmployeeDetail(Map<String, Object> paramMap);
    
    // 직원 비활성화
    int deleteEmployee(Employee employee);
