@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class CustomerImg {
-	public int customerImgNo;
-	public int customerNo;
-	public String customerImgOriginName;
-	public String customerImgFileName;
-	public String customerImgSize;
-	public String customerImgType;
-	public String createdate;
-	public String updatedate;
+	private int customerImgNo;
+	private int customerNo;
+	private String customerImgOriginName;
+	private String customerImgFileName;
+	private long customerImgSize;
+	private String customerImgType;
+	private String createdate;
+	private String updatedate;
 }
