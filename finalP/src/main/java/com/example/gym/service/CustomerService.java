@@ -1,7 +1,6 @@
 package com.example.gym.service;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,6 +37,7 @@ public class CustomerService {
 		Customer paramCustomer = new Customer();
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
+		
 		row = customerMapper.insertCustomer(paramCustomer);
 		System.out.println(row + " <-- row / insertCustomer");
 		if(row != 1) {

@@ -8,11 +8,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="${ctp}/deleteCustomer?customerNo=${loginCustomer.customerNo}" method="post">
+	<form action="${ctp}/deleteCustomer" method="post">
 		<table>
 			<tr>
 				<td>Id</td>
-				<td><input type="text" readonly value="${loginCustomer.customerId}" name="customerId"></td>
+				<td>
+					<input type="hidden" value="${loginCustomer.customerNo}" name="customerNo">
+					<input type="text" readonly value="${loginCustomer.customerId}" name="customerId">
+				</td>
 			</tr>
 			
 			<tr>

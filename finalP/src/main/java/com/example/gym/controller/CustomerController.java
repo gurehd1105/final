@@ -32,10 +32,13 @@ public class CustomerController {
   @PostMapping("/loginCustomer")
   public String loginCustomer(Model model, HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
-    
-    session.setAttribute("loginCustomer", loginCustomer);
-
-    return "home";
+    if(loginCustomer.getCustomerActive().equals("Y")) { // 활성화 회원
+    	 session.setAttribute("loginCustomer", loginCustomer);
+    	 return "home";
+    } else { // 정보 있으나 탈퇴회원
+    	return "redirect:/loginCustomer";
+    }
+   
   }
 
   // insert (회원가입) Form
@@ -73,31 +76,28 @@ public class CustomerController {
     return "customer/loginCustomer";
   }
   
-  
+  // 마이페이지
   @GetMapping("/customerOne")
-  public String customerOne(Customer customer, HttpSession session, Model model) {
-	  customer = (Customer)session.getAttribute("loginCustomer");
-	  Map<String, Object> resultMap = customerService.customerOne(customer);
+  public String customerOne(HttpSession session, Model model) {
+	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 	  model.addAttribute("resultMap", resultMap);
 	  
 	  return "customer/customerOne";
-  }
+  }  
   
-  
-  
-  
-  
-  
-  
+  // 내정보 수정 Form
   @GetMapping("/updateCustomerOne")
-  public String updateCustomerOne(Customer customer, HttpSession session, Model model) {
-	 
+  public String updateCustomerOne(HttpSession session, Model model) {
+	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
+	  model.addAttribute("resultMap", resultMap);
 	  
 	  return "customer/updateCustomerOne";
   }
   
-  
-  @PostMapping("/updateCUstomerOne")
+  // 내정보 수정 Act
+  @PostMapping("/updateCustomerOne")
   public String updateCustomerOne(CustomerDetail customerDetail) {
 	  
 	  return "redirect:/updateCustomerOne";
