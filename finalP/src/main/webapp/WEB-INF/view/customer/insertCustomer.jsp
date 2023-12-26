@@ -32,7 +32,10 @@
 		
 		<tr>
 			<td>Gender</td>
-			<td><input type="text" name="customerGender"></td>
+			<td><select name="customerGender">
+				<option value="남">남</option>
+				<option value="여">여</option>
+			</select></td>
 		<tr>
 		
 		<tr>
@@ -66,7 +69,7 @@
 		<tr>
 	</table>
 	<button type="reset">초기화</button>
-	<button type="button">회원가입</button>
+	<button type="submit">회원가입</button>
 </form>
 </body>
 </html>

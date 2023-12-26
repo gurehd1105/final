@@ -19,7 +19,7 @@
 			<td><input type="text" name="customerPw"></td>
 		</tr>		
 	</table>
-	<button type="button">로그인</button>
+	<button type="submit">로그인</button>
 </form>
 </body>
 </html>

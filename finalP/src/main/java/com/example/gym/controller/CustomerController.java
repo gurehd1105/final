@@ -16,7 +16,7 @@ import com.example.gym.vo.CustomerForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Controller
 public class CustomerController {
   @Autowired
@@ -64,10 +64,11 @@ public class CustomerController {
   
   	//완료 후 loginForm으로 이동  
   @PostMapping("/deleteCustomer")
-  public String deleteCustomer(String customerId, String CustomerPw) {
+  public String deleteCustomer(String customerId, String customerPw, int customerNo) {
 	 Customer paramCustomer = new Customer();
 	 paramCustomer.setCustomerId(customerId);
-	 paramCustomer.setCustomerPw(CustomerPw);
+	 paramCustomer.setCustomerPw(customerPw);
+	 paramCustomer.setCustomerNo(customerNo);
 	 customerService.deleteCustomer(paramCustomer);
     return "customer/loginCustomer";
   }

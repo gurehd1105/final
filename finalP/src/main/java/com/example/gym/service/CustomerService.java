@@ -46,6 +46,7 @@ public class CustomerService {
 		
 		
 		CustomerDetail paramDetail = new CustomerDetail();
+		paramDetail.setCustomerNo(paramCustomer.getCustomerNo());
 		paramDetail.setCustomerName(cf.getCustomerName());
 		paramDetail.setCustomerGender(cf.getCustomerGender());
 		paramDetail.setCustomerHeight(cf.getCustomerHeight());
@@ -61,10 +62,11 @@ public class CustomerService {
 		
 		
 		MultipartFile mf = cf.getCustomerImg();
-		if(mf != null) { // 회원가입 시 선택된 사진이 있다면
+		System.out.println(mf.getSize() + " <-- mf.getSize()");
+		if(mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
 			CustomerImg cImg = new CustomerImg();
 				// fileName 이외 모든 값 미리세팅
-			cImg.setCustomerNo(paramCustomer.getCustomerNo());
+			cImg.setCustomerNo(paramDetail.getCustomerNo());
 			cImg.setCustomerImgOriginName(mf.getOriginalFilename());
 			cImg.setCustomerImgSize(mf.getSize());
 			cImg.setCustomerImgType(mf.getContentType());
@@ -72,8 +74,11 @@ public class CustomerService {
 				// fileName 값 세팅
 			String fileName = UUID.randomUUID().toString();
 			
+			
 			String oName = mf.getOriginalFilename();
+			
 			String fileName2 = oName.substring(oName.lastIndexOf("."));
+			
 			cImg.setCustomerImgFileName(fileName + fileName2);
 			
 			// 변수값 세팅 완 + 삽입
@@ -85,17 +90,18 @@ public class CustomerService {
 			
 			
 			
-		// path 저장
+	/*	// path 저장 -- 경로 확인 후 설정 예정
+	  System.out.println(path +"/"+ fileName + fileName2);
 		File file = new File(path +"/"+ fileName + fileName2);
 		try {
 			mf.transferTo(file);
 		} catch (IllegalStateException | IOException e) {
 			throw new RuntimeException();
-		}
+		} */
 	}
 		
-		
-		if(row>0 && row2>0 && row3>0) {
+			
+		if(row>0 && row2>0 ) {
 			result = 1;
 		}
 		return result;
@@ -111,10 +117,17 @@ public class CustomerService {
 		int row2 = 0;
 		int row3 = 0;
 		Customer check = customerMapper.loginCustomer(paramCustomer);
+		System.out.println(paramCustomer + " <-- paramCustomer");
+		System.out.println(check + " <-- check");
 		if(check!=null) {
 		row = customerMapper.updateCustomerActive(paramCustomer);
+		System.out.println(row + " <-- row");
+		
 		row2 = customerMapper.deleteCustomerImg(paramCustomer);
+		System.out.println(row2 + " <-- row2");
+		
 		row3 = customerMapper.deleteCustomerDetail(paramCustomer);
+		System.out.println(row3 + " <-- row3");
 		}
 		
 		if(row>0 && row2>0 && row3>0) {
