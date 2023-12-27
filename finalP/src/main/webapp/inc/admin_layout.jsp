@@ -27,7 +27,11 @@
 	</div>
 </body>
 <script>
-	const main = Object.assign({}, { <c:out value="${script}" /> });
+	const main = Object.assign({
+		data() {
+			return {};
+		}
+	}, { <c:out value="${script}" /> });
 	const app = Vue.createApp(main);
 	app.use(ElementPlus);
 	app.mount("#app");
