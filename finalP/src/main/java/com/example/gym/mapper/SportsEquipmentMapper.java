@@ -23,9 +23,9 @@ public interface SportsEquipmentMapper {
 	//lastPage 구하기 위한 sportsEquipment 수
 	int selectSportsEquipmentCnt(String searchWord);
 	
-	//sportsEquipment 상세보기(selectSportsEquipmentOne + selectSportsEquipmentImgOne)
-	SportsEquipment selectSportsEquipmentOne(int sportsEquipmentNo);
-	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
+	//sportsEquipment 상세보기
+	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
+	//List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
 	// sportsEquipment CRUD를 위해 본사소속 직원 확인하기
 	int selectSearchEmployeeLevel(int employeeNo); 

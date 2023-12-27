@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div>
 	<div>
 		<h2>sportsEquipment List</h2>
 	</div>
@@ -44,5 +45,6 @@
 		</c:forEach>
 		<a href="${pageContext.request.contextPath}/SportsEquipmentList?currentPage=${lastPage}&searchWord=${searchWord}">마지막</a>
     </div>
+</div>
 </body>
 </html>

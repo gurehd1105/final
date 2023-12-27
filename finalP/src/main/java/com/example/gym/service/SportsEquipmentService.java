@@ -96,8 +96,8 @@ public class SportsEquipmentService {
 
 	//sportsEquipment 출력
 	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
-													int currentPage,
-													String searchWord) {
+																	int currentPage,
+																	String searchWord) {
 		//디버깅
 		log.info(searchWord);
 		log.info("Current page: {}", currentPage);
@@ -129,6 +129,26 @@ public class SportsEquipmentService {
 		resultMap.put("searchWord", searchWord);
 		resultMap.put("lastPage", lastPage);
 		resultMap.put("sportsEquipmentList", sportsEquipmentList);
+		
+		return resultMap;
+	}
+	//sportsEquipment 수정 폼
+	public Map<String,Object> updateSportsEquipmentService(HttpSession session,
+																	int sportsEquipmentNo) {
+		//디버깅
+		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+
+		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
+		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
+		//mapper 호출
+		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
+		log.info( branchLevel + " <-- 1:본사 0:지점");
+		if(branchLevel != 1) {	
+			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+		}
+		
+		//mapper 호출
+		Map<String,Object> resultMap  = sportsEquipmentMapper.selectSportsEquipmentOne(sportsEquipmentNo);
 		
 		return resultMap;
 	}
