@@ -1,4 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
+
+	<!-- sportsEquipment 추가  -->
+	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	
+		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
+		SELECT last_insert_id();<!-- 제일 마지막에 입력된 키값을 받아옴 -->
+		</selectKey>
+		INSERT INTO sports_equipment(
+				employee_no,
+				item_name,
+				item_price,
+				createdate,
+				updatedate
+			)VALUES(
+				#{employeeNo},
+				#{itemName},
+				#{itemPrice},
+				NOW(),
+				NOW()
+			)
+	</insert> 
+	
+	<!-- sportsEquipmentImg 추가  -->
+	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
+	    INSERT INTO sports_equipment_img(
+	        sports_equipment_no,
+	        sports_equipment_img_origin_name,
+	        sports_equipment_img_file_name,
+	        sports_equipment_img_size,
+	        sports_equipment_img_type,
+	        createdate,
+	        updatedate
+	    ) VALUES (
+	        #{sportsEquipmentNo},
+	        #{sportsEquipmentImgOriginName},
+	        #{sportsEquipmentImgFileName},
+	        #{sportsEquipmentImgSize},
+	        #{sportsEquipmentImgType},
+	        NOW(),
+	        NOW()
+	    )
+	</insert>
+	
+	<!-- sportsEquipment CRUD를 위해 본사소속 직원 확인하기  -->
+	<select id="selectSearchEmployeeLevel" parameterType="int" resultType="int">
+		SELECT 
+			b.branch_level branchLevel
+		FROM employee e 
+		INNER JOIN branch b
+		ON e.branch_no = b.branch_no
+		WHERE employee_no = #{employeeNo}
+	</select>
+
+	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
+	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			se.sports_equipment_no sportsEquipmentNo,
+			se.employee_no employeeNo,
+			se.item_name itemName,
+			se.item_price itemPrice,
+			se.updatedate updatedate,
+			se.createdate createdate,
+			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			e.employee_id employeeId
+		FROM sports_equipment se
+		INNER JOIN sports_equipment_img sei
+		ON se.sports_equipment_no=sei.sports_equipment_no
+		INNER JOIN employee e
+		ON se.employee_no = e.employee_no
+		<where>
+			<if test="searchWord != ''">
+				item_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+	
+	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
+	<select id="selectSportsEquipmentCnt" parameterType="String" resultType="int">
+		SELECT 
+			COUNT(sports_equipment_no)
+		FROM sports_equipment
+		<where>
+			<if test="searchWord != ''">
+				item_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+	</select>
+	
 </mapper>
