@@ -38,7 +38,7 @@ public class EmployeeController {
 	public String insertEmployee(Employee employee) {
 		
 	//Service호출
-	//	employeeService.insertEmployee(employee);
+	employeeService.insertEmployee(employee);
 	return "redirect:/home";
 	}
  	
