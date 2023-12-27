@@ -10,23 +10,21 @@
 </c:set>
 
 <c:set var="script">
-	{
-		data() {
-		    return {
-		    	date: new Date()
-		    }
-		},
-		watch: {
-			date(newValue, prevValue) {
-				this.log(newValue, prevValue);
-			}
-		},
-		methods: {
-			log(args) {
-				console.log(args);
-			}
+	data() {
+	    return {
+	    	date: new Date()
+	    }
+	},
+	watch: {
+		date(newValue, prevValue) {
+			this.log(newValue, prevValue);
 		}
-	};
+	},
+	methods: {
+		log(args) {
+			console.log(args);
+		}
+	}
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>
