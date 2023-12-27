@@ -29,7 +29,7 @@ public class SportsEquipmentController {
 //		}
 		
 		return "sportsEquipment/insertSportsEquipment";
-	}
+	}  
 
 	//SportsEquipment 추가 액션
 	@PostMapping("insertSportsEquipment")
