@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
-	
+
+	<!-- sportsEquipment 추가  -->
 	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
 	
 		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
@@ -22,6 +23,7 @@
 			)
 	</insert> 
 	
+	<!-- sportsEquipmentImg 추가  -->
 	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
 	    INSERT INTO sports_equipment_img(
 	        sports_equipment_no,
@@ -41,7 +43,18 @@
 	        NOW()
 	    )
 	</insert>
+	
+	<!-- sportsEquipment CRUD를 위해 본사소속 직원 확인하기  -->
+	<select id="selectSearchEmployeeLevel" parameterType="int" resultType="int">
+		SELECT 
+			b.branch_level branchLevel
+		FROM employee e 
+		INNER JOIN branch b
+		ON e.branch_no = b.branch_no
+		WHERE employee_no = #{employeeNo}
+	</select>
 
+	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
 	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
 			se.sports_equipment_no sportsEquipmentNo,
@@ -65,6 +78,7 @@
 		LIMIT #{beginRow},#{rowPerPage}
 	</select>
 	
+	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
 	<select id="selectSportsEquipmentCnt" parameterType="String" resultType="int">
 		SELECT 
 			COUNT(sports_equipment_no)

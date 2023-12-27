@@ -25,24 +25,34 @@ import lombok.extern.slf4j.Slf4j;
 public class SportsEquipmentService {
 	@Autowired private SportsEquipmentMapper sportsEquipmentMapper;
 	
+	//sportsEquipment 추가
 	public void insertSportsEquipmentService(HttpSession session,
 												String path,
 												String itemName, 
 												int itemPrice, 
 												MultipartFile[] sportsEquipmentImgList) {
 		
+		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
+		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
+		//mapper 호출
+		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
+		log.info( branchLevel + " <-- 1:본사 0:지점");
+		if(branchLevel != 1) {	
+			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+		}
+		
 		//sportsEquipment 추가
 		SportsEquipment sportsEquipment = new SportsEquipment();
 		sportsEquipment.setEmployeeNo(1); //employee session 구현 후 수정
 		sportsEquipment.setItemName(itemName);
 		sportsEquipment.setItemPrice(itemPrice);
-		
+			
 		//mapper 호출
 		int row1 = sportsEquipmentMapper.insertSportsEquipment(sportsEquipment);
 		
 		//sportsEquipment 정보 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
 		if(row1 != 1) {
-			throw new RuntimeException();
+			throw new RuntimeException("예외발생 : sportsEquipment 정보 추가 실패");
 		}
 		
 		//추가 된 sportsEquipment 디버깅
@@ -69,7 +79,7 @@ public class SportsEquipmentService {
 			int row2 = sportsEquipmentMapper.insertSportsEquipmentImg(sportsEquipmentImg);
 			//sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
 			if(row2 != 1) {
-				throw new RuntimeException();
+				throw new RuntimeException("예외발생 : sportsEquipmentImg 추가 실패");
 			}
 			File file = new File(path+"/"+fileName+extensionName);
 			try {
@@ -84,6 +94,7 @@ public class SportsEquipmentService {
 		}
 	}
 
+	//sportsEquipment 출력
 	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
 													int currentPage,
 													String searchWord) {

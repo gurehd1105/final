@@ -19,6 +19,7 @@
 	      <div>
 	         <button type="submit">검색</button>
 	         <a href="${pageContext.request.contextPath}/SportsEquipmentList?searchWord=">전체보기</a>
+	         <a href="${pageContext.request.contextPath}/insertSportsEquipment">상품추가</a>	         
 	      </div>
    		</form>
    	</div>
