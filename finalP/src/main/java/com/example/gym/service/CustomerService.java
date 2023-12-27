@@ -33,10 +33,15 @@ public class CustomerService {
 		int row2 = 0;
 		int row3 = 0;
 		
-		// customer vo 세팅 및 insert
+		// customer 매개값 세팅
 		Customer paramCustomer = new Customer();
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
+		
+		Customer checkId = customerMapper.loginCustomer(paramCustomer); // 중복확인
+		if(checkId.getCustomerActive().equals("Y")) {	// 활성화 - 사용중인 계정정보가 있다면
+			result= 0;
+		} else {
 		
 		row = customerMapper.insertCustomer(paramCustomer);
 		System.out.println(row + " <-- row / insertCustomer");
@@ -65,7 +70,7 @@ public class CustomerService {
 		System.out.println(mf.getSize() + " <-- mf.getSize()");
 		if(mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
 			CustomerImg cImg = new CustomerImg();
-				// fileName 이외 모든 값 미리세팅
+				// fileName 이외 모든 값 세팅
 			cImg.setCustomerNo(paramDetail.getCustomerNo());
 			cImg.setCustomerImgOriginName(mf.getOriginalFilename());
 			cImg.setCustomerImgSize(mf.getSize());
@@ -88,8 +93,6 @@ public class CustomerService {
 				throw new RuntimeException();
 			}
 			
-			
-			
 	/*	// path 저장 -- 경로 확인 후 설정 예정
 	  System.out.println(path +"/"+ fileName + fileName2);
 		File file = new File(path +"/"+ fileName + fileName2);
@@ -98,11 +101,11 @@ public class CustomerService {
 		} catch (IllegalStateException | IOException e) {
 			throw new RuntimeException();
 		} */
-	}
-		
+	}		
 			
-		if(row>0 && row2>0 ) {
-			result = 1;
+			if(row>0 && row2>0 ) { // Image 정보 없어도 가입가능
+				result = 1;
+			}
 		}
 		return result;
 	}
@@ -142,33 +145,29 @@ public class CustomerService {
 		return resultMap;
 	}
 	
-	
-	
-	
 	 // 정보수정 
 		// 마이페이지 수정 + Image 수정
-	 public void updateCustomerOne(String path, CustomerForm customerForm, int customerNo) { 
+	 public void updateCustomerOne(String path, CustomerForm paramCustomerForm, int customerNo) { 
 		   // customerDetail 수정
 		 	CustomerDetail customerDetail = new CustomerDetail();
 		 	customerDetail.setCustomerNo(customerNo);
-		 	customerDetail.setCustomerName(customerForm.getCustomerName());
-		 	customerDetail.setCustomerGender(customerForm.getCustomerGender());
-		 	customerDetail.setCustomerHeight(customerForm.getCustomerHeight());
-		 	customerDetail.setCustomerWeight(customerForm.getCustomerWeight());
-		 	customerDetail.setCustomerPhone(customerForm.getCustomerPhone());
-		 	customerDetail.setCustomerAddress(customerForm.getCustomerAddress());
-		 	customerDetail.setCustomerEmail(customerForm.getCustomerEmail());
+		 	customerDetail.setCustomerName(paramCustomerForm.getCustomerName());
+		 	customerDetail.setCustomerGender(paramCustomerForm.getCustomerGender());
+		 	customerDetail.setCustomerHeight(paramCustomerForm.getCustomerHeight());
+		 	customerDetail.setCustomerWeight(paramCustomerForm.getCustomerWeight());
+		 	customerDetail.setCustomerPhone(paramCustomerForm.getCustomerPhone());
+		 	customerDetail.setCustomerAddress(paramCustomerForm.getCustomerAddress());
+		 	customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
 		 	int row = customerMapper.updateCustomerOne(customerDetail);
 		 	System.out.println(row + " <-- row / updateCustomerOne");
 		 	if(row!=1) {
 		 		throw new RuntimeException();
 		 	}
+		 			 	
 		 	
+		 	MultipartFile mf = paramCustomerForm.getCustomerImg();
 		 	
-		 	
-		 	MultipartFile mf = customerForm.getCustomerImg();
-		 	System.out.println(mf.getSize());
-		 	if(mf.getSize()!=0) {
+		 	if(mf.getSize()!=0) {	// 사용자가 지정한 Image 정보가 있다면
 		 	CustomerImg customerImg = new CustomerImg();
 		 	customerImg.setCustomerNo(customerNo);
 		 	customerImg.setCustomerImgOriginName(mf.getOriginalFilename());
@@ -181,7 +180,7 @@ public class CustomerService {
 		 	String fileName2 = oName.substring(oName.lastIndexOf("."));
 		 	customerImg.setCustomerImgFileName(fileName + fileName2); // CustomerImg 매개값 세팅
 		 	
-		 // null 값이더라도 고객 customerImg정보가 있는지 확인
+		 // 변수 삽입 전 customerImg정보가 있는지 확인
 		 	Customer checkImgCustomer = new Customer();
 		 	checkImgCustomer.setCustomerNo(customerNo);		 	
 		 	CustomerImg check = customerMapper.checkCustomerImg(checkImgCustomer);	
@@ -202,9 +201,7 @@ public class CustomerService {
 		 		deleteImg.setCustomerNo(customerNo);
 		 		customerMapper.deleteCustomerImg(deleteImg);
 		 	}
-	 } 
-	 	
-	 
+	 }
 	 
 	
 		// 비밀번호 수정
@@ -219,7 +216,5 @@ public class CustomerService {
 		}
 		return result;
 	}	
-	
-	
 	
 }

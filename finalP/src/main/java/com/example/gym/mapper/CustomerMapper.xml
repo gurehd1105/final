@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.CustomerMapper">
+
+		<!-- 로그인 -->
 	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
 						resultType="com.example.gym.vo.Customer">
 		SELECT
@@ -148,6 +150,7 @@
 			updatedate = NOW()
 		WHERE customer_no = #{customerNo}		
 	</update>
+		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"
 									resultType="com.example.gym.vo.CustomerImg">
 		SELECT

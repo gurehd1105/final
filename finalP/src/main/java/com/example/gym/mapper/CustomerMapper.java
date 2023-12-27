@@ -31,6 +31,7 @@ public interface CustomerMapper {
 		// 상세정보 변경
 	int updateCustomerOne(CustomerDetail customerDetail);
 	int updateCustomerImg(CustomerImg customerImg);
+		// Img 변경위한 정보조회
 	CustomerImg checkCustomerImg(Customer customer);
 		// 비밀번호 변경
 	int updateCustomerPw(Customer customer);

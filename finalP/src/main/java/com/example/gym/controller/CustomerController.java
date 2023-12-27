@@ -22,13 +22,13 @@ public class CustomerController {
   @Autowired
   private CustomerService customerService;
   
-  // login (로그인) Form
+  	// login (로그인) Form
   @GetMapping("/loginCustomer")
   public String loginCustomer() {
     return "customer/loginCustomer";
   }
 
-  // login 후 Act -> session 세팅 후 home.jsp로 이동
+  	// login 후 Act -> session 세팅 후 home.jsp로 이동
   @PostMapping("/loginCustomer")
   public String loginCustomer(Model model, HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
