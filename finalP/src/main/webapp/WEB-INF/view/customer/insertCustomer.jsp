@@ -79,7 +79,7 @@
 		
 		<tr>
 			<td>Img</td>
-			<td><input type="file" name="customerImg"></td>
+			<td>선택정보 <input type="file" name="customerImg"></td>
 		<tr>
 	</table>
 	<button type="reset">초기화</button>

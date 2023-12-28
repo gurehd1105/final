@@ -30,7 +30,7 @@
 			<td><select name="customerGender">
 				<option selected="selected" value="${resultMap.customerGender}">${resultMap.customerGender}</option>
 				<option value="${resultMap.customerOtherGender}">${resultMap.customerOtherGender}</option>
-			</select></td> 
+			</select></td>
 		<tr>
 		
 		<tr>
