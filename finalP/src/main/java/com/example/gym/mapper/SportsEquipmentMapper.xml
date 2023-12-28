@@ -56,26 +56,23 @@
 
 	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
 	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT 
-			se.sports_equipment_no sportsEquipmentNo,
-			se.employee_no employeeNo,
-			se.item_name itemName,
-			se.item_price itemPrice,
-			se.updatedate updatedate,
-			se.createdate createdate,
-			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
-			e.employee_id employeeId
-		FROM sports_equipment se
-		INNER JOIN sports_equipment_img sei
-		ON se.sports_equipment_no=sei.sports_equipment_no
-		INNER JOIN employee e
-		ON se.employee_no = e.employee_no
-		<where>
-			<if test="searchWord != ''">
-				item_name LIKE CONCAT('%',#{searchWord},'%')
-			</if>
-		</where>
-		LIMIT #{beginRow},#{rowPerPage}
+	    SELECT 
+	        se.sports_equipment_no sportsEquipmentNo,
+	        se.item_name itemName,
+	        se.item_price itemPrice,
+	        se.equipment_active equipmentActive,
+	        (SELECT sei.sports_equipment_img_file_name
+	         FROM sports_equipment_img sei
+	         WHERE sei.sports_equipment_no = se.sports_equipment_no
+	         LIMIT 1 <!-- 리스트에서는 img를 하나만 가지고 오기위한 서브쿼리 -->
+	        ) sportsEquipmentImgFileName
+	    FROM sports_equipment se
+	    <where>
+	        <if test="searchWord != ''">
+	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+	    </where>
+	    LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
@@ -89,5 +86,48 @@
 			</if>
 		</where>
 	</select>
+	
+	<!--sportsEquipment 상세보기(정보)-->
+	<select id="selectSportsEquipmentOne" parameterType="int" resultType="java.util.Map">
+		SELECT 
+			se.sports_equipment_no sportsEquipmentNo,
+			e.employee_id employeeId,
+			se.item_name itemName,
+			se.item_price itemPrice,
+			se.equipment_active equipmentActive,
+			se.createdate equipmentCreatedate,
+			se.updatedate equipmentUpdatedate
+		FROM employee e 
+		INNER JOIN sports_equipment se
+		ON e.employee_no = se.employee_no
+		WHERE se.sports_equipment_no = #{sportsEquipmentNo}
+	</select>
+	
+	<!--sportsEquipment 상세보기(이미지)-->
+	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
+		SELECT 
+			sports_equipment_img_file_name sportsEquipmentImgFileName,
+			sports_equipment_img_no sportsEquipmentImgNo
+		FROM sports_equipment_img
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</select>
+	
+	<!--sportsEquipment 정보 수정-->
+	<update id="updateSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+		UPDATE sports_equipment
+		SET 
+			employee_no = #{employeeNo},
+			item_name = #{itemName}, 
+			item_price = #{itemPrice},
+			equipment_active = #{equipmentActive},
+			updatedate = NOW()
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</update>
+	
+	<!--sportsEquipmentImg 개별 삭제-->
+	<delete id="deleteOneSportsEquipmentImg" parameterType="int">
+		DELETE FROM sports_equipment_img
+		WHERE sports_equipment_img_no = #{sportsEquipmentImgNo}
+	</delete>
 	
 </mapper>
