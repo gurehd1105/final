@@ -17,6 +17,13 @@
 	<div>
 		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" enctype="multipart/form-data">
 	      	<div style="border: 1px solid #ccc;">
+    			<label for="equipmentActive">상태 :</label>
+    			주문 가능: <input type="checkbox" id="orderAvailableCheckbox" name="equipmentActive" value="Y"
+           		<c:if test="${equipmentActive == 'Y'}">checked</c:if>>
+    			품절: <input type="checkbox" id="soldOutCheckbox" name="equipmentActive" value="N"
+           		<c:if test="${equipmentActive == 'N'}">checked</c:if>>
+			</div>
+	      	<div style="border: 1px solid #ccc;">
 	 			<label for="searchWord">검색 :</label>
 	         	<input type="text" id="searchWord" name="searchWord" placeholder="검색어를 입력하세요.">
 	         	<button type="submit" style="border: 1px solid #ccc;">검색</button>
@@ -39,13 +46,13 @@
 
    	<!-- 페이징 -->
    	<div style="border: 1px solid #ccc;">
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=1&searchWord=${searchWord}">처음</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=1&searchWord=${searchWord}&equipmentActive=${equipmentActive}">처음</a>
 		<c:forEach var="p" begin="1" end="${lastPage}">
-			<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${p}&searchWord=${searchWord}">${p}</a>
+			<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${p}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">${p}</a>
 		</c:forEach>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${lastPage}&searchWord=${searchWord}">마지막</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${lastPage}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">마지막</a>
     </div>
-</div>
+
 </c:set>
 <c:set var="script">
 	{

@@ -21,7 +21,7 @@ public interface SportsEquipmentMapper {
 	List<Map<String,Object>> selectSportsEquipmentByPage(Map<String,Object> paramMap);
 	
 	//lastPage 구하기 위한 sportsEquipment 수
-	int selectSportsEquipmentCnt(String searchWord);
+	int selectSportsEquipmentCnt(Map<String,Object> paramMap);
 	
 	//sportsEquipment 상세보기
 	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
@@ -37,9 +37,9 @@ public interface SportsEquipmentMapper {
 	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
 	
 	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
-	int deleteSportsEquipmentImg(int sportsEquipmentNo);
+	//int deleteSportsEquipmentImg(int sportsEquipmentNo);
 	
 	//sportsEquipment 삭제
-	int deleteSportsEquipment(int sportsEquipmentNo);
+	//int deleteSportsEquipment(int sportsEquipmentNo);
 	
 }

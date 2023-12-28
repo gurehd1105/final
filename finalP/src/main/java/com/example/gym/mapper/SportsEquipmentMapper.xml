@@ -71,20 +71,27 @@
 	        <if test="searchWord != ''">
 	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
 	        </if>
+			<if test="equipmentActive != ''">
+    			AND se.equipment_active = #{equipmentActive}
+			</if>
 	    </where>
+	    ORDER BY se.createdate DESC
 	    LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
-	<select id="selectSportsEquipmentCnt" parameterType="String" resultType="int">
-		SELECT 
-			COUNT(sports_equipment_no)
-		FROM sports_equipment
-		<where>
-			<if test="searchWord != ''">
-				item_name LIKE CONCAT('%',#{searchWord},'%')
+	<select id="selectSportsEquipmentCnt" parameterType="java.util.Map" resultType="int">
+	    SELECT 
+	        COUNT(sports_equipment_no)
+	    FROM sports_equipment
+	    <where>
+	        <if test="searchWord != ''">
+	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="equipmentActive != ''">
+    			AND equipment_active = #{equipmentActive}
 			</if>
-		</where>
+	    </where>
 	</select>
 	
 	<!--sportsEquipment 상세보기(정보)-->

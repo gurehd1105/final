@@ -25,19 +25,23 @@ public class SportsEquipmentController {
 	public String insertSportsEquipment(HttpSession session,
 										Model model,
 										@RequestParam(defaultValue = "1") int currentPage,
+										@RequestParam(defaultValue = "") String equipmentActive,
 										@RequestParam(defaultValue = "") String searchWord) {
 //		//session 유효성 검사 (본사직원)
 //		if(session.getAttribute("") == null) {
 //			return "";
 //		}
 		
+		
+		
 		//service 호출
-		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, searchWord);
+		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchWord", map.get("searchWord"));
+		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		
 		return "sportsEquipment/insertSportsEquipment";
 	}  
@@ -50,6 +54,7 @@ public class SportsEquipmentController {
 	                                    @RequestParam int itemPrice,
 										@RequestParam(defaultValue = "1") int currentPage,
 										@RequestParam(defaultValue = "") String searchWord,
+										@RequestParam(defaultValue = "") String equipmentActive,
 	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) {
 //		//session 유효성 검사 (본사직원)
 //		if(session.getAttribute("") == null) {
@@ -61,7 +66,7 @@ public class SportsEquipmentController {
 	    
 	    //service 호출
 	    sportsEquipmentService.insertSportsEquipmentService(session, path, itemName, itemPrice, sportsEquipmentImgList);
-	  	Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, searchWord);
+	  	Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 	  		
 	  	//jsp에서 출력할 model
 	  	model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
@@ -76,6 +81,7 @@ public class SportsEquipmentController {
 	public String selectSportsEquipmentList(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
+											@RequestParam(defaultValue = "") String equipmentActive,
 											@RequestParam(defaultValue = "") String searchWord) {
 //		//session 유효성 검사(직원)
 //		if(session.getAttribute("") == null) {
@@ -83,12 +89,13 @@ public class SportsEquipmentController {
 //		}
 		
 		//service 호출
-		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, searchWord);
+		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchWord", map.get("searchWord"));
+		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		
 		return "sportsEquipment/sportsEquipmentList";
 	}
@@ -145,10 +152,10 @@ public class SportsEquipmentController {
 	
 	//SportsEquipmentImg 개별 삭제 액션 (본사직원만 접근 가능)
 	@PostMapping("/sportsEquipment/deleteOneSportsEquipmentImg")
-	public String updateSportsEquipment(HttpSession session,
-	                                    @RequestParam int sportsEquipmentImgNo,
-	                                    @RequestParam int sportsEquipmentNo,
-	                                    @RequestParam String sportsEquipmentImgFileName ) {
+	public String deleteOneSportsEquipmentImg(HttpSession session,
+	                                    		@RequestParam int sportsEquipmentImgNo,
+	                                    		@RequestParam int sportsEquipmentNo,
+	                                    		@RequestParam String sportsEquipmentImgFileName ) {
 //		//session 유효성 검사 (본사직원)
 //		if(session.getAttribute("") == null) {
 //			return "";
@@ -164,5 +171,30 @@ public class SportsEquipmentController {
 
 		return "redirect:/sportsEquipment/updateSportsEquipment?sportsEquipmentNo="+sportsEquipmentNo;
 	}
+	
+	//SportsEquipmentImg 개별 추가 액션 (본사직원만 접근 가능)
+	@PostMapping("/sportsEquipment/insertOneSportsEquipmentImg")
+	public String insertOneSportsEquipmentImg(HttpSession session,
+	                                    		@RequestParam int sportsEquipmentNo,
+	                                    		@RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList ) {
+
+		//		//session 유효성 검사 (본사직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+		//파일업로드 경로 설정
+	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
+	    
+		//디버깅
+		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+	    
+	    //service 호출
+		sportsEquipmentNo = sportsEquipmentService.insertOneSportsEquipmentImgService(session, path, sportsEquipmentNo, sportsEquipmentImgList);
+	  	
+		//디버깅
+		log.info("redirect:sportsEquipmentNo : {}", sportsEquipmentNo);
+
+		return "redirect:/sportsEquipment/updateSportsEquipment?sportsEquipmentNo="+sportsEquipmentNo;
+	}	
 	
 }

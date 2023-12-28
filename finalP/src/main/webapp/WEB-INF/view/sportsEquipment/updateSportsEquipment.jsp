@@ -56,7 +56,7 @@
 			</div>
 		</form>
 	</c:forEach>
-	<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/updateSportsEquipment" enctype="multipart/form-data">
+	<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data">
 		<div style="border: 1px solid #ccc;">
 			<input type="hidden" id="sportsEquipmentNo" name="sportsEquipmentNo" value="${sportsEquipmentNo }" >
 		    <label for="sportsEquipmentImg">이미지추가 : </label>
