@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -26,7 +27,10 @@
 		
 		<tr>
 			<td>Gender</td>
-			<td><input type="text" value="${resultMap.customerGender}" name="customerGender"></td>
+			<td><select name="customerGender">
+				<option selected="selected" value="${resultMap.customerGender}">${resultMap.customerGender}</option>
+				<option value="${resultMap.customerOtherGender}">${resultMap.customerOtherGender}</option>
+			</select></td> 
 		<tr>
 		
 		<tr>
@@ -51,10 +55,33 @@
 		
 		<tr>
 			<td>Email</td>
-			<td><input type="text" value="${resultMap.customerEmail}" name="customerEmail"></td>
+			<td>
+					<input type="text" value="${resultMap.emailId}" name="customerEmailId">@
+					<input type="text" value="${resultMap.emailJuso}" name="customerEmailJuso" id="selfJuso">
+				<select id="autoJuso" name="customerEmailAutoJuso">
+					<option selected="selected" value="">직접 입력</option>
+					<option value="naver.com">naver.com</option>
+					<option value="gmail.com">gmail.com</option>
+					<option value="hanmail.net">hanmail.net</option>
+					<option value="nate.com">nate.com</option>
+					<option value="kakao.com">kakao.com</option>
+					<option value="icloud.com">icloud.com</option>
+				</select>
+			</td>
 		<tr>		
 	</table>
 	<button type="submit">저장</button>
 </form>
 </body>
+<script>
+
+	 $('#autoJuso').click(function() {
+		if($('#autoJuso').val() == ""){
+			$("#selfJuso").removeAttr("disabled"); 
+		} else {
+			$("#selfJuso").attr("disabled",true); 
+		}
+	 });
+ 
+</script>
 </html>

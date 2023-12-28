@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -33,6 +34,7 @@
 		<tr>
 			<td>Gender</td>
 			<td><select name="customerGender">
+				<option selected="selected">선택</option>
 				<option value="남">남</option>
 				<option value="여">여</option>
 			</select></td>
@@ -62,7 +64,9 @@
 			<td>Email</td>
 			<td>	
 					<input type="text" name="customerEmailId">@
-				<select name="customerEmailJuso">
+					<input type="text" name="customerEmailJuso" id="selfJuso">
+				<select id="autoJuso" name="customerEmailAutoJuso">
+					<option selected="selected" value="">직접 입력</option>
 					<option value="naver.com">naver.com</option>
 					<option value="gmail.com">gmail.com</option>
 					<option value="hanmail.net">hanmail.net</option>
@@ -82,4 +86,15 @@
 	<button type="submit">회원가입</button>
 </form>
 </body>
+<script>
+
+	 $('#autoJuso').click(function() {
+		if($('#autoJuso').val() == ""){
+			$("#selfJuso").removeAttr("disabled"); 
+		} else {
+			$("#selfJuso").attr("disabled",true); 
+		}
+	 });
+ 
+</script>
 </html>
