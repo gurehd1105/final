@@ -1,52 +1,106 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-  
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>reservation calendar</title>
-<!-- Import style -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-plus/dist/index.css"
-    />
-    <!-- Import Vue 3 -->
-    <script src="https://unpkg.com/vue@3"></script>
-    <!-- Import component library -->
-    <script src="https://unpkg.com/element-plus"></script>
-</head>
-<body>
-<!--  
-	<!-- 예약 캘린더 -->
-  	<div id="app">
-  	  <!-- 캘린더 출력 -->
-      <el-calendar  v-model="currentDate" @change="handleDateChange"></el-calendar>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="title" value="메인페이지" />
+<c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
+<c:set var="keywords" value="운동,헬스,헬스장,예약" />
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<!-- Latest compiled and minified CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+<c:set var="body">
+    <h1>예약하기</h1>
+    <!-- 캘린더 -->
+    <div>
+        <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth-1}&targetYear=${calendarMap.targetYear}">
+            <button type="button">이전달</button>
+        </a>
+        <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth+1}&targetYear=${calendarMap.targetYear}">
+            <button type="button">다음달</button>
+        </a>
+    </div>
+    <div>
+        ${calendarMap.targetYear}년
+        ${calendarMap.targetMonth + 1}월
     </div>
 
+    <table border="1" class="col-md-6">
+        <tr>
+            <td>일</td>
+            <td>월</td>
+            <td>화</td>
+            <td>수</td>
+            <td>목</td>
+            <td>금</td>
+            <td>토</td>
+        </tr>
+        <tr>
+            <c:forEach var="i" begin="1" end="${calendarMap.totalTd}">
+                <c:set var="d" value="${i - calendarMap.beginBlank}"/>
+                <td>
+                    <c:if test="${d < 1 || d > calendarMap.lastDate}">
+                        &nbsp;
+                    </c:if>
+                    <c:if test="${!(d < 1 || d > calendarMap.lastDate)}">
+                    	
+                        <a href="javascript:void(0);" onclick="openPopup(${calendarMap.targetYear}, ${calendarMap.targetMonth+1}, ${d})">${d}</a>
+                        <c:forEach var="s" items="${scheduleList}">
+                            <c:if test="${d == s.day}">
+                                <div>${s.cnt}</div>
+                                <div>${s.memo}</div>
+                            </c:if>
+                        </c:forEach>
+                    </c:if>
+
+                    <!-- 한 행 당 7열 -->
+                    <c:if test="${i < calendarMap.totalTd && i % 7 == 0}">
+                        </tr><tr>
+                    </c:if>
+
+                </td>
+            </c:forEach>
+        </tr>
+    </table>  
+</c:set>
+	
     <script>
-      // Vue 3 인스턴스 생성
-      const app = Vue.createApp({
-    	// 화면에 보여질 데이터
-    	data() {
-          return {
-        	  currentDate: new Date(),      
-          };
-        },
-        // 뷰페이지에 들어갈 데이터
-        methods: {
-        	handleDateChange(date) {
-        		// 선택된 날짜를 콘솔에 출력
-           	 	console.log('Selected Date:', date);
-          },          	
-        },
-      });
+        function openPopup(targetYear, targetMonth, targetDay) {
+            var url = "${contextPath}/reservation?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+            window.open(url, "popupWindow", "width=500, height=300");
+        }
+    </script>
 
-      // Element Plus를 사용하기 위한것
-      app.use(ElementPlus);
+	
 
-      // Vue 인스턴스를 마운트
-      app.mount("#app");
-    </script>        
-</body>
-</html>
+
+<c:set var="script">
+	{
+		data() {
+		    return {
+		    	date: new Date()
+		    }
+		},
+		watch: {
+			date(newValue, prevValue) {
+				this.log(newValue, prevValue);
+			}
+		},
+		methods: {
+			log(args) {
+				console.log(args);
+			}
+		}
+	};
+</c:set>
+
+
+
+<%@ include file="/inc/admin_layout.jsp" %>
+
+
+
