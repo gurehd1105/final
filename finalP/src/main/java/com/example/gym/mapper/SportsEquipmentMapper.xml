@@ -87,9 +87,10 @@
 		</where>
 	</select>
 	
-	<!--sportsEquipment 상세보기-->
+	<!--sportsEquipment 상세보기(정보)-->
 	<select id="selectSportsEquipmentOne" parameterType="int" resultType="java.util.Map">
 		SELECT 
+			se.sports_equipment_no sportsEquipmentNo,
 			e.employee_id employeeId,
 			se.item_name itemName,
 			se.item_price itemPrice,
@@ -101,5 +102,32 @@
 		ON e.employee_no = se.employee_no
 		WHERE se.sports_equipment_no = #{sportsEquipmentNo}
 	</select>
+	
+	<!--sportsEquipment 상세보기(이미지)-->
+	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
+		SELECT 
+			sports_equipment_img_file_name sportsEquipmentImgFileName,
+			sports_equipment_img_no sportsEquipmentImgNo
+		FROM sports_equipment_img
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</select>
+	
+	<!--sportsEquipment 정보 수정-->
+	<update id="updateSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+		UPDATE sports_equipment
+		SET 
+			employee_no = #{employeeNo},
+			item_name = #{itemName}, 
+			item_price = #{itemPrice},
+			equipment_active = #{equipmentActive},
+			updatedate = NOW()
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</update>
+	
+	<!--sportsEquipmentImg 개별 삭제-->
+	<delete id="deleteOneSportsEquipmentImg" parameterType="int">
+		DELETE FROM sports_equipment_img
+		WHERE sports_equipment_img_no = #{sportsEquipmentImgNo}
+	</delete>
 	
 </mapper>

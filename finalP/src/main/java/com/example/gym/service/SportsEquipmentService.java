@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.mapper.SportsEquipmentMapper;
@@ -94,7 +95,7 @@ public class SportsEquipmentService {
 		}
 	}
 
-	//sportsEquipment 출력
+	//sportsEquipmentList 출력
 	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
 																	int currentPage,
 																	String searchWord) {
@@ -132,9 +133,10 @@ public class SportsEquipmentService {
 		
 		return resultMap;
 	}
+	
 	//sportsEquipment 수정 폼
 	public Map<String,Object> updateSportsEquipmentService(HttpSession session,
-																	int sportsEquipmentNo) {
+																int sportsEquipmentNo) {
 		//디버깅
 		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
 
@@ -149,7 +151,102 @@ public class SportsEquipmentService {
 		
 		//mapper 호출
 		Map<String,Object> resultMap  = sportsEquipmentMapper.selectSportsEquipmentOne(sportsEquipmentNo);
+		List<SportsEquipmentImg> sportsEquipmentImgList = sportsEquipmentMapper.selectSportsEquipmentImgList(sportsEquipmentNo);
+		
+		resultMap.put("sportsEquipmentImgList", sportsEquipmentImgList);
 		
 		return resultMap;
+	}
+	
+	//sportsEquipment 수정 액션
+	public int updateSportsEquipmentService(HttpSession session,
+																int sportsEquipmentNo,
+																String itemName,
+																int itemPrice,
+																String equipmentActive) {
+		//디버깅
+		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+		log.info("itemName : {}", itemName);
+		log.info("itemPrice : {}", itemPrice);
+		log.info("equipmentActive : {}", equipmentActive);
+	
+		//sportsEquipment 수정을 시도하는 employeeNo가 본사 소속인지 확인
+		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
+		//mapper 호출
+		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
+		log.info( branchLevel + " <-- 1:본사 0:지점");
+		if(branchLevel != 1) {	
+			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+		}
+		
+		//mapper에 보내줄 sportsEquipment 객체 세팅
+		SportsEquipment sportsEquipment = new SportsEquipment();
+		sportsEquipment.setSportsEquipmentNo(sportsEquipmentNo);
+		sportsEquipment.setItemName(itemName);
+		sportsEquipment.setItemPrice(itemPrice);
+		sportsEquipment.setEquipmentActive(equipmentActive);
+		//employee session 구현 후 수정 -> employee_no 컬럼은 세션에서 받아와서 설정 
+		sportsEquipment.setEmployeeNo(1);
+		
+		//mapper 호출
+		int row = sportsEquipmentMapper.updateSportsEquipment(sportsEquipment);
+		
+		//mapper 호출 디버깅
+		if (row != 1) {
+		    log.info("sportsEquipment 수정실패 : row - {}", row);
+		} else {
+		    log.info("sportsEquipment 수정성공: row - {}", row);
+		}
+		return sportsEquipmentNo;
+	}
+	
+	//sportsEquipmentImg 개별 삭제 액션
+	public int deleteOneSportsEquipmentImgService(HttpSession session,
+																int sportsEquipmentNo,
+																int sportsEquipmentImgNo,
+																String sportsEquipmentImgFileName) {
+		//디버깅
+		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+		log.info("sportsEquipmentImgNo : {}", sportsEquipmentImgNo);
+		log.info("sportsEquipmentImgFileName : {}", sportsEquipmentImgFileName);
+	
+		//sportsEquipmentImg 삭제를 시도하는 employeeNo가 본사 소속인지 확인
+		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
+		//mapper 호출
+		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
+		log.info( branchLevel + " <-- 1:본사 0:지점");
+		if(branchLevel != 1) {	
+			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+		}
+		
+		//실제 img파일 먼저 삭제
+	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
+	    File file = new File(path + "/" + sportsEquipmentImgFileName);
+		
+	    // 파일 삭제
+	    if (file.exists()) {
+	        if (file.delete()) {
+	            log.info("sportsEquipmentImg 파일 개별 삭제 성공");
+	        } else {
+	            log.info("sportsEquipmentImg 파일 개별 삭제 실패");
+	            throw new RuntimeException("sportsEquipmentImg 파일 개별 삭제 실패");
+	        }
+	    } else {
+	        log.info("sportsEquipmentImg 파일이 이미 존재하지 않습니다.");
+	    }
+
+		
+	    //데이터베이스 삭제
+		//mapper 호출
+		int row = sportsEquipmentMapper.deleteOneSportsEquipmentImg(sportsEquipmentImgNo);
+		
+		//mapper 호출 디버깅
+		if (row != 1) {
+		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : row - {}", row);
+		    throw new RuntimeException("데이터베이스 삭제 실패");
+		} else {
+		    log.info("sportsEquipmentImg 개별 삭제성공: row - {}", row);
+		}
+		return sportsEquipmentNo;
 	}
 }

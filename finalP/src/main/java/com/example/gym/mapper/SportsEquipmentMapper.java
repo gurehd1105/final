@@ -25,17 +25,21 @@ public interface SportsEquipmentMapper {
 	
 	//sportsEquipment 상세보기
 	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
-	//List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
+	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
-	// sportsEquipment CRUD를 위해 본사소속 직원 확인하기
+	//sportsEquipment CRUD를 위해 본사소속 직원 확인하기
 	int selectSearchEmployeeLevel(int employeeNo); 
 	
-//	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
-//	int deleteSportsEquipmentImg(int sportsEquipmentNo);
-//	
-//	//sportsEquipment 삭제
-//	int deleteSportsEquipment(int sportsEquipmentNo);
-//	
-//	//sportsEquipmentImg 개별 삭제
-//	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
+	//sportsEquipment 수정
+	int updateSportsEquipment(SportsEquipment sportsEuipment);
+	
+	//sportsEquipmentImg 개별 삭제
+	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
+	
+	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
+	int deleteSportsEquipmentImg(int sportsEquipmentNo);
+	
+	//sportsEquipment 삭제
+	int deleteSportsEquipment(int sportsEquipmentNo);
+	
 }
