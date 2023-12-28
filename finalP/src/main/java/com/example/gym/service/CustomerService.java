@@ -15,6 +15,7 @@ import com.example.gym.vo.CustomerDetail;
 import com.example.gym.vo.CustomerForm;
 import com.example.gym.vo.CustomerImg;
 
+
 @Service
 @Transactional
 public class CustomerService {
@@ -38,7 +39,7 @@ public class CustomerService {
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
 		
-		Customer checkId = customerMapper.loginCustomer(paramCustomer);	// 중복확인 --> checkId === null -> 회원가입 가능
+		Customer checkId = customerMapper.loginCustomer(paramCustomer);	// 중복확인 --> checkId === null --> 회원가입 가능
 		System.out.println(checkId + "  <-- 중복값 여부");
 		
 		if(checkId==null || checkId.getCustomerActive().equals("N")) { // 중복값이 없거나 , 있더라도 비활성화 계정일 때
