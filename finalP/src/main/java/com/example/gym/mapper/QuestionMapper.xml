@@ -13,7 +13,8 @@
 		)
 	</insert>
 	
-	<select id="selectQuestionList"> <!-- 페이징 기능 추후 확인 -->
+	<select id="selectQuestionList" parameterType=""
+									resultType="com.example.gym.vo.Question"> <!-- 페이징 기능 추후 확인 -->
 		SELECT 
 			question_no AS questionNo,
 			customer_no AS customerNo,
@@ -45,13 +46,13 @@
 			WHERE question_no = #{questionNo}
 	</select>
 	
-	<!-- update 기능 가능여부 고려 중
-	 <update id="updateQuestion" parameterType="com.example.gym.vo.Question">
+	 <!-- 문의 답변글 없을 시에만 수정가능 -->
+	<update id="updateQuestion" parameterType="com.example.gym.vo.Question">
 		UPDATE question SET
 			question_title = #{questionTitle},
 			question_content = #{questionContent}
 		WHERE question_no = #{questionNo}	
-	</update> -->
+	</update> 
 	
 	<delete id="deleteQuestion" parameterType="com.example.gym.vo.Question">
 		DELETE FROM question 
