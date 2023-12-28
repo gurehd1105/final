@@ -56,9 +56,12 @@ public class CustomerController {
 		  						String customerEmailJuso, HttpSession session) {
 	String path = session.getServletContext().getRealPath("/customerImg");
 	customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailJuso);
-	customerService.insertCustomer(customerForm, path);
-	
-		return "customer/loginCustomer";	
+	int result = customerService.insertCustomer(customerForm, path);
+	if(result==1) {
+		return "customer/loginCustomer";
+	} else {
+		return "customer/insertCustomer";
+	}
   }
 
   // delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail) 

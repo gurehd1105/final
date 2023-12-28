@@ -38,10 +38,10 @@ public class CustomerService {
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
 		
-		Customer checkId = customerMapper.loginCustomer(paramCustomer); // 중복확인
-		if(checkId.getCustomerActive().equals("Y")) {	// 활성화 - 사용중인 계정정보가 있다면
-			result= 0;
-		} else {
+		Customer checkId = customerMapper.loginCustomer(paramCustomer);	// 중복확인 --> checkId === null -> 회원가입 가능
+		System.out.println(checkId + "  <-- 중복값 여부");
+		
+		if(checkId==null || checkId.getCustomerActive().equals("N")) { // 중복값이 없거나 , 있더라도 비활성화 계정일 때
 		
 		row = customerMapper.insertCustomer(paramCustomer);
 		System.out.println(row + " <-- row / insertCustomer");
@@ -106,6 +106,8 @@ public class CustomerService {
 			if(row>0 && row2>0 ) { // Image 정보 없어도 가입가능
 				result = 1;
 			}
+		} else {		// ID 중복값이 있을 때
+			result = 0;
 		}
 		return result;
 	}
