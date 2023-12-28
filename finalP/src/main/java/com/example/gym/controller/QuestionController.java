@@ -48,7 +48,24 @@ public class QuestionController {
 		return "question/questionOne";
 	}
 	
-	// delete -- jsp 내부 c:if 이용 / 본인 작성글 (or 관리자) 경우만 삭제버튼 조회 --> Act 미구분
+	// updateForm
+	@GetMapping("/updateQuestion")
+	public String updateQuestion(Question question, Model model) {
+		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
+		model.addAttribute("resultMap", resultMap);
+		return "question/updateQuestion";
+	}
+	/*
+	// updateAct
+	@PostMapping("/updateQuestion")
+	public String updateQuestion(Question question) {
+		questionService.updateQuestion(question);
+		return "redirect:question/questionOne";
+	}
+	*/
+	
+	// delete -- jsp 내부 c:if 이용 / 본인 작성글 (or 관리자) 경우만 삭제버튼 조회 --> Act 불필요
+	// 추후 customer PW 등 확인여부 필요 시 변경 예정
 	@GetMapping("/deleteQuestion")
 	public String deleteQuestion(Question question) {
 		questionService.deleteQuestion(question);

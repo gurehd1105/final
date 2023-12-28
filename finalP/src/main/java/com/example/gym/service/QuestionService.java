@@ -22,7 +22,10 @@ public class QuestionService {
 	}
 	// questionList 조회
 	/*
+	 public List<Question> selectQuestionList() {
 	 
+	 	return null;
+	 }
 	 
 	 
 	*/
@@ -33,6 +36,14 @@ public class QuestionService {
 	public Map<String, Object> selectQuestionOne(Question paramQuestion) {
 		Map<String, Object> resultMap = questionMapper.selectQuestionOne(paramQuestion);
 		return resultMap;
+	}
+	
+	// question 수정 (update)
+	public int updateQuestion(Question paramQuestion) {	// question_reply 없을 시에만 수정가능 -> 추후 코드변경 예정
+		int result = 0;
+		
+		result = questionMapper.updateQuestion(paramQuestion);
+		return result;
 	}
 	
 	// question 삭제 (delete)
