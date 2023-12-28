@@ -16,5 +16,6 @@ public class SportsEquipment {
 	private String itemName;
 	private String createdate;
 	private String updatedate;
+	private String equipmentActive;
 	private int itemPrice;
 }
