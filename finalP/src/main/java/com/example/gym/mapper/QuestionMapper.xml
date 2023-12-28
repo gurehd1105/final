@@ -35,7 +35,7 @@
 			
 			c.customer_no AS customerNo,
 			c.customer_id AS customerId,
-	   <!-- c.customer_active AS customerActive,  //필요성 없을 것으로 추정/보류// -->
+	   <!-- c.customer_active AS customerActive,  //필요성 없을 것으로 추정 - 보류// -->
 			c.createdate AS cCreatedate,
 			c.updatedate AS cUpdatedate
 			
@@ -44,6 +44,14 @@
 		ON q.customer_no = c.customer_no
 			WHERE question_no = #{questionNo}
 	</select>
+	
+	<!-- update 기능 가능여부 고려 중
+	 <update id="updateQuestion" parameterType="com.example.gym.vo.Question">
+		UPDATE question SET
+			question_title = #{questionTitle},
+			question_content = #{questionContent}
+		WHERE question_no = #{questionNo}	
+	</update> -->
 	
 	<delete id="deleteQuestion" parameterType="com.example.gym.vo.Question">
 		DELETE FROM question 
