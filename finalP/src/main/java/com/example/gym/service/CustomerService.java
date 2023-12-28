@@ -199,6 +199,16 @@ public class CustomerService {
 		 	if(row2!=1) {
 		 		throw new RuntimeException();
 		 	}
+		 	
+		 	/*	// path 저장 -- 경로 확인 후 설정 예정
+			  System.out.println(path +"/"+ fileName + fileName2);
+				File file = new File(path +"/"+ fileName + fileName2);
+				try {
+					mf.transferTo(file);
+				} catch (IllegalStateException | IOException e) {
+					throw new RuntimeException();
+				} */
+		 	
 		 	} else {	// 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
 		 		Customer deleteImg = new Customer();
 		 		deleteImg.setCustomerNo(customerNo);

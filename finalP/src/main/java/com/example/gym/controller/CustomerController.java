@@ -17,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @Controller
-public class CustomerController { // 프로세스 진행 시 세션 필요한 경우 제외 대부분 세션 유효성 검사 X , 추후 필터링 기능 시도 예정
-  @Autowired
+public class CustomerController { // 프로세스 진행 시 세션 필요한 경우 제외 대부분 세션 유효성 검사 X , 추후 필터링 기능 시도 예정 (login 페이지만 session 없어야만 접속가능, 나머지 모든 Form session 필요)
+	@Autowired
   private CustomerService customerService;
   
   	// login (로그인) Form
@@ -73,7 +73,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	}
   }
 
-  	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail) 
+  	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail)
   @GetMapping("/deleteCustomer")
   public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
 	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
@@ -110,12 +110,12 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   }  
   
   	// 내정보 수정 Form
-  // 접속 전 PW 확인
+  // 접속 전 PW 확인	
   @GetMapping("/updateCustomerOneForPw")
   public String customerOneForCheckPw() {
 	  return "customer/updateCustomerOneForPw";
   }
-  // PW확인 후 Form 접속
+  // PW확인 후 Form 접속	
   @PostMapping("/updateCustomerOneForm")
   public String updateCustomerOne(HttpSession session, Model model, String customerPw) {
 	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");

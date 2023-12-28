@@ -16,7 +16,7 @@
 		</tr>
 		<tr>
 			<td>pw</td>
-			<td><input type="text" name="customerPw"></td>
+			<td><input type="password" name="customerPw"></td>
 		</tr>		
 	</table>
 	<button type="submit">로그인</button>
