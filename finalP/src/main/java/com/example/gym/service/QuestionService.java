@@ -1,5 +1,7 @@
 package com.example.gym.service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +23,19 @@ public class QuestionService {
 		return result;
 	}
 	// questionList 조회
-	/*
-	 public List<Question> selectQuestionList() {
-	 
-	 	return null;
+	
+	 public Map<String, Object> selectQuestionList(Map<String, Integer> paramMap) {
+		 Map<String, Object> resultMap = new HashMap<>();
+		 
+		 List<Question> questionList = questionMapper.selectQuestionList(paramMap);
+		 int totalRow = questionMapper.selectCountOfQuestion();
+		 
+		 resultMap.put("questionList", questionList);
+		 resultMap.put("totalRow", totalRow);
+	 	return resultMap;
 	 }
 	 
 	 
-	*/
 	
 	
 	

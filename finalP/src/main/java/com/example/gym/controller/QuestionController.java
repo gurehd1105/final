@@ -1,5 +1,7 @@
 package com.example.gym.controller;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.QuestionService;
 import com.example.gym.vo.Customer;
@@ -30,15 +33,39 @@ public class QuestionController {
 	@PostMapping("/insertQuestion")
 	public String insertQuestion(Question question) {
 		questionService.insertQuestion(question);
-		return "question/questionList";
+		return "redirect:question/questionList";
 	}
 	
+
 	
-	/*
-	 	// selectQuestionList - Page.java 사용여부 고려 후 추후 진행
-	 	 
-	 
-	*/
+	// selectQuestionList
+	@GetMapping("/questionList")
+	public String questionList(@RequestParam(defaultValue = "1") int currentPage, Model model) {
+		int rowPerPage = 10;
+		int beginRow = (currentPage - 1) * rowPerPage;
+		Map<String, Integer> paramMap = new HashMap<>();
+		paramMap.put("rowPerPage", rowPerPage);
+		paramMap.put("beginRow", beginRow);
+		
+		
+		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
+		model.addAttribute("questionList", resultMap.get("questionList"));		// questionList 출력 완
+		
+		
+		// 페이징 
+		int totalRow = (int)resultMap.get("totalRow");
+		int lastPage = totalRow / rowPerPage;
+		if(totalRow % rowPerPage != 0) {
+			lastPage += 1;
+		}
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("totalRow", totalRow);
+		model.addAttribute("rowPerPage", rowPerPage);
+		
+		return "question/questionList";
+	}	 
+	
 	
 	// select - questionOne
 	@GetMapping("/questionOne")
