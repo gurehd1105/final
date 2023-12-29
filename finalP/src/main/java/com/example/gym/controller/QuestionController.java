@@ -1,7 +1,6 @@
 package com.example.gym.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +12,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.QuestionService;
 import com.example.gym.vo.Customer;
+import com.example.gym.vo.Employee;
 import com.example.gym.vo.Question;
+import com.example.gym.vo.QuestionReply;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class QuestionController {
 	@Autowired private QuestionService questionService;
+	
+// Question
 	
 	// insertForm
 	@GetMapping("/insertQuestion")
@@ -35,8 +38,6 @@ public class QuestionController {
 		questionService.insertQuestion(question);
 		return "redirect:question/questionList";
 	}
-	
-
 	
 	// selectQuestionList
 	@GetMapping("/questionList")
@@ -64,14 +65,18 @@ public class QuestionController {
 		model.addAttribute("rowPerPage", rowPerPage);
 		
 		return "question/questionList";
-	}	 
-	
+	}		
 	
 	// select - questionOne
 	@GetMapping("/questionOne")
-	public String selectQuestionOne(Question question, Model model) {
+	public String selectQuestionOne(Question question, Model model, HttpSession session) {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		model.addAttribute("resultMap", resultMap);
+		
+		if(session.getAttribute("loginEmployee") != null) {
+			Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+			model.addAttribute("loginEmployee", loginEmployee);
+		}
 		return "question/questionOne";
 	}
 	
@@ -100,9 +105,26 @@ public class QuestionController {
 	}
 	
 	
+// Question	Reply
+	
+	// insertReply
+	@PostMapping("/insertQuestionReply")
+	public String insertQuestionReply(QuestionReply questionReply) {
+		questionService.insertQuestionReply(questionReply);
+		return "redirect:question/questionOne";
+	}
+	
+	// updateReply
+	/*
+		Form 배치문제로 추후 작성
 	
 	
+	*/
 	
-	
-	
+	// deleteReply
+	@GetMapping("/deleteQuestionReply")
+	public String deleteQuestionReply(QuestionReply questionReply) {
+		questionService.deleteQuestionReply(questionReply);
+		return "redirect:question/questionOne";
+	}
 }

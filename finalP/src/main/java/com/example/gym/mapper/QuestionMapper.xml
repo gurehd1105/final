@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.gym.mapper.QuestionMapper">
+<mapper namespace="com.example.gym.mapper.QuestionMapper"> <!-- question / question_reply 병행 -->
+
+		<!-- question 기능 시작 -->
 	<insert id="insertQuestion" parameterType="com.example.gym.vo.Question">
 		INSERT INTO question (
 			customer_no,
@@ -40,10 +42,9 @@
 			q.question_content AS questionContent,
 			q.createdate AS qCreatedate, 
 			q.updatedate AS qUpdatedate,
-			
-			c.customer_no AS customerNo,
+						
 			c.customer_id AS customerId,
-	   <!-- c.customer_active AS customerActive,  //필요성 없을 것으로 추정 - 보류// -->
+	   <!-- c.customer_active AS customerActive,  //필요성 없음// -->
 			c.createdate AS cCreatedate,
 			c.updatedate AS cUpdatedate
 			
@@ -66,5 +67,58 @@
 		DELETE FROM question 
 			WHERE question_no = #{questionNo}
 	</delete>	
+		<!-- question 기능 종료 -->
+	
+	
+	
+	
+	
+		<!-- question_reply 기능 시작 -->
+	<insert id="insertQuestionReply" parameterType="com.example.gym.vo.QuestionReply">
+		INSERT INTO question_reply (
+			question_no,
+			employee_no,
+			question_reply_content
+		) VALUES (
+			#{questionNo},
+			#{employeeNo},
+			#{questionReplyContent}
+		)		
+	</insert>
+	
+	<select id="selectQuestionReply" parameterType="com.example.gym.vo.QuestionReply"
+										resultType="com.example.gym.vo.QuestionReply">
+		SELECT
+			qr.question_reply_no AS questionReplyNo,
+			qr.question_no AS questionNo,
+			qr.employee_no AS employeeNo,
+			qr.question_reply_content AS questionReplyContent,
+			
+			e.branch_no AS branchNo,
+			e.employee_id AS employeeId,
+	   <!-- e.employee_active AS employeeActive,  //필요성 없음// -->
+			e.createdate AS eCreatedate,
+			e.updatedate AS eUpdatedate
+		FROM question_reply qr
+		INNER JOIN employee e
+		ON qr.employee_no = e.employee_no
+			WHERE question_no = #{questionNo}
+			
+	</select>
+	
+	<update id="updateQuestionReply" parameterType="com.example.gym.vo.QuestionReply">
+		UPDATE question_reply SET
+			employee_no = #{employeeNo},
+			question_reply_content = #{questionReplyContent},
+			updatedate = NOW()
+		WHERE question_reply_no = #{questionReplyNo}
+	</update>
+	
+	<delete id="deleteQuestionReply" parameterType="com.example.gym.vo.QuestionReply">
+		DELETE FROM question_reply
+			WHERE question_reply_no = #{questionReplyNo}
+	</delete>
+		
+		<!-- question_reply 기능 종료 -->
 	
 </mapper>
