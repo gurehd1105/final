@@ -18,18 +18,9 @@
             <label for="selectBranch">지점선택</label>
             <select id="selectBranch" class="form-select form-select-lg">
                 <option>선택</option>
-                <option>서울</option>
+                <option value=2>서울</option>
                 <option>대전</option>
                 <option>부산</option>
-            </select>
-        </div>
-        <div>
-            <label for="selectTime">시간선택</label>
-            <select id="selectTime" class="form-select form-select-lg" disabled>
-                <option>선택</option>
-                <option>13:00</option>
-                <option>14:00</option>
-                <option>15:00</option>
             </select>
         </div>
     </table>
@@ -43,25 +34,15 @@
             var targetMonth = urlParams.get('targetMonth');
             var targetDay = urlParams.get('targetDay');
 
-            // 지점선택전에 시간선택 비활성화
-            $('#selectBranch').change(function () {
-                if ($(this).val() !== '선택') {
-                    $('#selectTime').prop('disabled', false);
-                } else {
-                    $('#selectTime').prop('disabled', true);
-                }
-            });
-
-         // 확인버튼 클릭처리
+            // 확인버튼 클릭처리
             $('#confirm').click(function () {
                 var selectedBranch = $('#selectBranch').val();
-                var selectedTime = $('#selectTime').val();
 
                 // 지점, 시간 둘중 하나라도 비활성화시 경고메시지 
-                if (selectedBranch == '선택' || selectedTime == '선택') {
-                    alert('지점과 시간을 선택하세요.');
+                if (selectedBranch == '선택') {
+                    alert('지점을 선택하세요.');
                 } else {                  
-                    console.log('두가지 선택 완료:', selectedBranch, selectedTime);                                      
+                    console.log('선택 완료:', selectedBranch);                                      
                     alert('예약이 완료되었습니다.');                    
                     window.close();
                 }
