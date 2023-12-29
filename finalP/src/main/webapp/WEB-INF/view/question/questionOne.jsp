@@ -12,20 +12,25 @@
 	<table>
 		<tr>
 			<td>Customer Id</td>
-			<td>${resultMap.customerId}</td>
+			<td>${ resultMap.customerId }</td>
+		</tr>
+		
+		<tr>
+			<td>Date</td>
+			<td>${ resultMap.qUpdatedate }</td>
 		</tr>
 		
 		<tr>
 			<td>Title</td>
 			<td>
-				<input type="hidden" name="questionNo" value="${resultMap.questionNo}">
-				${resultMap.questionTitle}
+				<input type="hidden" name="questionNo" value="${ resultMap.questionNo }">
+				${ resultMap.questionTitle }
 			</td>
 		</tr>
 		
 		<tr>
 			<td>Content</td>
-			<td><textarea readonly="readonly">${resultMap.questionContent}</textarea></td>
+			<td><textarea readonly="readonly">${ resultMap.questionContent }</textarea></td>
 		</tr>
 	</table>
 		<button type="submit">삭제</button>

@@ -9,27 +9,27 @@
 </head>
 <body>
 	<form action="${ctp}/deleteCustomer" method="post">
-		<table>
-			<tr>
-				<td>Id</td>
-				<td>
+		<div style="display: table;">
+			<div style="display: table-row;">
+				<div style="display: table-cell;"> Id </div>
+				<div style="display: table-cell;">
 					<input type="hidden" value="${loginCustomer.customerNo}" name="customerNo">
 					<input type="text" readonly value="${loginCustomer.customerId}" name="customerId">
-				</td>
-			</tr>
+				</div>
+			</div>
 			
-			<tr>
-				<td>Pw</td>
-				<td><input type="password" name="customerPw"></td>
-			</tr>
+			<div style="display: table-row;">
+				<div style="display: table-cell;"> Pw </div>
+				<div style="display: table-cell;"><input type="password" name="customerPw"></div>
+			</div>
 			
-			<tr>
-				<td>Pw Ck</td>
-				<td><input type="password"></td>
-			</tr>
+			<div style="display: table-row;">
+				<div style="display: table-cell;"> Pw Ck </div>
+				<div style="display: table-cell;"><input type="password"></div>
+			</div>
 			
 			
-		</table>
+		</div>
 			<button type="submit">탈퇴</button>
 	</form>
 </body>

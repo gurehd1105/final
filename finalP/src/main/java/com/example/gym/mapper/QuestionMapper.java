@@ -6,16 +6,32 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.Question;
+import com.example.gym.vo.QuestionReply;
 
 @Mapper
 public interface QuestionMapper {
+	// question 시작
 	int insertQuestion(Question question);
 	
-	List<Question> selectQuestionList();
+	List<Question> selectQuestionList(Map<String, Integer> map);
+	int selectCountOfQuestion();
 	
 	Map<String, Object> selectQuestionOne(Question question);
 	
 	int updateQuestion(Question question);
 	
 	int deleteQuestion(Question question);
+	// question 종료
+	
+	
+	
+	// question_reply 시작
+	int insertQuestionReply(QuestionReply questionReply);
+	
+	QuestionReply selectQuestionReply(QuestionReply questionReply);
+	
+	int updateQuestionReply(QuestionReply questionReply);
+	
+	int deleteQuestionReply(QuestionReply questionReply);
+	// question_reply 종료
 }
