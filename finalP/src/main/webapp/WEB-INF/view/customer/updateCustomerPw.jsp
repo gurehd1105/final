@@ -10,27 +10,27 @@
 <body>
 <h1>updateCustomerPw</h1>
 <form action="${ctp}/updateCustomerPw" method="post">
-	<table>
-		<tr>
-			<td>Id</td>
-			<td>${loginCustomer.customerId}</td>
-		</tr>
+	<div style="display: table;">
+		<div style="display: table-row;">
+			<div style="display: table-cell;"> Id </div>
+			<div style="display: table-cell;">${loginCustomer.customerId}</div>
+		</div>
+			
+		<div style="display: table-row;">
+			<div style="display: table-cell;"> Pw </div>
+			<div style="display: table-cell;"><input type="password" name="customerPw"></div>
+		</div>
 		
-		<tr>
-			<td>Pw</td>
-			<td><input type="password" name="customerPw"></td>
-		</tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;"> 변경Pw </div>
+			<div style="display: table-cell;"><input type="password" name="customerNewPw"></div>
+		</div>
 		
-		<tr>
-			<td>변경Pw</td>
-			<td><input type="password" name="customerNewPw"></td>
-		</tr>
-		
-		<tr>
-			<td>변경Pw확인</td>
-			<td><input type="password"></td>
-		</tr>
-	</table>
+		<div style="display: table-row;">
+			<div style="display: table-cell;"> 변경Pw확인 </div>
+			<div style="display: table-cell;"><input type="password"></div>
+		</div>
+	</div>
 		<button type="submit">변경</button>
 </form>
 </body>

@@ -10,7 +10,12 @@
 <body>
 <h1>PW 확인</h1>
 <form action="${ctp}/updateCustomerOneForm" method="post">
-	<div>Pw : <input type="password" name="customerPw"></div>
+	<div style="display: table;">
+		<div style="display: table-row;">
+			<div style="display: table-cell;"> Pw </div>
+			<div style="display: table-cell;"><input type="password" name="customerPw"></div>
+		</div>
+	</div>
 		<button type="submit">확인</button>
 </form>
 </body>

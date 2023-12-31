@@ -10,10 +10,12 @@
 <body>
 	<h1>Question List</h1>
 	
+	<a href="${ctp}/insertQuestion">문의하기</a>
+		
 	<table>
 		<thead>
 			<tr>
-				<th>QuestionNo</th>
+				<th>Question No</th>
 				<th>Title</th>
 				<th>Date</th>
 			</tr>
@@ -30,7 +32,7 @@
 	</table>
 	
 	<!-- 페이징 -->
-	<c:if test="${ totalRow > rowPerPage }"> <!-- 전체 게시글 수 > 한 페이지 조회 개수 일 때만 페이징버튼 조회 -->
+	<c:if test="${ totalRow > rowPerPage }"> <!-- ( 전체 게시글 수 > 한 페이지 조회 개수 ) 일 때만 페이징버튼 조회 -->
 		<c:if test="${ currentPage!= 1 }">
 	<a href="${ctp}/questionList?currentPage=1">맨앞</a>
 	<a href="${ctp}/questionList?currentPage=${currentPage-1}">이전</a>

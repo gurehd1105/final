@@ -28,7 +28,7 @@ public interface QuestionMapper {
 	// question_reply 시작
 	int insertQuestionReply(QuestionReply questionReply);
 	
-	QuestionReply selectQuestionReply(QuestionReply questionReply);
+	Map<String, Object> selectQuestionReply(Question question);
 	
 	int updateQuestionReply(QuestionReply questionReply);
 	
