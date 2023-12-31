@@ -38,7 +38,12 @@ public class QuestionService {
 	
 	// questionOne 조회
 	public Map<String, Object> selectQuestionOne(Question paramQuestion) {
-		Map<String, Object> resultMap = questionMapper.selectQuestionOne(paramQuestion);
+		Map<String, Object> questionMap = questionMapper.selectQuestionOne(paramQuestion);
+		Map<String, Object> questionReplyMap = questionMapper.selectQuestionReply(paramQuestion);
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("questionMap", questionMap);
+		resultMap.put("questionReplyMap", questionReplyMap);
 		return resultMap;
 	}
 	
@@ -80,7 +85,7 @@ public class QuestionService {
 	// reply 삭제 (delete)
 	public int deleteQuestionReply(QuestionReply paramReply) {
 		int result = 0;
-		result = questionMapper.updateQuestionReply(paramReply);
+		result = questionMapper.deleteQuestionReply(paramReply);
 		return result;
 	}
 }

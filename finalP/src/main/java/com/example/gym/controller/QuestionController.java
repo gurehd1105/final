@@ -36,7 +36,7 @@ public class QuestionController {
 	@PostMapping("/insertQuestion")
 	public String insertQuestion(Question question) {
 		questionService.insertQuestion(question);
-		return "redirect:question/questionList";
+		return "redirect:/questionList";
 	}
 	
 	// selectQuestionList
@@ -71,9 +71,10 @@ public class QuestionController {
 	@GetMapping("/questionOne")
 	public String selectQuestionOne(Question question, Model model, HttpSession session) {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
-		model.addAttribute("resultMap", resultMap);
+		model.addAttribute("questionMap", resultMap.get("questionMap"));
+		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
 		
-		if(session.getAttribute("loginEmployee") != null) {
+		if(session.getAttribute("loginEmployee") != null) { // 관리자라면 관리자 세션값 전달
 			Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
 			model.addAttribute("loginEmployee", loginEmployee);
 		}
@@ -84,24 +85,28 @@ public class QuestionController {
 	@GetMapping("/updateQuestion")
 	public String updateQuestion(Question question, Model model) {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
-		model.addAttribute("resultMap", resultMap);
+		
+		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
+			return "redirect:/questionOne?questionNo" + question.getQuestionNo();
+		}
+		model.addAttribute("questionMap", resultMap.get("questionMap"));
 		return "question/updateQuestion";
 	}
-	/*
+	
 	// updateAct
 	@PostMapping("/updateQuestion")
 	public String updateQuestion(Question question) {
+		System.out.println(question);
 		questionService.updateQuestion(question);
-		return "redirect:question/questionOne";
+		return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
 	}
-	*/
 	
-	// delete -- jsp 내부 c:if 이용 / 본인 작성글 (or 관리자) 경우만 삭제버튼 조회 --> Act 불필요
-	// 추후 customer PW 등 확인여부 필요 시 변경 예정
+	
+	// Post 불필요 --> 추후 customer PW 등 확인여부 필요 시 변경 예정
 	@GetMapping("/deleteQuestion")
 	public String deleteQuestion(Question question) {
 		questionService.deleteQuestion(question);
-		return "question/questionList";
+		return "redirect:/questionList";
 	}
 	
 	
@@ -110,21 +115,21 @@ public class QuestionController {
 	// insertReply
 	@PostMapping("/insertQuestionReply")
 	public String insertQuestionReply(QuestionReply questionReply) {
+		System.out.println(questionReply + " <-- questionReply");
 		questionService.insertQuestionReply(questionReply);
-		return "redirect:question/questionOne";
+		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 	
 	// updateReply
 	/*
-		Form 배치문제로 추후 작성
-	
-	
+		보류	
 	*/
 	
 	// deleteReply
 	@GetMapping("/deleteQuestionReply")
 	public String deleteQuestionReply(QuestionReply questionReply) {
+		System.out.println(questionReply + " <-- questionReply");
 		questionService.deleteQuestionReply(questionReply);
-		return "redirect:question/questionOne";
+		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 }

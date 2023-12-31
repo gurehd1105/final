@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.gym.mapper.QuestionMapper"> <!-- question / question_reply 병행 -->
+<mapper namespace="com.example.gym.mapper.QuestionMapper"> <!-- question / question_reply 모두진행 -->
 
-		<!-- question 기능 시작 -->
+		<!-- question 시작 -->
 	<insert id="insertQuestion" parameterType="com.example.gym.vo.Question">
 		INSERT INTO question (
 			customer_no,
@@ -43,10 +43,7 @@
 			q.createdate AS qCreatedate, 
 			q.updatedate AS qUpdatedate,
 						
-			c.customer_id AS customerId,
-	   <!-- c.customer_active AS customerActive,  //필요성 없음// -->
-			c.createdate AS cCreatedate,
-			c.updatedate AS cUpdatedate
+			c.customer_id AS customerId
 			
 		FROM question q
 		INNER JOIN customer c
@@ -67,13 +64,13 @@
 		DELETE FROM question 
 			WHERE question_no = #{questionNo}
 	</delete>	
-		<!-- question 기능 종료 -->
+		<!-- question  종료 -->
 	
 	
 	
 	
 	
-		<!-- question_reply 기능 시작 -->
+		<!-- question_reply 시작 -->
 	<insert id="insertQuestionReply" parameterType="com.example.gym.vo.QuestionReply">
 		INSERT INTO question_reply (
 			question_no,
@@ -86,19 +83,18 @@
 		)		
 	</insert>
 	
-	<select id="selectQuestionReply" parameterType="com.example.gym.vo.QuestionReply"
-										resultType="com.example.gym.vo.QuestionReply">
+	<select id="selectQuestionReply" parameterType="com.example.gym.vo.Question"
+										resultType="java.util.Map">
 		SELECT
 			qr.question_reply_no AS questionReplyNo,
 			qr.question_no AS questionNo,
 			qr.employee_no AS employeeNo,
 			qr.question_reply_content AS questionReplyContent,
+			qr.createdate AS qrCreatedate,
+			qr.updatedate AS qrUpdatedate,
 			
-			e.branch_no AS branchNo,
-			e.employee_id AS employeeId,
-	   <!-- e.employee_active AS employeeActive,  //필요성 없음// -->
-			e.createdate AS eCreatedate,
-			e.updatedate AS eUpdatedate
+			e.employee_id AS employeeId
+			
 		FROM question_reply qr
 		INNER JOIN employee e
 		ON qr.employee_no = e.employee_no
@@ -119,6 +115,6 @@
 			WHERE question_reply_no = #{questionReplyNo}
 	</delete>
 		
-		<!-- question_reply 기능 종료 -->
+		<!-- question_reply 종료 -->
 	
 </mapper>
