@@ -27,6 +27,9 @@
             ${calendarMap.targetYear}년
             ${calendarMap.targetMonth + 1}월
         </div>
+        
+        <el-calendar v-model="date">
+        </el-calendar>
 
         <table class="table table-bordered mt-3">
             <thead>
