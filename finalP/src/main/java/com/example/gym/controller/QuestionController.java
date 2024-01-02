@@ -121,9 +121,14 @@ public class QuestionController {
 	}
 	
 	// updateReply
-	/*
-		보류	
-	*/
+	@GetMapping("/updateQuestionReply")
+	public String updateQuestionReply(QuestionReply questionReply) {
+		
+		questionService.updateQuestionReply(questionReply);
+		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
+	}
+		
+	
 	
 	// deleteReply
 	@GetMapping("/deleteQuestionReply")

@@ -1,28 +1,23 @@
 package com.example.gym.rest;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.gym.mapper.QuestionMapper;
-import com.example.gym.vo.Question;
+import com.example.gym.service.QuestionService;
+import com.example.gym.vo.QuestionReply;
 
 @RestController
 public class QuestionRestController {
-	@Autowired private QuestionMapper questionMapper;
+	private QuestionService questionService;
 	
-	@GetMapping("/replyCheck")
-	public int checkReply(String intQuestionNo) {
+	@PostMapping("/updateQuestionReply")
+	public int updateQuestionReply(String questionReplyContent, String questionReplyNo, String employeeNo) {
 		int result = 0;
-		int questionNo = Integer.parseInt(intQuestionNo);
-		Question question = new Question();
-		question.setQuestionNo(questionNo);
-		Map<String, Object> replyMap = questionMapper.selectQuestionReply(question);
-		if(replyMap != null) {
-			result = 1;
-		}
+		System.out.println(questionReplyContent);
+		System.out.println(questionReplyNo);
+		System.out.println(employeeNo);
+		//result = questionService.updateQuestionReply(questionReply);
 		return result;
+		
 	}
 }

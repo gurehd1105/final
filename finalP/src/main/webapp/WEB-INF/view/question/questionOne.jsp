@@ -54,7 +54,10 @@
 		
 		<tr>
 			<td>Reply</td>
-			<td><textarea readonly="readonly">${ replyMap.questionReplyContent }</textarea></td>	
+			<td>
+				<textarea readonly="readonly" id="questionReplyContent">${ replyMap.questionReplyContent }</textarea>
+				<input type="hidden" value="${ replyMap.questionReplyNo }" id="questionReplyNo">
+			</td>	
 		</tr>
 		
 		<tr>
@@ -63,7 +66,10 @@
 		</tr>
 
 	</table>
-	<!-- <a href="">수정</a> -->
+	
+	<input type="button" id="updateReplyBtn" value="수정">
+	<input type="hidden" id="updateReplyFinish" value="완료">
+	
 	<a href="${ctp}/deleteQuestionReply?questionReplyNo=${ replyMap.questionReplyNo }&questionNo=${ questionMap.questionNo }">삭제</a>
 
 	<br>
@@ -76,7 +82,7 @@
 	<table>
 		<tr>
 			<td>Employee Id(무조건 비공개)</td>
-			<td>관리자<%-- <input type="hidden" value="${ loginEmployee.employeeNo }" name="employeeNo"> --%></td>
+			<td>관리자<input type="hidden" value="${ loginEmployee.employeeNo }" id="employeeNo" name="employeeNo"></td>
 		</tr>
 		
 		<tr>
@@ -89,4 +95,27 @@
 </form>
 
 </body>
+
+<script>
+
+	$('#updateReplyBtn').click(function(){
+		$('#questionReplyContent').attr("readonly", false);
+		$('#updateReplyBtn').remove();
+		$('#updateReplyFinish').attr("type", "button");
+	});
+	
+	$('#updateReplyFinish').click(function(){
+		$.ajax({
+			url: "",
+			type: "post",
+			data: {
+				employeeNo : $('#employeeNo').val(),
+				questionReplyContent : $('#questionReplyContent').val(),
+				questionReplyNo : $('#questionReplyNo').val(),
+			}
+		});
+	});
+	
+
+</script>
 </html>
