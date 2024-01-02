@@ -18,14 +18,9 @@
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Import style -->
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/element-plus/dist/index.css"
-    />
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Import Vue 3 -->
     <script src="https://unpkg.com/vue@3"></script>
     <!-- Import component library -->
     <script src="https://unpkg.com/element-plus"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
