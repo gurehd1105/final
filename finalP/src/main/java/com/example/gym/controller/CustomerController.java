@@ -15,7 +15,7 @@ import com.example.gym.vo.CustomerForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Controller
 public class CustomerController { // 프로세스 진행 시 세션 필요한 경우 제외 대부분 세션 유효성 검사 X , 추후 필터링 기능 시도 예정 (login 페이지만 session 없어야만 접속가능, 나머지 모든 Form session 필요)
 	@Autowired
@@ -31,17 +31,17 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   @PostMapping("/loginCustomer")
   public String loginCustomer(Model model, HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
-    if(loginCustomer != null) {	// 등록된 ID가 있을 시 
-	    if(loginCustomer.getCustomerActive().equals("Y")) { // 활성화 계정 --> 로그인 성공
-	    	 session.setAttribute("loginCustomer", loginCustomer);
-	    	 return "home";
-	    } else { // 정보 있으나 비활성화 계정(탈퇴회원) --> 로그인 페이지로 return
+    if(loginCustomer != null) {	// 등록된 ID가 있을 시
+    	
+    	 session.setAttribute("loginCustomer", loginCustomer);
+    	 return "home";
+    	 
+	    } else { // 정보 없을 시
+	    	log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
 	    	return "redirect:/loginCustomer";
 	    }
-    } else { // 정보없음(ID or PW 불일치) --> 로그인 페이지로 return
-    	return "redirect:/loginCustomer";
-    }
-  }
+    } 
+  
 
   	// insert (회원가입) Form
   @GetMapping("/insertCustomer")
@@ -61,8 +61,6 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	} else {								// 선택한 이메일이 있다면 해당 이메일주소로 등록
 		customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailAutoJuso);
 	}	
-		// 입력 이메일값 디버깅
-	System.out.println(customerForm.getCustomerEmail() + " <-- Email");
 	
 	
 	int result = customerService.insertCustomer(customerForm, path);
@@ -84,7 +82,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   
   	// delete (탈퇴) Act
   @PostMapping("/deleteCustomer")
-  public String deleteCustomer(String customerId, String customerPw, int customerNo) {
+  public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {
 	 Customer paramCustomer = new Customer();
 	 paramCustomer.setCustomerId(customerId);
 	 paramCustomer.setCustomerPw(customerPw);
@@ -92,6 +90,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	 int result = customerService.deleteCustomer(paramCustomer);
 	 
 	 if(result==1) {	// 탈퇴 완 --> login 창으로 이동
+		 session.invalidate();
 		 return "customer/loginCustomer";
 	 } else {	// 예외발생
 		 return "customer/deleteCustomer";
@@ -122,8 +121,11 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	  loginCustomer.setCustomerPw(customerPw);
 	  Customer checkCustomer = customerService.loginCustomer(loginCustomer);
 	  if(checkCustomer == null) { // PW 확인 불일치 --> PW 확인 페이지로 return
+		  log.info("PW 불일치, 접속실패");
 		  return "customer/updateCustomerOneForPw";
 	  } else {
+		  log.info("PW 일치, 접속성공");
+		  
 	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 	  
 	  	// Email 값 표기
@@ -161,9 +163,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 		} else {							// 선택한 이메일이 있다면 해당 이메일주소로 등록
 			customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailAutoJuso);
 		}	
-			// 입력 이메일값 디버깅
-		System.out.println(customerForm.getCustomerEmail() + " <-- Email");
-		
+
 	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
 	  customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo());	// 반환값 없음 (void)
 	  return "redirect:/customerOne";

@@ -12,8 +12,8 @@
 <form action="${ctp}/updateCustomerOneForm" method="post">
 	<div style="display: table;">
 		<div style="display: table-row;">
-			<div style="display: table-cell;"> Pw </div>
-			<div style="display: table-cell;"><input type="password" name="customerPw"></div>
+			<div style="display: table-cell;"><label for="customerPw"> Pw </label></div>
+			<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
 		</div>
 	</div>
 		<button type="submit">확인</button>

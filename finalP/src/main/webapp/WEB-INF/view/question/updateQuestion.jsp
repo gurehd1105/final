@@ -17,13 +17,13 @@
 			</tr>
 			
 			<tr>
-				<td>Title</td>
-				<td><input type="text" value="${ questionMap.questionTitle }" name="questionTitle"></td>
+				<td><label for="questionTitle">Title</label></td>
+				<td><input type="text" value="${ questionMap.questionTitle }" id="questionTitle" name="questionTitle"></td>
 			</tr>
 			
 			<tr>
-				<td>Content</td>
-				<td><textarea name="questionContent">${ questionMap.questionContent }</textarea></td>
+				<td><label for="questionContent">Content</label></td>
+				<td><textarea id="questionContent" name="questionContent">${ questionMap.questionContent }</textarea></td>
 			</tr>
 			
 		</table>

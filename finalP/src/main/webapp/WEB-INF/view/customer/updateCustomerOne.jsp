@@ -16,48 +16,48 @@
 		
 			<div style="display: table;">
 		<div style="display: table-row;">
-			<div style="display: table-cell;">Id</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerId}" name="customerId" readonly></div>			
+			<div style="display: table-cell;"><label>Id</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerId}" id="customerId" name="customerId" readonly></div>			
 		</div>
 		
 		
 		<div style="display: table-row;">
-			<div style="display: table-cell;">Name</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerName}" name="customerName"></div>
+			<div style="display: table-cell;"><label for="customerName">Name</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerName}" id="customerName" name="customerName"></div>
 		</div>
 		
 		<div style="display: table-row;">
-			<div style="display: table-cell;">Gender</div>
-			<div style="display: table-cell;"><select name="customerGender">
-				<option selected="selected" value="${resultMap.customerGender}">${resultMap.customerGender}</option>
-				<option value="${resultMap.customerOtherGender}">${resultMap.customerOtherGender}</option>
-			</select></div>
-		</div>
-		
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Phone</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerPhone}" name="customerPhone"></div>
-		</div>
-		
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Height</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerHeight}" name="customerHeight"></div>
-		</div>
-		
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Weight</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerWeight}" name="customerWeight"></div>
-		</div>
-		
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Address</div>
-			<div style="display: table-cell;"><input type="text" value="${resultMap.customerAddress}" name="customerAddress"></div>
-		</div>
-		
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Email</div>
+			<div style="display: table-cell;"><label for="customerGender">Gender</label></div>
 			<div style="display: table-cell;">
-					<input type="text" value="${resultMap.emailId}" name="customerEmailId">@
+				<input type="radio" name="customerGender" value="${resultMap.customerGender}" checked="checked">${resultMap.customerGender}
+				<input type="radio" name="customerGender" value="${resultMap.customerOtherGender}" >${resultMap.customerOtherGender}
+			</div>
+		</div>
+		
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="customerPhone">Phone</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerPhone}" id="customerPhone" name="customerPhone"></div>
+		</div>
+		
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="customerHeight">Height</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerHeight}" id="customerHeight" name="customerHeight"></div>
+		</div>
+		
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="customerWeight">Weight</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerWeight}" id="customerWeight" name="customerWeight"></div>
+		</div>
+		
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="customerAddress">Address</label></div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerAddress}" id="customerAddress" name="customerAddress"></div>
+		</div>
+		
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="customerEmail">Email</label></div>
+			<div style="display: table-cell;">
+					<input type="text" value="${resultMap.emailId}" name="customerEmailId" id="customerEmail">@
 					<input type="text" value="${resultMap.emailJuso}" name="customerEmailJuso" id="selfJuso">
 				<select id="autoJuso" name="customerEmailAutoJuso">
 					<option selected="selected" value="">직접 입력</option>
@@ -75,11 +75,12 @@
 </form>
 </body>
 <script>
-
+	
 	 $('#autoJuso').click(function() {
 		if($('#autoJuso').val() == ""){
-			$("#selfJuso").removeAttr("disabled"); 
+			$("#selfJuso").attr("disabled",false); 
 		} else {
+			$("#selfJuso").val("");
 			$("#selfJuso").attr("disabled",true); 
 		}
 	 });

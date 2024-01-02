@@ -19,13 +19,13 @@
 			</div>
 			
 			<div style="display: table-row;">
-				<div style="display: table-cell;"> Pw </div>
-				<div style="display: table-cell;"><input type="password" name="customerPw"></div>
+				<div style="display: table-cell;"><label for="customerPw"> Pw </label></div>
+				<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
 			</div>
 			
 			<div style="display: table-row;">
-				<div style="display: table-cell;"> Pw Ck </div>
-				<div style="display: table-cell;"><input type="password"></div>
+				<div style="display: table-cell;"><label for="pwck"> Pw Ck </label></div>
+				<div style="display: table-cell;"><input type="password" id="pwck"></div>
 			</div>
 			
 			

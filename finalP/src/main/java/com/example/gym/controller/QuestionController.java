@@ -96,7 +96,7 @@ public class QuestionController {
 	// updateAct
 	@PostMapping("/updateQuestion")
 	public String updateQuestion(Question question) {
-		System.out.println(question);
+		
 		questionService.updateQuestion(question);
 		return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
 	}
@@ -115,20 +115,25 @@ public class QuestionController {
 	// insertReply
 	@PostMapping("/insertQuestionReply")
 	public String insertQuestionReply(QuestionReply questionReply) {
-		System.out.println(questionReply + " <-- questionReply");
+
 		questionService.insertQuestionReply(questionReply);
 		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 	
 	// updateReply
-	/*
-		보류	
-	*/
+	@GetMapping("/updateQuestionReply")
+	public String updateQuestionReply(QuestionReply questionReply) {
+		
+		questionService.updateQuestionReply(questionReply);
+		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
+	}
+		
+	
 	
 	// deleteReply
 	@GetMapping("/deleteQuestionReply")
 	public String deleteQuestionReply(QuestionReply questionReply) {
-		System.out.println(questionReply + " <-- questionReply");
+
 		questionService.deleteQuestionReply(questionReply);
 		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}

@@ -15,59 +15,66 @@
 	<div style="display: table;">
 			
 	<div style="display: table-row;">
-		<div style="display: table-cell;"> Id </div>	 
-		<div style="display: table-cell;"><input type="text" name="customerId"></div>		
-	</div>		
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Pw </div>
-		<div style="display: table-cell;"><input type="password" name="customerPw"></div>
-	</div>	
-		
-	
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Pw Ck </div>
-		<div style="display: table-cell;"><input type="password"></div>	
-	</div>	
-	
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Name </div>
-		<div style="display: table-cell;"><input type="text" name="customerName"></div>	
-	</div>
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Gender </div>
-		<div style="display: table-cell;"><select name="customerGender">
-			<option selected="selected">선택</option>
-			<option value="남">남</option>
-			<option value="여">여</option>
-		</select></div>	
-	</div>	
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Phone </div>
-		<div style="display: table-cell;"><input type="text" name="customerPhone"></div>	
-	</div>
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Height </div>
-		<div style="display: table-cell;"><input type="text" name="customerHeight"></div>	
-	</div>	
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Weight </div>
-		<div style="display: table-cell;"><input type="text" name="customerWeight"></div>	
-	</div>	
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Address </div>
-		<div style="display: table-cell;"><input type="text" name="customerAddress"></div>	
-	</div>	
-		
-	<div style="display: table-row;">
-		<div style="display: table-cell;"> Email </div>
+		<div style="display: table-cell;"><label for="customerId"> Id 확인 </label></div>	 
 		<div style="display: table-cell;">
-			<input type="text" name="customerEmailId">@
+			<input type="text" id="idCk">&nbsp;<button type="button" id="idCkBtn">중복확인</button>
+			<span id="idCkMsg"></span>
+		</div>		
+	</div>		
+	
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerPw"> Id </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerId" name="customerId" readonly="readonly"></div>
+	</div>	
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerPw"> Pw </label></div>
+		<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
+	</div>	
+		
+	
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="pwCk"> Pw Ck </label></div>
+		<div style="display: table-cell;"><input type="password" id="pwCk" ></div>	
+	</div>	
+	
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerName"> Name </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerName" name="customerName"></div>	
+	</div>
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerGender"> Gender </label></div>
+		<div style="display: table-cell;">
+			<input type="radio" value="남" name="customerGender">남
+			<input type="radio"	value="여" name="customerGender">여
+		</div>	
+	</div>	
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerPhone"> Phone </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerPhone" name="customerPhone"></div>	
+	</div>
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerHeight"> Height </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerHeight" name="customerHeight"></div>	
+	</div>	
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerWeight"> Weight </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerWeight" name="customerWeight"></div>	
+	</div>	
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerAddress"> Address </label></div>
+		<div style="display: table-cell;"><input type="text" id="customerAddress" name="customerAddress"></div>	
+	</div>	
+		
+	<div style="display: table-row;">
+		<div style="display: table-cell;"><label for="customerEmail"> Email </label></div>
+		<div style="display: table-cell;">
+			<input type="text" name="customerEmailId" id="customerEmail" >@
 			<input type="text" name="customerEmailJuso" id="selfJuso">
 				<select id="autoJuso" name="customerEmailAutoJuso">
 					<option selected="selected" value="">직접 입력</option>
@@ -82,8 +89,8 @@
 	</div>		
 		
 	<div style="display: table-row;">
-		<div style="display: table-cell;"> Img(선택) </div>
-		<div style="display: table-cell;"><input type="file" name="customerImg"></div>	
+		<div style="display: table-cell;"><label for="customerImg"> Img(선택) </label></div>
+		<div style="display: table-cell;"><input type="file" id="customerImg" name="customerImg"></div>	
 	</div>	
 
 	<button type="reset">초기화</button>  <button type="submit">회원가입</button>
@@ -94,13 +101,41 @@
 </body>
 <script>
 
-	 $('#autoJuso').click(function() {
-		if($('#autoJuso').val() == ""){
-			$("#selfJuso").removeAttr("disabled"); 
+	$('#idCkBtn').click(function() {
+		if($('#idCk').val().length < 4){
+			console.log($('#idCk').val());
+			$('#idCkMsg').html('4글자 이상 입력해주세요');
 		} else {
-			$("#selfJuso").attr("disabled",true); 
+		$.ajax({
+			url: '${ctp}/idCheck',
+			type: 'get',
+			data: {
+				customerId: $('#idCk').val()
+			},
+			success: function(result) {
+				if(result == 1){
+					$('#idCkMsg').html('중복 ID입니다');
+					$('#customerId').val('');
+				} else {
+					$('#idCkMsg').html('사용 가능한 ID입니다.');
+					$('#customerId').val($('#idCk').val());
+				}
+			},
+				error: function(){
+					alert("요청실패");
+				}
+			})
 		}
-	 });
+	});
+
+	 $('#autoJuso').click(function() {
+			if($('#autoJuso').val() == ""){
+				$("#selfJuso").attr("disabled",false); 
+			} else {
+				$("#selfJuso").val("");
+				$("#selfJuso").attr("disabled",true); 
+			}
+		 });
  
 </script>
 </html>

@@ -18,13 +18,13 @@
 		</tr>
 		
 		<tr>
-			<td>Title</td>
-			<td><input type="text" name="questionTitle"></td>
+			<td><label for="questionTitle">Title</label></td>
+			<td><input type="text" id="questionTitle" name="questionTitle" placeholder="제목"></td>
 		</tr>
 		
 		<tr>
-			<td>Content</td>
-			<td><textarea name="questionContent"></textarea></td>
+			<td><label for="questionContent">Content</label></td>
+			<td><textarea id="questionContent" name="questionContent" placeholder="문의내용"></textarea></td>
 		</tr>
 	</table>
 		<button type="submit">등록</button>

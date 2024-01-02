@@ -15,7 +15,9 @@ import com.example.gym.vo.CustomerDetail;
 import com.example.gym.vo.CustomerForm;
 import com.example.gym.vo.CustomerImg;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 public class CustomerService {
@@ -39,13 +41,12 @@ public class CustomerService {
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
 		
-		Customer checkId = customerMapper.loginCustomer(paramCustomer);	// 중복확인 --> checkId === null --> 회원가입 가능
-		System.out.println(checkId + "  <-- 중복값 여부");
 		
-		if(checkId==null || checkId.getCustomerActive().equals("N")) { // 중복값이 없거나 , 있더라도 비활성화 계정일 때
+		
+		
 		
 		row = customerMapper.insertCustomer(paramCustomer);
-		System.out.println(row + " <-- row / insertCustomer");
+
 		if(row != 1) {
 			throw new RuntimeException();
 		}
@@ -61,14 +62,14 @@ public class CustomerService {
 		paramDetail.setCustomerAddress(cf.getCustomerAddress());
 		paramDetail.setCustomerEmail(cf.getCustomerEmail());
 		row2 = customerMapper.insertCustomerDetail(paramDetail);
-		System.out.println(row2 + " <-- row2 / insertCustomerDetail");
+
 		if(row2 != 1) {
 			throw new RuntimeException();
 		}
 		
 		
 		MultipartFile mf = cf.getCustomerImg();
-		System.out.println(mf.getSize() + " <-- mf.getSize()");
+		System.out.println(mf.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
 		if(mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
 			CustomerImg cImg = new CustomerImg();
 				// fileName 이외 모든 값 세팅
@@ -89,7 +90,7 @@ public class CustomerService {
 			
 			// 변수값 세팅 완 + 삽입
 			row3 = customerMapper.insertCustomerImg(cImg);
-			System.out.println(row3 + " <-- row3 / insertCustomerImg");
+
 			if(row3 != 1) {
 				throw new RuntimeException();
 			}
@@ -107,9 +108,7 @@ public class CustomerService {
 			if(row>0 && row2>0 ) { // Image 정보 없어도 가입가능
 				result = 1;
 			}
-		} else {		// ID 중복값이 있을 때
-			result = 0;
-		}
+	
 		return result;
 	}
 														// 회원가입 프로세스 종료
@@ -123,20 +122,23 @@ public class CustomerService {
 		int row2 = 0;
 		int row3 = 0;
 		Customer check = customerMapper.loginCustomer(paramCustomer);
-		System.out.println(paramCustomer + " <-- paramCustomer");
+		
 		System.out.println(check + " <-- check");
 		if(check!=null) {
+			log.info("PW 정상확인");
+			
 		row = customerMapper.updateCustomerActive(paramCustomer);
 		System.out.println(row + " <-- row");
 		
-		row2 = customerMapper.deleteCustomerImg(paramCustomer);
+		row2 = customerMapper.deleteCustomerDetail(paramCustomer);
 		System.out.println(row2 + " <-- row2");
 		
-		row3 = customerMapper.deleteCustomerDetail(paramCustomer);
+		row3 = customerMapper.deleteCustomerImg(paramCustomer);
 		System.out.println(row3 + " <-- row3");
 		}
 		
-		if(row>0 && row2>0 && row3>0) {
+		if(row>0 && row2>0) {
+			log.info("정상 탈퇴");
 			result = 1;
 		}
 		return result;
@@ -162,7 +164,7 @@ public class CustomerService {
 		 	customerDetail.setCustomerAddress(paramCustomerForm.getCustomerAddress());
 		 	customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
 		 	int row = customerMapper.updateCustomerOne(customerDetail);
-		 	System.out.println(row + " <-- row / updateCustomerOne");
+
 		 	if(row!=1) {
 		 		throw new RuntimeException();
 		 	}
@@ -187,7 +189,7 @@ public class CustomerService {
 		 	Customer checkImgCustomer = new Customer();
 		 	checkImgCustomer.setCustomerNo(customerNo);		 	
 		 	CustomerImg check = customerMapper.checkCustomerImg(checkImgCustomer);	
-		 	System.out.println(check + " <-- check");
+
 		 // 확인 후 조건에 따른 분기
 		 	int row2 = 0;
 		 	if(check == null) {	// 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
