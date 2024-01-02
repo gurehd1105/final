@@ -7,7 +7,8 @@
 <c:set var="body">
 	<div>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트&추가(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
+				<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderList" style="border: 1px solid #ccc;">발주내역(본점)</a>
 	</div>
 	<div>
 		<h2>장비 수정 하기</h2>
@@ -25,8 +26,8 @@
 		</div>
 		<div style="border: 1px solid #ccc;">
  			<label for="equipmentActive">상태 :</label>
-            주문 가능: <input type="checkbox" id="orderAvailable" name="equipmentActive" value="Y" ${equipmentActive == 'Y' ? 'checked' : ''}>
-			품절: <input type="checkbox" id="soldOut" name="equipmentActive" value="N" ${equipmentActive == 'N' ? 'checked' : ''}>
+            주문 가능: <input type="radio" id="equipmentActive1" name="equipmentActive" value="Y" ${equipmentActive == 'Y' ? 'checked' : ''}>
+			품절: <input type="radio" id="equipmentActive2" name="equipmentActive" value="N" ${equipmentActive == 'N' ? 'checked' : ''}>
 		</div>
 		<div style="border: 1px solid #ccc;">
 		    <label for="employeeId">관리자 :</label>

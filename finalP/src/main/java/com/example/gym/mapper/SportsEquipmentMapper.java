@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
+import com.example.gym.vo.SportsEquipmentOrder;
 
 @Mapper
 public interface SportsEquipmentMapper {
@@ -42,4 +43,12 @@ public interface SportsEquipmentMapper {
 	//sportsEquipment 삭제
 	//int deleteSportsEquipment(int sportsEquipmentNo);
 	
+	//sportsEquipmentOrder 추가
+	int insertSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
+	
+	//sportsEquipmentOrder 리스트 + 검색 + 페이징
+	List<Map<String,Object>> selectSportsEquipmentOrderByPage(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipmentOrder 수
+	int selectSportsEquipmentOrderCnt(Map<String,Object> paramMap);
 }

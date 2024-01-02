@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SportsEquipmentController {
 	@Autowired SportsEquipmentService sportsEquipmentService;
 	
+//----------------------------------------- SportsEquipment -------------------------------------
+	
 	//SportsEquipment 추가 폼 & 장비,소모품 리스트 (본사직원만 접근 가능)
 	@GetMapping("/sportsEquipment/insertSportsEquipment")
 	public String insertSportsEquipment(HttpSession session,
@@ -112,7 +114,7 @@ public class SportsEquipmentController {
 //		}
 		
 		//service 호출
-		Map<String,Object> map = sportsEquipmentService.updateSportsEquipmentService(session, sportsEquipmentNo);
+		Map<String,Object> map = sportsEquipmentService.sportsEquipmentOneService(session, sportsEquipmentNo);
 		
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
@@ -197,4 +199,85 @@ public class SportsEquipmentController {
 		return "redirect:/sportsEquipment/updateSportsEquipment?sportsEquipmentNo="+sportsEquipmentNo;
 	}	
 	
+	//SportsEquipment 상세보기 및 발주 폼
+	@GetMapping("/sportsEquipment/sportsEquipmentOne")
+	public String sportsEquipmentOne(HttpSession session,
+										Model model,
+										@RequestParam int sportsEquipmentNo) {
+		
+//		//session 유효성 검사 (직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+		
+		//service 호출
+		Map<String,Object> map = sportsEquipmentService.sportsEquipmentOneService(session, sportsEquipmentNo);
+		
+		//jsp에서 출력할 model
+		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
+		model.addAttribute("employeeId", map.get("employeeId"));
+		model.addAttribute("itemName", map.get("itemName"));
+		model.addAttribute("itemPrice", map.get("itemPrice"));
+		model.addAttribute("equipmentActive", map.get("equipmentActive"));
+		model.addAttribute("equipmentCreatedate", map.get("equipmentCreatedate"));
+		model.addAttribute("equipmentUpdatedate", map.get("equipmentUpdatedate"));
+		model.addAttribute("sportsEquipmentImgList", map.get("sportsEquipmentImgList"));
+		
+		return "sportsEquipment/sportsEquipmentOne";
+	}  
+	
+//----------------------------------------- SportsEquipmentOrder -------------------------------------
+	
+	//SportsEquipmentOrder 추가 액션 (지점직원만 접근 가능)
+	@PostMapping("/sportsEquipment/insertSportsEquipmentOrder")
+	public String insertSportsEquipmentOrder(HttpSession session,
+	                                    		@RequestParam int sportsEquipmentNo,
+	                                    		@RequestParam int quantity,
+	                                    		@RequestParam int itemPrice) {
+
+		//		//session 유효성 검사 (지점직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+
+		//디버깅
+		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+	    
+	    //service 호출
+		sportsEquipmentService.insertSportsEquipmentOrderService(session, sportsEquipmentNo, quantity, itemPrice);
+	  	
+		return "sportsEquipment/sportsEquipmentOrderList";
+	}
+
+	//SportsEquipmentOrder 리스트 (직원접근 가능)
+	@GetMapping("/sportsEquipment/sportsEquipmentOrderList")
+	public String sportsEquipmentOrderList(HttpSession session,
+											Model model,
+											@RequestParam(defaultValue = "1") int currentPage,
+											@RequestParam(defaultValue = "") String searchBranch,
+											@RequestParam(defaultValue = "") String searchItem,
+											@RequestParam(defaultValue = "") String beginDate,
+											@RequestParam(defaultValue = "") String endDate) {
+//		//session 유효성 검사 (본사직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+		
+	
+		//service 호출
+		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentOrderByPageService(session, currentPage, searchBranch, searchItem, beginDate, endDate);
+		
+		
+		//jsp에서 출력할 model
+		model.addAttribute("sportsEquipmentOrderList", map.get("sportsEquipmentOrderList"));
+		model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("searchBranch", map.get("searchBranch"));
+		model.addAttribute("equipmentActive", map.get("equipmentActive"));
+		model.addAttribute("searchItem", map.get("searchItem"));
+		model.addAttribute("beginDate", map.get("beginDate"));
+		model.addAttribute("endDate", map.get("endDate"));
+		
+		return "sportsEquipment/sportsEquipmentOrderList";
+	}  
+
 }

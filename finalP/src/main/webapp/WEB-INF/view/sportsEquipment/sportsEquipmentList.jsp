@@ -7,7 +7,8 @@
 <c:set var="body">
 	<div>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트&추가(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderList" style="border: 1px solid #ccc;">발주내역(본점)</a>
 	</div>
 	
 	<div>
@@ -18,9 +19,9 @@
 		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" enctype="multipart/form-data">
 	      	<div style="border: 1px solid #ccc;">
     			<label for="equipmentActive">상태 :</label>
-    			주문 가능: <input type="checkbox" id="orderAvailableCheckbox" name="equipmentActive" value="Y"
+    			주문 가능: <input type="radio" id="equipmentActive1" name="equipmentActive" value="Y"
            		<c:if test="${equipmentActive == 'Y'}">checked</c:if>>
-    			품절: <input type="checkbox" id="soldOutCheckbox" name="equipmentActive" value="N"
+    			품절: <input type="radio" id="equipmentActive2" name="equipmentActive" value="N"
            		<c:if test="${equipmentActive == 'N'}">checked</c:if>>
 			</div>
 	      	<div style="border: 1px solid #ccc;">
@@ -40,6 +41,7 @@
    					  <c:if test="${equipment.equipmentActive == 'N' }"> 품절</c:if><br>
    				이미지<br>
    				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName }" width="100" height="100"><br>
+   				<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }">상세보기</a>
    			</div>
    		</c:forEach>
    	</div>
