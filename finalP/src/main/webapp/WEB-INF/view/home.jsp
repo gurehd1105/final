@@ -6,9 +6,13 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 
 <c:set var="body">
-	<el-calendar v-model="date" />
+	<el-calendar v-model="date" >
+		
+	
+	
+	</el-calendar>
 </c:set>
-
+	
 <c:set var="script">
 	data() {
 	    return {
@@ -28,3 +32,5 @@
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>
+
+
