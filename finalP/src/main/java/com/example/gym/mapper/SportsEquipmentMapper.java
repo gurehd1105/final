@@ -18,11 +18,23 @@ public interface SportsEquipmentMapper {
 	int insertSportsEquipmentImg(SportsEquipmentImg sportsEquipmentImg);
 	
 	//sportsEquipment 목록 + 검색 + 페이징
-	List<Map<String,Object>> selectSportsEquipment(Map<String,Object> paramMap);
+	List<Map<String,Object>> selectSportsEquipmentByPage(Map<String,Object> paramMap);
 	
-	//sportsEquipment 상세보기(selectSportsEquipmentOne + selectSportsEquipmentImgOne)
-	SportsEquipment selectSportsEquipmentOne(int sportsEquipmentNo);
+	//lastPage 구하기 위한 sportsEquipment 수
+	int selectSportsEquipmentCnt(String searchWord);
+	
+	//sportsEquipment 상세보기
+	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
 	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
+	
+	//sportsEquipment CRUD를 위해 본사소속 직원 확인하기
+	int selectSearchEmployeeLevel(int employeeNo); 
+	
+	//sportsEquipment 수정
+	int updateSportsEquipment(SportsEquipment sportsEuipment);
+	
+	//sportsEquipmentImg 개별 삭제
+	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
 	
 	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
 	int deleteSportsEquipmentImg(int sportsEquipmentNo);
@@ -30,6 +42,4 @@ public interface SportsEquipmentMapper {
 	//sportsEquipment 삭제
 	int deleteSportsEquipment(int sportsEquipmentNo);
 	
-	//sportsEquipmentImg 개별 삭제
-	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
 }

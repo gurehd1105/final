@@ -16,8 +16,9 @@
 	</select>
 	
 	<!-- 가입 프로세스 시작 -->
-	<insert id="insertCustomer" parameterType="java.util.Map">
-			<selectKey order="AFTER" resultType="Integer">SELECT last_insert_id()</selectKey>
+		<!-- customer Insert -->
+	<insert id="insertCustomer" parameterType="com.example.gym.vo.Customer">
+			<selectKey order="AFTER" resultType="Integer" keyProperty="customerNo">SELECT last_insert_id()</selectKey>
 		INSERT INTO customer (
 			customer_id,
 			customer_pw
@@ -26,8 +27,8 @@
 			PASSWORD(#{customerPw})
 		)	
 	</insert>
-	
-	<insert id="insertCustomerDetail" parameterType="java.util.Map">
+		<!-- customerDetail Insert -->
+	<insert id="insertCustomerDetail" parameterType="com.example.gym.vo.CustomerDetail">
 		INSERT INTO customer_detail (
 			customer_no,
 			customer_name,
@@ -48,10 +49,9 @@
 			#{customerEmail}
 		)			
 	</insert>	
-	<!-- 가입 프로세스 종료 -->
 	
-	<!-- 선택정보(Img) INSERT 시작 -->
-	<insert id="insertCustomerImg" parameterType="java.util.Map">
+		<!-- customerImg Insert -->	
+	<insert id="insertCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
 		INSERT INTO customer_img (
 			customer_no,
 			customer_img_origin_name,
@@ -66,30 +66,94 @@
 			#{customerImgType}
 		)			
 	</insert>
-	<!-- 선택정보(Img) INSERT 종료 -->
+	<!-- 가입 프로세스 종료 -->
 	
 	<!-- 탈퇴 프로세스 시작 -->
 	<update id="updateCustomerActive" parameterType="com.example.gym.vo.Customer">
 		UPDATE customer SET
 			customer_active = 'N'
 		WHERE customer_no = #{customerNo}
-		AND customer_pw = PASSWORD(#{customerPw})
 	</update>
 	
 	<delete id="deleteCustomerImg" parameterType="com.example.gym.vo.Customer">
-		DELETE FROM custome_img
+		DELETE FROM customer_img
 		WHERE customer_no = #{customerNo}
 	</delete>
 	
 	<delete id="deleteCustomerDetail" parameterType="com.example.gym.vo.Customer">
-		DELETE FROM custome_detail
+		DELETE FROM customer_detail
 		WHERE customer_no = #{customerNo}
 	</delete>	
 	<!-- 탈퇴 프로세스 종료 -->
 	
+	<!-- 상세정보/이미지 -> 마이페이지  -->
+	<select id="customerOne" parameterType="com.example.gym.vo.Customer"
+										resultType="java.util.Map">
+		SELECT
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId,
+			c.customer_active AS customerActive,
+			
+			c.createdate AS cCreatedate, 
+			c.updatedate AS cUpdatedate,
+			
+			cd.customer_name AS customerName,
+			cd.customer_gender AS customerGender,
+			cd.customer_height AS customerHeight,
+			cd.customer_weight AS customerWeight,
+			cd.customer_phone AS customerPhone,
+			cd.customer_address AS customerAddress,
+			cd.customer_email AS customerEmail,
+			
+			cd.createdate AS cdCreatedate, 
+			cd.updatedate AS cdUpdatedate, 
+			
+			ci.customer_img_no AS customerImgNo,
+			ci.customer_img_origin_name AS customerImgOriginName,
+			ci.customer_img_file_name AS customerImgFileName,
+			ci.customer_img_size AS customerImgSize,
+			ci.customer_img_type AS customerImgType,
+			ci.createdate AS ciCreatedate, 
+			ci.updatedate AS ciUpdatedate
+		FROM customer c 
+		INNER JOIN customer_detail cd
+		ON c.customer_no = cd.customer_no
+		LEFT OUTER JOIN customer_img ci
+		ON c.customer_no = ci.customer_no
+		
+		WHERE c.customer_no = #{customerNo}
+	</select>
+	
 	<!-- 수정 프로세스 시작 -->
-	
-	
-	
+		<!-- 상세정보 변경 -->
+	<update id="updateCustomerOne" parameterType="com.example.gym.vo.CustomerDetail">
+		UPDATE customer_detail SET
+			customer_name = #{customerName},
+			customer_gender = #{customerGender},
+			customer_height = #{customerHeight},
+			customer_weight = #{customerWeight},
+			customer_phone = #{customerPhone},
+			customer_address = #{customerAddress},
+			customer_email = #{customerEmail}
+		WHERE customer_no = #{customerNo}
+	</update>
+		<!-- 이미지 변경 -->
+	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
+		UPDATE customer_img SET
+			customer_img_origin_name = #{customerImgOriginName}
+			customer_img_file_name = #{customerImgFileName}
+			customer_img_size = #{customerImgSize}
+			customer_img_type = #{customerImgtype}
+		WHERE customer_no = #{customerNo}		
+	</update>
+		<!-- 비밀번호 변경 -->
+	<update id="updateCustomerPw" parameterType="com.example.gym.vo.Customer">
+		UPDATE customer SET
+			customer_pw = PASSWORD(#{customerPw})
+		WHERE customer_no = #{customerNo}
+	</update>	
+		
 	<!-- 수정 프로세스 종료 -->
+	
+	
 </mapper>
