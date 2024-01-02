@@ -26,4 +26,13 @@
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <filter>
+    <display-name>CustomerFilter</display-name>
+    <filter-name>CustomerFilter</filter-name>
+    <filter-class>com.example.gym.filter.CustomerFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CustomerFilter</filter-name>
+    <url-pattern>/CustomerFilter</url-pattern>
+  </filter-mapping>
 </web-app>

@@ -13,49 +13,50 @@
 <form action="${ctp}/updateCustomerOne" method="post" enctype="multipart/form-data">			
 			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
 		미선택 시 프로필 사진 없음<br><input type="file" name="customerImg"> 
-			<table>
-		<tr>
-			<td>Id</td>
-			<td><input type="text" value="${resultMap.customerId}" name="customerId" readonly></td>			
-		<tr>
+		
+			<div style="display: table;">
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Id</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerId}" name="customerId" readonly></div>			
+		</div>
 		
 		
-		<tr>
-			<td>Name</td>
-			<td><input type="text" value="${resultMap.customerName}" name="customerName"></td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Name</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerName}" name="customerName"></div>
+		</div>
 		
-		<tr>
-			<td>Gender</td>
-			<td><select name="customerGender">
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Gender</div>
+			<div style="display: table-cell;"><select name="customerGender">
 				<option selected="selected" value="${resultMap.customerGender}">${resultMap.customerGender}</option>
 				<option value="${resultMap.customerOtherGender}">${resultMap.customerOtherGender}</option>
-			</select></td> 
-		<tr>
+			</select></div>
+		</div>
 		
-		<tr>
-			<td>Phone</td>
-			<td><input type="text" value="${resultMap.customerPhone}" name="customerPhone"></td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Phone</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerPhone}" name="customerPhone"></div>
+		</div>
 		
-		<tr>
-			<td>Height</td>
-			<td><input type="text" value="${resultMap.customerHeight}" name="customerHeight"></td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Height</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerHeight}" name="customerHeight"></div>
+		</div>
 		
-		<tr>
-			<td>Weight</td>
-			<td><input type="text" value="${resultMap.customerWeight}" name="customerWeight"></td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Weight</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerWeight}" name="customerWeight"></div>
+		</div>
 		
-		<tr>
-			<td>Address</td>
-			<td><input type="text" value="${resultMap.customerAddress}" name="customerAddress"></td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Address</div>
+			<div style="display: table-cell;"><input type="text" value="${resultMap.customerAddress}" name="customerAddress"></div>
+		</div>
 		
-		<tr>
-			<td>Email</td>
-			<td>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Email</div>
+			<div style="display: table-cell;">
 					<input type="text" value="${resultMap.emailId}" name="customerEmailId">@
 					<input type="text" value="${resultMap.emailJuso}" name="customerEmailJuso" id="selfJuso">
 				<select id="autoJuso" name="customerEmailAutoJuso">
@@ -67,9 +68,9 @@
 					<option value="kakao.com">kakao.com</option>
 					<option value="icloud.com">icloud.com</option>
 				</select>
-			</td>
-		<tr>		
-	</table>
+			</div>
+		</div>		
+	</div>
 	<button type="submit">저장</button>
 </form>
 </body>

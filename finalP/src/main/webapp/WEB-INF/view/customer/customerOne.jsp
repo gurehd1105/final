@@ -14,48 +14,48 @@
 			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
 				</c:if>
 	
-		<table>
-		<tr>
-			<td>Id</td>
-			<td>${resultMap.customerId}</td>			
-		<tr>
+		<div style="display: table;">
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Id</div>
+			<div style="display: table-cell;">${resultMap.customerId}</div>			
+		</div>
 		
 		
-		<tr>
-			<td>Name</td>
-			<td>${resultMap.customerName}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Name</div>
+			<div style="display: table-cell;">${resultMap.customerName}</div>
+		</div>
 		
-		<tr>
-			<td>Gender</td>
-			<td>${resultMap.customerGender}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Gender</div>
+			<div style="display: table-cell;">${resultMap.customerGender}</div>
+		</div>
 		
-		<tr>
-			<td>Phone</td>
-			<td>${resultMap.customerPhone}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Phone</div>
+			<div style="display: table-cell;">${resultMap.customerPhone}</div>
+		</div>
 		
-		<tr>
-			<td>Height</td>
-			<td>${resultMap.customerHeight}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Height</div>
+			<div style="display: table-cell;">${resultMap.customerHeight}</div>
+		</div>
 		
-		<tr>
-			<td>Weight</td>
-			<td>${resultMap.customerWeight}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Weight</div>
+			<div style="display: table-cell;">${resultMap.customerWeight}</div>
+		</div>
 		
-		<tr>
-			<td>Address</td>
-			<td>${resultMap.customerAddress}</td>
-		<tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Address</div>
+			<div style="display: table-cell;">${resultMap.customerAddress}</div>
+		</div>
 		
-		<tr>
-			<td>Email</td>
-			<td>${resultMap.customerEmail}</td>
-		<tr>		
-	</table>
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Email</div>
+			<div style="display: table-cell;">${resultMap.customerEmail}</div>
+		</div>		
+	</div>
 		<a href="${ctp}/updateCustomerPw">PW 수정</a>
 		<a href="${ctp}/updateCustomerOneForPw">정보 수정</a>
 </body>
