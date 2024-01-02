@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0">
-  <filter>
-    <display-name>CustomerSessionFilter</display-name>
-    <filter-name>CustomerSessionFilter</filter-name>
-    <filter-class>com.example.gym.filter.CustomerSessionFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>CustomerSessionFilter</filter-name>
-    <url-pattern>/CustomerSessionFilter</url-pattern>
-  </filter-mapping>
   <display-name>finalP</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
@@ -25,14 +16,5 @@
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  <filter>
-    <display-name>CustomerFilter</display-name>
-    <filter-name>CustomerFilter</filter-name>
-    <filter-class>com.example.gym.filter.CustomerFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>CustomerFilter</filter-name>
-    <url-pattern>/CustomerFilter</url-pattern>
-  </filter-mapping>
+  </filter-mapping>  
 </web-app>
