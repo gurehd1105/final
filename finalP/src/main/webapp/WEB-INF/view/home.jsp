@@ -5,38 +5,26 @@
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 
-<!-- Import style -->
-<link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
-<!-- Import Vue 3 -->
-<script src="https://unpkg.com/vue@3"></script>
-<!-- Import component library -->
-<script src="https://unpkg.com/element-plus"></script>
-
 <c:set var="body">
-	
-	
-	
-	
+	<el-calendar v-model="date" />
 </c:set>
 
 <c:set var="script">
-	{
-		data() {
-		    return {
-		    	date: new Date()
-		    }
-		},
-		watch: {
-			date(newValue, prevValue) {
-				this.log(newValue, prevValue);
-			}
-		},
-		methods: {
-			log(args) {
-				console.log(args);
-			}
+	data() {
+	    return {
+	    	date: new Date()
+	    }
+	},
+	watch: {
+		date(newValue, prevValue) {
+			this.log(newValue, prevValue);
 		}
-	};
+	},
+	methods: {
+		log(args) {
+			console.log(args);
+		}
+	}
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>

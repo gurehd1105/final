@@ -11,6 +11,7 @@ public class VueController {
 
     @GetMapping("{route}")
     public String route(@PathVariable String route) {
+    	System.out.println(route);
         return Path(route);
     }
     
