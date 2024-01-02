@@ -12,90 +12,46 @@
 
 <c:set var="body">
     <div class="container mt-5">
-        <h1>예약하기</h1>
+    	<div>
+	        <el-text size="large" tag="b">예약하기</el-text>
+    	</div>
 
-        <!-- 캘린더 -->
-        <div class="mt-3">
+        <!-- 캘린더
+        <el-button-group class="space-x-4">
             <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth-1}&targetYear=${calendarMap.targetYear}">
-                <button type="button" class="btn btn-primary">이전달</button>
+                <el-button type="primary">이전달</el-button>
             </a>
             <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth+1}&targetYear=${calendarMap.targetYear}">
-                <button type="button" class="btn btn-primary">다음달</button>
+                <el-button type="primary">다음달</el-button>
             </a>
-        </div>
-        <div class="mt-2">
-            ${calendarMap.targetYear}년
-            ${calendarMap.targetMonth + 1}월
-        </div>
+        </el-button-group>
+         -->
         
         <el-calendar v-model="date">
         </el-calendar>
-
-        <table class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th scope="col">일</th>
-                    <th scope="col">월</th>
-                    <th scope="col">화</th>
-                    <th scope="col">수</th>
-                    <th scope="col">목</th>
-                    <th scope="col">금</th>
-                    <th scope="col">토</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <c:forEach var="i" begin="1" end="${calendarMap.totalTd}">
-                        <c:set var="d" value="${i - calendarMap.beginBlank}"/>
-                        <td>
-                            <c:if test="${d < 1 || d > calendarMap.lastDate}">
-                                &nbsp;
-                            </c:if>
-                            <c:if test="${!(d < 1 || d > calendarMap.lastDate)}">
-                                <a href="javascript:void(0);" onclick="openPopup(${calendarMap.targetYear}, ${calendarMap.targetMonth+1}, ${d})">${d}</a>
-                                <c:forEach var="s" items="${scheduleList}">
-                                    <c:if test="${d == s.day}">
-                                        <div>${s.cnt}</div>
-                                        <div>${s.memo}</div>
-                                    </c:if>
-                                </c:forEach>
-                            </c:if>
-                        </td>
-                        <c:if test="${i < calendarMap.totalTd && i % 7 == 0}">
-                            </tr><tr>
-                        </c:if>
-                    </c:forEach>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </c:set>
 
-<script>
-    function openPopup(targetYear, targetMonth, targetDay) {
-        var url = "${contextPath}/reservation?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
-        window.open(url, "popupWindow", "width=800, height=600");
-    }
-</script>
-
 <c:set var="script">
-    {
-        data() {
-            return {
-                date: new Date()
-            }
-        },
-        watch: {
-            date(newValue, prevValue) {
-                this.log(newValue, prevValue);
-            }
-        },
-        methods: {
-            log(args) {
-                console.log(args);
-            }
+    data() {
+        return {
+            date: new Date(${calendarMap.targetYear}, ${calendarMap.targetMonth + 1})
         }
-    };
+    },
+    watch: {
+        date(nv, pv) {
+            const year = nv.getFullYear();
+            const month = nv.getMonth() + 1;
+            const day = nv.getDay();
+            this.openPopup(year, month, day);
+        }
+    },
+    methods: {
+        openPopup(targetYear, targetMonth, targetDay) {
+	        var url = "${contextPath}/reservation?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+	        window.open(url, "popupWindow", "width=800, height=600");
+	    }
+    }
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>

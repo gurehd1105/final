@@ -11,6 +11,8 @@
 			}
 		}
 	});
-	header.use(ElementPlus);
+	header.use(ElementPlus, {
+	  locale: ElementPlusLocaleKo,
+	});
 	header.mount("#header");
 </script>
