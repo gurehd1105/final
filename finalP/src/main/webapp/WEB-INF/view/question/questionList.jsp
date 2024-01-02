@@ -12,24 +12,26 @@
 	
 	<a href="${ctp}/insertQuestion">문의하기</a>
 		
-	<table>
-		<thead>
-			<tr>
-				<th>Question No</th>
-				<th>Title</th>
-				<th>Date</th>
-			</tr>
-		</thead>
+	<div style="display: table;">
+		
+			<div style="display: table-row;">
+				<div style="display: table-cell;">No</div>&nbsp;&nbsp;
+				<div style="display: table-cell;">Title</div>&nbsp;&nbsp;
+				<div style="display: table-cell;">Date</div>
+			</div>
+		
 	<c:forEach var="q" items="${ questionList }">
-		<tbody>
-			<tr>
-				<td>${ q.questionNo }</td>
-				<td><a href="${ctp}/questionOne?questionNo=${ q.questionNo }">${ q.questionTitle }</a></td>
-				<td>${ q.updatedate }</td>
-			</tr>
-		</tbody>
+		
+			<div style="display: table-row;">
+				<div style="display: table-cell;">${ q.questionNo }</div>&nbsp;&nbsp;
+				<div style="display: table-cell;">
+					<a href="${ctp}/questionOne?questionNo=${ q.questionNo }">${ q.questionTitle }</a>
+				</div>&nbsp;&nbsp;
+				<div style="display: table-cell;">${ q.updatedate }</div>
+			</div>
+		
 	</c:forEach>
-	</table>
+	</div>
 	
 	<!-- 페이징 -->
 	<c:if test="${ totalRow > rowPerPage }"> <!-- ( 전체 게시글 수 > 한 페이지 조회 개수 ) 일 때만 페이징버튼 조회 -->
