@@ -27,7 +27,11 @@ public class QuestionController {
 	// insertForm
 	@GetMapping("/insertQuestion")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
+		// id 유효성검사
 		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+		if(loginCustomer == null) {
+			return "customer/loginCustomer";
+		}
 		model.addAttribute("loginCustomer", loginCustomer);
 		return "question/insertQuestion";
 	}
@@ -41,7 +45,15 @@ public class QuestionController {
 	
 	// selectQuestionList
 	@GetMapping("/questionList")
-	public String questionList(@RequestParam(defaultValue = "1") int currentPage, Model model) {
+	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) {
+		// id 유효성검사
+		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");		
+		/*
+		  	관리자 세션, 고객 세션 정리 예정
+		  
+		 */
+		
 		int rowPerPage = 10;
 		int beginRow = (currentPage - 1) * rowPerPage;
 		Map<String, Integer> paramMap = new HashMap<>();
@@ -74,10 +86,14 @@ public class QuestionController {
 		model.addAttribute("questionMap", resultMap.get("questionMap"));
 		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
 		
-		if(session.getAttribute("loginEmployee") != null) { // 관리자라면 관리자 세션값 전달
-			Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
-			model.addAttribute("loginEmployee", loginEmployee);
-		}
+		// id 유효성검사
+		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");		
+		/*
+		  	관리자 세션, 고객 세션 정리 예정
+		  
+		 */
+		
 		return "question/questionOne";
 	}
 	
@@ -87,7 +103,7 @@ public class QuestionController {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		
 		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
-			return "redirect:/questionOne?questionNo" + question.getQuestionNo();
+			return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
 		}
 		model.addAttribute("questionMap", resultMap.get("questionMap"));
 		return "question/updateQuestion";

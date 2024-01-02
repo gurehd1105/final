@@ -22,6 +22,7 @@
 	
 </div>
 	<button type="submit">로그인</button>
+	<input type="button" onclick="location='${ctp}/insertCustomer'" value="회원가입">
 </form>
 </body>
 </html>
