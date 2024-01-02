@@ -19,13 +19,21 @@ public class CalendarController {
 	@GetMapping("/calendar")
 	public String calendar(Model model, HttpSession session,
 			 			   @RequestParam(required = false) Integer targetYear ,
-			 			   @RequestParam(required = false) Integer targetMonth) {
+			 			   @RequestParam(required = false) Integer targetMonth,
+			 			   @RequestParam(required = false) Integer targetDay
+			 			   
+			 			   ) {
 							
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
 		model.addAttribute("calendarMap", calendarMap);
 			
-		return "calendar";
-
+		return "reservation/calendar";
 	}
+	@GetMapping("/reservationPopup")
+	public String reservationPopup() {
+		
+		return "reservation/reservationPopup";	
+	}
+	
 	
 }

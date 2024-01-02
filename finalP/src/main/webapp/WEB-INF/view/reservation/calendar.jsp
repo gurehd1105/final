@@ -5,9 +5,7 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <c:set var="body">
@@ -35,7 +33,7 @@
 <c:set var="script">
     data() {
         return {
-            date: new Date(${calendarMap.targetYear}, ${calendarMap.targetMonth + 1})
+            date: new Date(${calendarMap.targetYear}, ${calendarMap.targetMonth}, ${calendarMap.targetDay})
         }
     },
     watch: {
@@ -45,10 +43,11 @@
             const day = nv.getDay();
             this.openPopup(year, month, day);
         }
+        
     },
     methods: {
         openPopup(targetYear, targetMonth, targetDay) {
-	        var url = "${contextPath}/reservation?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+	        var url = "${contextPath}/reservationPopup?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
 	        window.open(url, "popupWindow", "width=800, height=600");
 	    }
     }
