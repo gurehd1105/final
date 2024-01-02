@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -83,7 +84,7 @@
 			<td><textarea name="questionReplyContent"></textarea></td>
 		</tr>
 	</table>
-		<input type="hidden" value="${ questionMap.questionNo }" name="questionNo">
+		<input type="hidden" value="${ questionMap.questionNo }" name="questionNo" id="questionNo">
 		<button type="submit">등록</button>
 </form>
 
