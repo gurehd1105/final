@@ -66,6 +66,9 @@
 			}
 		}
 	});
-	side.use(ElementPlus);
+
+	side.use(ElementPlus, {
+	  locale: ElementPlusLocaleKo,
+	});
 	side.mount("#side");
 </script>

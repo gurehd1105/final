@@ -13,21 +13,27 @@ import com.example.gym.service.CalendarService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class ReservationController {	
+public class CalendarController {	
 	@Autowired CalendarService calendarService;
 	
 	@GetMapping("/calendar")
 	public String calendar(Model model, HttpSession session,
 			 			   @RequestParam(required = false) Integer targetYear ,
-			 			   @RequestParam(required = false) Integer targetMonth) {
+			 			   @RequestParam(required = false) Integer targetMonth,
+			 			   @RequestParam(required = false) Integer targetDay
+			 			   
+			 			   ) {
 							
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
 		model.addAttribute("calendarMap", calendarMap);
 			
 		return "reservation/calendar";
-		
-		
-		
 	}
+	@GetMapping("/reservationPopup")
+	public String reservationPopup() {
+		
+		return "reservation/reservationPopup";	
+	}
+	
 	
 }
