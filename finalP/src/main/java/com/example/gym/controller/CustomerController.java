@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-public class CustomerController { // 프로세스 진행 시 세션 필요한 경우 제외 대부분 세션 유효성 검사 X , 추후 필터링 기능 시도 예정 (login 페이지만 session 없어야만 접속가능, 나머지 모든 Form session 필요)
+public class CustomerController { 
 	@Autowired
   private CustomerService customerService;
   	// login (로그인) Form
@@ -34,10 +34,9 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 
   	// login 후 Act -> session 세팅 후 home.jsp로 이동
   @PostMapping("/loginCustomer")
-  public String loginCustomer(HttpSession session, Model model,  Customer customer) {
+  public String loginCustomer(HttpSession session, Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
-    if(loginCustomer != null) {	// 등록된 ID가 있을 시
-    	
+    if(loginCustomer != null) {	// 등록된 ID가 있을 시    	
     	 session.setAttribute("loginCustomer", loginCustomer);
     	 return "home";
     	 
@@ -45,8 +44,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	    	log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
 	    	return "redirect:/loginCustomer";
 	    }
-    } 
-  
+    }   
 
   	// insert (회원가입) Form
   @GetMapping("/insertCustomer")
