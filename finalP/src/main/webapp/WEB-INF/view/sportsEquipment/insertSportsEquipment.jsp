@@ -8,7 +8,8 @@
 	<div>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderList" style="border: 1px solid #ccc;">발주내역(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
 	</div>
 	<div>
 		<h2>장비 추가 하기</h2>
