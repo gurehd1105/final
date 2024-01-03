@@ -27,7 +27,8 @@
 	<!-- 직원추가 끝 -->
 	
 	<!-- 로그인 -->
-	<select id="loginEmployee" parameterType="com.example.gym.vo.Employee" resultType="com.example.gym.vo.Employee">
+	<select id="selectEmployeeByLogin" parameterType="com.example.gym.vo.Employee" 
+										resultType="com.example.gym.vo.Employee">
 		SELECT 
 			employee_no    employeeNo ,
 			employee_id    employeeId ,
@@ -38,11 +39,53 @@
 		AND employee_active = 'Y'
 	</select>
 	
-	<!-- 암호 변경 -->
+	<!-- 직원 암호 변경 -->
 	<update id="updateEmployee" parameterType="com.example.gym.vo.Employee">
       UPDATE employee SET
       employee_pw = PASSWORD(#{employeePw})
       WHERE employee_no = #{employeeNo}
    </update>
 
+	<!-- 직원 비활성화 -->
+	<update id="deleteEmployee"
+			parameterType="com.example.gym.vo.Employee">
+		UPDATE employee set
+		employee_active = 'N'	
+		WHERE
+			employee_no = #{employeeNo}
+	</update>
+	
+	<!-- 관리자 목록 -->
+	<select id="selectEmployeeList"
+			resultType="com.example.gym.vo.Employee"
+			parameterType="java.util.Map">
+		SELECT
+			admin_id adminId,
+			admin_name adminName,
+			admin_mail adminMail,
+			admin_address adminAddress,
+			admin_phone adminPhone,
+			create_date createDate,
+			last_update lastUpdate
+		FROM
+			employee
+	</select>
+	<!-- 관리자 상세목록 테이블 -->
+	<select id="selectEmployeeOne"
+			resultType="com.example.gym.vo.Employee"
+			parameterType="com.example.gym.vo.Employee">
+		SELECT
+			admin_id adminId,
+			admin_name adminName,
+			admin_mail adminMail,
+			admin_mail adminPw,
+			admin_address adminAddress,
+			admin_phone adminPhone,
+			create_date createDate,
+			last_update lastUpdate
+		FROM
+			admin
+		WHERE
+			admin_id = #{adminId}
+	</select>
 </mapper>

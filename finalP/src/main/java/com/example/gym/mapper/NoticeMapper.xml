@@ -1,6 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.NoticeMapper">
+	<!-- 공지사항 조회 (목록) -->
+	<select id="selectNotice"
+			parameterType="com.example.gym.vo.Page"
+			resultType="com.example.gym.vo.Notice">
+		SELECT
+			n.notice_no noticeNo,
+			n.employee_no employeeNo,
+			ed.employee_name employeeName,
+			n.notice_title noticeTitle,
+			DATE_FORMAT(n.createdate, '%Y-%m-%d') 
+		FROM notice n
+			JOIN employee e ON n.employee_no = e.employee_no
+			INNER JOIN employee_detail ed on e.employee_no = ed.employee_no
+		ORDER BY noticeNo DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<select id="selectNoticeTotal"
+			resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			notice
+	</select>
+	
+	<!-- 공지사항 상세보기 -->
+	<select id="selectNoticeOne"
+			parameterType="int"
+			resultType="map">
+		SELECT
+			n.notice_no noticeNo,
+			n.employee_id employeeId,
+			ed.employee_name employeeName,
+			n.notice_title noticeTitle,
+			n.notice_content noticeContent,
+			DATE_FORMAT(n.createdate, '%Y-%m-%d')
+		FROM notice n
+		INNER JOIN employee e ON n.employee_no = e.employee_no
+		INNER JOIN employee_detail ed on e.employee_no = ed.employee_no
+		<where>
+			notice_no = #{noticeNo}
+		</where>
+	</select>
 
+	<!-- 공지사항 등록 -->
+	<insert id="insertNotice"
+			parameterType="map">
+		INSERT INTO notice (
+			employee_no,
+			notice_title,
+			notice_content
+		) VALUES (
+			#{employeeNo},
+			#{noticeTitle},
+			#{noticeContent}
+		)
+	</insert>
+	
+	<!-- 공지사항 수정 -->
+	<update id="updateNotice"
+			parameterType="com.example.gym.vo.Notice">
+		UPDATE notice
+			notice_title = #{noticeTitle},
+			notice_content = #{noticeContent}
+		<where>
+			employee_no = #{employeeNo}
+		</where>
+	</update>
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNotice"
+			parameterType="int">
+		DELETE FROM notice
+		<where>
+			notice_no = #{noticeNo}
+		</where>
+	</delete>
 
 </mapper>
