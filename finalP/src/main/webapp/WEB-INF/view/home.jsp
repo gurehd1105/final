@@ -4,12 +4,12 @@
 <c:set var="title" value="메인페이지" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
-
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
+	
+	<a href=${contextPath}/calendar>예약하기</a>
 	<el-calendar v-model="date" >
-		
-	
-	
+
 	</el-calendar>
 </c:set>
 	

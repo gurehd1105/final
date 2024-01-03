@@ -5,14 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.gym.vo.ProgramReservation;
-
 @Mapper
 public interface ReservationMapper {
-	// 예약목록
-	List<ProgramReservation> selectReservationList(Map<String, Object>paramMap);
+	// 캘린더 출력
+	 List<Map<String,Object>> selectCalendarList(Map<String, Object> paramMap);
 	
-	// 예약 추가
-	int insertProgramReservation(ProgramReservation programreservation);
+	// 예약목록 출력 
+	 List<Map<String,Object>>selectReservationList(Map<String, Object> paramMap);
+	
+	
 	
 }
