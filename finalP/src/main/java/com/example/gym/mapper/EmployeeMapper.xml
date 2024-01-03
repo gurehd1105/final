@@ -60,13 +60,7 @@
 			resultType="com.example.gym.vo.Employee"
 			parameterType="java.util.Map">
 		SELECT
-			admin_id adminId,
-			admin_name adminName,
-			admin_mail adminMail,
-			admin_address adminAddress,
-			admin_phone adminPhone,
-			create_date createDate,
-			last_update lastUpdate
+
 		FROM
 			employee
 	</select>
@@ -75,17 +69,10 @@
 			resultType="com.example.gym.vo.Employee"
 			parameterType="com.example.gym.vo.Employee">
 		SELECT
-			admin_id adminId,
-			admin_name adminName,
-			admin_mail adminMail,
-			admin_mail adminPw,
-			admin_address adminAddress,
-			admin_phone adminPhone,
-			create_date createDate,
-			last_update lastUpdate
+			
 		FROM
-			admin
+			employee
 		WHERE
-			admin_id = #{adminId}
+			employee_id = #{employeeId}
 	</select>
 </mapper>
