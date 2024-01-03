@@ -81,17 +81,17 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerEmail"> Email </label></div>
 			<div style="display: table-cell;">
-				<input type="text" name="customerEmailId" id="customerEmail" >@
-				<input type="text" name="customerEmailJuso" id="selfJuso">
-					<select id="autoJuso" name="customerEmailAutoJuso">
-						<option selected="selected" value="self" id="self">직접 입력</option>
+				<input type="text" name="customerEmailId" id="customerEmailId">@
+				<span id="email"><input type="text" id="selfEmail" name="customerEmailJuso"></span>
+					<select id="autoEmail" name="customerEmailJuso" disabled="disabled">
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="hanmail.net">hanmail.net</option>
 						<option value="nate.com">nate.com</option>
-						<option value="kakao.com">kakao.com</option>
+						<option value="kakao.com">daum.net</option>
 						<option value="icloud.com">icloud.com</option>
 					</select>
+						<input type="checkbox" id="self" checked="checked"><label for="self">직접입력</label>
 			</div>	
 		</div>		
 			
@@ -104,17 +104,28 @@
 			<div style="display: table-cell;"></div>
 			
 			<div style="display: table-cell;">
-				<button type="reset">초기화</button>&nbsp;<button type="submit">가입하기</button>
+				<button type="submit">가입하기</button>
 			</div>
 		</div>	
 	</div>
 </form>
 </body>
 <script>
-	/* 	
-		customerId 제외 , 전체 유효성검사 필요	
-	*/
 
+	/* 	
+		customerId 제외 , 전체 유효성검사 필요
+	*/
+	$('#self').change(function() { // 이메일주소 직접입력에 따른 HTML 변환
+		var ck = $('#self').is(':checked');
+		if(ck==true){
+			$('#selfEmail').attr("disabled", false);
+			$('#autoEmail').attr("disabled", true);
+		} else {
+			$('#selfEmail').attr("disabled", true);
+			$('#autoEmail').attr("disabled", false);
+		}		
+	});
+	
 	
 	$('#idCkBtn').click(function() {
 		if($('#idCk').val().length < 4){
