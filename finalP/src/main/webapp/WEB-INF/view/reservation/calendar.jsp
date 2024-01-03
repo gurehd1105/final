@@ -13,7 +13,16 @@
     	<div>
 	        <el-text size="large" tag="b">예약하기</el-text>
     	</div>
-     <el-calendar v-model="date"></el-calendar>
+	     <el-calendar v-model="date">
+	     	<template #header="{ date }">
+		      <span>{{ date }}</span>
+		      <el-button-group>		       
+		        <el-button size="small" @click="selectDate('prev-month')">Previous Month</el-button>
+		        <el-button size="small" @click="selectDate('today')">Today</el-button>
+		        <el-button size="small" @click="selectDate('next-month')">Next Month</el-button>
+		      </el-button-group>
+	    	</template>
+	     </el-calendar>
     </div>
 </c:set>
 
@@ -27,7 +36,7 @@
         date(nv, pv) {
             const year = nv.getFullYear();
             const month = nv.getMonth() + 1;
-            const day = nv.getDay();
+            const day = nv.getDate();
             this.openPopup(year, month, day);
         }
         
@@ -41,8 +50,3 @@
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>
-
-
-
-
-

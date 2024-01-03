@@ -6,6 +6,8 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
+	<p>예약날짜: <b><c:out value="${param.targetYear}년 ${param.targetMonth}월 ${param.targetDay}일"/></b></p>
+
   <el-form id="reservationForm">
     <el-form-item label="지점선택">
       <el-select v-model="selectBranch" clearable placeholder="선택">
@@ -13,7 +15,6 @@
         <el-option label="대전" value="daejeon"></el-option>
         <el-option label="부산" value="busan"></el-option>
       </el-select> 
-      <!-- 지점선택 안했을때 경고메시지 출력 -->           
       <span v-if="showError" style="color: red;">지점을 선택하세요.</span>
     </el-form-item>
     <el-form-item>
@@ -38,6 +39,9 @@
 	        this.showError = true;
 	      } else {
 	        this.showError = false;
+	        const actionURL = 'reservationConfirm.jsp?branch=' + encodeURIComponent(this.selectBranch);
+        	document.getElementById('reservationForm').action = actionURL;
+        	
 	        document.getElementById('reservationForm').submit();
 	        window.close();
 	      }
@@ -45,10 +49,4 @@
   }
 </c:set>
 <%@ include file="/inc/admin_layout.jsp" %>
-
-
-
-
-
-
 

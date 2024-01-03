@@ -6,22 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.CalendarService;
+import com.example.gym.service.ReservationService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class CalendarController {	
+public class ReservationController {	
 	@Autowired CalendarService calendarService;
+	@Autowired ReservationService reservationService;
 	
+	// 캘린더 출력
 	@GetMapping("/calendar")
 	public String calendar(Model model, HttpSession session,
 			 			   @RequestParam(required = false) Integer targetYear ,
-			 			   @RequestParam(required = false) Integer targetMonth,
-			 			   @RequestParam(required = false) Integer targetDay
-			 			   
+			 			   @RequestParam(required = false) Integer targetMonth			 			   		 			   
 			 			   ) {
 							
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
@@ -29,11 +31,22 @@ public class CalendarController {
 			
 		return "reservation/calendar";
 	}
+	
+	// 팝업창 출력
 	@GetMapping("/reservationPopup")
-	public String reservationPopup() {
-		
+	public String reservationPopup() {		
 		return "reservation/reservationPopup";	
 	}
+	
+	
+	
+	@GetMapping("/reservationConfirm")
+	public String reservationConfirm() {
+		return "reservation/reservationConfirm";
+		
+	}
+	
+	
 	
 	
 }
