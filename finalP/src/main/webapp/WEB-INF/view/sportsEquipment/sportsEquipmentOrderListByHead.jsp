@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:set var="title" value="스포츠 장비발주 리스트" />
-<c:set var="description" value="현재 발주요청, 처리 된 이력을 알 수 있는 사이트" />
+<c:set var="description" value="본사에서 현재 발주요청, 처리 된 이력을 알 수 있는 사이트" />
 <c:set var="keywords" value="장비,소모품,발주" />
 <c:set var="body">
 	<div>
@@ -10,6 +10,8 @@
 		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>	
 	</div>
 	
 	<div>

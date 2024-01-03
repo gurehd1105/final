@@ -315,6 +315,59 @@
 	<delete id="deleteSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipment">
 		DELETE FROM sports_equipment_order
 		WHERE order_no = #{orderNo}
-		AND order_status= #{orderStatus}
+		AND order_status= '대기'
 	</delete>
+	
+	<!-- sportsEquipmentInventory 출력 (본사) -->
+	<select id="selectSportsEquipmentInventoryByHead" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			b.branch_name branchName,
+			se.item_name itemName,
+			SUM(seo.quantity) AS totalQuantity,
+			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
+   			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
+		FROM branch b INNER JOIN sports_equipment_order seo
+		ON b.branch_no = seo.branch_no
+		INNER JOIN sports_equipment se
+		ON seo.sports_equipment_no = se.sports_equipment_no
+		WHERE seo.order_status = '승인'
+		<!-- 본사 모든 Inventory 리스트 -->
+        <if test="loginBranchLevel == 1">
+         	<if test="searchBranch != ''">
+                <!-- 본사 branchName으로 검색 -->
+                AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
+            </if>
+            <if test="searchItem != ''">
+                <!-- 본사 itemName으로 검색 -->
+                AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+            </if>
+         </if>
+		GROUP BY b.branch_name, se.item_name
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<!-- sportsEquipmentInventory 출력 (지점) -->
+	<select id="selectSportsEquipmentInventoryByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			b.branch_name branchName,
+			se.item_name itemName,
+			SUM(seo.quantity) AS totalQuantity,
+			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
+   			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
+		FROM branch b INNER JOIN sports_equipment_order seo
+		ON b.branch_no = seo.branch_no
+		INNER JOIN sports_equipment se
+		ON seo.sports_equipment_no = se.sports_equipment_no
+		WHERE seo.order_status = '승인'
+       	<!-- 로그인한 계정의 소속 지점만 -->
+        <if test="loginBranchLevel == 0">
+           AND b.branch_no = #{loginBranchNo}
+           <if test="searchItem != ''">
+            	<!-- 지점 itemName으로 검색 -->
+            	AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+           </if>
+       	</if>
+		GROUP BY b.branch_name, se.item_name
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
 </mapper>

@@ -63,4 +63,10 @@ public interface SportsEquipmentMapper {
 	
 	//sportsEquipmentOrder 삭제 (지점)
 	int deleteSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
+	
+	//sportsEquipmentInventory 출력 (본사)
+	List<Map<String,Object>> selectSportsEquipmentInventoryByHead(Map<String,Object> paramMap);
+	
+	//sportsEquipmentInventory 출력 (지점)
+	List<Map<String,Object>> selectSportsEquipmentInventoryByBranch(Map<String,Object> paramMap);
 }

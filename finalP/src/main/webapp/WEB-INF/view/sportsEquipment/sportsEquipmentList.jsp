@@ -10,6 +10,8 @@
 		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>	
 	</div>
 	<div>
 		<h2>장비 리스트</h2>
@@ -41,7 +43,7 @@
    					  <c:if test="${equipment.equipmentActive == 'N' }"> 품절</c:if><br>
    				이미지<br>
    				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName }" width="100" height="100"><br>
-   				<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }">상세보기</a>
+   				<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }">발주</a>
    			</div>
    		</c:forEach>
    	</div>

@@ -10,6 +10,8 @@
 		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>	
 	</div>
 	<div>
 		<h2>장비 발주 하기</h2>
@@ -46,7 +48,7 @@
 			</div>
       	<c:if test="${equipmentActive == 'Y'}"> <!-- 품절이 아닐 경우만 발주 버튼 출력 -->
       		<div style="border: 1px solid #ccc;">
-      			<label>수량을 선택하세요:  <input type="number" name="quantity" min="1" max="10" value="1"> </label>
+      			<label>수량을 선택하세요:  <input type="number" name="quantity" value="1"> </label>
          		<button type="submit" style="border: 1px solid #ccc;"> 주문</button>
       		</div>
         </c:if>

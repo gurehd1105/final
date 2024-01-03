@@ -333,9 +333,11 @@ public class SportsEquipmentService {
 		log.warn("employee session 구현 후 수정 -> branchNo 컬럼은 세션에서 받아와서 설정" );
 		sportsEquipmentOrder.setBranchNo(2);
 		sportsEquipmentOrder.setQuantity(quantity);
-		sportsEquipmentOrder.setTotalPrice(itemPrice*quantity);
-		
-		
+		if(quantity > 0) {
+			sportsEquipmentOrder.setTotalPrice(itemPrice*quantity);
+		}else {
+			sportsEquipmentOrder.setTotalPrice(0);
+		}
 		//mapper 호출
 		int row = sportsEquipmentMapper.insertSportsEquipmentOrder(sportsEquipmentOrder);
 		
@@ -376,10 +378,8 @@ public class SportsEquipmentService {
 		//본사직원은 모든 데이터 
 		log.warn("employee session 구현 후 수정");
 		int loginBranchLevel = 1;
-		int loginBranchNo = 1;
 		
 		paramMap.put("loginBranchLevel", loginBranchLevel);
-		paramMap.put("loginBranchNo", loginBranchNo);
 		
 		//mapper 호출 
 		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
@@ -441,11 +441,12 @@ public class SportsEquipmentService {
 		
 		//지점직원은 소속된 지점의 데이터 출력
 		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 0;
 		int loginBranchNo = 2;
+		log.warn("employee session 구현 후 수정");
+		int loginBranchLevel = 0;
 		
-		paramMap.put("loginBranchLevel", loginBranchLevel);
 		paramMap.put("loginBranchNo", loginBranchNo);
+		paramMap.put("loginBranchLevel", loginBranchLevel);
 		
 		//mapper 호출 
 		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderBranchCnt(paramMap);
@@ -548,5 +549,125 @@ public class SportsEquipmentService {
 		} else {
 		    log.info("sportsEquipmentOrder 삭제성공: row - {}", row);
 		}
+	}
+	
+//----------------------------------------- SportsEquipmentOrder -------------------------------------	
+	
+	//sportsEquipmentInventory 출력(본사)
+	public Map<String,Object> selectSportsEquipmentInventoryHeadService(HttpSession session,
+																	int currentPage,
+																	String searchBranch,
+																	String searchItem) {
+		//디버깅
+		log.info("currentPage: {}", currentPage);
+		log.info("searchBranch: {}", searchBranch);
+		log.info("searchItem: {}", searchItem);
+
+		//페이징
+		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int beginRow = (currentPage - 1) * rowPerPage;
+		
+		//mapper의 매개변수로 들어갈 paramMap 생성
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("searchBranch", searchBranch);
+		paramMap.put("searchItem", searchItem);
+		
+		//본사직원은 모든 데이터 
+		log.warn("employee session 구현 후 수정");
+		int loginBranchLevel = 1;
+		
+		paramMap.put("loginBranchLevel", loginBranchLevel);
+		
+		//mapper 호출 
+		//int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
+		//int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		
+		//if(sportsEquipmentOrderCnt%rowPerPage != 0) {
+		//	lastPage = lastPage + 1;
+		//}
+		
+		//디버깅
+		//log.info("lastPage : {}", lastPage);
+		//log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		
+		//페이징 변수 Map에 put
+		paramMap.put("beginRow", beginRow);
+		paramMap.put("rowPerPage", rowPerPage);
+		
+		//디버깅
+		System.out.println(paramMap);
+		
+		//mapper 호출
+		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByHead(paramMap);
+				
+		//controller에 보내줄 resultMap 생성
+		Map<String,Object> resultMap = new HashMap<>();
+		
+
+		resultMap.put("searchItem", searchItem);
+		resultMap.put("searchBranch", searchBranch);
+		//resultMap.put("lastPage", lastPage);
+		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+		
+		return resultMap;
+	}
+	
+	//sportsEquipmentInventory 출력(지점)
+	public Map<String,Object> selectSportsEquipmentInventoryBranchService(HttpSession session,
+																	int currentPage,
+																	String searchItem) {
+		//디버깅
+		log.info("currentPage: {}", currentPage);
+		log.info("searchItem: {}", searchItem);
+
+		//페이징
+		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int beginRow = (currentPage - 1) * rowPerPage;
+		
+		//mapper의 매개변수로 들어갈 paramMap 생성
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("searchItem", searchItem);
+		
+		//지점직원은 소속된 지점의 데이터 출력
+		log.warn("employee session 구현 후 수정");
+		int loginBranchNo = 2;
+		log.warn("employee session 구현 후 수정");
+		int loginBranchLevel = 0;
+		
+		paramMap.put("loginBranchNo", loginBranchNo);
+		paramMap.put("loginBranchLevel", loginBranchLevel);
+		
+		
+		//mapper 호출 
+		//int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
+		//int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		
+		//if(sportsEquipmentOrderCnt%rowPerPage != 0) {
+		//	lastPage = lastPage + 1;
+		//}
+		
+		//디버깅
+		//log.info("lastPage : {}", lastPage);
+		//log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		
+		//페이징 변수 Map에 put
+		paramMap.put("beginRow", beginRow);
+		paramMap.put("rowPerPage", rowPerPage);
+		
+		//디버깅
+		System.out.println(paramMap);
+		
+		//mapper 호출
+		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranch(paramMap);
+				
+		//controller에 보내줄 resultMap 생성
+		Map<String,Object> resultMap = new HashMap<>();
+		
+
+		resultMap.put("searchItem", searchItem);
+		//resultMap.put("lastPage", lastPage);
+		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+		
+		return resultMap;
 	}
 }

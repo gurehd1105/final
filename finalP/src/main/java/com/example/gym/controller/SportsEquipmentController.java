@@ -352,4 +352,53 @@ public class SportsEquipmentController {
 		
 		return "redirect:/sportsEquipment/sportsEquipmentOrderListByBranch";
 	}
+
+//----------------------------------------- SportsEquipmentInventory -------------------------------------
+	
+	//SportsEquipmentInventoryByHead 리스트 (본사직원만 접근 가능)
+	@GetMapping("/sportsEquipment/sportsEquipmentInventoryByHead")
+	public String sportsEquipmentInventoryByHead(HttpSession session,
+											Model model,
+											@RequestParam(defaultValue = "1") int currentPage,
+											@RequestParam(defaultValue = "") String searchBranch,
+											@RequestParam(defaultValue = "") String searchItem) {
+//		//session 유효성 검사 (본사직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+		
+	
+		//service 호출
+		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentInventoryHeadService(session, currentPage, searchBranch, searchItem);
+		
+		//jsp에서 출력할 model
+		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+		//model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("searchItem", map.get("searchItem"));
+		model.addAttribute("searchBranch", map.get("searchBranch"));
+		
+		return "sportsEquipment/sportsEquipmentInventoryByHead";
+	} 
+
+	//SportsEquipmentInventoryByBranch 리스트 (지점직원만 접근 가능)
+	@GetMapping("/sportsEquipment/sportsEquipmentInventoryByBranch")
+	public String sportsEquipmentInventoryByHead(HttpSession session,
+											Model model,
+											@RequestParam(defaultValue = "1") int currentPage,
+											@RequestParam(defaultValue = "") String searchItem) {
+//		//session 유효성 검사 (지점직원)
+//		if(session.getAttribute("") == null) {
+//			return "";
+//		}
+		
+		//service 호출
+		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentInventoryBranchService(session, currentPage, searchItem);
+		
+		//jsp에서 출력할 model
+		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+		//model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("searchItem", map.get("searchItem"));
+		
+		return "sportsEquipment/sportsEquipmentInventoryByBranch";
+	} 
 }
