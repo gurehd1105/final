@@ -14,34 +14,34 @@
 <body>
 <form action="${ctp}/insertCustomer" method="post" enctype="multipart/form-data">
 	<div style="display: table;">
-			
+
 		<div style="display: table-row;">
-			<div style="display: table-cell;"><label for="customerId"> Id 확인 </label></div>	 
+			<div style="display: table-cell;"><label for="customerId"> Id 확인 </label></div>
 			<div style="display: table-cell;">
-				<input type="text" id="idCk">&nbsp;<button type="button" id="idCkBtn">중복확인</button>
+				<input type="text" id="idCk" placeholder="ID 입력">&nbsp;<button type="button" id="idCkBtn">중복확인</button>
 				<span id="idCkMsg"></span>
-			</div>		
-		</div>		
+			</div>
+		</div>
 		
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerPw"> Id </label></div>
-			<div style="display: table-cell;"><input type="text" id="customerId" name="customerId" readonly="readonly"></div>
-		</div>	
+			<div style="display: table-cell;"><input type="text" id="customerId" name="customerId" readonly="readonly" placeholder="자동 입력"></div>
+		</div>
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerPw"> Pw </label></div>
-			<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
+			<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw" placeholder="PW 입력"></div>
 		</div>	
 			
 		
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="pwCk"> Pw Ck </label></div>
-			<div style="display: table-cell;"><input type="password" id="pwCk" ></div>	
+			<div style="display: table-cell;"><input type="password" id="pwCk" placeholder="PW 확인"></div>	
 		</div>	
 		
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerName"> Name </label></div>
-			<div style="display: table-cell;"><input type="text" id="customerName" name="customerName"></div>	
+			<div style="display: table-cell;"><input type="text" id="customerName" name="customerName" placeholder="이름"></div>	
 		</div>
 			
 		<div style="display: table-row;">
@@ -54,17 +54,17 @@
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerPhone"> Phone </label></div>
-			<div style="display: table-cell;"><input type="text" id="customerPhone" name="customerPhone"></div>	
+			<div style="display: table-cell;"><input type="text" id="customerPhone" name="customerPhone" placeholder="전화번호"></div>	
 		</div>
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerHeight"> Height </label></div>
-			<div style="display: table-cell;"><input type="text" id="customerHeight" name="customerHeight"></div>	
+			<div style="display: table-cell;"><input type="number" id="customerHeight" name="customerHeight" placeholder="키"></div>	
 		</div>	
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerWeight"> Weight </label></div>
-			<div style="display: table-cell;"><input type="text" id="customerWeight" name="customerWeight"></div>	
+			<div style="display: table-cell;"><input type="number" id="customerWeight" name="customerWeight" placeholder="몸무게"></div>	
 		</div>	
 			
 		<div style="display: table-row;">
@@ -81,8 +81,8 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerEmail"> Email </label></div>
 			<div style="display: table-cell;">
-				<input type="text" name="customerEmailId" id="customerEmailId">@
-				<span id="email"><input type="text" id="selfEmail" name="customerEmailJuso"></span>
+				<input type="text" name="customerEmailId" id="customerEmailId" placeholder="이메일 ID">@
+				<span id="email"><input type="text" id="selfEmail" name="customerEmailJuso" placeholder="이메일 주소"></span>
 					<select id="autoEmail" name="customerEmailJuso" disabled="disabled">
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
@@ -154,15 +154,6 @@
 		}
 	});
 
-	 $('#autoJuso').click(function() {
-			if($('#autoJuso').val() == "self"){
-				$("#selfJuso").attr("disabled",false); 
-			} else {
-				$("#selfJuso").val("");
-				$("#selfJuso").attr("disabled",true); 
-			}
-		 });
- 
 	 
 	 // 주소 API 설정
 	  function sample6_execDaumPostcode() {

@@ -18,17 +18,17 @@
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"> <label for="customerPw"> Pw </label> </div>
-			<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
+			<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw" placeholder="현재 PW"></div>
 		</div>
 		
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerNewPw"> 변경Pw </label></div>
-			<div style="display: table-cell;"><input type="password" id="customerNewPw" name="customerNewPw"></div>
+			<div style="display: table-cell;"><input type="password" id="customerNewPw" name="customerNewPw" placeholder="변경 PW"></div>
 		</div>
 		
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="pwck"> 변경Pw확인 </label></div>
-			<div style="display: table-cell;"><input type="password" id="pwck"></div>
+			<div style="display: table-cell;"><input type="password" id="pwck" placeholder="변경 PW 확인"></div>
 		</div>
 	</div>
 		<button type="submit">변경</button>

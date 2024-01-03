@@ -64,7 +64,7 @@
 			
 			<div style="display: table-row;">
 				<div style="display: table-cell;"><label for="questionReplyContent">답변</label></div>
-				<div style="display: table-cell;"><textarea name="questionReplyContent" id="questionReplyContent"></textarea></div>
+				<div style="display: table-cell;"><textarea name="questionReplyContent" id="questionReplyContent" placeholder="답변내용"></textarea></div>
 			</div>
 		</div>
 			<input type="hidden" value="${ questionMap.questionNo }" name="questionNo" id="questionNo">
@@ -112,15 +112,15 @@
 </body>
 
 <script>
-// 관리자 - 수정 Btn 클릭 시 즉시수정 form으로 변경
+// 관리자 - 수정 Btn 클릭 시 즉시수정 form으로 변경 + 해당버튼 완료버튼으로 변경 
 	$('#updateReplyBtn').click(function(){
 		$('#questionReplyContent').attr("readonly", false);
 		$('#updateReplyBtn').attr("type", "hidden");
 		$('#updateReplyFinish').attr("type", "button");
 	});
 	
-// 즉시수정 form 변경 후 해당버튼 완료버튼으로 변경 
-	$('#updateReplyFinish').click(function(){ // 완료버튼 클릭 시
+// 수정 후 완료버튼 클릭 시
+	$('#updateReplyFinish').click(function(){
 		$.ajax({
 			url: "${ctp}/updateQuestionReply",
 			type: "post",
