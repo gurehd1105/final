@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.CalendarMapper">
+	<select id="selectCalendarList" parameterType="java.util.Map"
+			resultType="java.util.Map">
+		SELECT	
+			   program_date_no programDateNo
+			   program_no programNo
+			   program_date programDate	
+		  FROM program_date
+		   AND YEAR(program_date) = #{targetYear}
+	       AND MONTH(program_date) = #{targetMonth} +1
+	       AND DAY(program_date) = #{targetDay}
+		 GROUP BY program_date
+	     ORDER BY program_date ASC	
+	
+	</select>
+
+
+
+
+
+
+
+
+
+
+</mapper>
