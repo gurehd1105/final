@@ -24,8 +24,11 @@
 			return {};
 		}
 	}, { <c:out value="${script}" escapeXml="false"/> });
+
 	const app = Vue.createApp(main);
-	app.use(ElementPlus);
+	app.use(ElementPlus, {
+	  locale: ElementPlusLocaleKo,
+	});
 	app.mount("#app");
 </script>
 

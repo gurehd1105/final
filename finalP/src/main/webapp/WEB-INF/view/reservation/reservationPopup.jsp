@@ -5,49 +5,50 @@
 <c:set var="keywords" value="예약, 날짜, 헬스장" />
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
-<html>
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-</head>
-<body>
-    <h1>${targetYear}년 ${targetMonth + 1}월 ${targetDay}일 예약</h1>
-    	
-    <table>
-        <div>
-            <label for="selectBranch">지점선택</label>
-            <select id="selectBranch" class="form-select form-select-lg">
-                <option>선택</option>
-                <option>서울</option>
-                <option>대전</option>
-                <option>부산</option>
-            </select>
-        </div>
-    </table>
-    <button type="button" id="confirm">확인</button>
+<c:set var="body">
+  <el-form id="reservationForm">
+    <el-form-item label="지점선택">
+      <el-select v-model="selectBranch" clearable placeholder="선택">
+        <el-option label="서울" value="seoul"></el-option>
+        <el-option label="대전" value="daejeon"></el-option>
+        <el-option label="부산" value="busan"></el-option>
+      </el-select> 
+      <!-- 지점선택 안했을때 경고메시지 출력 -->           
+      <span v-if="showError" style="color: red;">지점을 선택하세요.</span>
+    </el-form-item>
+    <el-form-item>
+    	<el-button type="primary" @click="onSubmit(form)">확인</el-button>
+    </el-form-item>
+    
+  </el-form>
+</c:set>
 
-    <script>
-        $(document).ready(function () {
-            // 클릭한 해당 날짜데이터
-            var urlParams = new URLSearchParams(window.location.search);
-            var targetYear = urlParams.get('targetYear');
-            var targetMonth = urlParams.get('targetMonth');
-            var targetDay = urlParams.get('targetDay');
+<c:set var="script">
+	data(){
+		return{
+			selectBranch:'',
+			showError: false
+		}
+	},
+	watch:{
+	},
+	 methods: {
+	    onSubmit() {
+	      if (!this.selectBranch) {
+	        this.showError = true;
+	      } else {
+	        this.showError = false;
+	        document.getElementById('reservationForm').submit();
+	        window.close();
+	      }
+	    }
+  }
+</c:set>
+<%@ include file="/inc/admin_layout.jsp" %>
 
-            // 확인버튼 클릭처리
-            $('#confirm').click(function () {
-                var selectedBranch = $('#selectBranch').val();
 
-                // 지점, 시간 둘중 하나라도 비활성화시 경고메시지 
-                if (selectedBranch == '선택') {
-                    alert('지점을 선택하세요.');
-                } else {                  
-                    console.log('선택 완료:', selectedBranch);                                      
-                    alert('예약이 완료되었습니다.');                    
-                    window.close();
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+
+
+
+
+

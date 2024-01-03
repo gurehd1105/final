@@ -24,3 +24,4 @@
     <!-- Import component library -->
     <script src="https://unpkg.com/element-plus"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/element-plus/dist/locale/ko"></script>
