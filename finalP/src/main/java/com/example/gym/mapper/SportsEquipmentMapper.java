@@ -70,3 +70,4 @@ public interface SportsEquipmentMapper {
 	//sportsEquipmentInventory 출력 (지점)
 	List<Map<String,Object>> selectSportsEquipmentInventoryByBranch(Map<String,Object> paramMap);
 }
+
