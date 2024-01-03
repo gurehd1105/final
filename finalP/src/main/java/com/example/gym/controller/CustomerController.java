@@ -15,45 +15,55 @@ import com.example.gym.vo.CustomerForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Controller
 public class CustomerController { // 프로세스 진행 시 세션 필요한 경우 제외 대부분 세션 유효성 검사 X , 추후 필터링 기능 시도 예정 (login 페이지만 session 없어야만 접속가능, 나머지 모든 Form session 필요)
 	@Autowired
   private CustomerService customerService;
-  
   	// login (로그인) Form
   @GetMapping("/loginCustomer")
-  public String loginCustomer() {		
+  public String loginCustomer(HttpSession session) {
+	  // id 유효성검사
+	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	if(loginCustomer != null) {
+		return "home";
+	}
+	
     return "customer/loginCustomer";
   }
 
   	// login 후 Act -> session 세팅 후 home.jsp로 이동
   @PostMapping("/loginCustomer")
-  public String loginCustomer(Model model, HttpSession session, Customer customer) {
+  public String loginCustomer(HttpSession session, Model model,  Customer customer) {
     Customer loginCustomer = customerService.loginCustomer(customer);
-    if(loginCustomer != null) {	// 등록된 ID가 있을 시 
-	    if(loginCustomer.getCustomerActive().equals("Y")) { // 활성화 계정 --> 로그인 성공
-	    	 session.setAttribute("loginCustomer", loginCustomer);
-	    	 return "home";
-	    } else { // 정보 있으나 비활성화 계정(탈퇴회원) --> 로그인 페이지로 return
+    if(loginCustomer != null) {	// 등록된 ID가 있을 시
+    	
+    	 session.setAttribute("loginCustomer", loginCustomer);
+    	 return "home";
+    	 
+	    } else { // 정보 없을 시
+	    	log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
 	    	return "redirect:/loginCustomer";
 	    }
-    } else { // 정보없음(ID or PW 불일치) --> 로그인 페이지로 return
-    	return "redirect:/loginCustomer";
-    }
-  }
+    } 
+  
 
   	// insert (회원가입) Form
   @GetMapping("/insertCustomer")
-  public String insertCustomer() {
+  public String insertCustomer(HttpSession session) {
+	  // id 유효성검사
+	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	if(loginCustomer != null) {
+		return "home";
+	}
     return "customer/insertCustomer";
   }
 
   	// insert (회원가입) Act
   @PostMapping("/insertCustomer")
-  public String insertCustomer(CustomerForm customerForm, String customerEmailId, 
+  public String insertCustomer(HttpSession session, CustomerForm customerForm, String customerEmailId, 
 		  						String customerEmailJuso, String customerEmailAutoJuso,
-		  						HttpSession session) {
+		  						String address1, String address2, String address3) {
 	String path = session.getServletContext().getRealPath("/upload/customer");
 	
 	if(customerEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
@@ -61,9 +71,8 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	} else {								// 선택한 이메일이 있다면 해당 이메일주소로 등록
 		customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailAutoJuso);
 	}	
-		// 입력 이메일값 디버깅
-	System.out.println(customerForm.getCustomerEmail() + " <-- Email");
-	
+
+	customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 	
 	int result = customerService.insertCustomer(customerForm, path);
 	if(result==1) { // 가입 완
@@ -76,7 +85,12 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail)
   @GetMapping("/deleteCustomer")
   public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
+	  // id 유효성검사
 	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	if(loginCustomer == null) {
+		return "customer/loginCustomer";
+	}
+	
     model.addAttribute("loginCustomer" , loginCustomer);
     return "customer/deleteCustomer";
   }
@@ -84,7 +98,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   
   	// delete (탈퇴) Act
   @PostMapping("/deleteCustomer")
-  public String deleteCustomer(String customerId, String customerPw, int customerNo) {
+  public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {
 	 Customer paramCustomer = new Customer();
 	 paramCustomer.setCustomerId(customerId);
 	 paramCustomer.setCustomerPw(customerPw);
@@ -92,6 +106,7 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	 int result = customerService.deleteCustomer(paramCustomer);
 	 
 	 if(result==1) {	// 탈퇴 완 --> login 창으로 이동
+		 session.invalidate();
 		 return "customer/loginCustomer";
 	 } else {	// 예외발생
 		 return "customer/deleteCustomer";
@@ -102,7 +117,13 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   	// 마이페이지
   @GetMapping("/customerOne")
   public String customerOne(HttpSession session, Model model) {
-	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  // id 유효성검사
+		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+		if(loginCustomer == null) {
+			return "customer/loginCustomer";
+		}
+		
+	  
 	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 	  model.addAttribute("resultMap", resultMap);
 	  
@@ -112,7 +133,13 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   	// 내정보 수정 Form
   // 접속 전 PW 확인	
   @GetMapping("/updateCustomerOneForPw")
-  public String customerOneForCheckPw() {
+  public String customerOneForCheckPw(HttpSession session) {
+	  // id 유효성검사
+		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+		if(loginCustomer == null) {
+			return "customer/loginCustomer";
+		}
+		
 	  return "customer/updateCustomerOneForPw";
   }
   // PW확인 후 Form 접속	
@@ -122,8 +149,11 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
 	  loginCustomer.setCustomerPw(customerPw);
 	  Customer checkCustomer = customerService.loginCustomer(loginCustomer);
 	  if(checkCustomer == null) { // PW 확인 불일치 --> PW 확인 페이지로 return
+		  log.info("PW 불일치, 접속실패");
 		  return "customer/updateCustomerOneForPw";
 	  } else {
+		  log.info("PW 일치, 접속성공");
+		  
 	  Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 	  
 	  	// Email 값 표기
@@ -153,17 +183,18 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   	// 내정보 수정 Act
   @PostMapping("/updateCustomerOne")
   public String updateCustomerOne(HttpSession session, CustomerForm customerForm,
-		  		String customerEmailId, String customerEmailJuso, String customerEmailAutoJuso) {
+		  						String customerEmailId, String customerEmailJuso, String customerEmailAutoJuso,
+		  						String address1, String address2, String address3) {
 	  String path = session.getServletContext().getRealPath("/upload/customer");
 	  
 	  if(customerEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
 			customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailJuso);
 		} else {							// 선택한 이메일이 있다면 해당 이메일주소로 등록
 			customerForm.setCustomerEmail(customerEmailId+"@"+customerEmailAutoJuso);
-		}	
-			// 입력 이메일값 디버깅
-		System.out.println(customerForm.getCustomerEmail() + " <-- Email");
-		
+		}
+	  
+	  customerForm.setCustomerAddress(address1 + " " + address2 + address3);
+
 	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
 	  customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo());	// 반환값 없음 (void)
 	  return "redirect:/customerOne";
@@ -172,7 +203,12 @@ public class CustomerController { // 프로세스 진행 시 세션 필요한 �
   	// PW 수정 Form
   @GetMapping("/updateCustomerPw")
   public String updateCustomerPw(HttpSession session, Model model) {	// ID값 표기 위한 세션 세팅
-	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	  // id 유효성검사
+		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+		if(loginCustomer == null) {
+			return "customer/loginCustomer";
+		}
+		
 	  model.addAttribute("loginCustomer", loginCustomer);
 	  return "customer/updateCustomerPw";
   }

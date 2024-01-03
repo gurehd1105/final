@@ -14,9 +14,22 @@
 	
 	WHERE customer_id = #{customerId}
 	AND customer_pw = PASSWORD(#{customerPw})
+	AND customer_active = 'Y'
 	</select>
 	
 	<!-- 가입 프로세스 시작 -->
+	
+		<!-- ID 중복체크 -->
+	<select id="checkId" parameterType="com.example.gym.vo.Customer"
+							resultType="com.example.gym.vo.Customer">
+		SELECT 
+			customer_id AS customerId,
+			customer_active AS customerActive
+		FROM customer
+		WHERE customer_id = #{customerId}
+		AND customer_active = 'Y'
+	</select>
+	
 		<!-- customer Insert -->
 	<insert id="insertCustomer" parameterType="com.example.gym.vo.Customer">
 			<selectKey order="AFTER" resultType="Integer" keyProperty="customerNo">SELECT last_insert_id()</selectKey>
@@ -70,6 +83,7 @@
 	<!-- 가입 프로세스 종료 -->
 	
 	<!-- 탈퇴 프로세스 시작 -->
+	
 	<update id="updateCustomerActive" parameterType="com.example.gym.vo.Customer">
 		UPDATE customer SET
 			customer_active = 'N',

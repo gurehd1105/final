@@ -14,6 +14,8 @@ public interface CustomerMapper {
 	Customer loginCustomer(Customer customer);
 	
 	// insert (가입)
+		// ID 중복체크
+	Customer checkId(Customer customer);
 	int insertCustomer(Customer customer);
 	int insertCustomerDetail(CustomerDetail customerDetail);
 	// 선택정보 (Image)
