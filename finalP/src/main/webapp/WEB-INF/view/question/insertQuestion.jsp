@@ -9,24 +9,24 @@
 </head>
 <body>
 <form action="${ctp}/insertQuestion" method="post">
-	<table>
-		<tr>
-			<td>Customer Id</td>
-			<td>
+	<div style="display: table;">
+		<div style="display: table-row;">
+			<div style="display: table-cell;">Customer Id</div>
+			<div style="display: table-cell;">
 				<input type="hidden" name="customerNo" value="${loginCustomer.customerNo}">
-				${loginCustomer.customerId}</td>
-		</tr>
+				${loginCustomer.customerId}</div>
+		</div>
 		
-		<tr>
-			<td>Title</td>
-			<td><input type="text" name="questionTitle"></td>
-		</tr>
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="questionTitle">Title</label></div>
+			<div style="display: table-cell;"><input type="text" id="questionTitle" name="questionTitle" placeholder="제목"></div>
+		</div>
 		
-		<tr>
-			<td>Content</td>
-			<td><textarea name="questionContent"></textarea></td>
-		</tr>
-	</table>
+		<div style="display: table-row;">
+			<div style="display: table-cell;"><label for="questionContent">Content</label></div>
+			<div style="display: table-cell;"><textarea id="questionContent" name="questionContent" placeholder="문의내용"></textarea></div>
+		</div>
+	</div>
 		<button type="submit">등록</button>
 </form>
 </body>
