@@ -4,7 +4,7 @@
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+ 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -13,20 +13,7 @@
     	<div>
 	        <el-text size="large" tag="b">예약하기</el-text>
     	</div>
-
-        <!-- 캘린더
-        <el-button-group class="space-x-4">
-            <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth-1}&targetYear=${calendarMap.targetYear}">
-                <el-button type="primary">이전달</el-button>
-            </a>
-            <a href="${contextPath}/calendar?targetMonth=${calendarMap.targetMonth+1}&targetYear=${calendarMap.targetYear}">
-                <el-button type="primary">다음달</el-button>
-            </a>
-        </el-button-group>
-         -->
-        
-        <el-calendar v-model="date">
-        </el-calendar>
+     <el-calendar v-model="date"></el-calendar>
     </div>
 </c:set>
 
@@ -54,3 +41,8 @@
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>
+
+
+
+
+
