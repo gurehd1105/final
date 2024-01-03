@@ -4,7 +4,7 @@
 <%
 // aplication.properties 파일 불러오기
 ResourceBundle resource = ResourceBundle.getBundle("application");
-String admin = resource.getString("layout.admin");
+String user = resource.getString("layout.user");
 %>
 <!DOCTYPE html>
 <html>
@@ -27,12 +27,12 @@ String admin = resource.getString("layout.admin");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="<%=admin %>/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="<%=admin %>/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="<%=user %>/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="<%=user %>/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="<%=admin %>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<%=user %>/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="<%=admin %>/css/style.css" rel="stylesheet">
+    <link href="<%=user %>/css/style.css" rel="stylesheet">
 </head>

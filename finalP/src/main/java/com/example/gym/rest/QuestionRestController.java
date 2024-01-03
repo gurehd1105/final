@@ -29,7 +29,7 @@ public class QuestionRestController {
 		
 		result = questionService.updateQuestionReply(questionReply);
 		if(result==0) {
-			log.info("수정 실패");
+			log.info("수정 실패 / restController error");
 		}
 		return result;
 		

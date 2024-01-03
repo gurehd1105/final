@@ -6,7 +6,7 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<!-- 주소 kakao API -->
+<!-- 주소 KAKAO API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -47,8 +47,8 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerGender"> Gender </label></div>
 			<div style="display: table-cell;">
-				<input type="radio" value="남" name="customerGender">남
-				<input type="radio"	value="여" name="customerGender">여
+				<input type="radio" value="남" name="customerGender" id="genderMale"><label for="genderMale">남</label>
+				<input type="radio"	value="여" name="customerGender" id="genderFemale"><label for="genderFemale">여</label>
 			</div>	
 		</div>	
 			
@@ -84,7 +84,7 @@
 				<input type="text" name="customerEmailId" id="customerEmail" >@
 				<input type="text" name="customerEmailJuso" id="selfJuso">
 					<select id="autoJuso" name="customerEmailAutoJuso">
-						<option selected="selected" value="">직접 입력</option>
+						<option selected="selected" value="self" id="self">직접 입력</option>
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="hanmail.net">hanmail.net</option>
@@ -106,20 +106,16 @@
 			<div style="display: table-cell;">
 				<button type="reset">초기화</button>&nbsp;<button type="submit">가입하기</button>
 			</div>
-		</div>
-	
+		</div>	
 	</div>
-	
 </form>
 </body>
 <script>
-	/* 
-	
-		customerId 제외 , 전체 유효성검사 필요
-	
+	/* 	
+		customerId 제외 , 전체 유효성검사 필요	
 	*/
-	
 
+	
 	$('#idCkBtn').click(function() {
 		if($('#idCk').val().length < 4){
 			console.log($('#idCk').val());
@@ -148,7 +144,7 @@
 	});
 
 	 $('#autoJuso').click(function() {
-			if($('#autoJuso').val() == ""){
+			if($('#autoJuso').val() == "self"){
 				$("#selfJuso").attr("disabled",false); 
 			} else {
 				$("#selfJuso").val("");
