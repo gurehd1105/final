@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Page {
-	private int page;
-	private String text;
-	private boolean isActive;
+	private int rowPerPage;
+	private int beginRow;
+	private String searchWord;
 }
