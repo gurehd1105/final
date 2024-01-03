@@ -14,6 +14,8 @@ public interface CustomerMapper {
 	Customer loginCustomer(Customer customer);
 	
 	// insert (가입)
+		// ID 중복체크
+	Customer checkId(Customer customer);
 	int insertCustomer(Customer customer);
 	int insertCustomerDetail(CustomerDetail customerDetail);
 	// 선택정보 (Image)
@@ -31,6 +33,8 @@ public interface CustomerMapper {
 		// 상세정보 변경
 	int updateCustomerOne(CustomerDetail customerDetail);
 	int updateCustomerImg(CustomerImg customerImg);
+		// Img 변경위한 정보조회
+	CustomerImg checkCustomerImg(Customer customer);
 		// 비밀번호 변경
 	int updateCustomerPw(Customer customer);
 }

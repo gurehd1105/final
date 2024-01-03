@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
+import com.example.gym.vo.SportsEquipmentOrder;
 
 @Mapper
 public interface SportsEquipmentMapper {
@@ -21,21 +22,33 @@ public interface SportsEquipmentMapper {
 	List<Map<String,Object>> selectSportsEquipmentByPage(Map<String,Object> paramMap);
 	
 	//lastPage 구하기 위한 sportsEquipment 수
-	int selectSportsEquipmentCnt(String searchWord);
+	int selectSportsEquipmentCnt(Map<String,Object> paramMap);
 	
-	//sportsEquipment 상세보기(selectSportsEquipmentOne + selectSportsEquipmentImgOne)
-	SportsEquipment selectSportsEquipmentOne(int sportsEquipmentNo);
+	//sportsEquipment 상세보기
+	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
 	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
-	// sportsEquipment CRUD를 위해 본사소속 직원 확인하기
+	//sportsEquipment CRUD를 위해 본사소속 직원 확인하기
 	int selectSearchEmployeeLevel(int employeeNo); 
 	
-//	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
-//	int deleteSportsEquipmentImg(int sportsEquipmentNo);
-//	
-//	//sportsEquipment 삭제
-//	int deleteSportsEquipment(int sportsEquipmentNo);
-//	
-//	//sportsEquipmentImg 개별 삭제
-//	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
+	//sportsEquipment 수정
+	int updateSportsEquipment(SportsEquipment sportsEuipment);
+	
+	//sportsEquipmentImg 개별 삭제
+	int deleteOneSportsEquipmentImg(int sportsEquipmentImgNo);
+	
+	//sportsEquipment 삭제를 위해 sportsEquipmentImg 삭제
+	//int deleteSportsEquipmentImg(int sportsEquipmentNo);
+	
+	//sportsEquipment 삭제
+	//int deleteSportsEquipment(int sportsEquipmentNo);
+	
+	//sportsEquipmentOrder 추가
+	int insertSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
+	
+	//sportsEquipmentOrder 리스트 + 검색 + 페이징
+	List<Map<String,Object>> selectSportsEquipmentOrderByPage(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipmentOrder 수
+	int selectSportsEquipmentOrderCnt(Map<String,Object> paramMap);
 }

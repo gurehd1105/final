@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
+
+	<!-- sportsEquipment 추가  -->
+	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	
+		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
+		SELECT last_insert_id();<!-- 제일 마지막에 입력된 키값을 받아옴 -->
+		</selectKey>
+		INSERT INTO sports_equipment(
+				employee_no,
+				item_name,
+				item_price,
+				createdate,
+				updatedate
+			)VALUES(
+				#{employeeNo},
+				#{itemName},
+				#{itemPrice},
+				NOW(),
+				NOW()
+			)
+	</insert> 
+	
+	<!-- sportsEquipmentImg 추가  -->
+	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
+	    INSERT INTO sports_equipment_img(
+	        sports_equipment_no,
+	        sports_equipment_img_origin_name,
+	        sports_equipment_img_file_name,
+	        sports_equipment_img_size,
+	        sports_equipment_img_type,
+	        createdate,
+	        updatedate
+	    ) VALUES (
+	        #{sportsEquipmentNo},
+	        #{sportsEquipmentImgOriginName},
+	        #{sportsEquipmentImgFileName},
+	        #{sportsEquipmentImgSize},
+	        #{sportsEquipmentImgType},
+	        NOW(),
+	        NOW()
+	    )
+	</insert>
+	
+	<!-- sportsEquipment CRUD를 위해 본사소속 직원 확인하기  -->
+	<select id="selectSearchEmployeeLevel" parameterType="int" resultType="int">
+		SELECT 
+			b.branch_level branchLevel
+		FROM employee e 
+		INNER JOIN branch b
+		ON e.branch_no = b.branch_no
+		WHERE employee_no = #{employeeNo}
+	</select>
+
+	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
+	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
+	    SELECT 
+	        se.sports_equipment_no sportsEquipmentNo,
+	        se.item_name itemName,
+	        se.item_price itemPrice,
+	        se.equipment_active equipmentActive,
+	        (SELECT sei.sports_equipment_img_file_name
+	         FROM sports_equipment_img sei
+	         WHERE sei.sports_equipment_no = se.sports_equipment_no
+	         LIMIT 1 <!-- 리스트에서는 img를 하나만 가지고 오기위한 서브쿼리 -->
+	        ) sportsEquipmentImgFileName
+	    FROM sports_equipment se
+	    <where>
+	        <if test="searchWord != ''">
+	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+	    </where>
+	    LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
+	<select id="selectSportsEquipmentCnt" parameterType="String" resultType="int">
+		SELECT 
+			COUNT(sports_equipment_no)
+		FROM sports_equipment
+		<where>
+			<if test="searchWord != ''">
+				item_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+	</select>
+	
+	<!--sportsEquipment 상세보기(정보)-->
+	<select id="selectSportsEquipmentOne" parameterType="int" resultType="java.util.Map">
+		SELECT 
+			se.sports_equipment_no sportsEquipmentNo,
+			e.employee_id employeeId,
+			se.item_name itemName,
+			se.item_price itemPrice,
+			se.equipment_active equipmentActive,
+			se.createdate equipmentCreatedate,
+			se.updatedate equipmentUpdatedate
+		FROM employee e 
+		INNER JOIN sports_equipment se
+		ON e.employee_no = se.employee_no
+		WHERE se.sports_equipment_no = #{sportsEquipmentNo}
+	</select>
+	
+	<!--sportsEquipment 상세보기(이미지)-->
+	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
+		SELECT 
+			sports_equipment_img_file_name sportsEquipmentImgFileName,
+			sports_equipment_img_no sportsEquipmentImgNo
+		FROM sports_equipment_img
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</select>
+	
+	<!--sportsEquipment 정보 수정-->
+	<update id="updateSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+		UPDATE sports_equipment
+		SET 
+			employee_no = #{employeeNo},
+			item_name = #{itemName}, 
+			item_price = #{itemPrice},
+			equipment_active = #{equipmentActive},
+			updatedate = NOW()
+		WHERE sports_equipment_no = #{sportsEquipmentNo}
+	</update>
+	
+	<!--sportsEquipmentImg 개별 삭제-->
+	<delete id="deleteOneSportsEquipmentImg" parameterType="int">
+		DELETE FROM sports_equipment_img
+		WHERE sports_equipment_img_no = #{sportsEquipmentImgNo}
+	</delete>
+	
+</mapper>

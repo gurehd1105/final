@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.CustomerMapper">
+
+		<!-- 로그인 -->
+	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
+						resultType="com.example.gym.vo.Customer">
+		SELECT
+				customer_no AS customerNo,
+				customer_id AS customerId,
+				customer_active AS customerActive,
+				createdate, updatedate
+		FROM customer
+	
+	WHERE customer_id = #{customerId}
+	AND customer_pw = PASSWORD(#{customerPw})
+	</select>
+	
+	<!-- 가입 프로세스 시작 -->
+		<!-- customer Insert -->
+	<insert id="insertCustomer" parameterType="com.example.gym.vo.Customer">
+			<selectKey order="AFTER" resultType="Integer" keyProperty="customerNo">SELECT last_insert_id()</selectKey>
+		INSERT INTO customer (
+			customer_id,
+			customer_pw
+		) VALUES (
+			#{customerId},
+			PASSWORD(#{customerPw})
+		)	
+	</insert>
+		<!-- customerDetail Insert -->
+	<insert id="insertCustomerDetail" parameterType="com.example.gym.vo.CustomerDetail">
+		INSERT INTO customer_detail (
+			customer_no,
+			customer_name,
+			customer_gender,
+			customer_height,
+			customer_weight,
+			customer_phone,
+			customer_address,
+			customer_email
+		) VALUES (
+			#{customerNo},
+			#{customerName},
+			#{customerGender},
+			#{customerHeight},
+			#{customerWeight},
+			#{customerPhone},
+			#{customerAddress},
+			#{customerEmail}
+		)			
+	</insert>	
+	
+		<!-- customerImg Insert -->	
+	<insert id="insertCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
+		INSERT INTO customer_img (
+			customer_no,
+			customer_img_origin_name,
+			customer_img_file_name,
+			customer_img_size,
+			customer_img_type			
+		) VALUES (
+			#{customerNo},
+			#{customerImgOriginName},
+			#{customerImgFileName},
+			#{customerImgSize},
+			#{customerImgType}
+		)			
+	</insert>
+	<!-- 가입 프로세스 종료 -->
+	
+	<!-- 탈퇴 프로세스 시작 -->
+	<update id="updateCustomerActive" parameterType="com.example.gym.vo.Customer">
+		UPDATE customer SET
+			customer_active = 'N',
+			updatedate = NOW()
+		WHERE customer_no = #{customerNo}
+	</update>
+	
+	<delete id="deleteCustomerImg" parameterType="com.example.gym.vo.Customer">
+		DELETE FROM customer_img
+		WHERE customer_no = #{customerNo}
+	</delete>
+	
+	<delete id="deleteCustomerDetail" parameterType="com.example.gym.vo.Customer">
+		DELETE FROM customer_detail
+		WHERE customer_no = #{customerNo}
+	</delete>	
+	<!-- 탈퇴 프로세스 종료 -->
+	
+	<!-- 상세정보/이미지 -> 마이페이지  -->
+	<select id="customerOne" parameterType="com.example.gym.vo.Customer"
+										resultType="java.util.Map">
+		SELECT
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId,
+			c.customer_active AS customerActive,
+			
+			c.createdate AS cCreatedate, 
+			c.updatedate AS cUpdatedate,
+			
+			cd.customer_name AS customerName,
+			cd.customer_gender AS customerGender,
+			cd.customer_height AS customerHeight,
+			cd.customer_weight AS customerWeight,
+			cd.customer_phone AS customerPhone,
+			cd.customer_address AS customerAddress,
+			cd.customer_email AS customerEmail,
+			
+			cd.createdate AS cdCreatedate, 
+			cd.updatedate AS cdUpdatedate, 
+			
+			ci.customer_img_no AS customerImgNo,
+			ci.customer_img_origin_name AS customerImgOriginName,
+			ci.customer_img_file_name AS customerImgFileName,
+			ci.customer_img_size AS customerImgSize,
+			ci.customer_img_type AS customerImgType,
+			ci.createdate AS ciCreatedate, 
+			ci.updatedate AS ciUpdatedate
+		FROM customer c 
+		INNER JOIN customer_detail cd
+		ON c.customer_no = cd.customer_no
+		LEFT OUTER JOIN customer_img ci
+		ON c.customer_no = ci.customer_no
+		
+		WHERE c.customer_no = #{customerNo}
+	</select>
+	
+	<!-- 수정 프로세스 시작 -->
+		<!-- 상세정보 변경 -->
+	<update id="updateCustomerOne" parameterType="com.example.gym.vo.CustomerDetail">
+		UPDATE customer_detail SET
+			customer_name = #{customerName},
+			customer_gender = #{customerGender},
+			customer_height = #{customerHeight},
+			customer_weight = #{customerWeight},
+			customer_phone = #{customerPhone},
+			customer_address = #{customerAddress},
+			customer_email = #{customerEmail},
+			updatedate = NOW()
+		WHERE customer_no = #{customerNo}
+	</update>
+		<!-- 이미지 변경 -->
+	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
+		UPDATE customer_img SET
+			customer_img_origin_name = #{customerImgOriginName},
+			customer_img_file_name = #{customerImgFileName},
+			customer_img_size = #{customerImgSize},
+			customer_img_type = #{customerImgType},
+			updatedate = NOW()
+		WHERE customer_no = #{customerNo}		
+	</update>
+		<!-- Img 변경 위한 정보조회 -->
+	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"
+									resultType="com.example.gym.vo.CustomerImg">
+		SELECT
+			customer_img_no AS customerImgNo,
+			customer_no AS customerNo,
+			customer_img_origin_name AS customerImgOriginName,
+			customer_img_file_name AS customerImgFileName,
+			customer_img_size AS customerImgSize,
+			customer_img_type AS customerImgType,
+			createdate, updatedate
+		FROM customer_img
+			WHERE customer_no = #{customerNo}
+	</select>
+		<!-- 비밀번호 변경 -->
+	<update id="updateCustomerPw" parameterType="com.example.gym.vo.Customer">
+		UPDATE customer SET
+			customer_pw = PASSWORD(#{customerPw}),
+			updatedate = now()
+		WHERE customer_no = #{customerNo}
+	</update>	
+		
+	<!-- 수정 프로세스 종료 -->
+	
+	
+</mapper>
