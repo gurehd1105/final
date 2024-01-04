@@ -37,4 +37,8 @@ public interface CustomerMapper {
 	CustomerImg checkCustomerImg(Customer customer);
 		// 비밀번호 변경
 	int updateCustomerPw(Customer customer);
+	
+	
+	// 전체 회원조회 - 관리자용
+	Map<String, Object> selectAllCustomer();
 }

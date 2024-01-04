@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 public class CustomerRestController {
 	@Autowired private CustomerMapper customerMapper;
@@ -15,9 +17,9 @@ public class CustomerRestController {
 	public int idCheck(String customerId) {
 		int result = 0;
 		Customer idCustomer = new Customer();
-		idCustomer.setCustomerId(customerId);
-		System.out.println(customerId);
-		if(customerMapper.checkId(idCustomer)!=null) {	// id 중복			
+		idCustomer.setCustomerId(customerId);		
+		if(customerMapper.checkId(idCustomer)!=null) {	// id 중복
+			log.info(customerId + " / 중복 ID");
 			result = 1;
 		}
 		

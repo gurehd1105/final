@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.gym.mapper.ResrvationMapper">
+<mapper namespace="com.example.gym.mapper.ReservationMapper">
 	<select id="selectCalendarList" parameterType="java.util.Map"
 			resultType="java.util.Map">
 		SELECT	
@@ -13,8 +13,32 @@
 	       AND DAY(program_date) = #{targetDay}
 		 GROUP BY program_date
 	     ORDER BY program_date ASC	
-	
 	</select>
-
-
+	
+	<select id="selectReservationList" parameterType="java.util.Map"
+			resultType="com.example.gym.vo.ProgramReservation">	  	  
+	  SELECT 
+	  		 pr.program_reservation_no programReservationNo, pr.member_no memberNo, 
+	  		 p.payment_no paymentNo, pd.program_date_no programDateNo, b.branch_no branchNo
+		FROM program_reservation pr
+       INNER JOIN payment p 
+		  ON pr.payment_no = p.payment_no
+	   INNER JOIN program_date pd 
+	   	  ON pr.program_date_no = pd.program_date_no
+	   INNER JOIN branch b 
+	      ON pr.branch_no = b.branch_no
+	</select>
+	<insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
+		INSERT INTO Program_reservation(
+			payment_no,
+			program_date_no,
+			branch_no,
+			)VALUE(
+			#{paymentNo},
+			#{programDateNo},
+			#{branchNo}
+			)
+			
+	</insert>
+	
 </mapper>
