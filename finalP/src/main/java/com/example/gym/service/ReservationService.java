@@ -22,5 +22,12 @@ public class ReservationService {
 		List<Map<String, Object>> resultReservation = reservationMapper.selectReservationList(paramMap);	
 		return resultReservation;
 	}
+	// 예약 추가
+	public int insertReservation(ProgramReservation reservation) {
+		int row = reservationMapper.insertReservation(reservation);
+		return row;
+		
+	}
+	
 	
 }

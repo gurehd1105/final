@@ -31,18 +31,17 @@ public class ReservationController {
 			
 		return "reservation/calendar";
 	}
-	
-	// 팝업창 출력
-	@GetMapping("/reservationPopup")
-	public String reservationPopup() {		
-		return "reservation/reservationPopup";	
+	// insertReservation
+	@GetMapping("/insertReservation")
+	public String reservationApp() {
+		return "reservation/insertReservation";
+		
 	}
 	
-	
-	
-	@GetMapping("/reservationConfirm")
-	public String reservationConfirm() {
-		return "reservation/reservationConfirm";
+	//reservationOne
+	@GetMapping("/reservationOne")
+	public String reservationOne() {
+		return "reservation/reservationOne";
 		
 	}
 	

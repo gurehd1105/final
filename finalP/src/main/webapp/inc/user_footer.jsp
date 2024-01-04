@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<div id="header">
-	<el-header style="background-color:#c6e2ff">{{msg}}</el-header>
+<div id="footer">
+	<el-footer style="background-color:#c6e2ff">Footer</el-footer>
 </div>
 <script>
-	const header = Vue.createApp({
+	const footer = Vue.createApp({
 		data() {
 			return {
 				msg: 'hello world!'
 			}
 		}
 	});
-	header.use(ElementPlus, {
+	footer.use(ElementPlus, {
 	  locale: ElementPlusLocaleKo,
 	});
-	header.mount("#header");
+	footer.mount("#footer");
 </script>
