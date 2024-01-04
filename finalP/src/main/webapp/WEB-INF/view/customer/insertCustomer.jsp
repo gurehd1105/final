@@ -81,17 +81,22 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerEmail"> Email </label></div>
 			<div style="display: table-cell;">
-				<input type="text" name="customerEmailId" id="customerEmailId" placeholder="이메일 ID">@
-				<span id="email"><input type="text" id="selfEmail" name="customerEmailJuso" placeholder="이메일 주소"></span>
-					<select id="autoEmail" name="customerEmailJuso" disabled="disabled">
+				<input type="text" id="emailId" placeholder="이메일 ID">@
+				
+				<span id="email"><input type="text" id="emailJuso" placeholder="이메일 주소"></span>
+				
+					<select id="autoEmail" disabled="disabled">
+						<option disabled="disabled" selected="selected">주소 선택</option>
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="hanmail.net">hanmail.net</option>
 						<option value="nate.com">nate.com</option>
-						<option value="kakao.com">daum.net</option>
+						<option value="daum.net">daum.net</option>
 						<option value="icloud.com">icloud.com</option>
 					</select>
+					
 						<input type="checkbox" id="self" checked="checked"><label for="self">직접입력</label>
+						<input type="hidden" id="customerEmail" name="customerEmail"><!-- 최종 Email 값 저장소 -->
 			</div>	
 		</div>		
 			
@@ -111,97 +116,115 @@
 </form>
 </body>
 <script>
-
 	/* 	
 		customerId 제외 , 전체 유효성검사 필요
-	*/
-	$('#self').change(function() { // 이메일주소 직접입력에 따른 HTML 변환
+		customerEmail -> email 주소 value값 기준으로 유효성검사 진행필요
+	 */
+	 
+	$('#self').change(function() { // 이메일주소 직접입력 선택에 따른 HTML 변환
 		var ck = $('#self').is(':checked');
-		if(ck==true){
-			$('#selfEmail').attr("disabled", false);
+		if (ck == true) {
+			$('#emailJuso').attr("disabled", false);
 			$('#autoEmail').attr("disabled", true);
 		} else {
-			$('#selfEmail').attr("disabled", true);
+			$('#emailJuso').attr("disabled", true);
 			$('#autoEmail').attr("disabled", false);
-		}		
+		}
+	});
+	
+		
+		// 최종 Email값 설정
+	$('#autoEmail').change(function() {
+		$('#emailJuso').val($('#autoEmail').val());
+		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
+	});
+	
+	$('#emailId').keyup(function() {
+		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
 	});
 	
 	
+
+	// ID 중복확인
 	$('#idCkBtn').click(function() {
-		if($('#idCk').val().length < 4){
+		if ($('#idCk').val().length < 4) {
 			console.log($('#idCk').val());
 			$('#idCkMsg').html('4글자 이상 입력해주세요');
 		} else {
-		$.ajax({
-			url: '${ctp}/idCheck',
-			type: 'get',
-			data: {
-				customerId: $('#idCk').val()
-			},
-			success: function(result) {
-				if(result == 1){
-					$('#idCkMsg').html('중복 ID입니다');
-					$('#customerId').val('');
-				} else {
-					$('#idCkMsg').html('사용 가능한 ID입니다.');
-					$('#customerId').val($('#idCk').val());
-				}
-			},
-				error: function(){
+			$.ajax({
+				url : '${ctp}/idCheck',
+				type : 'get',
+				data : {
+					customerId : $('#idCk').val()
+				},
+				success : function(result) {
+					if (result == 1) {
+						$('#idCkMsg').html('중복 ID입니다');
+						$('#customerId').val('');
+					} else {
+						$('#idCkMsg').html('사용 가능한 ID입니다.');
+						$('#customerId').val($('#idCk').val());
+					}
+				},
+				error : function() {
 					alert("페이지 오류");
 				}
 			})
 		}
 	});
 
-	 
-	 // 주소 API 설정
-	  function sample6_execDaumPostcode() {
-	        new daum.Postcode({
-	            oncomplete: function(data) {
-	                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+	// 주소 API 설정
+	function sample6_execDaumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
-	                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-	                var addr = ''; // 주소 변수
-	                var extraAddr = ''; // 참고항목 변수
+						// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+						// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+						var addr = ''; // 주소 변수
+						var extraAddr = ''; // 참고항목 변수
 
-	                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-	                    addr = data.roadAddress;
-	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
-	                    addr = data.jibunAddress;
-	                }
+						//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+						if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+							addr = data.roadAddress;
+						} else { // 사용자가 지번 주소를 선택했을 경우(J)
+							addr = data.jibunAddress;
+						}
 
-	                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-	                if(data.userSelectedType === 'R'){
-	                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-	                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-	                        extraAddr += data.bname;
-	                    }
-	                    // 건물명이 있고, 공동주택일 경우 추가한다.
-	                    if(data.buildingName !== '' && data.apartment === 'Y'){
-	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-	                    }
-	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-	                    if(extraAddr !== ''){
-	                        extraAddr = ' (' + extraAddr + ')';
-	                    }
-	                    // 조합된 참고항목을 해당 필드에 넣는다.
-	                    document.getElementById("sample6_extraAddress").value = extraAddr;
-	                
-	                } else {
-	                    document.getElementById("sample6_extraAddress").value = '';
-	                }
+						// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+						if (data.userSelectedType === 'R') {
+							// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+							// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+							if (data.bname !== ''
+									&& /[동|로|가]$/g.test(data.bname)) {
+								extraAddr += data.bname;
+							}
+							// 건물명이 있고, 공동주택일 경우 추가한다.
+							if (data.buildingName !== ''
+									&& data.apartment === 'Y') {
+								extraAddr += (extraAddr !== '' ? ', '
+										+ data.buildingName : data.buildingName);
+							}
+							// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+							if (extraAddr !== '') {
+								extraAddr = ' (' + extraAddr + ')';
+							}
+							// 조합된 참고항목을 해당 필드에 넣는다.
+							document.getElementById("sample6_extraAddress").value = extraAddr;
 
-	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
-	                document.getElementById('sample6_postcode').value = data.zonecode;
-	                document.getElementById("sample6_address").value = addr;
-	                // 커서를 상세주소 필드로 이동한다.
-	                document.getElementById("sample6_detailAddress").focus();
-	            }
-	        }).open();
-	    }
+						} else {
+							document.getElementById("sample6_extraAddress").value = '';
+						}
+
+						// 우편번호와 주소 정보를 해당 필드에 넣는다.
+						document.getElementById('sample6_postcode').value = data.zonecode;
+						document.getElementById("sample6_address").value = addr;
+						// 커서를 상세주소 필드로 이동한다.
+						document.getElementById("sample6_detailAddress")
+								.focus();
+					}
+				}).open();
+	}
 </script>
 </html>

@@ -13,7 +13,6 @@
 			<div style="display: table-row;">
 				<div style="display: table-cell;"> Id </div>
 				<div style="display: table-cell;">
-					<input type="hidden" value="${loginCustomer.customerNo}" name="customerNo">
 					<input type="text" readonly value="${loginCustomer.customerId}" name="customerId">
 				</div>
 			</div>

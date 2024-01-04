@@ -18,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class CustomerController { 
-	@Autowired
-  private CustomerService customerService;
+	@Autowired private CustomerService customerService;
   	// login (로그인) Form
   @GetMapping("/loginCustomer")
   public String loginCustomer(HttpSession session) {
@@ -57,22 +56,21 @@ public class CustomerController {
     return "customer/insertCustomer";
   }
 
-  	// insert (회원가입) Act
-  @PostMapping("/insertCustomer")
-  public String insertCustomer(HttpSession session, CustomerForm customerForm, String customerEmailId, 
-		  						String customerEmailJuso, String address1, String address2, String address3) {
-	String path = session.getServletContext().getRealPath("/upload/customer");
-	
-	customerForm.setCustomerEmail(customerEmailId + "@" + customerEmailJuso);
-	customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-	
-	int result = customerService.insertCustomer(customerForm, path);
-	if(result==1) { // 가입 완
-		return "customer/loginCustomer";
-	} else {		// 예외발생
-		return "customer/insertCustomer";
+	// insert (회원가입) Act
+	@PostMapping("/insertCustomer")
+	public String insertCustomer(HttpSession session, CustomerForm customerForm, String address1, String address2,
+			String address3) {
+		String path = session.getServletContext().getRealPath("/upload/customer");
+
+		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
+
+		int result = customerService.insertCustomer(customerForm, path);
+		if (result == 1) { // 가입 완
+			return "customer/loginCustomer";
+		} else { // 예외발생
+			return "customer/insertCustomer";
+		}
 	}
-  }
 
   	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg , customerDetail)
   @GetMapping("/deleteCustomer")
@@ -90,12 +88,10 @@ public class CustomerController {
   
   	// delete (탈퇴) Act
   @PostMapping("/deleteCustomer")
-  public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {
-	 Customer paramCustomer = new Customer();
-	 paramCustomer.setCustomerId(customerId);
-	 paramCustomer.setCustomerPw(customerPw);
-	 paramCustomer.setCustomerNo(customerNo);
-	 int result = customerService.deleteCustomer(paramCustomer);
+  public String deleteCustomer(Customer customer, HttpSession session) {
+	 Customer loginCustomer = (Customer)session.getAttribute("loginCustomer"); 
+	 customer.setCustomerNo(loginCustomer.getCustomerNo());
+	 int result = customerService.deleteCustomer(customer);
 	 
 	 if(result==1) {	// 탈퇴 완 --> login 창으로 이동
 		 session.invalidate();
@@ -172,12 +168,10 @@ public class CustomerController {
   
   	// 내정보 수정 Act
   @PostMapping("/updateCustomerOne")
-  public String updateCustomerOne(HttpSession session, CustomerForm customerForm,
-		  						String customerEmailId, String customerEmailJuso,
+  public String updateCustomerOne(HttpSession session, CustomerForm customerForm,		  						
 		  						String address1, String address2, String address3) {
 	  String path = session.getServletContext().getRealPath("/upload/customer");
 	  
-	  customerForm.setCustomerEmail(customerEmailId + "@" + customerEmailJuso);
 	  customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 
 	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
