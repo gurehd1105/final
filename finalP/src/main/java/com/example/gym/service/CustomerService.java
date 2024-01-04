@@ -232,4 +232,11 @@ public class CustomerService {
 		return result;
 	}	
 	
+	// 전체 회원정보 조회 - 관리자용
+	public Map<String, Object> selectAllCustomer(){
+		
+		Map<String, Object> resultMap = customerMapper.selectAllCustomer();
+		
+		return resultMap;
+	}
 }

@@ -46,9 +46,27 @@ public interface SportsEquipmentMapper {
 	//sportsEquipmentOrder 추가
 	int insertSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
 	
-	//sportsEquipmentOrder 리스트 + 검색 + 페이징
-	List<Map<String,Object>> selectSportsEquipmentOrderByPage(Map<String,Object> paramMap);
+	//sportsEquipmentOrder 리스트 + 검색 + 페이징 (본사)
+	List<Map<String,Object>> selectSportsEquipmentOrderByHead(Map<String,Object> paramMap);
 	
-	//lastPage 구하기 위한 sportsEquipmentOrder 수
-	int selectSportsEquipmentOrderCnt(Map<String,Object> paramMap);
+	//lastPage 구하기 위한 sportsEquipmentOrder 수 (본사)
+	int selectSportsEquipmentOrderHeadCnt(Map<String,Object> paramMap);
+	
+	//sportsEquipmentOrder 리스트 + 검색 + 페이징 (지점)
+	List<Map<String,Object>> selectSportsEquipmentOrderByBranch(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipmentOrder 수 (지점)
+	int selectSportsEquipmentOrderBranchCnt(Map<String,Object> paramMap);
+	
+	//sportsEquipmentOrder 상태 수정 (본사)
+	int updateSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
+	
+	//sportsEquipmentOrder 삭제 (지점)
+	int deleteSportsEquipmentOrder(SportsEquipmentOrder sportsEuipmentOrder);
+	
+	//sportsEquipmentInventory 출력 (본사)
+	List<Map<String,Object>> selectSportsEquipmentInventoryByHead(Map<String,Object> paramMap);
+	
+	//sportsEquipmentInventory 출력 (지점)
+	List<Map<String,Object>> selectSportsEquipmentInventoryByBranch(Map<String,Object> paramMap);
 }

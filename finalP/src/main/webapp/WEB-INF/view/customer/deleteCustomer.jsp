@@ -20,12 +20,12 @@
 			
 			<div style="display: table-row;">
 				<div style="display: table-cell;"><label for="customerPw"> Pw </label></div>
-				<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw"></div>
+				<div style="display: table-cell;"><input type="password" id="customerPw" name="customerPw" placeholder="PW 입력"></div>
 			</div>
 			
 			<div style="display: table-row;">
 				<div style="display: table-cell;"><label for="pwck"> Pw Ck </label></div>
-				<div style="display: table-cell;"><input type="password" id="pwck"></div>
+				<div style="display: table-cell;"><input type="password" id="pwck" placeholder="PW 확인"></div>
 			</div>
 			
 			

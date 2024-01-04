@@ -184,9 +184,42 @@
 			customer_pw = PASSWORD(#{customerPw}),
 			updatedate = now()
 		WHERE customer_no = #{customerNo}
-	</update>	
-		
+	</update>
 	<!-- 수정 프로세스 종료 -->
 	
+	<select id="selectAllCustomer" resultType="java.util.Map">
+		SELECT
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId,
+			c.customer_active AS customerActive,
+			
+			c.createdate AS cCreatedate, 
+			c.updatedate AS cUpdatedate,
+			
+			cd.customer_name AS customerName,
+			cd.customer_gender AS customerGender,
+			cd.customer_height AS customerHeight,
+			cd.customer_weight AS customerWeight,
+			cd.customer_phone AS customerPhone,
+			cd.customer_address AS customerAddress,
+			cd.customer_email AS customerEmail,
+			
+			cd.createdate AS cdCreatedate, 
+			cd.updatedate AS cdUpdatedate, 
+			
+			ci.customer_img_no AS customerImgNo,
+			ci.customer_img_origin_name AS customerImgOriginName,
+			ci.customer_img_file_name AS customerImgFileName,
+			ci.customer_img_size AS customerImgSize,
+			ci.customer_img_type AS customerImgType,
+			ci.createdate AS ciCreatedate, 
+			ci.updatedate AS ciUpdatedate
+		FROM customer c 
+		INNER JOIN customer_detail cd
+		ON c.customer_no = cd.customer_no
+		LEFT OUTER JOIN customer_img ci
+		ON c.customer_no = ci.customer_no
+		
+	</select>
 	
 </mapper>
