@@ -18,14 +18,15 @@
 	<select id="selectReservationList" parameterType="java.util.Map"
 			resultType="com.example.gym.vo.ProgramReservation">	  	  
 	  SELECT 
-	  		 pr.program_reservation_no, pr.member_no, p.payment_no, pd.program_date_no, b.branch_no
+	  		 pr.program_reservation_no programReservationNo, pr.member_no memberNo, 
+	  		 p.payment_no paymentNo, pd.program_date_no programDateNo, b.branch_no branchNo
 		FROM program_reservation pr
        INNER JOIN payment p 
 		  ON pr.payment_no = p.payment_no
 	   INNER JOIN program_date pd 
 	   	  ON pr.program_date_no = pd.program_date_no
 	   INNER JOIN branch b 
-	      ON pr.branch_no = b.branch_no;
+	      ON pr.branch_no = b.branch_no
 	</select>
 	<insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
 		INSERT INTO Program_reservation(
@@ -33,7 +34,10 @@
 			program_date_no,
 			branch_no,
 			)VALUE(
-			#{payment_no},
+			#{paymentNo},
+			#{programDateNo},
+			#{branchNo}
+			)
 			
 	</insert>
 	
