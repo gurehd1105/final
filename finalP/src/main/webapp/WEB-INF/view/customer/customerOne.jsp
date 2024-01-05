@@ -11,7 +11,7 @@
 	<h1>customer One</h1>
 	
 				<c:if test="${resultMap.customerImgFileName != null}">
-			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
+			<div><img src="${ctp}/upload/customer/${ resultMap.customerImgFileName }"></div><!-- 프로필사진/임시 -->
 				</c:if>
 	
 		<div style="display: table;">

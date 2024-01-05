@@ -59,12 +59,12 @@
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerHeight"> Height </label></div>
-			<div style="display: table-cell;"><input type="number" id="customerHeight" name="customerHeight" placeholder="키"></div>	
+			<div style="display: table-cell;"><input type="text" id="customerHeight" name="customerHeight" placeholder="키" maxlength="3"></div>	
 		</div>	
 			
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerWeight"> Weight </label></div>
-			<div style="display: table-cell;"><input type="number" id="customerWeight" name="customerWeight" placeholder="몸무게"></div>	
+			<div style="display: table-cell;"><input type="text" id="customerWeight" name="customerWeight" placeholder="몸무게" maxlength="3"></div>	
 		</div>	
 			
 		<div style="display: table-row;">
@@ -140,6 +140,10 @@
 	});
 	
 	$('#emailId').keyup(function() {
+		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
+	});
+	
+	$('#emailJuso').keyup(function() {
 		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
 	});
 	

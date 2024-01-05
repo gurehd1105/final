@@ -1,5 +1,7 @@
 package com.example.gym.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -88,14 +90,14 @@ public class CustomerService {
 				throw new RuntimeException();
 			}
 			
-	/*	// path 저장 -- 경로 확인 후 설정 예정
+		// path 저장
 	  System.out.println(path +"/"+ fileName + fileName2);
 		File file = new File(path +"/"+ fileName + fileName2);
 		try {
-			mf.transferTo(file);
+			mf.transferTo(file);			
 		} catch (IllegalStateException | IOException e) {
 			throw new RuntimeException();
-		} */
+		} 
 	}		
 			
 	if (row > 0 && row2 > 0) { // Image 정보 없어도 가입가능
@@ -194,20 +196,16 @@ public class CustomerService {
 				throw new RuntimeException();
 			}
 
-		 	/*	// path 저장 -- 경로 확인 후 설정 예정
+		 		// path 저장
 			  System.out.println(path +"/"+ fileName + fileName2);
 				File file = new File(path +"/"+ fileName + fileName2);
 				try {
 					mf.transferTo(file);
 				} catch (IllegalStateException | IOException e) {
 					throw new RuntimeException();
-				} */
+				} 
 
-		} else { // 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
-			Customer deleteImg = new Customer();
-			deleteImg.setCustomerNo(customerNo);
-			customerMapper.deleteCustomerImg(deleteImg);
-		}
+		} 
 	}
 	 
 	

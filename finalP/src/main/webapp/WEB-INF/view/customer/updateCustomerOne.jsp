@@ -13,8 +13,10 @@
 <body>
 <h1>update CustomerOne</h1>
 <form action="${ctp}/updateCustomerOne" method="post" enctype="multipart/form-data">			
-			<div><img src="${resultMap.customerImgFileName}"></div><!-- 프로필사진/임시 -->
-		미선택 시 프로필 사진 없음<br><input type="file" name="customerImg"> 
+				<c:if test="${resultMap.customerImgFileName != null}">
+			<div id="imgArea"><label for="customerImg"><img src="${ctp}/upload/customer/${ resultMap.customerImgFileName }" id="customerImg0"></label></div><!-- 프로필사진/임시 -->
+				</c:if>
+		<input type="button" id="deleteImg" value="사진 삭제"><input type="file" name="customerImg" id="customerImg">
 		
 			<div style="display: table;">
 		<div style="display: table-row;">
@@ -65,35 +67,94 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerEmail">Email</label></div>
 			<div style="display: table-cell;">
-					<input type="text" value="${ resultMap.emailId }" name="customerEmailId" id="customerEmailId">@
-				<span id="email"><input type="text" id="selfEmail"  value="${ resultMap.emailJuso }" name="customerEmailJuso"></span>
-					<select id="autoEmail" name="customerEmailJuso" disabled="disabled">
+				<input type="text" id="emailId" placeholder="이메일 ID" value="${resultMap.emailId}" name="emailId">@
+				
+				<span id="email"><input type="text" id="emailJuso" placeholder="이메일 주소" value="${resultMap.emailJuso}" name="emailJuso"></span>
+				
+					<select id="autoEmail" disabled="disabled">
+						<option disabled="disabled" selected="selected">주소 선택</option>
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="hanmail.net">hanmail.net</option>
 						<option value="nate.com">nate.com</option>
-						<option value="kakao.com">daum.net</option>
+						<option value="daum.net">daum.net</option>
 						<option value="icloud.com">icloud.com</option>
 					</select>
+					
 						<input type="checkbox" id="self" checked="checked"><label for="self">직접입력</label>
+						<input type="hidden" id="customerEmail" name="customerEmail"><!-- 최종 Email 값 저장소 -->
 			</div>
 		</div>		
 	</div>
+		<br>
 	<button type="submit">저장</button>
 </form>
 </body>
 <script>
 	
-	$('#self').change(function() { // 이메일주소 직접입력에 따른 HTML 변환
+		/* 	
+		customerId 제외 , 전체 유효성검사 필요
+		customerEmail -> email 주소 value값 기준으로 유효성검사 진행필요
+		*/
+		
+		$('#self').change(function() { // 이메일주소 직접입력 선택에 따른 HTML 변환
 		var ck = $('#self').is(':checked');
-		if(ck==true){
-			$('#selfEmail').attr("disabled", false);
+		if (ck == true) {
+			$('#emailJuso').attr("disabled", false);
 			$('#autoEmail').attr("disabled", true);
 		} else {
-			$('#selfEmail').attr("disabled", true);
+			$('#emailJuso').attr("disabled", true);
 			$('#autoEmail').attr("disabled", false);
-		}		
-	});
+		}
+		});
+		
+		$(document).ready(function() {
+			// 이메일값 기본세팅
+			$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());		
+			
+			if($('#customerImg0').val()==null){
+				$('#deleteImg').hide();
+			}
+		});
+		
+		$('#customerImg').change(function() { // 타이미지 선택 시 원래 이미지 숨기기			
+			$('#customerImg0').hide();
+		});
+		
+		$('#deleteImg').click(function() { // 
+			$('#deleteImg').hide();
+			$.ajax({
+				url: "${ctp}/deleteCustomerImg",
+				type: "get",
+				data: {
+					customerNo: ${resultMap.customerNo},
+				},
+				success: function(result){
+					if(result > 0) {
+						$('#customerImg0').remove();
+					} else {
+						alert('페이지 오류 : 관리자로 문의 바랍니다.')
+					}
+				}
+			});
+		});
+		
+		
+		// 최종 Email값 설정
+			
+		
+		$('#autoEmail').change(function() {
+		$('#emailJuso').val($('#autoEmail').val());
+		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
+		});
+		
+		$('#emailId').keyup(function() {
+		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
+		});
+		
+		$('#emailJuso').keyup(function() {
+			$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
+		});
  
 	 // 주소 API 설정
 	  function sample6_execDaumPostcode() {

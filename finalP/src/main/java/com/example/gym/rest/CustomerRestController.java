@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
+import com.example.gym.vo.CustomerImg;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,4 +28,14 @@ public class CustomerRestController {
 
 		return result;
 	}
+	
+	@GetMapping("/deleteCustomerImg")
+	public int deleteCustomerImg(Customer customer) {
+		int result = 0;
+		System.out.println(customer.getCustomerNo() + " <- customerNo");
+		result = customerMapper.deleteCustomerImg(customer);
+		
+		return result;
+	}
+	
 }
