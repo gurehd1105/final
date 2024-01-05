@@ -30,16 +30,36 @@
    		</form>
 	    <a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">전체보기</a>	         
    	</div>
+   	
     <div>
    		<c:forEach var="inventory" items="${sportsEquipmentInventory}">
    			<div style="border: 1px solid #ccc;">
    				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${inventory.sportsEquipmentImgFileName }" width="100" height="100"><br>
    				지점 : ${inventory.branchName }<br>
    				이름 : ${inventory.itemName }<br>
+   				번호 : ${inventory.sportsEquipmentNo }<br>
+   				가격 : ${inventory.itemPrice }<br>
    				재고 : ${inventory.totalQuantity }<br>
    				발주 : ${inventory.inventoryQuantity }<br>
    				폐기 : ${inventory.discartdQuantity }<br>
-   			</div>
+
+				<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipmentOrder" >
+					<input type="hidden" name="sportsEquipmentNo" value="${inventory.sportsEquipmentNo }">
+					<input type="hidden" name="itemPrice" value="0">
+			      	<div style="border: 1px solid #ccc;">
+			      		<label>폐기 수량을 선택하세요:  <input type="number" name="quantity" value="0" min="-${inventory.totalQuantity }" max="0"> </label>
+			         	<button type="submit" style="border: 1px solid #ccc;"> 폐기</button>
+			      	</div>
+			   	</form>
+			   	<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipmentOrder" >
+					<input type="hidden" name="sportsEquipmentNo" value="${inventory.sportsEquipmentNo }">
+					<input type="hidden" name="itemPrice" value="${inventory.itemPrice }">
+			      	<div style="border: 1px solid #ccc;">
+			      		<label>발주 수량을 선택하세요:  <input type="number" name="quantity" value="0" min="0" max="100"> </label>
+			         	<button type="submit" style="border: 1px solid #ccc;"> 발주</button>
+			      	</div>
+			   	</form>
+			</div>
    		</c:forEach>
    	</div>
    	<!-- 페이징 -->

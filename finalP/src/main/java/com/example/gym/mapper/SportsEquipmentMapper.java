@@ -75,5 +75,8 @@ public interface SportsEquipmentMapper {
 	
 	//lastPage 구하기 위한 sportsEquipmentInventory 수 (지점)
 	int selectSportsEquipmentInventoryByBranchCnt(Map<String,Object> paramMap);
+	
+	//장비 상세보기 창에서 지점 재고확인 (지점)
+	Map<String,Object> selectSportsEquipmentInventoryOneByBranch(Map<String,Object> paramMap);
 }
 

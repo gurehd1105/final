@@ -46,6 +46,12 @@
 					<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${img.sportsEquipmentImgFileName }" width="100" height="100">
 				</c:forEach>
 			</div>
+			<!-- 재고 출력 -->
+			<div style="border: 1px solid #ccc;">
+				재고 : ${sportsEquipmentInventory.totalQuantity }
+				발주 : ${sportsEquipmentInventory.inventoryQuantity }
+				폐기 : ${sportsEquipmentInventory.discartdQuantity }
+			</div>
       	<c:if test="${equipmentActive == 'Y'}"> <!-- 품절이 아닐 경우만 발주 버튼 출력 -->
       		<div style="border: 1px solid #ccc;">
       			<label>수량을 선택하세요:  <input type="number" name="quantity" value="1" min="1" max="100"> </label>

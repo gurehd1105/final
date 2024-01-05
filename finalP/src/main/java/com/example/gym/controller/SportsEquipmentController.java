@@ -214,6 +214,11 @@ public class SportsEquipmentController {
 		Map<String,Object> map = sportsEquipmentService.sportsEquipmentOneService(session, sportsEquipmentNo);
 		
 		//jsp에서 출력할 model
+		int branchLevel = 0;
+		//지점직원이라면 직원이 속해 있는 지점의 재고 출력
+		if(branchLevel != 1) {
+			model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+		}	
 		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
 		model.addAttribute("employeeId", map.get("employeeId"));
 		model.addAttribute("itemName", map.get("itemName"));

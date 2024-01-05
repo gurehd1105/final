@@ -356,6 +356,7 @@
 		SELECT 
 			b.branch_name branchName,
 			se.item_name itemName,
+			se.item_Price itemPrice,
 			se.sports_equipment_no sportsEquipmentNo,
 			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
 			SUM(seo.quantity) AS totalQuantity,
@@ -435,5 +436,22 @@
 		INNER JOIN sports_equipment se ON seo.sports_equipment_no = se.sports_equipment_no
 		WHERE seo.order_status = '승인'
 		LIMIT 1;
+	</select>
+	
+	<!--장비 상세보기 창에서 지점 재고확인 (지점) -->
+	<select id="selectSportsEquipmentInventoryOneByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			se.item_name,
+			SUM(seo.quantity) AS totalQuantity,
+			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
+		   <![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
+		FROM sports_equipment_order seo INNER JOIN sports_equipment se
+		ON seo.sports_equipment_no = se.sports_equipment_no
+		INNER JOIN branch b
+		ON b.branch_no = seo.branch_no
+		WHERE seo.order_status = '승인'
+		AND b.branch_no = #{branchNo}
+		AND se.sports_equipment_no = #{sportsEquipmentNo}
+		GROUP BY se.item_name
 	</select>
 </mapper>
