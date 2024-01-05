@@ -1,48 +1,64 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!-- Sidebar Start -->
-<div class="sidebar pe-4 pb-3">
-    <nav class="navbar bg-secondary navbar-dark">
-        <a href="index.html" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
-        </a>
-        <div class="d-flex align-items-center ms-4 mb-4">
-            <div class="position-relative">
-                <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-            </div>
-            <div class="ms-3">
-                <h6 class="mb-0">Jhon Doe</h6>
-                <span>Admin</span>
-            </div>
-        </div>
-        <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="button.html" class="dropdown-item">Buttons</a>
-                    <a href="typography.html" class="dropdown-item">Typography</a>
-                    <a href="element.html" class="dropdown-item">Other Elements</a>
-                </div>
-            </div>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
-            <a href="form.html" class="nav-item nav-link active"><i class="fa fa-keyboard me-2"></i>Forms</a>
-            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
-            <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="signin.html" class="dropdown-item">Sign In</a>
-                    <a href="signup.html" class="dropdown-item">Sign Up</a>
-                    <a href="404.html" class="dropdown-item">404 Error</a>
-                    <a href="blank.html" class="dropdown-item">Blank Page</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<div id="side" class="bg-gray-50">
+	<el-aside width="200px">
+      <el-scrollbar class="h-[calc(100vh-60px)]">
+        <el-menu :default-openeds="['1', '3']">
+          <el-sub-menu index="1">
+            <template #title>
+              Navigator One
+            </template>
+            <el-menu-item-group>
+              <template #title>Group 1</template>
+              <el-menu-item index="1-1">Option 1</el-menu-item>
+              <el-menu-item index="1-2">Option 2</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="Group 2">
+              <el-menu-item index="1-3">Option 3</el-menu-item>
+            </el-menu-item-group>
+            <el-sub-menu index="1-4">
+              <template #title>Option4</template>
+              <el-menu-item index="1-4-1">Option 4-1</el-menu-item>
+            </el-sub-menu>
+          </el-sub-menu>
+          <el-sub-menu index="2">
+            <template #title>
+              Navigator Two
+            </template>
+            <el-menu-item-group>
+              <template #title>Group 1</template>
+              <el-menu-item index="2-1">Option 1</el-menu-item>
+              <el-menu-item index="2-2">Option 2</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="Group 2">
+              <el-menu-item index="2-3">Option 3</el-menu-item>
+            </el-menu-item-group>
+            <el-sub-menu index="2-4">
+              <template #title>Option 4</template>
+              <el-menu-item index="2-4-1">Option 4-1</el-menu-item>
+            </el-sub-menu>
+          </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              Navigator Three
+            </template>
+            <el-menu-item-group>
+              <template #title>Group 1</template>
+              <el-menu-item index="3-1">Option 1</el-menu-item>
+              <el-menu-item index="3-2">Option 2</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="Group 2">
+              <el-menu-item index="3-3">Option 3</el-menu-item>
+            </el-menu-item-group>
+            <el-sub-menu index="3-4">
+              <template #title>Option 4</template>
+              <el-menu-item index="3-4-1">Option 4-1</el-menu-item>
+            </el-sub-menu>
+          </el-sub-menu>
+        </el-menu>
+      </el-scrollbar>
+    </el-aside>
 </div>
-<!-- Sidebar End -->
 <script>
 	const side = Vue.createApp({
 		data() {
