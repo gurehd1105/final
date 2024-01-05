@@ -35,7 +35,9 @@
     <div>
    		<c:forEach var="inventory" items="${sportsEquipmentInventory}">
    			<div style="border: 1px solid #ccc;">
+   				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${inventory.sportsEquipmentImgFileName }" width="100" height="100"><br>
    				지점 : ${inventory.branchName }<br>
+   				번호 : ${inventory.sportsEquipmentNo }<br>
    				이름 : ${inventory.itemName }<br>
    				재고 : ${inventory.totalQuantity }<br>
    				발주 : ${inventory.inventoryQuantity }<br>
@@ -48,7 +50,7 @@
    	<div style="border: 1px solid #ccc;">
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead?currentPage=1&searchBranch=${searchBranch}&searchItem=${searchItem}">처음</a>
 		<c:forEach var="p" begin="1" end="${lastPage}">
-			<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead?currentPage=${p}&ssearchBranch=${searchBranch}&searchItem=${searchItem}">${p}</a>
+			<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead?currentPage=${p}&searchBranch=${searchBranch}&searchItem=${searchItem}">${p}</a>
 		</c:forEach>
 		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead?currentPage=${lastPage}&searchBranch=${searchBranch}&searchItem=${searchItem}">마지막</a>
     </div>

@@ -564,7 +564,7 @@ public class SportsEquipmentService {
 		log.info("searchItem: {}", searchItem);
 
 		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -579,16 +579,16 @@ public class SportsEquipmentService {
 		paramMap.put("loginBranchLevel", loginBranchLevel);
 		
 		//mapper 호출 
-		//int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
-		//int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByHeadCnt(paramMap);
+		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
 		
-		//if(sportsEquipmentOrderCnt%rowPerPage != 0) {
-		//	lastPage = lastPage + 1;
-		//}
+		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
+			lastPage = lastPage + 1;
+		}
 		
 		//디버깅
-		//log.info("lastPage : {}", lastPage);
-		//log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		log.info("lastPage : {}", lastPage);
+		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -606,7 +606,7 @@ public class SportsEquipmentService {
 
 		resultMap.put("searchItem", searchItem);
 		resultMap.put("searchBranch", searchBranch);
-		//resultMap.put("lastPage", lastPage);
+		resultMap.put("lastPage", lastPage);
 		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
 		
 		return resultMap;
@@ -621,7 +621,7 @@ public class SportsEquipmentService {
 		log.info("searchItem: {}", searchItem);
 
 		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -639,16 +639,16 @@ public class SportsEquipmentService {
 		
 		
 		//mapper 호출 
-		//int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
-		//int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranchCnt(paramMap);
+		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
 		
-		//if(sportsEquipmentOrderCnt%rowPerPage != 0) {
-		//	lastPage = lastPage + 1;
-		//}
+		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
+			lastPage = lastPage + 1;
+		}
 		
 		//디버깅
-		//log.info("lastPage : {}", lastPage);
-		//log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		log.info("lastPage : {}", lastPage);
+		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -665,7 +665,7 @@ public class SportsEquipmentService {
 		
 
 		resultMap.put("searchItem", searchItem);
-		//resultMap.put("lastPage", lastPage);
+		resultMap.put("lastPage", lastPage);
 		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
 		
 		return resultMap;

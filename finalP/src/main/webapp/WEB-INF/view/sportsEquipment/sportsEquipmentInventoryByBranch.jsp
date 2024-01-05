@@ -21,18 +21,19 @@
 	</div>
 	<br>
 	<div>
-		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead">
+		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch">
 	      	<div style="border: 1px solid #ccc;">
 	 			<label for="searchItem">아이템검색 :</label>
 	         	<input type="text" id="searchItem" name="searchItem" value="${searchItem}" placeholder="아이템을 입력하세요">
 	      	</div>
 	        <button type="submit" style="border: 1px solid #ccc;">검색</button>
    		</form>
-	    <a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">전체보기</a>	         
+	    <a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">전체보기</a>	         
    	</div>
     <div>
    		<c:forEach var="inventory" items="${sportsEquipmentInventory}">
    			<div style="border: 1px solid #ccc;">
+   				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${inventory.sportsEquipmentImgFileName }" width="100" height="100"><br>
    				지점 : ${inventory.branchName }<br>
    				이름 : ${inventory.itemName }<br>
    				재고 : ${inventory.totalQuantity }<br>
@@ -41,6 +42,14 @@
    			</div>
    		</c:forEach>
    	</div>
+   	<!-- 페이징 -->
+   	<div style="border: 1px solid #ccc;">
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=1&searchItem=${searchItem}">처음</a>
+		<c:forEach var="p" begin="1" end="${lastPage}">
+			<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=${p}&searchItem=${searchItem}">${p}</a>
+		</c:forEach>
+		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=${lastPage}&searchItem=${searchItem}">마지막</a>
+    </div>
 </div>
 </c:set>
 <c:set var="script">

@@ -48,7 +48,7 @@
 			</div>
       	<c:if test="${equipmentActive == 'Y'}"> <!-- 품절이 아닐 경우만 발주 버튼 출력 -->
       		<div style="border: 1px solid #ccc;">
-      			<label>수량을 선택하세요:  <input type="number" name="quantity" value="1"> </label>
+      			<label>수량을 선택하세요:  <input type="number" name="quantity" value="1" min="1" max="100"> </label>
          		<button type="submit" style="border: 1px solid #ccc;"> 주문</button>
       		</div>
         </c:if>

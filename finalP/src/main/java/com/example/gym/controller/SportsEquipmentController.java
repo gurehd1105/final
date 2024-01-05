@@ -373,7 +373,7 @@ public class SportsEquipmentController {
 		
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
-		//model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchItem", map.get("searchItem"));
 		model.addAttribute("searchBranch", map.get("searchBranch"));
 		
@@ -396,7 +396,7 @@ public class SportsEquipmentController {
 		
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
-		//model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchItem", map.get("searchItem"));
 		
 		return "sportsEquipment/sportsEquipmentInventoryByBranch";
