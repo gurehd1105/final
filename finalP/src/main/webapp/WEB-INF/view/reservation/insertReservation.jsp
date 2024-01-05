@@ -12,43 +12,44 @@
         <el-option label="서울" value="seoul"></el-option>
         <el-option label="대전" value="daejeon"></el-option>
         <el-option label="부산" value="busan"></el-option>
-      </el-select> 
-      <!-- 지점선택 안했을때 경고메시지 출력 -->           
+      </el-select>
       <span v-if="showError" style="color: red;">지점을 선택하세요.</span>
     </el-form-item>
-    <el-form-item>
-    	<el-button type="primary" @click="onSubmit(form)">확인</el-button>
+    <el-form-item label="날짜선택">
+      <el-date-picker
+        v-model="selectedDate"
+        type="date"
+        placeholder="날짜 선택">
+      </el-date-picker>
     </el-form-item>
-    
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit(form)">확인</el-button>
+    </el-form-item>
   </el-form>
 </c:set>
 
 <c:set var="script">
-	data(){
-		return{
-			selectBranch:'',
-			showError: false
-		}
+	data() {
+	  return {
+	    selectBranch: '',
+	    selectedDate: '',
+	    showError: false
+	  }
 	},
-	watch:{
+	watch: {
 	},
-	 methods: {
-	    onSubmit() {
-	      if (!this.selectBranch) {
-	        this.showError = true;
-	      } else {
-	        this.showError = false;
-	        document.getElementById('reservationForm').submit();
-	        window.close();
-	      }
+	methods: {
+	  onSubmit() {
+	    if (!this.selectBranch || !this.selectedDate) {
+	      this.showError = true;
+	    } else {
+	      this.showError = false;
+	      const actionURL = 'reservationConfirm.jsp?branch=' + encodeURIComponent(this.selectBranch) + '&date=' + encodeURIComponent(this.selectedDate);
+	      document.getElementById('reservationForm').action = actionURL;
+	      document.getElementById('reservationForm').submit();
+	      window.close();
 	    }
-  }
+	  }
+	}
 </c:set>
-<%@ include file="/inc/admin_layout.jsp" %>
-
-
-
-
-
-
-
+<%@ include file="/inc/user_layout.jsp" %>

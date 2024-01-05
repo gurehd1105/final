@@ -18,13 +18,16 @@ public class ReservationService {
 	private ReservationMapper reservationMapper;
 	
 	// 예약 목록
-	public List<ProgramReservation> selectProgramReservationList(Map<String, Object>paramMap) {
-		List<ProgramReservation> resultReservation = reservationMapper.selectReservationList(paramMap);	
+	public List<Map<String, Object>> selectProgramReservationList(Map<String, Object>paramMap) {
+		List<Map<String, Object>> resultReservation = reservationMapper.selectReservationList(paramMap);	
 		return resultReservation;
 	}
-	public int insertProgramReservation(ProgramReservation programreservation) {
-		int row = reservationMapper.insertProgramReservation(programreservation);
+	// 예약 추가
+	public int insertReservation(ProgramReservation reservation) {
+		int row = reservationMapper.insertReservation(reservation);
 		return row;
+		
 	}
+	
 	
 }
