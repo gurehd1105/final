@@ -65,17 +65,17 @@
 		<div style="display: table-row;">
 			<div style="display: table-cell;"><label for="customerEmail">Email</label></div>
 			<div style="display: table-cell;">
-					<input type="text" value="${ resultMap.emailId }" name="customerEmailId" id="customerEmailId">@
-				<span id="email"><input type="text" id="selfEmail"  value="${ resultMap.emailJuso }" name="customerEmailJuso"></span>
-					<select id="autoEmail" name="customerEmailJuso" disabled="disabled">
-						<option value="naver.com">naver.com</option>
-						<option value="gmail.com">gmail.com</option>
-						<option value="hanmail.net">hanmail.net</option>
-						<option value="nate.com">nate.com</option>
-						<option value="kakao.com">daum.net</option>
-						<option value="icloud.com">icloud.com</option>
-					</select>
-						<input type="checkbox" id="self" checked="checked"><label for="self">직접입력</label>
+					<input type="text" value="${resultMap.emailId}" name="customerEmailId" id="customerEmail">@
+					<input type="text" value="${resultMap.emailJuso}" name="customerEmailJuso" id="selfJuso">
+				<select id="autoJuso" name="customerEmailAutoJuso">
+					<option selected="selected" value="">직접 입력</option>
+					<option value="naver.com">naver.com</option>
+					<option value="gmail.com">gmail.com</option>
+					<option value="hanmail.net">hanmail.net</option>
+					<option value="nate.com">nate.com</option>
+					<option value="kakao.com">kakao.com</option>
+					<option value="icloud.com">icloud.com</option>
+				</select>
 			</div>
 		</div>		
 	</div>
@@ -84,16 +84,14 @@
 </body>
 <script>
 	
-	$('#self').change(function() { // 이메일주소 직접입력에 따른 HTML 변환
-		var ck = $('#self').is(':checked');
-		if(ck==true){
-			$('#selfEmail').attr("disabled", false);
-			$('#autoEmail').attr("disabled", true);
+	 $('#autoJuso').click(function() {
+		if($('#autoJuso').val() == ""){
+			$("#selfJuso").attr("disabled",false); 
 		} else {
-			$('#selfEmail').attr("disabled", true);
-			$('#autoEmail').attr("disabled", false);
-		}		
-	});
+			$("#selfJuso").val("");
+			$("#selfJuso").attr("disabled",true); 
+		}
+	 });
  
 	 // 주소 API 설정
 	  function sample6_execDaumPostcode() {
