@@ -161,6 +161,20 @@ public class SportsEquipmentService {
 		Map<String,Object> resultMap  = sportsEquipmentMapper.selectSportsEquipmentOne(sportsEquipmentNo);
 		List<SportsEquipmentImg> sportsEquipmentImgList = sportsEquipmentMapper.selectSportsEquipmentImgList(sportsEquipmentNo);
 		
+		log.warn("employee session 구현 후 수정 " );
+		int branchLevel = 0;
+		int branchNo = 2;
+		if(branchLevel != 1) {
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
+			paramMap.put("branchNo", branchNo);
+			
+			//mapper 호출
+			Map<String,Object> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryOneByBranch(paramMap);
+			resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+			
+		}
+		
 		resultMap.put("sportsEquipmentImgList", sportsEquipmentImgList);
 		
 		return resultMap;
