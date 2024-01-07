@@ -8,12 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.EmployeeService;
-import com.example.gym.vo.Customer;
-import com.example.gym.vo.CustomerForm;
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.EmployeeForm;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +37,7 @@ public class EmployeeController {
 	@PostMapping("/employeeLogin")
 	public String employeeLogin(HttpSession session, Employee employee) {
 		log.debug("getLoginEmployee", "Controller employee", employee.toString());
-		Employee loginEmployee = employeeService.getLoginEmployee(employee);
+		Employee loginEmployee = employeeService.loginEmployee(employee);
 
 		// 로그인성공시 세션에 정보담기
 		if (loginEmployee != null) {
@@ -73,25 +71,23 @@ public class EmployeeController {
 
 	// 직원 입력 엑션
 	@PostMapping("/insertEmployee")
-	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm employeeForm,
-			String employeeEmailId, String employeeEmailJuso, String employeeEmailAutoJuso, String address1,
-			String address2, String address3) {
+	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef,
+			String employeeEmailId, String employeeEmailJuso, String employeeEmailAutoJuso) {
 		String path = session.getServletContext().getRealPath("/upload/employee");
 
 		if (employeeEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
-			employeeForm.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
+			ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
 		} else { // 선택한 이메일이 있다면 해당 이메일주소로 등록
-			employeeForm.setEmployeeEmail(employeeEmailId + "@" + employeeEmailAutoJuso);
+			ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailAutoJuso);
 		}
-		employeeForm.setEmployeeAddress(address1 + " " + address2 + address3);
 
-		int result = employeeService.insertEmployee(employeeForm, path);
+		int result = employeeService.insertEmployee(ef, path);
 		if (result == 1) { // 가입 완
 			return "employee/employeeLogin";
 		} else { // 예외발생
 			return "employee/insertEmployee";
 		}
-
+		
 	}
 
 	// 직원 비활성화 기능 update(employee_Active : Y -> N)
@@ -176,7 +172,7 @@ public class EmployeeController {
 	// 내정보 수정 Act
 	@PostMapping("/updateEmployeeOne")
 	public String updateEmployeeOne(HttpSession session, EmployeeForm employeeForm, String employeeEmailId,
-			String employeeEmailJuso, String employeeEmailAutoJuso, String address1, String address2, String address3) {
+			String employeeEmailJuso, String employeeEmailAutoJuso) {
 		String path = session.getServletContext().getRealPath("/upload/employee");
 
 		if (employeeEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
@@ -185,7 +181,6 @@ public class EmployeeController {
 			employeeForm.setEmployeeEmail(employeeEmailId + "@" + employeeEmailAutoJuso);
 		}
 
-		employeeForm.setEmployeeAddress(address1 + " " + address2 + address3);
 
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		employeeService.updateEmployeeOne(path, employeeForm, loginEmployee.getEmployeeNo()); // 반환값 없음 (void)
@@ -222,7 +217,7 @@ public class EmployeeController {
 	}
 
 	// 관리자 목록 리스트
-	@GetMapping("/employee/employeeList")
+	@GetMapping("/employeeList")
 	public String employeeList(Model model) {
 		List<Employee> employeeList = employeeService.getEmployeeList();
 		log.debug("getEmployeeList", "Controller employeeList", employeeList.toString());
@@ -237,7 +232,7 @@ public class EmployeeController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/employeeLogin";
+			return "employee/loginEmployee";
 		}
 
 		Map<String, Object> resultMap = employeeService.employeeOne(loginEmployee);
