@@ -18,7 +18,7 @@ public class EncodingFilter implements Filter {
       // 요청전
       request.setCharacterEncoding("utf-8");
       chain.doFilter(request, response);
-      // 요청후
+      
    }
    
 }

@@ -51,7 +51,11 @@
 			      />
 	        </el-col>
 	    </el-form-item>
-
+		<el-form-item label="지점 선택">
+   		 <el-select v-model="model.branchName" placeholder="지점을 선택하세요">
+        <el-option v-for="branch in branches" :key="branch.name" :label="branch.name" :value="branch.name"></el-option>
+    </el-select>
+</el-form-item>
 	    <el-form-item>
 	      	<el-button type="primary" @click="onSubmit(form)">회원가입</el-button>
 	    </el-form-item>
@@ -70,6 +74,7 @@
 	    		phone: '',
 	    		employeeEmailId: '',
 	    		employeeEmailJuso: '',
+	    		branchName: '' 
 	    	},
 	    	emailSuggestion: [
 	    		'naver.com',

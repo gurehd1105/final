@@ -4,26 +4,56 @@
 	<el-aside width="200px">
       <el-scrollbar class="h-[calc(100vh-60px)]">
         <el-menu :default-openeds="['1', '3']">
-          <el-sub-menu index="1">
-            <template #title>
-              Navigator One
-            </template>
-            <el-menu-item-group>
-              <template #title>Group 1</template>
-              <el-menu-item index="1-1">Option 1</el-menu-item>
-              <el-menu-item index="1-2">Option 2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="Group 2">
-              <el-menu-item index="1-3">Option 3</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title>Option4</template>
-              <el-menu-item index="1-4-1">Option 4-1</el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
+      <el-sub-menu index="1">
+        <template #title>
+            관리
+        </template>
+        <el-sub-menu index="1-1">
+            <template #title>지점 관리</template>
+            <el-menu-item index="1-1-1">
+            지점 추가
+            </el-menu-item> 
+            <el-menu-item index="1-1-2">
+            지점 정보 수정
+            </el-menu-item> 
+            <el-menu-item index="1-1-3">
+            지점 비활성화
+            </el-menu-item>
+            <el-menu-item index="1-1-4">
+            지점 목록 확인
+            </el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="1-2">
+            <template #title>직원 관리</template>
+            <el-menu-item index="1-2-1">
+                <a href="${pageContext.request.contextPath}/employee/insert">직원 추가</a>
+            </el-menu-item> 
+            <el-menu-item index="1-2-2">
+                <a href="${pageContext.request.contextPath}/employee/update">직원 정보 수정</a>
+            </el-menu-item>
+            <el-menu-item index="1-2-3">
+                <a href="${pageContext.request.contextPath}/employee/list">직원 목록 조회</a>
+            </el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="1-3">
+            <template #title>공지 관리</template>
+            <el-menu-item index="1-3-1">
+                <a href="${pageContext.request.contextPath}/notice/insert">공지 추가</a>
+            </el-menu-item> 
+            <el-menu-item index="1-3-2">
+                <a href="${pageContext.request.contextPath}/notice/update">공지 수정</a>
+            </el-menu-item>
+            <el-menu-item index="1-3-3">
+                <a href="${pageContext.request.contextPath}/notice/list">공지 목록 조회</a>
+            </el-menu-item>
+             <el-menu-item index="1-3-4">
+                <a href="${pageContext.request.contextPath}/notice/list">공지 삭제</a>
+            </el-menu-item>
+        </el-sub-menu>
+    </el-sub-menu>
           <el-sub-menu index="2">
             <template #title>
-              Navigator Two
+              예시 페이지
             </template>
             <el-menu-item-group>
               <template #title>Group 1</template>

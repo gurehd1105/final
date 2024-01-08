@@ -24,7 +24,7 @@ public class BranchController {
 	@GetMapping("list")
 	@ResponseBody
 	public List<Branch> BranchList() {
-		return branchService.branchList();
+		return 	branchService.branchList();
 		
 	}
 	

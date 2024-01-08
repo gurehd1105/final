@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeForm {
+	private int branchNo;
 	private String employeeId;
 	private String employeePw;
 	private String employeeName;

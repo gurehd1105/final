@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.service.BranchService;
 import com.example.gym.service.EmployeeService;
+import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeForm;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,7 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
-
+	@Autowired
+	private BranchService branchService;
 	// 로그인 폼
 	@GetMapping("login")
 	public String employeeLogin(HttpSession session) {
@@ -58,14 +60,20 @@ public class EmployeeController {
 
 	// 직원 입력 폼
 	@GetMapping("insert")
-	public String insertEmployee(HttpSession session) {
+	public String insertEmployee(HttpSession session , Model model) {
+		List<Branch> branches = branchService.branchList();
+		log.info(branches.toString());
+        model.addAttribute("branches", branches);
 		return "employee/insert";
 	}
 
 	// 직원 입력 엑션
 	@PostMapping("insert")
 	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
-			String employeeEmailJuso) {
+			String employeeEmailJuso, Model model) {
+		List<Branch> branches = branchService.branchList();
+		log.info(branches.toString());
+        model.addAttribute("branches", branches);
 		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
 		String path = session.getServletContext().getRealPath("/upload/employee");
 		int result = employeeService.insertEmployee(ef, path);
