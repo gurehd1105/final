@@ -1,6 +1,7 @@
 package com.example.gym.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,13 @@ public class EmployeeService {
 	private EmployeeMapper employeeMapper;
 
 	// 직원 로그인
-	public Employee getLoginEmployee(Employee employee) {
+	public Employee loginEmployee(Employee employee) {
 		log.debug(employee.toString() + "직원 로그인 Service");
-		return employeeMapper.selectEmployeeByLogin(employee);
+		return employeeMapper.loginEmployee(employee);
 	}
 
 	// 직원 추가
-	public int insetEmployee(EmployeeForm ef, String path) {
+	public int insertEmployee(EmployeeForm ef, String path) {
 		int result = 0; // 최종 반환값 세팅
 		int row = 0;
 		int row2 = 0;
@@ -102,27 +103,111 @@ public class EmployeeService {
 	// 직원 추가 프로세스 종료
 
 	// 직원 삭제
-	public int deleteEmployee(int employeeNo) {
-		int deleteRow = employeeMapper.deleteEmployee(employeeNo);
-		log.debug("deleteEmployee", "Service deleteRow", deleteRow);
-		return deleteRow;
+	public int deleteEmployee(Employee employee) {
+		int result = 0;
+		int row = 0;
+		int row2 = 0;
+		int row3 = 0;
+
+		Employee check = employeeMapper.loginEmployee(employee);
+		if (check != null) {
+			log.info("PW 확인");
+			row = employeeMapper.updateEmployeeActive(employee);
+			row2 = employeeMapper.deleteEmployeeDetail(employee);
+			row3 = employeeMapper.deleteEmployeeImg(employee);
+
+		}
+
+		if (row > 0 && row2 > 0) {
+			log.info("직원 비활성화 완료");
+			result = 1;
+		}
+		return result;
+	}
+
+	// 직원 정보 수정
+	// detail , img 수정
+	public void updateEmployeeOne(String path, EmployeeForm ef, int employeeNo) {
+		// employeeDetail 수정
+		EmployeeDetail ed = new EmployeeDetail();
+		ed.setEmployeeNo(employeeNo);
+		ed.setEmployeeName(ef.getEmployeeName());
+		ed.setEmployeeGender(ef.getEmployeeGender());
+		ed.setEmployeePhone(ef.getEmployeePhone());
+		ed.setEmployeeEmail(ef.getEmployeeEmail());
+		int row = employeeMapper.updateEmployeeOne(ed);
+
+		if (row != 1) {
+			throw new RuntimeException();
+		}
+
+		MultipartFile mf = ef.getEmployeeImg();
+
+		if (mf.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
+			EmployeeImg employeeImg = new EmployeeImg();
+			employeeImg.setEmployeeNo(employeeNo);
+			employeeImg.setEmployeeImgOriginName(mf.getOriginalFilename());
+			employeeImg.setEmployeeImgSize(mf.getSize());
+			employeeImg.setEmployeeImgType(mf.getContentType());
+
+			String fileName = UUID.randomUUID().toString();
+
+			String originName = mf.getOriginalFilename();
+			String fileName2 = originName.substring(originName.lastIndexOf("."));
+			employeeImg.setEmployeeImgFileName(fileName + fileName2); // EmployeeImg 매개값 세팅
+
+			// 변수 삽입 전 employeeImg정보가 있는지 확인
+			Employee checkImgEmployee = new Employee();
+			checkImgEmployee.setEmployeeNo(employeeNo);
+			EmployeeImg check = employeeMapper.checkEmployeeImg(checkImgEmployee);
+
+			// 확인 후 조건에 따른 분기
+			int row2 = 0;
+			if (check == null) { // 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
+				row2 = employeeMapper.insertEmployeeImg(employeeImg);
+			} else { // 원래 등록된 Image 정보가 있다면
+				row2 = employeeMapper.updateEmployeeImg(employeeImg);
+			}
+
+			if (row2 != 1) {
+				throw new RuntimeException();
+			}
+
+			/*
+			 * // path 저장 -- 경로 확인 후 설정 예정 System.out.println(path +"/"+ fileName +
+			 * fileName2); File file = new File(path +"/"+ fileName + fileName2); try {
+			 * mf.transferTo(file); } catch (IllegalStateException | IOException e) { throw
+			 * new RuntimeException(); }
+			 */
+
+		} else { // 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
+			Employee deleteImg = new Employee();
+			deleteImg.setEmployeeNo(employeeNo);
+			employeeMapper.deleteEmployeeImg(deleteImg);
+		}
+	}
+
+	// 비밀번호 수정
+	public int updateEmployeePw(Employee checkEmployee, String employeeNewPw) {
+		int result = 0;
+		Employee check = employeeMapper.loginEmployee(checkEmployee);
+		if (check != null) {
+			Employee updatePw = new Employee();
+			updatePw.setEmployeeNo(check.getEmployeeNo());
+			updatePw.setEmployeePw(employeeNewPw);
+			result = employeeMapper.updateEmployeePw(updatePw);
+		}
+		return result;
+	}
+
+	// 직원 상세목록
+	public Map<String, Object> employeeOne(Employee employee) {
+		Map<String, Object> resultMap = employeeMapper.employeeOne(employee);
+		return resultMap;
 	}
 
 	// 직원 목록
 	public List<Employee> getEmployeeList() {
 		return employeeMapper.selectEmployeeList();
 	}
-
-	// 직원 상세목록
-	public Employee getEmployeeOne(int employeeNo) {
-		return employeeMapper.selectEmployeeOne(employeeNo);
-	}
-
-	// 직원 수정
-	public int updateEmployee(Employee employee) {
-		int updateRow = employeeMapper.updateEmployee(employee);
-		log.debug("updateEmployee", "Service updateRow", updateRow);
-		return updateRow;
-	}
-
 }
