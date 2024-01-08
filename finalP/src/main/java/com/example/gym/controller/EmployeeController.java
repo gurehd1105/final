@@ -4,26 +4,32 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.EmployeeService;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeForm;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@RequestMapping("employee")
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 
 	// 로그인 폼
-	@GetMapping("/employeeLogin")
+	@GetMapping("login")
 	public String employeeLogin(HttpSession session) {
 		// 로그인 되어 있을 경우 home으로
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
@@ -34,64 +40,45 @@ public class EmployeeController {
 	}
 
 	// 로그인 엑션
-	@PostMapping("/employeeLogin")
-	public String employeeLogin(HttpSession session, Employee employee) {
-		log.debug("getLoginEmployee", "Controller employee", employee.toString());
+	@PostMapping("login")
+	@ResponseBody
+	public ResponseEntity<String> employeeLogin(HttpSession session, @RequestBody Employee employee) {
 		Employee loginEmployee = employeeService.loginEmployee(employee);
+		session.setAttribute("loginEmployee", loginEmployee);
 
-		// 로그인성공시 세션에 정보담기
-		if (loginEmployee != null) {
-			session.setAttribute("loginEmployee", loginEmployee);
-			return "home";
-
-		} else { // 로그인 실패 시
-			log.info(employee.getEmployeeId() + " / " + employee.getEmployeePw());
-			return "redirect:/EmployeeLogin";
-		}
-
+		return ResponseEntity.ok(loginEmployee == null ? "fail" : "success");
 	}
 
 	// 로그아웃
-	@GetMapping("/employee/logout")
+	@GetMapping("logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "employee/customerLogin";
+		return "employee/login";
 	}
 
 	// 직원 입력 폼
-	@GetMapping("/insertEmployee")
+	@GetMapping("insert")
 	public String insertEmployee(HttpSession session) {
-		// 로그인 되어 있는 경우에만 직원 추가 가능
-		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		if (loginEmployee == null) {
-			return "employeeLogin";
-		}
-		return "employee/insertEmployee";
+		return "employee/insert";
 	}
 
 	// 직원 입력 엑션
-	@PostMapping("/insertEmployee")
-	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef,
-			String employeeEmailId, String employeeEmailJuso, String employeeEmailAutoJuso) {
+	@PostMapping("insert")
+	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
+			String employeeEmailJuso) {
+		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
 		String path = session.getServletContext().getRealPath("/upload/employee");
-
-		if (employeeEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
-			ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
-		} else { // 선택한 이메일이 있다면 해당 이메일주소로 등록
-			ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailAutoJuso);
-		}
-
 		int result = employeeService.insertEmployee(ef, path);
 		if (result == 1) { // 가입 완
-			return "employee/employeeLogin";
+			return "employee/login";
 		} else { // 예외발생
-			return "employee/insertEmployee";
+			return "employee/insert";
 		}
-		
+
 	}
 
 	// 직원 비활성화 기능 update(employee_Active : Y -> N)
-	@GetMapping("/deleteEmployee")
+	@GetMapping("delete")
 	public String deleteEmployee(HttpSession session, Model model) {
 		// 직원 비활성화 아이디정보 표기위한 세션 전달
 		// id 유효성검사
@@ -104,7 +91,7 @@ public class EmployeeController {
 	}
 
 	// 직원 비활성화 액션
-	@PostMapping("/deleteEmployee")
+	@PostMapping("delete")
 	public String deleteEmploye(String employeeId, String employeePw, int employeeNo, HttpSession session) {
 		Employee paramEmploye = new Employee();
 		paramEmploye.setEmployeeId(employeeId);
@@ -122,7 +109,7 @@ public class EmployeeController {
 	}
 
 	// 직원 정보 수정 폼
-	@GetMapping("updateEmployeeOneForPw")
+	@GetMapping("update")
 	public String employeeOneForCheckPw(HttpSession session) {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
@@ -133,7 +120,7 @@ public class EmployeeController {
 		return "employee/updateEmployeeOneForPw";
 	}
 
-	@PostMapping("/updateEmployeeOneForm")
+	@PostMapping("/update")
 	public String updateEmployeeOne(HttpSession session, Model model, String employeePw) {
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		loginEmployee.setEmployeePw(employeePw);
@@ -180,7 +167,6 @@ public class EmployeeController {
 		} else { // 선택한 이메일이 있다면 해당 이메일주소로 등록
 			employeeForm.setEmployeeEmail(employeeEmailId + "@" + employeeEmailAutoJuso);
 		}
-
 
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		employeeService.updateEmployeeOne(path, employeeForm, loginEmployee.getEmployeeNo()); // 반환값 없음 (void)
@@ -231,9 +217,6 @@ public class EmployeeController {
 	public String employeeOne(HttpSession session, Model model) {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		if (loginEmployee == null) {
-			return "employee/loginEmployee";
-		}
 
 		Map<String, Object> resultMap = employeeService.employeeOne(loginEmployee);
 		model.addAttribute("resultMap", resultMap);

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>    
 <div id="header">
-  <el-header>
+  <el-header class="!p-0">
     <el-menu
       :default-active="activeIndex"
       class="el-menu-demo"
