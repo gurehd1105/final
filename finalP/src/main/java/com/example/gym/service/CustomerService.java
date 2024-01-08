@@ -91,7 +91,6 @@ public class CustomerService {
 			}
 			
 		// path 저장
-	  System.out.println(path +"/"+ fileName + fileName2);
 		File file = new File(path +"/"+ fileName + fileName2);
 		try {
 			mf.transferTo(file);			
@@ -197,7 +196,6 @@ public class CustomerService {
 			}
 
 		 		// path 저장
-			  System.out.println(path +"/"+ fileName + fileName2);
 				File file = new File(path +"/"+ fileName + fileName2);
 				try {
 					mf.transferTo(file);
