@@ -8,26 +8,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gym.mapper.ReservationMapper;
+import com.example.gym.vo.Branch;
 import com.example.gym.vo.ProgramReservation;
 
 @Service
 @Transactional
 
 public class ReservationService {
-	@Autowired 
-	private ReservationMapper reservationMapper;
-	
-	// 예약 목록
-	public List<Map<String, Object>> selectProgramReservationList(Map<String, Object>paramMap) {
-		List<Map<String, Object>> resultReservation = reservationMapper.selectReservationList(paramMap);	
-		return resultReservation;
-	}
-	// 예약 추가
-	public int insertReservation(ProgramReservation reservation) {
-		int row = reservationMapper.insertReservation(reservation);
-		return row;
-		
-	}
-	
-	
+   @Autowired 
+   private ReservationMapper reservationMapper;
+   
+   // 예약 목록
+   public List<Map<String, Object>> selectProgramReservationList(Map<String, Object>paramMap) {
+      List<Map<String, Object>> reservationList = reservationMapper.selectReservationList(paramMap);   
+      return reservationList;
+   }
+   // 예약 추가
+   public int insertReservation(ProgramReservation reservation) {
+      int row = reservationMapper.insertReservation(reservation);
+      return row;   
+   }
+  
+     
+   // 예약 삭제
+   public int deleteReservation(ProgramReservation reservation) {
+      int row = reservationMapper.deleteReservation(reservation);
+      return row;
+      
+   }
+   
 }

@@ -13,14 +13,7 @@
             <el-text size="large" tag="b">예약하기</el-text>
         </div>
         <el-calendar v-model="date">
-            <template #header="{ date }">
-                <span>{{ date }}</span>
-                <el-button-group>
-                    <el-button size="small" @click="selectDate('prev-month')">Previous Month</el-button>
-                    <el-button size="small" @click="selectDate('today')">Today</el-button>
-                    <el-button size="small" @click="selectDate('next-month')">Next Month</el-button>
-                </el-button-group>
-            </template>
+            
         </el-calendar>
     </div>
 </c:set>
@@ -50,7 +43,7 @@
             }
         },
         openPopup(targetYear, targetMonth, targetDay) {
-            var url = "${contextPath}/reservationPopup?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+            var url = "${contextPath}/reservationOne?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
             window.open(url, "popupWindow", "width=800, height=600");
         }
     }
