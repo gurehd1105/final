@@ -117,7 +117,6 @@ public class CustomerService {
 		int row3 = 0;
 		Customer check = customerMapper.loginCustomer(paramCustomer);
 
-		System.out.println(check + " <-- check");
 		if (check != null) {
 			log.info("PW 정상확인");
 

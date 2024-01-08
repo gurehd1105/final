@@ -60,6 +60,7 @@ public class CustomerController {
 	@PostMapping("/insertCustomer")
 	public String insertCustomer(HttpSession session, CustomerForm customerForm, String address1, String address2,
 			String address3) {
+		log.info(customerForm.getCustomerId() + "  <- customerId");
 		String path = session.getServletContext().getRealPath("/upload/customer");
 
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
@@ -121,13 +122,13 @@ public class CustomerController {
   	// 내정보 수정 Form
   // 접속 전 PW 확인	
   @GetMapping("/updateCustomerOneForPw")
-  public String customerOneForCheckPw(HttpSession session) {
+  public String customerOneForCheckPw(HttpSession session, Model model) {
 	  // id 유효성검사
 		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
 		if(loginCustomer == null) {
 			return "customer/loginCustomer";
 		}
-		
+	  model.addAttribute("loginCustomer", loginCustomer);
 	  return "customer/updateCustomerOneForPw";
   }
   // PW확인 후 Form 접속	
@@ -193,11 +194,10 @@ public class CustomerController {
   }
   	// PW 수정 Act
   @PostMapping("/updateCustomerPw")
-  public String updateCustomerPw(HttpSession session, String customerPw, String customerNewPw) {
-	  Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
-	  loginCustomer.setCustomerPw(customerPw);
+  public String updateCustomerPw(HttpSession session, Customer customer, String customerNewPw) {
 	  
-	  int result = customerService.updateCustomerPw(loginCustomer, customerNewPw);
+	  
+	  int result = customerService.updateCustomerPw(customer, customerNewPw);
 	  if(result > 0) {	// PW 수정 완 --> 재로그인
 		  session.invalidate();
 		  return "customer/loginCustomer";
