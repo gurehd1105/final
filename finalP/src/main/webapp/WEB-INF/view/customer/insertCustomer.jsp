@@ -1,17 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<c:set var="title" value="회원가입" />
+<c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
+<c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <!-- 주소 KAKAO API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+
+
+<c:set var="body">
 <form action="${ctp}/insertCustomer" method="post" enctype="multipart/form-data">
 	<div style="display: table;">
 
@@ -114,70 +111,9 @@
 		</div>	
 	</div>
 </form>
-</body>
-<script>
-	/* 	
-		customerId 제외 , 전체 유효성검사 필요
-		customerEmail -> email 주소 value값 기준으로 유효성검사 진행필요
-	 */
-	 
-	$('#self').change(function() { // 이메일주소 직접입력 선택에 따른 HTML 변환
-		var ck = $('#self').is(':checked');
-		if (ck == true) {
-			$('#emailJuso').attr("disabled", false);
-			$('#autoEmail').attr("disabled", true);
-		} else {
-			$('#emailJuso').attr("disabled", true);
-			$('#autoEmail').attr("disabled", false);
-		}
-	});
-	
-		
-		// 최종 Email값 설정
-	$('#autoEmail').change(function() {
-		$('#emailJuso').val($('#autoEmail').val());
-		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
-	});
-	
-	$('#emailId').keyup(function() {
-		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
-	});
-	
-	$('#emailJuso').keyup(function() {
-		$('#customerEmail').val($('#emailId').val() + "@" + $('#emailJuso').val());
-	});
-	
-	
-
-	// ID 중복확인
-	$('#idCkBtn').click(function() {
-		if ($('#idCk').val().length < 4) {
-			console.log($('#idCk').val());
-			$('#idCkMsg').html('4글자 이상 입력해주세요');
-		} else {
-			$.ajax({
-				url : '${ctp}/idCheck',
-				type : 'get',
-				data : {
-					customerId : $('#idCk').val()
-				},
-				success : function(result) {
-					if (result == 1) {
-						$('#idCkMsg').html('중복 ID입니다');
-						$('#customerId').val('');
-					} else {
-						$('#idCkMsg').html('사용 가능한 ID입니다.');
-						$('#customerId').val($('#idCk').val());
-					}
-				},
-				error : function() {
-					alert("페이지 오류");
-				}
-			})
-		}
-	});
-
-	// 주소 API 설정
+</c:set>
+<c:set var="script">
+// 주소 API 설정
 	function sample6_execDaumPostcode() {
 		new daum.Postcode(
 				{
@@ -230,5 +166,7 @@
 					}
 				}).open();
 	}
-</script>
-</html>
+</c:set>
+
+
+<%@ include file="/inc/admin_layout.jsp" %>
