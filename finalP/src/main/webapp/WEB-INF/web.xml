@@ -16,5 +16,25 @@
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>  
+  </filter-mapping>
+  
+  
+  <filter>
+    <filter-name>CustomerLoginFilter</filter-name>
+    <filter-class>com.example.gym.filter.CustomerLoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CustomerLoginFilter</filter-name>
+    <url-pattern>/customer/*</url-pattern>
+  </filter-mapping>
+  
+  
+  <filter>
+    <filter-name>EmployeeLoginFilter</filter-name>
+    <filter-class>com.example.gym.filter.EmployeeLoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>EmployeeLoginFilter</filter-name>
+    <url-pattern>*/employee/*</url-pattern>
+  </filter-mapping>
 </web-app>
