@@ -8,6 +8,8 @@ import com.example.gym.vo.Review;
 
 @Mapper
 public interface ReviewMapper {
+	Map<String, Object> selectReviewList();
+	
 	int insertReview(Review review);
 	
 	int deleteReview(Review review);
@@ -16,7 +18,7 @@ public interface ReviewMapper {
 	
 	Map<String, Object> selectReviewOne(Review review);
 	
-	Map<String, Object> selectReviewList();
+	
 }
 
 
