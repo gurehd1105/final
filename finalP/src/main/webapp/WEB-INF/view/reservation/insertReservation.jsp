@@ -6,50 +6,90 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
-  <el-form id="reservationForm">
-    <el-form-item label="지점선택">
-      <el-select v-model="selectBranch" clearable placeholder="선택">
-        <el-option label="서울" value="seoul"></el-option>
-        <el-option label="대전" value="daejeon"></el-option>
-        <el-option label="부산" value="busan"></el-option>
-      </el-select>
-      <span v-if="showError" style="color: red;">지점을 선택하세요.</span>
-    </el-form-item>
-    <el-form-item label="날짜선택">
-      <el-date-picker
-        v-model="selectedDate"
-        type="date"
-        placeholder="날짜 선택">
-      </el-date-picker>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit(form)">확인</el-button>
-    </el-form-item>
-  </el-form>
+  	<h1>${targetYear}년 ${targetMonth+1}월 ${targetDay}일 예약</h1>
+  	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
+		 action="${contextPath}/insertReservation" method="post" id="insertReservation">
+	  	<div>
+		  	<el-select v-model="selectBranch" id="selectBranch" clearable placeholder="지점선택">
+		  		<el-option
+			      v-for="item in options2"
+			      :key="item.value"
+			      :label="item.label"
+			      :value="item.value"
+			      :disabled="item.disabled"
+			    />
+			</el-select>
+		</div>
+		<br>
+		<!-- 
+		<div>
+			<el-select v-model="program" id="program" clearable placeholder="종목선택">
+		  		<el-option
+			      v-for="item in options1"
+			      :key="item.value"
+			      :label="item.label"
+			      :value="item.value"
+			      :disabled="item.disabled"
+			    />
+			</el-select>
+	  	</div>
+	  	 -->
+		<el-form-item>
+        <el-button type="primary" @click="submit">확인</el-button>
+      	</el-form-item>
+	</el-form>    	
+
 </c:set>
 
 <c:set var="script">
-	data() {
-	  return {
-	    selectBranch: '',
-	    selectedDate: '',
-	    showError: false
-	  }
-	},
-	watch: {
-	},
-	methods: {
-	  onSubmit() {
-	    if (!this.selectBranch || !this.selectedDate) {
-	      this.showError = true;
-	    } else {
-	      this.showError = false;
-	      const actionURL = 'reservationConfirm.jsp?branch=' + encodeURIComponent(this.selectBranch) + '&date=' + encodeURIComponent(this.selectedDate);
-	      document.getElementById('reservationForm').action = actionURL;
-	      document.getElementById('reservationForm').submit();
-	      window.close();
-	    }
-	  }
-	}
+  data() {
+    return {
+      program:'',
+      selectBranch:'',
+      options1:[
+      	{
+          value: '1',
+          label: '요가',
+        },
+        {
+          value: '2',
+          label: '필라테스',
+        },
+      ],
+      options2: [
+        {
+          value: '1',
+          label: '서울',
+        },
+        {
+          value: '2',
+          label: '대전',
+        },
+        {
+          value: '3',
+          label: '부산',
+        },
+      ],
+      
+      
+    };
+  },
+
+  watch: {
+    // ... (동일)
+  },
+
+  methods: {
+    submit() {
+      const type = document.getElementById('type').value;
+      const branch = document.getElementById('selectBranch').value;
+
+      if (!type || !branch) {
+		alert("종목과 지점을 모두 선택해주세요.")     
+		return;
+       }
+ 
+    },
+  }
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

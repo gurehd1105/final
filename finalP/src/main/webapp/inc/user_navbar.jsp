@@ -31,7 +31,7 @@
         if(key == '1'){
         	window.location.href = '${contextPath}/home';        
         }else if(key == '2'){
-        	window.location.href = '${contextPath}/reservationOne';
+        	window.location.href = '${contextPath}/calendar';
         }
       },
     },
