@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReservationMapper">
+
    <select id="selectReservationList" parameterType="com.example.gym.vo.ProgramReservation"
          resultType="com.example.gym.vo.ProgramReservation">
         SELECT p.payment_date paymentDate,
@@ -22,10 +23,7 @@
           ) VALUES (
               #{paymentNo},
               #{programDateNo},
-              (SELECT branch_name
-               FROM branch
-               WHERE branch_no = #{branchNo})
-          )
+              #{branchNo}
    </insert>
    
    <delete id="deleteReservation" parameterType="com.example.gym.vo.ProgramReservation">
@@ -35,6 +33,24 @@
             AND branch_no = #{branchNo}
    </delete>
    
+   <!-- 지점 리스트조회 -->
+   	<resultMap id="Branch" type="com.example.gym.vo.Branch">
+	<result column="branch_no" property="branchNo"/>
+	<result column="branch_name" property="branchName"/>
+	<result column="branch_tel" property="branchTel"/>
+	<result column="branch_address" property="branchAddress"/>
+	</resultMap>
+   
+   
+	<select id="branchList" parameterType="com.example.gym.vo.Branch" resultMap="Branch">
+	SELECT 
+			branch_no,
+			branch_name,
+			branch_tel,
+			branch_address
+	  FROM  branch
+	</select>  
+ 
  
    
    

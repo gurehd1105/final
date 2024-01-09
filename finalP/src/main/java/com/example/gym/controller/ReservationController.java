@@ -52,12 +52,10 @@ public class ReservationController {
 		}
 		
 	
-
-
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(Model model, Integer targetDay) {	
-	    model.addAttribute("targetDay", targetDay);
+	public String insertReservation(Model model, Integer targetDay) {
+		model.addAttribute("targetDay", targetDay);
 		return "reservation/insertReservation";
 		
 	}
@@ -68,9 +66,13 @@ public class ReservationController {
         return "redirect:/reservationOne";
     }
 	
-	
-	
-	
+	// 지점 조회
+	@GetMapping("/branches")
+	public String branches(Model model) {
+	  List<Branch> branches = reservationService.branchList();
+	  model.addAttribute("branches", branches);
+	  return "reservation/branches";
+	}
 	
 	
 }
