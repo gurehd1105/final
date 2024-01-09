@@ -38,9 +38,10 @@ public class ReservationController {
 	}
 	// 예약 상세보기
 		@GetMapping("/reservationOne")
-		public String reservationOne(Model model, @RequestParam Map<String, Object> paramMap) {
+		public String reservationOne(Model model, @RequestParam Map<String, Object> paramMap, Integer targetDay) {
 	        List<Map<String, Object>> reservationList = reservationService.selectReservationList(paramMap);
 	        model.addAttribute("reservationList", reservationList);
+	        model.addAttribute("targetDay", targetDay);
 		    return "reservation/reservationOne";
 			
 		}
