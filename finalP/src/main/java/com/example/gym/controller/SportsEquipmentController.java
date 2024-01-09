@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
+@RequestMapping("sportsEquipment")
 public class SportsEquipmentController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired SportsEquipmentService sportsEquipmentService;
@@ -26,7 +28,7 @@ public class SportsEquipmentController {
 //----------------------------------------- SportsEquipment -------------------------------------
 	
 	//SportsEquipment 추가 폼 & 장비,소모품 리스트 (본사직원만 접근 가능)
-	@GetMapping("/sportsEquipment/insertSportsEquipment")
+	@GetMapping("/insertSportsEquipment")
 	public String insertSportsEquipment(HttpSession session,
 										Model model,
 										@RequestParam(defaultValue = "1") int currentPage,
@@ -52,7 +54,7 @@ public class SportsEquipmentController {
 	}  
 
 	//SportsEquipment 추가 액션 (본사직원만 접근 가능)
-	@PostMapping("/sportsEquipment/insertSportsEquipment")
+	@PostMapping("/insertSportsEquipment")
 	public String insertSportsEquipment(HttpSession session,
 										Model model,
 	                                    @RequestParam String itemName,
@@ -83,7 +85,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipment 장비,소모품 리스트 (직원)
-	@GetMapping("/sportsEquipment/SportsEquipmentList")
+	@GetMapping("/SportsEquipmentList")
 	public String selectSportsEquipmentList(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
@@ -108,7 +110,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipment 수정 폼 (본사직원만 접근 가능)
-	@GetMapping("/sportsEquipment/updateSportsEquipment")
+	@GetMapping("/updateSportsEquipment")
 	public String updateSportsEquipment(HttpSession session,
 										Model model,
 										@RequestParam int sportsEquipmentNo) {
@@ -135,7 +137,7 @@ public class SportsEquipmentController {
 	}  
 	
 	//SportsEquipment 수정 액션 (본사직원만 접근 가능)
-	@PostMapping("/sportsEquipment/updateSportsEquipment")
+	@PostMapping("/updateSportsEquipment")
 	public String updateSportsEquipment(HttpSession session,
 										Model model,
 	                                    @RequestParam String itemName,
@@ -158,7 +160,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipmentImg 개별 삭제 액션 (본사직원만 접근 가능)
-	@PostMapping("/sportsEquipment/deleteOneSportsEquipmentImg")
+	@PostMapping("/deleteOneSportsEquipmentImg")
 	public String deleteOneSportsEquipmentImg(HttpSession session,
 	                                    		@RequestParam int sportsEquipmentImgNo,
 	                                    		@RequestParam int sportsEquipmentNo,
@@ -180,7 +182,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipmentImg 개별 추가 액션 (본사직원만 접근 가능)
-	@PostMapping("/sportsEquipment/insertOneSportsEquipmentImg")
+	@PostMapping("/insertOneSportsEquipmentImg")
 	public String insertOneSportsEquipmentImg(HttpSession session,
 	                                    		@RequestParam int sportsEquipmentNo,
 	                                    		@RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList ) {
@@ -205,10 +207,10 @@ public class SportsEquipmentController {
 	}	
 	
 	//SportsEquipment 상세보기 및 발주 폼
-	@GetMapping("/sportsEquipment/sportsEquipmentOne")
+	@GetMapping("/sportsEquipmentOne")
 	public String sportsEquipmentOne(HttpSession session,
 										Model model,
-										@RequestParam int sportsEquipmentNo) {
+										@RequestParam int sportsEquipmentNo) throws JsonProcessingException {
 		
 //		//session 유효성 검사 (직원)
 //		if(session.getAttribute("") == null) {
@@ -222,7 +224,8 @@ public class SportsEquipmentController {
 		int branchLevel = 0;
 		//지점직원이라면 직원이 속해 있는 지점의 재고 출력
 		if(branchLevel != 1) {
-			model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+			//model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+			model.addAttribute("sportsEquipmentInventory", mapper.writeValueAsString(map.get("sportsEquipmentInventory")));
 		}	
 		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
 		model.addAttribute("employeeId", map.get("employeeId"));
@@ -231,7 +234,8 @@ public class SportsEquipmentController {
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		model.addAttribute("equipmentCreatedate", map.get("equipmentCreatedate"));
 		model.addAttribute("equipmentUpdatedate", map.get("equipmentUpdatedate"));
-		model.addAttribute("sportsEquipmentImgList", map.get("sportsEquipmentImgList"));
+		//model.addAttribute("sportsEquipmentImgList", map.get("sportsEquipmentImgList"));
+		model.addAttribute("sportsEquipmentImgList", mapper.writeValueAsString(map.get("sportsEquipmentImgList")));
 		
 		return "sportsEquipment/sportsEquipmentOne";
 	}  
@@ -239,7 +243,7 @@ public class SportsEquipmentController {
 //----------------------------------------- SportsEquipmentOrder -------------------------------------
 	
 	//SportsEquipmentOrder 추가 액션 (지점직원만 접근 가능)
-	@PostMapping("/sportsEquipment/insertSportsEquipmentOrder")
+	@PostMapping("/insertSportsEquipmentOrder")
 	public String insertSportsEquipmentOrder(HttpSession session,
 	                                    		@RequestParam int sportsEquipmentNo,
 	                                    		@RequestParam int quantity,
@@ -260,7 +264,7 @@ public class SportsEquipmentController {
 	}
 
 	//SportsEquipmentOrderByHead 리스트 (본사직원만 접근 가능)
-	@GetMapping("/sportsEquipment/sportsEquipmentOrderListByHead")
+	@GetMapping("/sportsEquipmentOrderListByHead")
 	public String sportsEquipmentOrderListByHead(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
@@ -292,7 +296,7 @@ public class SportsEquipmentController {
 
 	
 	//SportsEquipmentOrderByBranch 리스트 (지점직원만 접근 가능)
-	@GetMapping("/sportsEquipment/sportsEquipmentOrderListByBranch")
+	@GetMapping("/sportsEquipmentOrderListByBranch")
 	public String sportsEquipmentOrderListByBranch(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
@@ -322,7 +326,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipmentOrder 수정 액션 (본사직원만 접근 가능)
-	@PostMapping("/sportsEquipment/updateSportsEquipmentOrder")
+	@PostMapping("/updateSportsEquipmentOrder")
 	public String updateSportsEquipmentOrder(HttpSession session,
 	                                    		@RequestParam int orderNo,
 	                                    		@RequestParam String orderStatus) {
@@ -343,7 +347,7 @@ public class SportsEquipmentController {
 	}
 	
 	//SportsEquipmentOrder 삭제 액션 (지점직원만 접근 가능)
-	@PostMapping("/sportsEquipment/deleteSportsEquipmentOrder")
+	@PostMapping("/deleteSportsEquipmentOrder")
 	public String deleteSportsEquipmentOrder(HttpSession session,
 	                                    		@RequestParam int orderNo,
 	                                    		@RequestParam String orderStatus) {
@@ -366,7 +370,7 @@ public class SportsEquipmentController {
 //----------------------------------------- SportsEquipmentInventory -------------------------------------
 	
 	//SportsEquipmentInventoryByHead 리스트 (본사직원만 접근 가능)
-	@GetMapping("/sportsEquipment/sportsEquipmentInventoryByHead")
+	@GetMapping("/sportsEquipmentInventoryByHead")
 	public String sportsEquipmentInventoryByHead(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
@@ -391,7 +395,7 @@ public class SportsEquipmentController {
 	} 
 
 	//SportsEquipmentInventoryByBranch 리스트 (지점직원만 접근 가능)
-	@GetMapping("/sportsEquipment/sportsEquipmentInventoryByBranch")
+	@GetMapping("/sportsEquipmentInventoryByBranch")
 	public String sportsEquipmentInventoryByHead(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,

@@ -28,7 +28,7 @@
   		<el-col :span="8" v-for="(equipment, index) in sportsEquipmentList" :key="index">
     		<el-card :label="equipment.itemName" :body-style="{ padding: '15px' }">
       			<div style="padding: 14px">
-        			<img :src="'/finalP/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
+        			<img :src="'/context-path/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
         			<span>상품명: {{ equipment.itemName }}</span><br>
         			<span>가격: {{ equipment.itemPrice }}</span><br>
         			<span>상태: {{ equipment.equipmentActive === 'Y' ? '주문가능' : '품절' }}</span><br>
@@ -70,13 +70,13 @@
 
         },
         
-        sportsEqquipmentOne(sportsEquipmentNo){
-			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }';
+        sportsEquipmentOne(sportsEquipmentNo){
+			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo='+sportsEquipmentNo;
 		},
 		
   		changePage(page) {
     		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); // 추가된 부분
+    		console.log('Current Page:', this.currentPage); 
     		location.href = '${ctp}/sportsEquipment/SportsEquipmentList?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
   		}
 	}
