@@ -1,24 +1,36 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<c:set var="title" value="예약 확인" />
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<c:set var="title" value="회원상세" />
+<c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
+<c:set var="keywords" value="운동,헬스,헬스장,예약" />
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
+
+
 <c:set var="body">
-    <h1>${targetYear}년 ${targetMonth+1}월 ${targetDay}일 예약정보</h1>  
-    	<el-table :data="tableData" >    	
-    		<el-table-column prop="program" label="예약종목"/>
-    		<el-table-column prop="selectBranch" label="예약지점"/>
-    	</el-table>
-    	
-    <div>
-      <a href="${contextPath}/insertReservation?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}">
-      	<el-button type="primary">예약하기</el-button>
-      </a>
-    </div>
+
+    <el-descriptions title="${targetYear}년 ${targetMonth+1}월 ${targetDay}일" :column="1" border>
+        <el-descriptions-item v-for="key of Object.keys(program_reservation)" :label="key">{{program_reservation[key] }}</el-descriptions-item>
+    </el-descriptions>
+	<br>
+    <el-button type="primary" @click="reservation()">예약하기</el-button>
 
 </c:set>
-	 
+
 <c:set var="script">
-	
- 
+    data() {
+        return {
+           program_reservation: {
+                결제날짜:'${paymentDate}',
+                지점명: '${bName}',
+            },
+        };
+    },
+    methods: {
+        reservation() {
+            location.href = '${ctp}/insertReservation';
+        }
+    }
 </c:set>
-<%@ include file="/inc/user_layout.jsp" %>
+
+<%@ include file="/inc/admin_layout.jsp" %>

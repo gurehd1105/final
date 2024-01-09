@@ -38,16 +38,24 @@ public class ReservationController {
 	}
 	// 예약 상세보기
 		@GetMapping("/reservationOne")
-		public String reservationOne(Model model, Integer targetDay, ProgramReservation reservation) {
-		
-			model.addAttribute("targetDay", targetDay);		
-			return "reservation/reservationOne";			
+		public String reservationOne(Model model, @RequestParam Map<String, Object> paramMap, Integer targetDay) {
+			Map<String,Object> rList = new HashMap<>();
+			rList.put("paymentNo", paramMap.get("paymentNo"));
+			rList.put("programDateNo", paramMap.get("programDateNo"));
+			rList.put("branchNo", paramMap.get("branchNo"));
+			
+			List<Map<String, Object>> reservationList = reservationService.selectReservationList(rList);
+	        model.addAttribute("reservationList", reservationList);
+	        model.addAttribute("targetDay", targetDay);
+		    return "reservation/reservationOne";
+			
 		}
-
+		
+	
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(Model model, Integer targetDay) {	
-	    model.addAttribute("targetDay", targetDay);
+	public String insertReservation(Model model, Integer targetDay) {
+		model.addAttribute("targetDay", targetDay);
 		return "reservation/insertReservation";
 		
 	}
@@ -58,9 +66,13 @@ public class ReservationController {
         return "redirect:/reservationOne";
     }
 	
-	
-	
-	
+	// 지점 조회
+	@GetMapping("/branches")
+	public String branches(Model model) {
+	  List<Branch> branches = reservationService.branchList();
+	  model.addAttribute("branches", branches);
+	  return "reservation/branches";
+	}
 	
 	
 }

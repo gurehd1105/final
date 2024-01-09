@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReservationMapper">
+
    <select id="selectReservationList" parameterType="com.example.gym.vo.ProgramReservation"
          resultType="com.example.gym.vo.ProgramReservation">
-        SELECT p.payment_no payNo,
-               pd.program_date pdDate,
-               b.branch_name bn
+        SELECT p.payment_date paymentDate,
+               b.branch_name bName
           FROM program_reservation pr INNER JOIN payment p
             ON pr.payment_no = p.payment_no INNER JOIN program_date pd
             ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
-            ON pr.branch_no = b.branch_no    
+            ON pr.branch_no = b.branch_no       
          WHERE pr.payment_no = #{paymentNo}
            AND pr.program_date_no = #{programDateNo}
            AND pr.branch_no = #{branchNo}
@@ -21,12 +21,9 @@
               program_date_no,
               branch_no
           ) VALUES (
-              1,
-              14,
-              (SELECT branch_name
-               FROM branch
-               WHERE branch_no = 1)
-          )
+              #{paymentNo},
+              #{programDateNo},
+              #{branchNo}
    </insert>
    
    <delete id="deleteReservation" parameterType="com.example.gym.vo.ProgramReservation">
@@ -36,6 +33,24 @@
             AND branch_no = #{branchNo}
    </delete>
    
+   <!-- 지점 리스트조회 -->
+   	<resultMap id="Branch" type="com.example.gym.vo.Branch">
+	<result column="branch_no" property="branchNo"/>
+	<result column="branch_name" property="branchName"/>
+	<result column="branch_tel" property="branchTel"/>
+	<result column="branch_address" property="branchAddress"/>
+	</resultMap>
+   
+   
+	<select id="branchList" parameterType="com.example.gym.vo.Branch" resultMap="Branch">
+	SELECT 
+			branch_no,
+			branch_name,
+			branch_tel,
+			branch_address
+	  FROM  branch
+	</select>  
+ 
  
    
    
