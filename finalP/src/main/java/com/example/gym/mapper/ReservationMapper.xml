@@ -1,29 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReservationMapper">
-	<select id="selectReservationList" parameterType="java.util.Map"
-			resultType="com.example.gym.vo.ProgramReservation">	  	  
-	  SELECT 
-	  		 pr.*, p.*, pd.*, b.*
-		FROM program_reservation pr
-       INNER JOIN payment p 
-		  ON pr.payment_no = p.payment_no
-	   INNER JOIN program_date pd 
-	   	  ON pr.program_date_no = pd.program_date_no
-	   INNER JOIN branch b 
-	      ON pr.branch_no = b.branch_no
-	   ORDER BY program_reservation_no;
-
-	</select>
-	
-	
-	
-	<insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
-		INSERT INTO program_reservation
-					program_reservation_no,
-					payment_no,
-					program_date_no,
-					branch_no;			
-	</insert>
-
+   <select id="selectReservationList" parameterType="com.example.gym.vo.ProgramReservation"
+         resultType="com.example.gym.vo.ProgramReservation">
+        SELECT p.payment_no payNo,
+               pd.program_date pdDate,
+               b.branch_name bn
+          FROM program_reservation pr INNER JOIN payment p
+            ON pr.payment_no = p.payment_no INNER JOIN program_date pd
+            ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
+            ON pr.branch_no = b.branch_no    
+         WHERE pr.payment_no = #{paymentNo}
+           AND pr.program_date_no = #{programDateNo}
+           AND pr.branch_no = #{branchNo}
+   </select>
+   
+   <insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
+          INSERT INTO program_reservation (
+              payment_no,
+              program_date_no,
+              branch_no
+          ) VALUES (
+              1,
+              14,
+              (SELECT branch_name
+               FROM branch
+               WHERE branch_no = 1)
+          )
+   </insert>
+   
+   <delete id="deleteReservation" parameterType="com.example.gym.vo.ProgramReservation">
+          DELETE FROM program_reservation
+          WHERE payment_no = #{paymentNo}
+            AND program_date_no = #{programDateNo}
+            AND branch_no = #{branchNo}
+   </delete>
+   
+ 
+   
+   
+      
 </mapper>
