@@ -8,7 +8,7 @@
 <c:set var="body">
 
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-			 action="${ctp}/deleteCustomer" method="post" id="delete">
+			 action="${ctp}/customer/delete" method="post" id="delete">
 			<el-form-item label="아이디">
 				<el-input v-model="id" name="customerId" readonly />			
 			</el-form-item> 
@@ -44,4 +44,4 @@
 	}
 
 </c:set>
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>

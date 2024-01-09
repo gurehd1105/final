@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>    
-<div id="header">
+<div id="header" v-cloak>
   <el-header class="!p-0">
     <el-menu
       :default-active="activeIndex"

@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="ctp" value="${pageContext.request.contextPath}" />    
-<div id="side" class="bg-gray-50">
 	<el-aside width="200px">
       <el-scrollbar class="h-[calc(100vh-60px)]">
         <el-menu :default-openeds="['1', '3']">

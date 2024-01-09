@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.QuestionService;
@@ -15,38 +16,42 @@ import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("question")
 public class QuestionController {
+	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private QuestionService questionService;
 
 // Question
 	
 	// insertForm
-	@GetMapping("/insertQuestion")
+	@GetMapping("/insert")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
 		if (loginCustomer == null) {
-			return "customer/loginCustomer";
+			return "customer/login";
 		}
 		model.addAttribute("loginCustomer", loginCustomer);
-		return "question/insertQuestion";
+		return "question/insert";
 	}
 	
 	// insertAct
-	@PostMapping("/insertQuestion")
+	@PostMapping("/insert")
 	public String insertQuestion(Question question) {
 		questionService.insertQuestion(question);
-		return "redirect:/questionList";
+		return "redirect:/list";
 	}
 	
 	// selectQuestionList
-	@GetMapping("/questionList")
-	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) {
+	@GetMapping("/list")
+	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) throws JsonProcessingException {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
@@ -66,7 +71,8 @@ public class QuestionController {
 		paramMap.put("beginRow", beginRow);
 
 		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
-		model.addAttribute("questionList", resultMap.get("questionList")); // questionList 출력 완
+		Object questionList = resultMap.get("questionList");
+		model.addAttribute("questionList", mapper.writeValueAsString(questionList)); // questionList 출력 완
 
 		// 페이징
 		int totalRow = (int) resultMap.get("totalRow");
@@ -79,7 +85,7 @@ public class QuestionController {
 		model.addAttribute("totalRow", totalRow);
 		model.addAttribute("rowPerPage", rowPerPage);
 
-		return "question/questionList";
+		return "question/list";
 	}	
 	
 	// select - questionOne
@@ -105,7 +111,7 @@ public class QuestionController {
 	}
 	
 	// updateForm
-	@GetMapping("/updateQuestion")
+	@GetMapping("/update")
 	public String updateQuestion(Question question, Model model) {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		
@@ -113,11 +119,11 @@ public class QuestionController {
 			return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
 		}
 		model.addAttribute("questionMap", resultMap.get("questionMap"));
-		return "question/updateQuestion";
+		return "question/update";
 	}
 	
 	// updateAct
-	@PostMapping("/updateQuestion")
+	@PostMapping("/update")
 	public String updateQuestion(Question question) {
 		
 		questionService.updateQuestion(question);
@@ -127,7 +133,7 @@ public class QuestionController {
 // Question	Reply
 	
 	// insertReply
-	@PostMapping("/insertQuestionReply")
+	@PostMapping("/insertReply")
 	public String insertQuestionReply(QuestionReply questionReply) {
 
 		questionService.insertQuestionReply(questionReply);
@@ -136,7 +142,7 @@ public class QuestionController {
 	
 
 	// deleteReply
-	@GetMapping("/deleteQuestionReply")
+	@GetMapping("/deleteReply")
 	public String deleteQuestionReply(QuestionReply questionReply) {
 
 		questionService.deleteQuestionReply(questionReply);

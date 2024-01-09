@@ -38,14 +38,14 @@
 	},
 	methods: {
 		updateOne(){
-			location.href = '${ctp}/updateCustomerOneForPw';
+			location.href = '${ctp}/customer/updateOneForPw';
 		},
 		updatePw(){
-			location.href = '${ctp}/updateCustomerPw';
+			location.href = '${ctp}/customer/updatePw';
 		}
 	}
 
 </c:set>
 
 
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>

@@ -23,11 +23,13 @@ public class CustomerLoginFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
+        
+        boolean isLogin = request.getSession().getAttribute("loginCustomer") != null;
+        boolean isLoginPath = request.getServletPath().equals("/customer/login");
         // 세션에서 로그인 정보를 체크하는 로직
-        if (request.getSession().getAttribute("loginCustomer") == null) {
+        if (!isLogin && !isLoginPath) {
             // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리
-            response.sendRedirect("/login"); // 로그인 페이지로 리다이렉트하는 예시
+            response.sendRedirect("/customer/login"); // 로그인 페이지로 리다이렉트하는 예시
             return;
         }
 
