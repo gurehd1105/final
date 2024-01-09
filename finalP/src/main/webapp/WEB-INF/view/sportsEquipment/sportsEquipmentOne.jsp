@@ -40,7 +40,7 @@
 	        	</div>
 	      	</template>
 	      	{{itemPrice}}원
-	      	{{sportsEquipment.sportsEquipmentNo}}번
+	      	{{sportsEquipmentNo}}번
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -89,18 +89,56 @@
 	</el-descriptions>
 	
 	<br>
-	<div>
-		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-		 action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
-		  	<el-input-number v-model="quantity" :min="1" name="quantity" :max="100" @change="handleChange" />
-		  	<el-input type="hidden" name="sportsEquipmentNo" :value="sportsEquipment.sportsEquipmentNo">
-		 	<el-input type="hidden" name="itemPrice" :value="sportsEquipment.itemPrice">
- 		</el-form>
- 		<br>
-  		<el-button type="primary" @click="onSubmit(form)">발주</el-button>
-	</div>
-
-
+		<el-descriptions
+	    class="margin-top"
+	    title="현재 매장 재고"
+	    :column="3"
+	    :size="size"
+	    border
+	  >    
+		    <el-descriptions-item>
+		      	<template #label>
+		        	<div class="cell-item">
+		          		재고
+		        	</div>
+		      	</template>
+		      	 {{sportsEquipmentInventory.totalQuantity}}
+		    </el-descriptions-item>
+		    
+		    <el-descriptions-item>
+		      	<template #label>
+		        	<div class="cell-item">
+		          		발주
+		        	</div>
+		      	</template>
+		      	{{sportsEquipmentInventory.inventoryQuantity}}
+		    </el-descriptions-item>
+		    
+		    <el-descriptions-item>
+		      	<template #label>
+		        	<div class="cell-item">
+		          		폐기
+		        	</div>
+		      	</template>
+				{{sportsEquipmentInventory.discartdQuantity}}
+		    </el-descriptions-item>
+		</el-descriptions>
+		
+		<br>
+		
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+  		<el-form-item label="수량">
+    		<el-input-number v-model="model.quantity" :min="1" name="quantity" :max="100" @change="handleChange" />
+ 		 </el-form-item>
+ 		 <el-form-item label="총 가격">
+    		{{ model.totalPrice }}원
+  		</el-form-item>
+  		<input type="hidden" name="sportsEquipmentNo" :value="sportsEquipmentNo">
+ 		<input type="hidden" name="itemPrice" :value="itemPrice">
+  		<el-form-item>
+    		<el-button type="primary" @click="onSubmit(form)">발주</el-button>
+  		</el-form-item>
+	</el-form>
 
 </c:set>
 <c:set var="script">
@@ -111,12 +149,11 @@
 	    			totalPrice:'',
 	    		},
 	    		
-	    		sportsEquipment:{
-				    sportsEquipmentNo: '${sportsEquipmentNo}', 
-				},		     
+	     
+	    			sportsEquipmentNo: '${sportsEquipmentNo}', 
+				    itemPrice: '${itemPrice}',
 				    employeeId: '${employeeId}',
 				    itemName: '${itemName}',
-				    itemPrice: '${itemPrice}',
 				    equipmentActive: '${equipmentActive}',
 				    equipmentCreatedate: '${equipmentCreatedate}',
 				    equipmentUpdatedate: '${equipmentUpdatedate}',

@@ -399,7 +399,7 @@ public class SportsEquipmentController {
 	public String sportsEquipmentInventoryByHead(HttpSession session,
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
-											@RequestParam(defaultValue = "") String searchItem) {
+											@RequestParam(defaultValue = "") String searchItem) throws JsonProcessingException {
 //		//session 유효성 검사 (지점직원)
 //		if(session.getAttribute("") == null) {
 //			return "";
@@ -409,7 +409,8 @@ public class SportsEquipmentController {
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentInventoryBranchService(session, currentPage, searchItem);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+		model.addAttribute("sportsEquipmentInventory", mapper.writeValueAsString(map.get("sportsEquipmentInventory")));
+		//model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchItem", map.get("searchItem"));
 		
