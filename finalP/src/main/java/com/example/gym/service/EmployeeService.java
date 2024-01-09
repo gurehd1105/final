@@ -26,7 +26,7 @@ public class EmployeeService {
 
 	// 직원 로그인
 	public Employee loginEmployee(Employee employee) {
-		log.debug(employee.toString() + "직원 로그인 Service");
+		log.info(employee.toString());
 		return employeeMapper.loginEmployee(employee);
 	}
 
@@ -149,7 +149,6 @@ public class EmployeeService {
 			employeeImg.setEmployeeImgOriginName(mf.getOriginalFilename());
 			employeeImg.setEmployeeImgSize(mf.getSize());
 			employeeImg.setEmployeeImgType(mf.getContentType());
-
 			String fileName = UUID.randomUUID().toString();
 
 			String originName = mf.getOriginalFilename();
@@ -179,7 +178,6 @@ public class EmployeeService {
 			 * mf.transferTo(file); } catch (IllegalStateException | IOException e) { throw
 			 * new RuntimeException(); }
 			 */
-
 		} else { // 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
 			Employee deleteImg = new Employee();
 			deleteImg.setEmployeeNo(employeeNo);
@@ -200,14 +198,14 @@ public class EmployeeService {
 		return result;
 	}
 
+	// 직원 목록
+	public List<Employee> getEmployeeList() {
+		return employeeMapper.selectEmployeeList();
+	}
 	// 직원 상세목록
 	public Map<String, Object> employeeOne(Employee employee) {
 		Map<String, Object> resultMap = employeeMapper.employeeOne(employee);
 		return resultMap;
 	}
 
-	// 직원 목록
-	public List<Employee> getEmployeeList() {
-		return employeeMapper.selectEmployeeList();
-	}
 }

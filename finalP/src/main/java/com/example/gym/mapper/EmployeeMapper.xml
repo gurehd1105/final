@@ -27,7 +27,7 @@
 	<!-- 직원추가 끝 -->
 	
 	<!-- 로그인 -->
-	<select id="selectEmployeeByLogin" parameterType="com.example.gym.vo.Employee" 
+	<select id="loginEmployee" parameterType="com.example.gym.vo.Employee" 
 										resultType="com.example.gym.vo.Employee">
 		SELECT 
 			employee_no    employeeNo ,
