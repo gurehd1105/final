@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.service.SportsEquipmentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class SportsEquipmentController {
+	ObjectMapper mapper = new ObjectMapper();
 	@Autowired SportsEquipmentService sportsEquipmentService;
 	
 //----------------------------------------- SportsEquipment -------------------------------------
@@ -57,7 +60,7 @@ public class SportsEquipmentController {
 										@RequestParam(defaultValue = "1") int currentPage,
 										@RequestParam(defaultValue = "") String searchWord,
 										@RequestParam(defaultValue = "") String equipmentActive,
-	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) {
+	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) throws JsonProcessingException {
 //		//session 유효성 검사 (본사직원)
 //		if(session.getAttribute("") == null) {
 //			return "";
@@ -71,7 +74,8 @@ public class SportsEquipmentController {
 	  	Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 	  		
 	  	//jsp에서 출력할 model
-	  	model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
+	  	
+	  	model.addAttribute("sportsEquipmentList", mapper.writeValueAsString(map.get("sportsEquipmentList")));
 	  	model.addAttribute("lastPage", map.get("lastPage"));
 	  	model.addAttribute("searchWord", map.get("searchWord"));
 
@@ -84,7 +88,7 @@ public class SportsEquipmentController {
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
 											@RequestParam(defaultValue = "") String equipmentActive,
-											@RequestParam(defaultValue = "") String searchWord) {
+											@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {
 //		//session 유효성 검사(직원)
 //		if(session.getAttribute("") == null) {
 //			return "";
@@ -94,8 +98,9 @@ public class SportsEquipmentController {
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
+		model.addAttribute("sportsEquipmentList", mapper.writeValueAsString(map.get("sportsEquipmentList")));
 		model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("currentPage", map.get("currentPage"));
 		model.addAttribute("searchWord", map.get("searchWord"));
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		
