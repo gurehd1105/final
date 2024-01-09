@@ -117,7 +117,30 @@
 			return true;
 		},
 		onSubmit() {
-			document.getElementById('insertForm').submit();
+			const self = this;
+			const employee = {
+				branchNo: this.model.branchNo,
+				employeeId: this.model.id,
+				employeePw: this.model.pw,
+				employeeName: this.model.name,
+				employeeGender: this.model.gender,
+				employeePhone: this.model.phone,
+				employeeEmail: this.model.employeeEmailId + '@' + this.model.employeeEmailJuso,
+			}
+			axios.post('../employee/insert', employee)
+				.then((res) => {
+					self.$notify({
+					  title: '직원 추가 성공',
+					  message: '데이터베이스에 저장 되었습니다.',
+					  type: 'success',
+					})
+				}).catch((res) => {
+					self.$notify({
+					  title: '직원 추가 실패',
+					  message: res.message,
+					  type: 'error',
+					})
+				})
 		},
 		getSuggestion(query, cb) {
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);

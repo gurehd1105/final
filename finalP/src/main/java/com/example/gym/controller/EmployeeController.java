@@ -71,18 +71,12 @@ public class EmployeeController {
 
 	// 직원 입력 엑션
 	@PostMapping("insert")
-	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
-			String employeeEmailJuso, Model model ,int branchNo) {
-		ef.setBranchNo(branchNo);
-		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
+	@ResponseBody
+	public ResponseEntity<?> insertEmployee(HttpSession session, @RequestBody EmployeeForm ef, Model model) {
+		log.info(ef.toString());
 		String path = session.getServletContext().getRealPath("/upload/employee");
 		int result = employeeService.insertEmployee(ef, path);
-		if (result == 1) { // 가입 완
-			return "employee/login";
-		} else { // 예외발생
-			return "redirect:employee/insert";
-		}
-
+		return result == 1 ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
 	}
 
 	// 직원 비활성화 기능 update(employee_Active : Y -> N)

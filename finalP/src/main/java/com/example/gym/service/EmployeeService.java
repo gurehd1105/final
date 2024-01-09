@@ -39,6 +39,7 @@ public class EmployeeService {
 
 		// Employee 매개값 세팅
 		Employee paramEmployee = new Employee();
+		paramEmployee.setBranchNo(ef.getBranchNo());
 		paramEmployee.setEmployeeId(ef.getEmployeeId());
 		paramEmployee.setEmployeePw(ef.getEmployeePw());
 
