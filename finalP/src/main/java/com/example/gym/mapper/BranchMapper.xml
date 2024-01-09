@@ -15,7 +15,7 @@
 	</select>
 
 	<insert id="insertBranch"
-		parameterType="com.example.gym.vo.Branch">
+		parameterType="map">
 		INSERT INTO branch (
 		branch_name ,
 		branch_tel ,

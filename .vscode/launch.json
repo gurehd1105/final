@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-FinalPApplication<gym>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.gym.FinalPApplication",
+            "projectName": "gym",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

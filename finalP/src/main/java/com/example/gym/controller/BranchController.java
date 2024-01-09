@@ -1,6 +1,8 @@
 package com.example.gym.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,21 +22,35 @@ import lombok.extern.slf4j.Slf4j;
 public class BranchController {
 	@Autowired
 	private BranchService branchService;
-	
+
 	@GetMapping("list")
 	@ResponseBody
 	public List<Branch> BranchList() {
 		return branchService.branchList();
-		
+
 	}
-	
+
 	@GetMapping("insert")
 	public String insert() {
-		return "insert";
+		return "branch/insert";
 	}
-	
-	@PostMapping("inset")
-	public String insert(Branch branch){
-		return null;
+
+	@PostMapping("insert")
+	public String insert(Branch branch, String address1, String address2, String address3) {
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("branchName", branch.getBranchName());
+	    map.put("branchTel", branch.getBranchTel());
+	    
+	    // 주소 합치기
+	    String fullAddress = address1 + " " + address2 + " " + address3;
+	    map.put("branchAddress", fullAddress);
+	    log.info(fullAddress);
+	    int insertRow = branchService.insertBranch(map);
+	    if (insertRow == 1) {
+	        return "redirect:/branch/list"; // "Redirect:"에서 오타 수정
+	    } else {
+	        return "branch/insert"; 
+	    }
 	}
+
 }

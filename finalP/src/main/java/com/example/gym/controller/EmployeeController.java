@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.service.BranchService;
 import com.example.gym.service.EmployeeService;
+import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeForm;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,7 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
-
+	@Autowired
+	private BranchService branchService;
 	// 로그인 폼
 	@GetMapping("login")
 	public String employeeLogin(HttpSession session) {
@@ -58,21 +61,25 @@ public class EmployeeController {
 
 	// 직원 입력 폼
 	@GetMapping("insert")
-	public String insertEmployee(HttpSession session) {
+	public String insertEmployee(HttpSession session , Model model) {
+		List<Branch> branches = branchService.branchList();
+		log.info(branches.toString());
+        model.addAttribute("branches", branches);
 		return "employee/insert";
 	}
 
 	// 직원 입력 엑션
 	@PostMapping("insert")
 	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
-			String employeeEmailJuso) {
+			String employeeEmailJuso, Model model ,@RequestParam int branchNo) {
+		ef.setBranchNo(branchNo);
 		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
 		String path = session.getServletContext().getRealPath("/upload/employee");
 		int result = employeeService.insertEmployee(ef, path);
 		if (result == 1) { // 가입 완
 			return "employee/login";
 		} else { // 예외발생
-			return "employee/insert";
+			return "redirect:employee/insert";
 		}
 
 	}
@@ -84,10 +91,10 @@ public class EmployeeController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/employeeLogin";
+			return "employee/login";
 		}
 		model.addAttribute("loginEmployee", loginEmployee);
-		return "employee/deleteEmployee";
+		return "employee/delete";
 	}
 
 	// 직원 비활성화 액션
@@ -101,9 +108,9 @@ public class EmployeeController {
 
 		if (result == 1) { // 탈퇴 완 --> login 창으로 이동
 			session.invalidate();
-			return "employee/employeeLogin";
+			return "employee/login";
 		} else { // 예외발생
-			return "employee/deleteEmploye";
+			return "employee/delete";
 		}
 
 	}
@@ -114,7 +121,7 @@ public class EmployeeController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/employeeLogin";
+			return "employee/login";
 		}
 
 		return "employee/updateEmployeeOneForPw";

@@ -4,9 +4,11 @@
 	<!-- 직원추가 시작-->
 	<insert id="insertEmployee" parameterType="com.example.gym.vo.Employee">
 		INSERT INTO employee (
+			branch_no ,
 			employee_id ,
 			employee_pw 
 		) VALUES (
+			#{branchNo} ,
 			#{employeeId} ,
 			PASSWORD(#{employeePw})
 		)
@@ -69,7 +71,7 @@
 			resultType="com.example.gym.vo.Employee"
 			parameterType="com.example.gym.vo.Employee">
 		SELECT
-			
+			*
 		FROM
 			employee
 		WHERE
