@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.BranchService;
+import com.example.gym.service.CustomerService;
 import com.example.gym.service.EmployeeService;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
+	private CustomerService customerService;
 	@Autowired
 	private BranchService branchService;
 	// 로그인 폼
@@ -206,10 +208,10 @@ public class EmployeeController {
 	@GetMapping("/employeeList")
 	public String employeeList(Model model) {
 		List<Employee> employeeList = employeeService.getEmployeeList();
-		log.debug("getEmployeeList", "Controller employeeList", employeeList.toString());
+		log.info(employeeList.toString());
 
 		model.addAttribute("employeeList", employeeList);
-		return "employee/employeeList";
+		return "employee/list";
 	}
 
 	// 마이페이지
@@ -223,4 +225,14 @@ public class EmployeeController {
 
 		return "employee/employeeOne";
 	}
+	
+	// 관리자 목록 리스트
+		@GetMapping("/customerList")
+		public String customerList(Model model) {
+			Map<String, Object> customerList = customerService.selectAllCustomer();
+			log.info(customerList.toString());
+
+			model.addAttribute("customerList", customerList);
+			return "employee/customerList";
+		}
 }
