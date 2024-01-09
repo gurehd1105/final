@@ -3,13 +3,12 @@
 <mapper namespace="com.example.gym.mapper.ReservationMapper">
    <select id="selectReservationList" parameterType="com.example.gym.vo.ProgramReservation"
          resultType="com.example.gym.vo.ProgramReservation">
-        SELECT p.payment_no payNo,
-               pd.program_date pdDate,
-               b.branch_name bn
+        SELECT p.payment_date paymentDate,
+               b.branch_name bName
           FROM program_reservation pr INNER JOIN payment p
             ON pr.payment_no = p.payment_no INNER JOIN program_date pd
             ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
-            ON pr.branch_no = b.branch_no    
+            ON pr.branch_no = b.branch_no       
          WHERE pr.payment_no = #{paymentNo}
            AND pr.program_date_no = #{programDateNo}
            AND pr.branch_no = #{branchNo}
@@ -21,11 +20,11 @@
               program_date_no,
               branch_no
           ) VALUES (
-              1,
-              14,
+              #{paymentNo},
+              #{programDateNo},
               (SELECT branch_name
                FROM branch
-               WHERE branch_no = 1)
+               WHERE branch_no = #{branchNo})
           )
    </insert>
    

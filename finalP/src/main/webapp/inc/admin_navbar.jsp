@@ -7,7 +7,7 @@
 	const header = Vue.createApp({
 		data() {
 			return {
-				msg: 'hello world!'
+				msg: 'GDJ72'
 			}
 		}
 	});

@@ -5,6 +5,9 @@
 <c:set var="description" value="현재 발주 할 수 있는 장비를 추가할 수 있는 사이트" />
 <c:set var="keywords" value="장비,소모품,수정,삭제,추가" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
+<c:set var="searchWord" value="${model.searchWord}" />
+<c:set var="equipmentActive" value="${model.equipmentActive}" />
+<c:set var="currentPage" value="${currentPage}" />
 <c:set var="body">
 
 	<div>
