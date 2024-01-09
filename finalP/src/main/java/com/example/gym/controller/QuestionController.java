@@ -16,12 +16,15 @@ import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("question")
 public class QuestionController {
+	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private QuestionService questionService;
 
@@ -48,7 +51,7 @@ public class QuestionController {
 	
 	// selectQuestionList
 	@GetMapping("/list")
-	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) {
+	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) throws JsonProcessingException {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
@@ -68,7 +71,8 @@ public class QuestionController {
 		paramMap.put("beginRow", beginRow);
 
 		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
-		model.addAttribute("questionList", resultMap.get("questionList")); // questionList 출력 완
+		Object questionList = resultMap.get("questionList");
+		model.addAttribute("questionList", mapper.writeValueAsString(questionList)); // questionList 출력 완
 
 		// 페이징
 		int totalRow = (int) resultMap.get("totalRow");
