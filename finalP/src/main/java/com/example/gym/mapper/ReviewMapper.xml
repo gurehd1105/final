@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.ReviewMapper">
+	<insert id="insertReview" parameterType="com.example.gym.vo.Review">
+		INSERT INTO review (
+			customer_attendance_no,
+			review_title,
+			review_content
+		) VALUES (
+			#{customerAttendanceNo},
+			#{reviewTitle},
+			#{reviewContent}
+		)
+	</insert>
+	
+	<delete id="deleteReview" parameterType="com.example.gym.vo.Review">
+		DELETE FROM review
+		WHERE review_no = #{reviewNo}	
+	</delete>
+	
+	<update id="updateReview" parameterType="com.example.gym.vo.Review">
+		UPDATE review SET
+			review_title = #{reviewTitle},
+			review_content = #{reviewContent},
+			updatedate = NOW()
+		WHERE review_no = #{reviewNo}
+	</update>
+	
+	<select id="selectReviewOne" parameterType="com.example.gym.vo.Review"
+								resultType="java.util.Map">
+		SELECT 
+			r.review_no AS reviewNo,
+			r.review_title AS reviewTitle,
+			r.review_content AS reviewContent,
+			r.createdate AS createdate,
+			r.updatedate AS updatedate,			
+			
+			ca.customer_attendance_date AS customerAttendanceDate,
+					
+			pr.branch_no AS branchNo,
+			
+			b.branch_name AS branchName
+			
+		FROM review r 
+		INNER JOIN customer_attendance ca
+		ON r.customer_attendance_no = ca.customer_attendance_no
+		INNER JOIN program_reservation pr
+		ON ca.program_reservation_no = pr.program_reservation_no
+		INNER JOIN branch b
+		ON pr.branch_no = b.branch_no
+		INNER JOIN program_date pd
+		ON pd.program_date_no = pr.program_date_no	
+		
+		WHERE review_no = #{reviewNo}	
+	</select>
+	
+	<select id="selectReviewList" resultType="java.util.Map">
+		SELECT 
+			r.review_no AS reviewNo,
+			r.review_title AS reviewTitle,
+			r.createdate AS createdate,
+			
+			b.branch_name AS branchName,
+			
+			p.program_name AS programName
+			
+		FROM review r
+		INNER JOIN customer_attendance ca
+		ON r.customer_attendance_no = ca.customer_attendance_no
+		INNER JOIN program_reservation pr
+		ON ca.program_reservation_no = pr.program_reservation_no
+		INNER JOIN program_date pd
+		ON pr.program_date_no = pd.program_date_no
+		INNER JOIN program p
+		ON pd.program_no = p.program_no
+		INNER JOIN branch b
+		ON pr.branch_no = b.branch_no
+	</select>
+</mapper>
