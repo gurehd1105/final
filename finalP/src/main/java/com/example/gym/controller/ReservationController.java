@@ -38,25 +38,14 @@ public class ReservationController {
 	}
 	// 예약 상세보기
 		@GetMapping("/reservationOne")
-		public String reservationOne(Model model, Integer targetDay, ProgramReservation reservation) {
-		
-			// 조회 조건 설정
-		    Map<String, Object> paramMap = new HashMap<>();
-		    // 조회 조건에 필요한 값들을 paramMap에 추가
-		    paramMap.put("paymentNo", reservation.getPaymentNo());
-		    paramMap.put("programDateNo", reservation.getProgramDateNo());
-		    paramMap.put("branchNo", reservation.getBranchNo());
-
-		    // 예약 목록 조회
-		    List<Map<String, Object>> reservationList = reservationService.selectProgramReservationList(paramMap);
-
-		    // 모델에 예약 목록과 targetDay를 추가
-		    model.addAttribute("reservationList", reservationList);
-		    model.addAttribute("targetDay", targetDay);
-
+		public String reservationOne(Model model, @RequestParam Map<String, Object> paramMap) {
+	        List<Map<String, Object>> reservationList = reservationService.selectReservationList(paramMap);
+	        model.addAttribute("reservationList", reservationList);
 		    return "reservation/reservationOne";
 			
 		}
+		
+	
 
 
 	// 예약 추가
