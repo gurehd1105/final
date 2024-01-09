@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <c:set var="title" value="스포츠 장비 리스트" />
 <c:set var="description" value="현재 발주 할 수 있는 스포츠 장비의 리스트를 보여주는 사이트" />
 <c:set var="keywords" value="장비,소모품,발주,폐기" />
@@ -10,17 +9,17 @@
 		<!-- 검색창 -->
 		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/SportsEquipmentList" method="get" enctype="multipart/form-data" id="searchSportsEquipmentForm">
 		   	<el-form-item label="상태">
-					<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
-						<el-radio label="Y">주문가능</el-radio>
-						<el-radio label="N">품절</el-radio>
-					</el-radio-group>
+				<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
+					<el-radio label="Y">주문가능</el-radio>
+					<el-radio label="N">품절</el-radio>
+				</el-radio-group>
 		   	</el-form-item>
-				<el-form-item label="검색">
-		    		<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+			<el-form-item label="검색">
+	    		<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
 		   	</el-form-item>
 		   	<el-form-item>
-		    		<el-button type="info" @click="resetSearchSubmit(form)">전체보기</el-button>
-		    		<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+	    		<el-button type="info" @click="resetSearchSubmit(form)">전체보기</el-button>
+	    		<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
 		   	</el-form-item>
 	    </el-form>
 	    
@@ -50,24 +49,18 @@
 		</div>
 </c:set>
 <c:set var="script">
-  data() {
-    return {
-      model: {
-        searchWord: '${searchWord}', 
-        equipmentActive: '${equipmentActive}', 
-      },
-      sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
-      currentPage: 1, 
-      lastPage: ${lastPage} 
-    };
-  },
-      
-  mounted() {
-    this.sportsEquipmentList = JSON.parse('${sportsEquipmentList}');
-  },
-      
+	data() {
+	  	return {
+		    model: {
+			    searchWord: '${searchWord}', 
+			    equipmentActive: '${equipmentActive}', 
+		    },
+		    sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
+		    currentPage: 1, 
+		    lastPage: ${lastPage} 
+	  	};
+	},
 	methods: {
-	
 		searchSubmit() {
 			document.getElementById('searchSportsEquipmentForm').submit();
 		},
