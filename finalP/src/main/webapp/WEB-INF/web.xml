@@ -35,6 +35,6 @@
   </filter>
   <filter-mapping>
     <filter-name>EmployeeLoginFilter</filter-name>
-    <url-pattern>*/employee/*</url-pattern>
+    <url-pattern>/employee/*</url-pattern>
   </filter-mapping>
 </web-app>
