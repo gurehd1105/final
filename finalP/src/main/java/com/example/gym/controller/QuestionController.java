@@ -46,7 +46,7 @@ public class QuestionController {
 	@PostMapping("/insert")
 	public String insertQuestion(Question question) {
 		questionService.insertQuestion(question);
-		return "redirect:/list";
+		return "redirect:list";
 	}
 	
 	// selectQuestionList
@@ -117,17 +117,18 @@ public class QuestionController {
 		
 		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
 			return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
+		}else {
+			model.addAttribute("questionMap", resultMap.get("questionMap"));
+			return "question/update";
 		}
-		model.addAttribute("questionMap", resultMap.get("questionMap"));
-		return "question/update";
+		
 	}
 	
 	// updateAct
 	@PostMapping("/update")
 	public String updateQuestion(Question question) {
-		
 		questionService.updateQuestion(question);
-		return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
+		return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
 	}	
 	
 // Question	Reply

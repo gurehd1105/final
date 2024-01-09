@@ -15,6 +15,11 @@ public class ReviewService {
 	@Autowired
 	private ReviewMapper reviewMapper;
 	
+	public Map<String,Object> selectReviewList() {
+		Map<String,Object> resultMap = reviewMapper.selectReviewList();
+		return resultMap;
+	}
+	
 	public int insertReview(Review review) {
 		int result = reviewMapper.insertReview(review);
 		return result;
@@ -35,9 +40,5 @@ public class ReviewService {
 		return resultMap;
 	}
 	
-	public Map<String,Object> selectReviewList() {
-		Map<String,Object> resultMap = reviewMapper.selectReviewList();
-		return resultMap;
-	}
 }
 
