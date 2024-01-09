@@ -10,7 +10,11 @@
 		<result property="branchActive"		column="branch_active"/>
 	</resultMap>
 	<select id="branchList" resultMap="Branch">
-		SELECT *
+		SELECT 
+			branch_no ,
+			branch_name ,
+			branch_tel ,
+			branch_address
 		FROM branch
 	</select>
 
@@ -19,12 +23,12 @@
 		INSERT INTO branch (
 		branch_name ,
 		branch_tel ,
-		branch_address 
+		branch_address
 		)
 		VALUES (
 			#{branchName} ,
 			#{branchTel} ,
-			#{branchAdderess} 
+			#{branchAddress} 
 		)
 	</insert>
 
