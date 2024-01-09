@@ -9,7 +9,7 @@
 	<jsp:include page="/inc/admin_navbar.jsp" />
 	<div class="flex flex-row divide-x">
 		<jsp:include page="/inc/admin_sidebar.jsp" />
-		<div id="app" class="w-full">
+		<div id="app" class="w-full" v-cloak>
 			<el-scrollbar class="h-[calc(100vh-60px)]">
 				<el-main>
 					<c:out value="${body}" escapeXml="false"/>

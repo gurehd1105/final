@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<div id="side" class="bg-gray-50">
+<div id="side" class="bg-gray-50" v-cloak>
 	<el-aside width="200px">
       <el-scrollbar class="h-[calc(100vh-60px)]">
         <el-menu :default-openeds="['1', '3']">

@@ -11,8 +11,9 @@
 	<el-button type="primary" @click="insert()">문의하기</el-button>
 	
 		
-		<li v-for="item in items">
+		<li v-for="question in questionList">
 			{{ question.questionNo }}
+			{{ question.questionTitle }}
 		</li>
   	
 
@@ -21,11 +22,7 @@
 <c:set var="script">
 	data() {
 		return {
-			questionList: [
-				{ questionNo: '${ questionList.questionNo }',				
-				{ questionTitle: '${ questionList.questionTitle }',
-				{ updatedate: '${ questionList.updatedate }',
-			],
+			questionList: JSON.parse('${ questionList }'),
 		}
 	},
 	
