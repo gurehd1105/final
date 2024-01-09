@@ -100,6 +100,7 @@ public class SportsEquipmentController {
 		//jsp에서 출력할 model
 		model.addAttribute("sportsEquipmentList", mapper.writeValueAsString(map.get("sportsEquipmentList")));
 		model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("currentPage", map.get("currentPage"));
 		model.addAttribute("searchWord", map.get("searchWord"));
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		
