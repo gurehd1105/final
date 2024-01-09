@@ -9,7 +9,7 @@
 
 <c:set var="body">
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-		 action="${ctp}/loginCustomer" method="post"  id="loginForm">
+		 action="${ctp}/customer/login" method="post"  id="loginForm">
 		 
 		 <el-form-item label="아이디">
 		 	<el-input v-model="id" name="customerId" placeholder="ID">
@@ -40,10 +40,8 @@
 				document.getElementById('loginForm').submit();
 			},
 			insertCustomer(){
-				location.href='${ctp}/insertCustomer';
+				location.href='${ctp}/customer/insert';
 			},
 		},
 </c:set>
-
-<%@ include file="/inc/admin_layout.jsp" %>
-
+<%@ include file="/inc/user_layout.jsp" %>

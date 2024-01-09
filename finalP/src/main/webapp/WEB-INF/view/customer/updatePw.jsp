@@ -9,7 +9,7 @@
 
 <c:set var="body">
 
-	<el-form action="${ctp}/updateCustomerPw" ref="form" id="updatePw"
+	<el-form action="${ctp}/customer/updatePw" ref="form" id="updatePw"
 		label-position="right" label-width="150px" status-icon method="post"> 
 	
 		<el-form-item label="아이디">
@@ -52,6 +52,4 @@
 		},
 	},
 </c:set>
-
-
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>

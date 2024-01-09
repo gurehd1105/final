@@ -19,10 +19,8 @@
 									resultType="com.example.gym.vo.Question">
 		SELECT 
 			question_no AS questionNo,
-			customer_no AS customerNo,
 			question_title AS questionTitle,
-			question_content AS questionContent,
-			createdate, updatedate
+			updatedate
 		FROM question
 		LIMIT #{beginRow},#{rowPerPage}
 	</select>

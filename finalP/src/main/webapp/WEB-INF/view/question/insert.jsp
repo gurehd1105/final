@@ -10,7 +10,7 @@
 <c:set var="body">
 
 <el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-			 action="${ctp}/insertQuestion" method="post" id="insert">
+			 action="${ctp}/question/insertQuestion" method="post" id="insert">
 		
 		<el-form-item label="작성자" rowspan="2">
 			<el-input v-model="customerId" readonly/>			
@@ -52,4 +52,4 @@
 	},
 </c:set>	
 		
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>
