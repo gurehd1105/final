@@ -26,69 +26,45 @@
 	    
 	    <!-- 장비 리스트 -->
 		<el-descriptions title="장비 리스트" :column="1" border>
-		  <el-descriptions-item v-for="(value, key) in Object.entries(sportsEquipmentList)" :label="key">
-		    <el-row>
-		      <el-col
-		        v-for="(equipment, index) in value"
-		        :key="index"
-		        :span="8"
-		        :offset="index > 0 ? 2 : 0"
-		      >
-		        <el-card :body-style="{ padding: '0px' }">
-		          <img
-		            :src="`${ctp}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName}`"
-		            class="image"
-		          />
-		          <div style="padding: 14px">
-		            <span>{{ equipment.itemName }}</span>
-		            <span>{{ equipment.itemPrice }}</span>
-		            <span>{{ equipment.equipmentActive }}</span>
-		            <div class="bottom">
-		              <el-button type="primary" @click="sportsEqquipmentOne()">발주</el-button>
-		            </div>
-		          </div>
-		        </el-card>
-		      </el-col>
-		    </el-row>
+		  <el-descriptions-item v-for="(equipment, index) in sportsEquipmentList" :label="equipment.itemName">
+		    <el-card :body-style="{ padding: '0px' }">
+		      <!-- 장비 정보 표시 -->
+		      <img :src="`${ctp}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName}`" class="image" />
+		      <div style="padding: 14px">
+		        <span>{{ equipment.itemName }}</span>
+		        <span>{{ equipment.itemPrice }}</span>
+		        <span>{{ equipment.equipmentActive }}</span>
+		        <div class="bottom">
+		          <el-button type="primary" @click="sportsEquipmentOne(equipment.sportsEquipmentNo)">발주</el-button>
+		        </div>
+		      </div>
+		    </el-card>
 		  </el-descriptions-item>
 		</el-descriptions>
-			
-			<c:forEach var="equipment" items="${sportsEquipmentList}">
-	   			<div style="border: 1px solid #ccc;">
-	   				이름 : ${equipment.itemName }<br>
-	   				가격 : ${equipment.itemPrice }<br>
-	   				상태 : <c:if test="${equipment.equipmentActive == 'Y' }"> 재고있음</c:if>
-	   					  <c:if test="${equipment.equipmentActive == 'N' }"> 품절</c:if><br>
-	   				이미지<br>
-	   				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName }" width="100" height="100"><br>
-	   				<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }">발주</a>
-	   			</div>
-	   		</c:forEach>
-	</div>
-	
-	   	<!-- 페이징 -->
-	   	<div style="border: 1px solid #ccc;">
-			<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=1&searchWord=${searchWord}&equipmentActive=${equipmentActive}">처음</a>
-			<c:forEach var="p" begin="1" end="${lastPage}">
-				<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${p}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">${p}</a>
-			</c:forEach>
-			<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList?currentPage=${lastPage}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">마지막</a>
-	    </div>
+		
+		<!-- 페이징 부분 -->
+		<div style="border: 1px solid #ccc;">
+		  <a @click="changePage(1)">처음</a>
+		  <a v-for="p in lastPage" :key="p" @click="changePage(p)">{{ p }}</a>
+		  <a @click="changePage(lastPage)">마지막</a>
+		</div>
 </c:set>
 <c:set var="script">
-      data() {
-        return {
-          model: {
-            searchWord: '',
-            equipmentActive: '',
-          },
-          sportsEquipmentList: [], 
-        };
+  data() {
+    return {
+      model: {
+        searchWord: '${searchWord}', 
+        equipmentActive: '${equipmentActive}', 
       },
+      sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
+      currentPage: 1, 
+      lastPage: ${lastPage} 
+    };
+  },
       
-      mounted() {
-        this.sportsEquipmentList = ${sportsEquipmentList}; 
-      },
+  mounted() {
+    this.sportsEquipmentList = JSON.parse('${sportsEquipmentList}');
+  },
       
 	methods: {
 	
@@ -103,9 +79,14 @@
           document.getElementById('searchSportsEquipmentForm').submit();
         },
         
-        sportsEqquipmentOne(){
+        sportsEqquipmentOne(sportsEquipmentNo){
 			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }';
 		},
+		
+		changePage(page) {
+     		this.currentPage = page;
+      		location.href = '${ctp}/sportsEquipment/sportsEquipmentList?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage=+page';
+    	}
 	}
 </c:set>
 
