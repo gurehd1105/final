@@ -40,16 +40,16 @@
         <el-sub-menu index="1-3">
             <template #title>공지 관리</template>
             <el-menu-item index="1-3-1">
-                <a href="${pageContext.request.contextPath}/notice/insert">공지 추가</a>
+                <a href="${ctp}/notice/insert">공지 추가</a>
             </el-menu-item> 
             <el-menu-item index="1-3-2">
-                <a href="${pageContext.request.contextPath}/notice/update">공지 수정</a>
+                <a href="${ctp}/notice/update">공지 수정</a>
             </el-menu-item>
             <el-menu-item index="1-3-3">
-                <a href="${pageContext.request.contextPath}/notice/list">공지 목록 조회</a>
+                <a href="${ctp}/notice/list">공지 목록 조회</a>
             </el-menu-item>
              <el-menu-item index="1-3-4">
-                <a href="${pageContext.request.contextPath}/notice/list">공지 삭제</a>
+                <a href="${ctp}/notice/list">공지 삭제</a>
             </el-menu-item>
         </el-sub-menu>
     </el-sub-menu>
@@ -77,24 +77,24 @@
             <el-menu-item-group>
               <template #title>본사</template>
               <el-menu-item index="3-1">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment">장비리스트 추가</a>	
+              		<a href="${ctp}/sportsEquipment/insertSportsEquipment">장비리스트 추가</a>	
               </el-menu-item>
               <el-menu-item index="3-2">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead">발주내역</a>
+              		<a href="${ctp}/sportsEquipment/sportsEquipmentOrderListByHead">발주내역</a>
               </el-menu-item>
               <el-menu-item index="3-3">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead">재고</a>
+              		<a href="${ctp}/sportsEquipment/sportsEquipmentInventoryByHead">재고</a>
               </el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="지점">
               <el-menu-item index="3-4">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList">장비리스트</a>
+              		<a href="${ctp}/sportsEquipment/SportsEquipmentList">장비리스트</a>
               </el-menu-item>
               <el-menu-item index="3-5">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch">발주내역(지점:부산점)</a>
+              		<a href="${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch">발주내역(지점:부산점)</a>
               </el-menu-item>
               <el-menu-item index="3-6">
-              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch">재고(지점:부산점)</a>
+              		<a href="${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch">재고(지점:부산점)</a>
               </el-menu-item>
             </el-menu-item-group>
             </el-menu-item-group>
