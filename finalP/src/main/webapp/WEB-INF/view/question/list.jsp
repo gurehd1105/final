@@ -14,6 +14,7 @@
 		<li v-for="question in questionList">
 			{{ question.questionNo }}
 			{{ question.questionTitle }}
+			{{ question.updatedate }}
 		</li>
   	
 
