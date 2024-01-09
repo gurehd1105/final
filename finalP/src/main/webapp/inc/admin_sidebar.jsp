@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="ctp" value="${pageContext.request.contextPath}" />    
 <div id="side" class="bg-gray-50">
 	<el-aside width="200px">
       <el-scrollbar class="h-[calc(100vh-60px)]">
@@ -11,28 +13,28 @@
         <el-sub-menu index="1-1">
             <template #title>지점 관리</template>
             <el-menu-item index="1-1-1">
-            지점 추가
+             <a href="${ctp}/branch/insert">지점 추가</a>
             </el-menu-item> 
             <el-menu-item index="1-1-2">
-            지점 정보 수정
+              <a href="${ctp}/branch/update">지점 정보 수정</a>
             </el-menu-item> 
             <el-menu-item index="1-1-3">
-            지점 비활성화
+         	 <a href="${ctp}/branch/delete">지점 삭제</a>
             </el-menu-item>
             <el-menu-item index="1-1-4">
-            지점 목록 확인
+       		   <a href="${ctp}/branch/list">지점 목록 조회</a>
             </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="1-2">
             <template #title>직원 관리</template>
             <el-menu-item index="1-2-1">
-                <a href="${pageContext.request.contextPath}/employee/insert">직원 추가</a>
+                <a href="${ctp}/employee/insert">직원 추가</a>
             </el-menu-item> 
             <el-menu-item index="1-2-2">
-                <a href="${pageContext.request.contextPath}/employee/update">직원 정보 수정</a>
+                <a href="${ctp}/employee/update">직원 정보 수정</a>
             </el-menu-item>
             <el-menu-item index="1-2-3">
-                <a href="${pageContext.request.contextPath}/employee/list">직원 목록 조회</a>
+                <a href="${ctp}/employee/list">직원 목록 조회</a>
             </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="1-3">

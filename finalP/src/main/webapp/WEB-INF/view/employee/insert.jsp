@@ -1,8 +1,8 @@
 <!-- prettier-ignore -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="title" value="메인페이지" />
-<c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
+<c:set var="title" value="직원 추가" />
+<c:set var="description" value="직원 추가 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
@@ -20,7 +20,7 @@
         id="insertForm"
     >
         <el-form-item label="아이디">
-            <el-input v-model="model.id" />
+            <el-input v-model="model.id" name="employeeId"/>
         </el-form-item>
 
         <el-form-item label="비밀번호">
@@ -62,14 +62,14 @@
         </el-form-item>
         <el-form-item label="지점 선택">
             <el-select
-                v-model="model.branchName"
+                v-model="model.branchNo"
                 placeholder="지점을 선택하세요"
             >
                 <el-option
                     v-for="branch in branches"
-                    :key="branch.branchName"
-                    :label="branch.branchName"
-                    :value="branch.branchName"
+                    :key="branch.branchNo"
+                    :label="branch.branchNo"
+                    :value="branch.branchNo"
                 ></el-option>
             </el-select>
         </el-form-item>
@@ -94,7 +94,7 @@
 	    		phone: '',
 	    		employeeEmailId: '',
 	    		employeeEmailJuso: '',
-	    		branchName: '' 
+	    		branchNo: '' 
 	    	},
 	    	emailSuggestion: [
 	    		'naver.com',
