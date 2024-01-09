@@ -46,7 +46,6 @@ public class CustomerController {
 			return "redirect:/loginCustomer";
 		}
 	}
-
 	// insert (회원가입) Form
 	@GetMapping("/insertCustomer")
 	public String insertCustomer(HttpSession session) {
@@ -218,6 +217,7 @@ public class CustomerController {
 		int result = customerService.updateCustomerPw(loginCustomer, customerNewPw);
 		if (result > 0) { // PW 수정 완 --> 재로그인
 			session.invalidate();
+
 			return "customer/loginCustomer";
 		} else { // 수정 실패 현재 페이지로 return
 			return "customer/updateCustomerPw";

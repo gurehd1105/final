@@ -156,6 +156,7 @@
 	</update>
 		<!-- 이미지 변경 -->
 	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
+		<if test="customerImg != null">
 		UPDATE customer_img SET
 			customer_img_origin_name = #{customerImgOriginName},
 			customer_img_file_name = #{customerImgFileName},
@@ -163,6 +164,7 @@
 			customer_img_type = #{customerImgType},
 			updatedate = NOW()
 		WHERE customer_no = #{customerNo}		
+		</if>
 	</update>
 		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"
