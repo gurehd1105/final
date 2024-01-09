@@ -8,7 +8,7 @@
           FROM program_reservation pr INNER JOIN payment p
             ON pr.payment_no = p.payment_no INNER JOIN program_date pd
             ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
-            ON pr.branch_no = b.branch_no    
+            ON pr.branch_no = b.branch_no       
          WHERE pr.payment_no = #{paymentNo}
            AND pr.program_date_no = #{programDateNo}
            AND pr.branch_no = #{branchNo}
