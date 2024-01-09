@@ -71,7 +71,7 @@ public class EmployeeController {
 	// 직원 입력 엑션
 	@PostMapping("insert")
 	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
-			String employeeEmailJuso, Model model ,@RequestParam int branchNo) {
+			String employeeEmailJuso, Model model ,int branchNo) {
 		ef.setBranchNo(branchNo);
 		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
 		String path = session.getServletContext().getRealPath("/upload/employee");
