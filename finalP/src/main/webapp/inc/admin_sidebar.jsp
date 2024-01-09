@@ -39,20 +39,33 @@
             </el-sub-menu>
           </el-sub-menu>
           <el-sub-menu index="3">
-            <template #title>
-              Navigator Three
+           	<template #title>
+              스포츠 장비
             </template>
             <el-menu-item-group>
-              <template #title>Group 1</template>
-              <el-menu-item index="3-1">Option 1</el-menu-item>
-              <el-menu-item index="3-2">Option 2</el-menu-item>
+              <template #title>본사</template>
+              <el-menu-item index="3-1">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment">장비리스트 추가</a>	
+              </el-menu-item>
+              <el-menu-item index="3-2">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead">발주내역</a>
+              </el-menu-item>
+              <el-menu-item index="3-3">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead">재고</a>
+              </el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="Group 2">
-              <el-menu-item index="3-3">Option 3</el-menu-item>
+            <el-menu-item-group title="지점">
+              <el-menu-item index="3-4">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList">장비리스트</a>
+              </el-menu-item>
+              <el-menu-item index="3-5">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch">발주내역(지점:부산점)</a>
+              </el-menu-item>
+              <el-menu-item index="3-6">
+              		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch">재고(지점:부산점)</a>
+              </el-menu-item>
             </el-menu-item-group>
-            <el-sub-menu index="3-4">
-              <template #title>Option 4</template>
-              <el-menu-item index="3-4-1">Option 4-1</el-menu-item>
+            </el-menu-item-group>
             </el-sub-menu>
           </el-sub-menu>
         </el-menu>

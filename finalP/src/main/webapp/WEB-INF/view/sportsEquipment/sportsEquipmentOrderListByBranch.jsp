@@ -38,7 +38,7 @@
    		<table style="border: 1px solid #ccc;">
    			<thead>
    				<tr>
-   					<th>발주번호</th>
+   					<th>발주/페기</th>
    					<th>지점</th>
    					<th>이미지</th>
    					<th>아이템</th>
@@ -54,7 +54,14 @@
    			<tbody>
    				<c:forEach var="equipmentOrder" items="${sportsEquipmentOrderList}">
    					<tr>
-   						<td>${equipmentOrder.orderNo }</td>
+   						<td>
+   							<c:if test="${equipmentOrder.quantity > 0}">
+   								발주
+   							</c:if>
+   							<c:if test="${equipmentOrder.quantity < 0}">
+   								폐기
+   							</c:if>
+   						</td>
    						<td>${equipmentOrder.branchName }</td>
    						<td><img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipmentOrder.sportsEquipmentImgFileName}" width="50" height="50"></td>
    						<td>${equipmentOrder.itemName }</td>
@@ -76,7 +83,7 @@
 	   						    <form action="${pageContext.request.contextPath}/sportsEquipment/deleteSportsEquipmentOrder" method="post">
 	                    			<input type="hidden" name="orderNo" value="${equipmentOrder.orderNo}">
 	                    			<input type="hidden" name="orderStatus" value="${equipmentOrder.orderStatus }">
-	                    			<button type="submit" style="border: 1px solid #ccc;">발주취소</button>
+	                    			<button type="submit" style="border: 1px solid #ccc;">취소</button>
 	                			</form>
    							</c:if>
    							<c:if test="${equipmentOrder.orderStatus != '대기' }">
