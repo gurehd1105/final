@@ -15,7 +15,8 @@ import com.example.gym.vo.QuestionReply;
 @Service
 @Transactional
 public class QuestionService {
-	@Autowired private QuestionMapper questionMapper;
+	@Autowired
+	private QuestionMapper questionMapper;
 
 // Question
 	// question 등록 (insert)
@@ -24,23 +25,24 @@ public class QuestionService {
 		result = questionMapper.insertQuestion(paramQuestion);
 		return result;
 	}
-	// questionList 조회	
-	 public Map<String, Object> selectQuestionList(Map<String, Integer> paramMap) {
-		 Map<String, Object> resultMap = new HashMap<>();
-		 
-		 List<Question> questionList = questionMapper.selectQuestionList(paramMap);
-		 int totalRow = questionMapper.selectCountOfQuestion();
-		 
-		 resultMap.put("questionList", questionList);
-		 resultMap.put("totalRow", totalRow);
-	 	return resultMap;
-	 }	
+
+	// questionList 조회
+	public Map<String, Object> selectQuestionList(Map<String, Integer> paramMap) {
+		Map<String, Object> resultMap = new HashMap<>();
+
+		List<Question> questionList = questionMapper.selectQuestionList(paramMap);
+		int totalRow = questionMapper.selectCountOfQuestion();
+
+		resultMap.put("questionList", questionList);
+		resultMap.put("totalRow", totalRow);
+		return resultMap;
+	}
 	
 	// questionOne 조회
 	public Map<String, Object> selectQuestionOne(Question paramQuestion) {
 		Map<String, Object> questionMap = questionMapper.selectQuestionOne(paramQuestion);
 		Map<String, Object> questionReplyMap = questionMapper.selectQuestionReply(paramQuestion);
-		
+
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("questionMap", questionMap);
 		resultMap.put("questionReplyMap", questionReplyMap);
@@ -48,9 +50,9 @@ public class QuestionService {
 	}
 	
 	// question 수정 (update)
-	public int updateQuestion(Question paramQuestion) {	// question_reply 없을 시에만 수정가능 -> 추후 코드변경 예정
+	public int updateQuestion(Question paramQuestion) { // question_reply 없을 시에만 수정가능 -> 추후 코드변경 예정
 		int result = 0;
-		
+
 		result = questionMapper.updateQuestion(paramQuestion);
 		return result;
 	}
@@ -67,21 +69,21 @@ public class QuestionService {
 	
 	
 // Question	Reply
-	
+
 	// reply 등록 (insert)
 	public int insertQuestionReply(QuestionReply paramReply) {
 		int result = 0;
 		result = questionMapper.insertQuestionReply(paramReply);
 		return result;
 	}
-	
+
 	// reply 수정 (update)
 	public int updateQuestionReply(QuestionReply paramReply) {
 		int result = 0;
 		result = questionMapper.updateQuestionReply(paramReply);
 		return result;
 	}
-	
+
 	// reply 삭제 (delete)
 	public int deleteQuestionReply(QuestionReply paramReply) {
 		int result = 0;
