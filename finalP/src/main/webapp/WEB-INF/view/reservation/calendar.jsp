@@ -43,7 +43,7 @@
             }
         },
         openPopup(targetYear, targetMonth, targetDay) {
-            var url = "${contextPath}/reservationOne?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+            var url = "${contextPath}/reservationList?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
             window.open(url, "popupWindow", "width=800, height=600");
         }
     }

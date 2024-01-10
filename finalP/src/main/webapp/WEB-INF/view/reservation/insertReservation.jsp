@@ -31,8 +31,8 @@
 <c:set var="script">
   data() {
     return {
-      program:'',
-      selectBranch:'',
+      program: '',
+      selectBranch: '',
       options: [
         {
           value: '1',
@@ -47,26 +47,33 @@
           label: '부산',
         },
       ],
-      
-      
     };
   },
 
   watch: {
-    
+
   },
 
   methods: {
     submit() {
-      const type = document.getElementById('type').value;
-      const branch = document.getElementById('selectBranch').value;
+      if (!this.selectBranch) {
+        this.$message.warning('지점을 선택하세요.');
+        return;
+      }
 
-      if (!type || !branch) {
-		alert("종목과 지점을 모두 선택해주세요.")     
-		return;
-       }
- 
-    },
+      // 지점이 선택된 경우 예약 처리 진행
+      const data = {
+        branch: this.selectBranch,
+        program: this.program,
+        date: this.targetDate,
+      };
+
+      this.$axios.post('/insertReservation', data).then(() => {
+        this.$message.success('예약이 완료되었습니다.');
+      }).catch(() => {
+        this.$message.error('예약에 실패하였습니다.');
+      });
+    }
   }
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>
