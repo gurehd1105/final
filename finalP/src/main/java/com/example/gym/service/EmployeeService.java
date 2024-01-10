@@ -33,11 +33,11 @@ public class EmployeeService {
 	}
 
 	// 직원 추가
-	public int insertEmployee(EmployeeForm employeeForm, String path) {
+	public int insertEmployee(EmployeeForm employeeForm) {
 		int result = 0; // 최종 반환값 세팅
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		boolean employeeSuccess = false;
+		boolean employeeDetailSuccess = false;
+		boolean employeeImgSuccess = false;
 
 		// Employee 매개값 세팅
 		Employee employee = new Employee();
@@ -45,11 +45,8 @@ public class EmployeeService {
 		employee.setEmployeeId(employeeForm.getEmployeeId());
 		employee.setEmployeePw(employeeForm.getEmployeePw());
 
-		row = employeeMapper.insertEmployee(employee);
-
-		if (row != 1) {
-			throw new RuntimeException();
-		}
+		employeeSuccess = employeeMapper.insertEmployee(employee) == 1;
+		
 		// EmployeeDetail 매개값 세팅
 		EmployeeDetail employeeDetail = new EmployeeDetail();
 		employeeDetail.setEmployeeNo(employee.getEmployeeNo());
@@ -57,48 +54,17 @@ public class EmployeeService {
 		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
 		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
 		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
-		row2 = employeeMapper.insertEmployeeDetail(employeeDetail);
 
-		if (row2 != 1) {
-			throw new RuntimeException();
-		}
+		employeeDetailSuccess = employeeMapper.insertEmployeeDetail(employeeDetail) == 1;
 
-		MultipartFile multipartFile = employeeForm.getEmployeeImg();
-		System.out.println(multipartFile.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
-		if (multipartFile.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
-			EmployeeImg employeeImg = new EmployeeImg();
-			// fileName 이외 모든 값 세팅
-			employeeImg.setEmployeeNo(employeeDetail.getEmployeeNo());
-			employeeImg.setEmployeeImgOriginName(multipartFile.getOriginalFilename());
-			employeeImg.setEmployeeImgSize(multipartFile.getSize());
-			employeeImg.setEmployeeImgType(multipartFile.getContentType());
+		EmployeeImg employeeImg = new EmployeeImg();
+		// fileName 이외 모든 값 세팅
+		employeeImg.setEmployeeNo(employeeDetail.getEmployeeNo());
+		employeeImg.setEmployeeImgOriginName(employeeForm.getEmployeeImg());
+		
+		employeeImgSuccess = employeeMapper.insertEmployeeImg(employeeImg) == 1;
 
-			// fileName 값 세팅
-			String fileName = UUID.randomUUID().toString();
-
-			String originName = multipartFile.getOriginalFilename();
-
-			String fileName2 = originName.substring(originName.lastIndexOf("."));
-
-			employeeImg.setEmployeeImgFileName(fileName + fileName2);
-
-			// 변수값 세팅 + 삽입
-			row3 = employeeMapper.insertEmployeeImg(employeeImg);
-
-			if (row3 != 1) {
-				throw new RuntimeException();
-			}
-
-			// path 저장
-			File file = new File(path + "/" + fileName + fileName2);
-			try {
-				multipartFile.transferTo(file);
-			} catch (IllegalStateException | IOException e) {
-				throw new RuntimeException();
-			}
-		}
-
-		if (row > 0 && row2 > 0) { // Image 정보 없어도 가입가능
+		if (employeeSuccess && employeeDetailSuccess && employeeImgSuccess) { // Image 정보 없어도 가입가능
 			result = 1;
 		}
 

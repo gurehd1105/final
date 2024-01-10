@@ -18,6 +18,5 @@ public class EmployeeForm {
 	private String employeeGender;
 	private String employeePhone;
 	private String employeeEmail;
-	
-	private MultipartFile employeeImg;
+	private String employeeImg;
 }
