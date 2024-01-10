@@ -1,5 +1,7 @@
 package com.example.gym.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,73 +28,74 @@ public class EmployeeService {
 
 	// 직원 로그인
 	public Employee loginEmployee(Employee employee) {
-		log.info(employee.toString());
-		return employeeMapper.loginEmployee(employee);
+		Employee loginEmployee = employeeMapper.loginEmployee(employee);
+		return loginEmployee;
 	}
 
 	// 직원 추가
-	public int insertEmployee(EmployeeForm ef, String path) {
+	public int insertEmployee(EmployeeForm employeeForm, String path) {
 		int result = 0; // 최종 반환값 세팅
 		int row = 0;
 		int row2 = 0;
 		int row3 = 0;
 
 		// Employee 매개값 세팅
-		Employee paramEmployee = new Employee();
-		paramEmployee.setBranchNo(ef.getBranchNo());
-		paramEmployee.setEmployeeId(ef.getEmployeeId());
-		paramEmployee.setEmployeePw(ef.getEmployeePw());
+		Employee employee = new Employee();
+		employee.setBranchNo(employeeForm.getBranchNo());
+		employee.setEmployeeId(employeeForm.getEmployeeId());
+		employee.setEmployeePw(employeeForm.getEmployeePw());
 
-		row = employeeMapper.insertEmployee(paramEmployee);
+		row = employeeMapper.insertEmployee(employee);
 
 		if (row != 1) {
 			throw new RuntimeException();
 		}
 		// EmployeeDetail 매개값 세팅
-		EmployeeDetail paramDetail = new EmployeeDetail();
-		paramDetail.setEmployeeNo(paramEmployee.getEmployeeNo());
-		paramDetail.setEmployeeName(ef.getEmployeeName());
-		paramDetail.setEmployeePhone(ef.getEmployeePhone());
-		paramDetail.setEmployeeEmail(ef.getEmployeeEmail());
-		paramDetail.setEmployeeGender(ef.getEmployeeGender());
-		row2 = employeeMapper.insertEmployeeDetail(paramDetail);
+		EmployeeDetail employeeDetail = new EmployeeDetail();
+		employeeDetail.setEmployeeNo(employee.getEmployeeNo());
+		employeeDetail.setEmployeeName(employeeForm.getEmployeeName());
+		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
+		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
+		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
+		row2 = employeeMapper.insertEmployeeDetail(employeeDetail);
 
 		if (row2 != 1) {
 			throw new RuntimeException();
 		}
 
-		MultipartFile mf = ef.getEmployeeImg();
-		System.out.println(mf.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
-		if (mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
-			EmployeeImg eImg = new EmployeeImg();
+		MultipartFile multipartFile = employeeForm.getEmployeeImg();
+		System.out.println(multipartFile.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
+		if (multipartFile.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
+			EmployeeImg employeeImg = new EmployeeImg();
 			// fileName 이외 모든 값 세팅
-			eImg.setEmployeeNo(paramDetail.getEmployeeNo());
-			eImg.setEmployeeImgOriginName(mf.getOriginalFilename());
-			eImg.setEmployeeImgSize(mf.getSize());
-			eImg.setEmployeeImgType(mf.getContentType());
+			employeeImg.setEmployeeNo(employeeDetail.getEmployeeNo());
+			employeeImg.setEmployeeImgOriginName(multipartFile.getOriginalFilename());
+			employeeImg.setEmployeeImgSize(multipartFile.getSize());
+			employeeImg.setEmployeeImgType(multipartFile.getContentType());
 
 			// fileName 값 세팅
 			String fileName = UUID.randomUUID().toString();
 
-			String originName = mf.getOriginalFilename();
+			String originName = multipartFile.getOriginalFilename();
 
 			String fileName2 = originName.substring(originName.lastIndexOf("."));
 
-			eImg.setEmployeeImgFileName(fileName + fileName2);
+			employeeImg.setEmployeeImgFileName(fileName + fileName2);
 
-			// 변수값 세팅 완 + 삽입
-			row3 = employeeMapper.insertEmployeeImg(eImg);
+			// 변수값 세팅 + 삽입
+			row3 = employeeMapper.insertEmployeeImg(employeeImg);
 
 			if (row3 != 1) {
 				throw new RuntimeException();
 			}
 
-			/*
-			 * // path 저장 -- 경로 확인 후 설정 예정 System.out.println(path +"/"+ fileName +
-			 * fileName2); File file = new File(path +"/"+ fileName + fileName2); try {
-			 * mf.transferTo(file); } catch (IllegalStateException | IOException e) { throw
-			 * new RuntimeException(); }
-			 */
+			// path 저장
+			File file = new File(path + "/" + fileName + fileName2);
+			try {
+				multipartFile.transferTo(file);
+			} catch (IllegalStateException | IOException e) {
+				throw new RuntimeException();
+			}
 		}
 
 		if (row > 0 && row2 > 0) { // Image 정보 없어도 가입가능
@@ -103,7 +106,7 @@ public class EmployeeService {
 	}
 	// 직원 추가 프로세스 종료
 
-	// 직원 삭제
+	// 직원 퇴사 프로세스 시작
 	public int deleteEmployee(Employee employee) {
 		int result = 0;
 		int row = 0;
@@ -128,31 +131,31 @@ public class EmployeeService {
 
 	// 직원 정보 수정
 	// detail , img 수정
-	public void updateEmployeeOne(String path, EmployeeForm ef, int employeeNo) {
+	public void updateEmployeeOne(String path, EmployeeForm employeeForm, int employeeNo) {
 		// employeeDetail 수정
-		EmployeeDetail ed = new EmployeeDetail();
-		ed.setEmployeeNo(employeeNo);
-		ed.setEmployeeName(ef.getEmployeeName());
-		ed.setEmployeeGender(ef.getEmployeeGender());
-		ed.setEmployeePhone(ef.getEmployeePhone());
-		ed.setEmployeeEmail(ef.getEmployeeEmail());
-		int row = employeeMapper.updateEmployeeOne(ed);
+		EmployeeDetail employeeDetail = new EmployeeDetail();
+		employeeDetail.setEmployeeNo(employeeNo);
+		employeeDetail.setEmployeeName(employeeForm.getEmployeeName());
+		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
+		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
+		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
+		int row = employeeMapper.updateEmployeeOne(employeeDetail);
 
 		if (row != 1) {
 			throw new RuntimeException();
 		}
 
-		MultipartFile mf = ef.getEmployeeImg();
+		MultipartFile multipartFile = employeeForm.getEmployeeImg();
 
-		if (mf.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
+		if (multipartFile.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
 			EmployeeImg employeeImg = new EmployeeImg();
 			employeeImg.setEmployeeNo(employeeNo);
-			employeeImg.setEmployeeImgOriginName(mf.getOriginalFilename());
-			employeeImg.setEmployeeImgSize(mf.getSize());
-			employeeImg.setEmployeeImgType(mf.getContentType());
+			employeeImg.setEmployeeImgOriginName(multipartFile.getOriginalFilename());
+			employeeImg.setEmployeeImgSize(multipartFile.getSize());
+			employeeImg.setEmployeeImgType(multipartFile.getContentType());
 			String fileName = UUID.randomUUID().toString();
 
-			String originName = mf.getOriginalFilename();
+			String originName = multipartFile.getOriginalFilename();
 			String fileName2 = originName.substring(originName.lastIndexOf("."));
 			employeeImg.setEmployeeImgFileName(fileName + fileName2); // EmployeeImg 매개값 세팅
 
@@ -173,18 +176,16 @@ public class EmployeeService {
 				throw new RuntimeException();
 			}
 
-			/*
-			 * // path 저장 -- 경로 확인 후 설정 예정 System.out.println(path +"/"+ fileName +
-			 * fileName2); File file = new File(path +"/"+ fileName + fileName2); try {
-			 * mf.transferTo(file); } catch (IllegalStateException | IOException e) { throw
-			 * new RuntimeException(); }
-			 */
-		} else { // 고객이 Image 정보를 지정하지 않았다면 --> 이미지정보 삭제
-			Employee deleteImg = new Employee();
-			deleteImg.setEmployeeNo(employeeNo);
-			employeeMapper.deleteEmployeeImg(deleteImg);
-		}
-	}
+			// path 저장
+			File file = new File(path +"/"+ fileName + fileName2);
+			try {
+				multipartFile.transferTo(file);
+			} catch (IllegalStateException | IOException e) {
+				throw new RuntimeException();
+			} 
+
+	} 
+}
 
 	// 비밀번호 수정
 	public int updateEmployeePw(Employee checkEmployee, String employeeNewPw) {
@@ -200,9 +201,11 @@ public class EmployeeService {
 	}
 
 	// 직원 목록
-	public List<Employee> getEmployeeList() {
-		return employeeMapper.selectEmployeeList();
+	public Map<String, Object> selectAllEmployee() {
+		Map<String, Object> resultMap =employeeMapper.selectAllEmployee();
+		return resultMap;
 	}
+
 	// 직원 상세목록
 	public Map<String, Object> employeeOne(Employee employee) {
 		Map<String, Object> resultMap = employeeMapper.employeeOne(employee);

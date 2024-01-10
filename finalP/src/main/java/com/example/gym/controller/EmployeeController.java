@@ -1,5 +1,6 @@
 package com.example.gym.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class EmployeeController {
 	// 직원 입력 폼
 	@GetMapping("insert")
 	public String insertEmployee(HttpSession session , Model model) {
-		List<Branch> branches = branchService.branchList();
+		List<Branch> branches = branchService.branch();
 		log.info(branches.toString());
         model.addAttribute("branches", branches);
 		return "employee/insert";
@@ -72,10 +73,11 @@ public class EmployeeController {
 	// 직원 입력 엑션
 	@PostMapping("insert")
 	@ResponseBody
-	public ResponseEntity<?> insertEmployee(HttpSession session, @RequestBody EmployeeForm ef, Model model) {
-		log.info(ef.toString());
+	public ResponseEntity<?> insertEmployee(HttpSession session, @RequestBody EmployeeForm employeeForm
+			, Model model) {
+		log.info(employeeForm.toString());
 		String path = session.getServletContext().getRealPath("/upload/employee");
-		int result = employeeService.insertEmployee(ef, path);
+		int result = employeeService.insertEmployee(employeeForm, path);
 		return result == 1 ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
 	}
 
@@ -95,11 +97,11 @@ public class EmployeeController {
 	// 직원 비활성화 액션
 	@PostMapping("delete")
 	public String deleteEmploye(String employeeId, String employeePw, int employeeNo, HttpSession session) {
-		Employee paramEmploye = new Employee();
-		paramEmploye.setEmployeeId(employeeId);
-		paramEmploye.setEmployeePw(employeePw);
-		paramEmploye.setEmployeeNo(employeeNo);
-		int result = employeeService.deleteEmployee(paramEmploye);
+		Employee employee = new Employee();
+		employee.setEmployeeId(employeeId);
+		employee.setEmployeePw(employeePw);
+		employee.setEmployeeNo(employeeNo);
+		int result = employeeService.deleteEmployee(employee);
 
 		if (result == 1) { // 탈퇴 완 --> login 창으로 이동
 			session.invalidate();
@@ -111,7 +113,7 @@ public class EmployeeController {
 	}
 
 	// 직원 정보 수정 폼
-	@GetMapping("update")
+	@GetMapping("updateOneForPw")
 	public String employeeOneForCheckPw(HttpSession session) {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
@@ -119,17 +121,17 @@ public class EmployeeController {
 			return "employee/login";
 		}
 
-		return "employee/updateEmployeeOneForPw";
+		return "employee/updateOneForPw";
 	}
 
-	@PostMapping("/update")
+	@PostMapping("/updateOneForPw")
 	public String updateEmployeeOne(HttpSession session, Model model, String employeePw) {
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		loginEmployee.setEmployeePw(employeePw);
 		Employee checkEmployee = employeeService.loginEmployee(loginEmployee);
 		if (checkEmployee == null) { // PW 확인 불일치 --> PW 확인 페이지로 return
 			log.info("PW 불일치, 접속실패");
-			return "employee/updateEmployeeOneForPw";
+			return "employee/updateOneForPw";
 		} else {
 			log.info("PW 일치, 접속성공");
 
@@ -154,14 +156,14 @@ public class EmployeeController {
 
 			model.addAttribute("resultMap", resultMap);
 
-			return "employee/updateEmployeeOne";
+			return "employee/updateOne";
 		}
 	}
 
 	// 내정보 수정 Act
-	@PostMapping("/updateEmployeeOne")
-	public String updateEmployeeOne(HttpSession session, EmployeeForm employeeForm, String employeeEmailId,
-			String employeeEmailJuso, String employeeEmailAutoJuso) {
+	@PostMapping("/updateOne")
+	public String updateEmployeeOne(HttpSession session, EmployeeForm employeeForm, 
+			String employeeEmailId,String employeeEmailJuso, String employeeEmailAutoJuso) {
 		String path = session.getServletContext().getRealPath("/upload/employee");
 
 		if (employeeEmailAutoJuso.equals("")) { // 선택한 이메일이 없다면 직접 입력한 이메일주소로 등록
@@ -172,25 +174,25 @@ public class EmployeeController {
 
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		employeeService.updateEmployeeOne(path, employeeForm, loginEmployee.getEmployeeNo()); // 반환값 없음 (void)
-		return "redirect:/employeeOne";
+		return "redirect:/employee/employeeOne";
 	}
 
 	// PW 수정 Form
-	@GetMapping("/updateEmployeePw")
+	@GetMapping("/updatePw")
 	public String updateEmployeePw(HttpSession session, Model model) {
 		// ID값 표기 위한 세션 세팅
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/employeeLogin";
+			return "employee/login";
 		}
 
 		model.addAttribute("loginEmployee", loginEmployee);
-		return "employee/updateEmployeePw";
+		return "employee/updatePw";
 	}
 
 	// PW 수정 Act
-	@PostMapping("/updateEmployeePw")
+	@PostMapping("/updatePw")
 	public String updateEmployeePw(HttpSession session, String employeePw, String employeeNewPw) {
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		loginEmployee.setEmployeePw(employeePw);
@@ -198,21 +200,12 @@ public class EmployeeController {
 		int result = employeeService.updateEmployeePw(loginEmployee, employeeNewPw);
 		if (result > 0) { // PW 수정 완 --> 재로그인
 			session.invalidate();
-			return "employee/employeeLogin";
+			return "employee/login";
 		} else { // 수정 실패 현재 페이지로 return
-			return "employee/updateEmployeePw";
+			return "employee/updatePw";
 		}
 	}
 
-	// 관리자 목록 리스트
-	@GetMapping("/employeeList")
-	public String employeeList(Model model) {
-		List<Employee> employeeList = employeeService.getEmployeeList();
-		log.info(employeeList.toString());
-
-		model.addAttribute("employeeList", employeeList);
-		return "employee/list";
-	}
 
 	// 마이페이지
 	@GetMapping("/employeeOne")
@@ -227,12 +220,12 @@ public class EmployeeController {
 	}
 	
 	// 관리자 목록 리스트
-		@GetMapping("/customerList")
+		@GetMapping("/list")
 		public String customerList(Model model) {
 			Map<String, Object> customerList = customerService.selectAllCustomer();
 			log.info(customerList.toString());
 
 			model.addAttribute("customerList", customerList);
-			return "employee/customerList";
+			return "employee/list";
 		}
 }
