@@ -12,7 +12,7 @@
 	  	<div>
 		  	<el-select v-model="selectBranch" id="selectBranch" clearable placeholder="지점선택">
 		  		<el-option
-			      v-for="item in options2"
+			      v-for="item in options"
 			      :key="item.value"
 			      :label="item.label"
 			      :value="item.value"
@@ -21,19 +21,6 @@
 			</el-select>
 		</div>
 		<br>
-		<!-- 
-		<div>
-			<el-select v-model="program" id="program" clearable placeholder="종목선택">
-		  		<el-option
-			      v-for="item in options1"
-			      :key="item.value"
-			      :label="item.label"
-			      :value="item.value"
-			      :disabled="item.disabled"
-			    />
-			</el-select>
-	  	</div>
-	  	 -->
 		<el-form-item>
         <el-button type="primary" @click="submit">확인</el-button>
       	</el-form-item>
@@ -46,17 +33,7 @@
     return {
       program:'',
       selectBranch:'',
-      options1:[
-      	{
-          value: '1',
-          label: '요가',
-        },
-        {
-          value: '2',
-          label: '필라테스',
-        },
-      ],
-      options2: [
+      options: [
         {
           value: '1',
           label: '서울',
@@ -76,7 +53,7 @@
   },
 
   watch: {
-    // ... (동일)
+    
   },
 
   methods: {

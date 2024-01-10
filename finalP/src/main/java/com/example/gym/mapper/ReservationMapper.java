@@ -15,9 +15,13 @@ public interface ReservationMapper {
    
    // 예약목록 출력 
     List<Map<String,Object>>selectReservationList(Map<String, Object> paramMap);
+  
    
    // 예약 추가
    int insertReservation(ProgramReservation reservation);
+   
+   // 추가시 사용 할 지점 리스트
+   List<Branch>branchList();
 
    // 예약삭제
    int deleteReservation(ProgramReservation reservation);

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.BranchService;
+import com.example.gym.service.CustomerService;
 import com.example.gym.service.EmployeeService;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
+	private CustomerService customerService;
 	@Autowired
 	private BranchService branchService;
 	// 로그인 폼
@@ -70,18 +71,12 @@ public class EmployeeController {
 
 	// 직원 입력 엑션
 	@PostMapping("insert")
-	public String insertEmployee(Employee employee, HttpSession session, EmployeeForm ef, String employeeEmailId,
-			String employeeEmailJuso, Model model ,@RequestParam int branchNo) {
-		ef.setBranchNo(branchNo);
-		ef.setEmployeeEmail(employeeEmailId + "@" + employeeEmailJuso);
+	@ResponseBody
+	public ResponseEntity<?> insertEmployee(HttpSession session, @RequestBody EmployeeForm ef, Model model) {
+		log.info(ef.toString());
 		String path = session.getServletContext().getRealPath("/upload/employee");
 		int result = employeeService.insertEmployee(ef, path);
-		if (result == 1) { // 가입 완
-			return "employee/login";
-		} else { // 예외발생
-			return "redirect:employee/insert";
-		}
-
+		return result == 1 ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
 	}
 
 	// 직원 비활성화 기능 update(employee_Active : Y -> N)
@@ -213,10 +208,10 @@ public class EmployeeController {
 	@GetMapping("/employeeList")
 	public String employeeList(Model model) {
 		List<Employee> employeeList = employeeService.getEmployeeList();
-		log.debug("getEmployeeList", "Controller employeeList", employeeList.toString());
+		log.info(employeeList.toString());
 
 		model.addAttribute("employeeList", employeeList);
-		return "employee/employeeList";
+		return "employee/list";
 	}
 
 	// 마이페이지
@@ -230,4 +225,14 @@ public class EmployeeController {
 
 		return "employee/employeeOne";
 	}
+	
+	// 관리자 목록 리스트
+		@GetMapping("/customerList")
+		public String customerList(Model model) {
+			Map<String, Object> customerList = customerService.selectAllCustomer();
+			log.info(customerList.toString());
+
+			model.addAttribute("customerList", customerList);
+			return "employee/customerList";
+		}
 }
