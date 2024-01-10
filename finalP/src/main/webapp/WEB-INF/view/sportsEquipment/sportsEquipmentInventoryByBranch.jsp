@@ -30,24 +30,24 @@
         			<span>재고: {{ inventory.totalQuantity }}</span><br>
         			<span>발주: {{ inventory.inventoryQuantity }}</span><br>
         			<span>폐기: {{ inventory.discartdQuantity }}</span><br>
-        			<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+        			<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm1">
   						<el-form-item label="발주수량">
-    						<el-input-number v-model="model.quantity" :min="1" name="quantity" :max="100" @change="handleChange" />
+    						<el-input-number v-model="model.quantity1[index]" :min="0" name="quantity" :max="100" />
  		 				</el-form-item>
   							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
  							<input type="hidden" name="itemPrice" :value="inventory.itemPrice">
   						<el-form-item>
-    						<el-button type="primary" @click="onSubmit(form)">발주</el-button>
+    						<el-button type="primary" @click="onSubmit1(form)">발주</el-button>
   						</el-form-item>
 					</el-form>
-					<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+					<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm2">
   						<el-form-item label="폐기수량">
-    						<el-input-number v-model="model.quantity" :min="-inventory.totalQuantity" name="quantity"  />
+    						<el-input-number v-model="model.quantity2[index]" :min="-inventory.totalQuantity" :max="0" name="quantity"  />
  		 				</el-form-item>
   							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
- 							<input type="hidden" name="itemPrice" :value="inventory.itemPrice">
+ 							<input type="hidden" name="itemPrice" :value="0">
   						<el-form-item>
-    						<el-button type="primary" @click="onSubmit(form)">폐기</el-button>
+    						<el-button type="primary" @click="onSubmit2(form)">폐기</el-button>
   						</el-form-item>
 					</el-form>
       			</div>
@@ -71,6 +71,8 @@
 		    model: {
 			    searchItem: '${searchItem}', 
 			    currentPage: 1, 
+			    quantity1: [], 
+			    quantity2: Array(5).fill(0), 
 		    },
 		    sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'), 
 		    lastPage: ${lastPage} 
@@ -87,9 +89,15 @@
 
         },
         
-        onSubmit() {
-			document.getElementById('insertOrderForm').submit();
-		},
+onSubmit1() {
+	console.log('onSubmit1 Parameters:', form);
+  document.getElementById('insertOrderForm1').submit();
+},
+
+onSubmit2() {
+	console.log('onSubmit2 Parameters:', form);
+  document.getElementById('insertOrderForm2').submit();
+},
         	
   		changePage(page) {
     		this.currentPage = page;

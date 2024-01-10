@@ -6,7 +6,7 @@
 <c:set var="keywords" value="장비,소모품,상세보기,발주" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-<c:set var="totalPrice" value="'\${model.quantity * itemPrice}'" />
+
 
 	<el-descriptions
 	    class="margin-top"
@@ -40,7 +40,6 @@
 	        	</div>
 	      	</template>
 	      	{{itemPrice}}원
-	      	{{sportsEquipmentNo}}번
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -89,46 +88,45 @@
 	</el-descriptions>
 	
 	<br>
-		<el-descriptions
+	<el-descriptions
 	    class="margin-top"
 	    title="현재 매장 재고"
 	    :column="3"
 	    :size="size"
 	    border
 	  >    
-		    <el-descriptions-item>
-		      	<template #label>
-		        	<div class="cell-item">
-		          		재고
-		        	</div>
-		      	</template>
-		      	 {{sportsEquipmentInventory.totalQuantity}}
-		    </el-descriptions-item>
-		    
-		    <el-descriptions-item>
-		      	<template #label>
-		        	<div class="cell-item">
-		          		발주
-		        	</div>
-		      	</template>
-		      	{{sportsEquipmentInventory.inventoryQuantity}}
-		    </el-descriptions-item>
-		    
-		    <el-descriptions-item>
-		      	<template #label>
-		        	<div class="cell-item">
-		          		폐기
-		        	</div>
-		      	</template>
-				{{sportsEquipmentInventory.discartdQuantity}}
-		    </el-descriptions-item>
-		</el-descriptions>
-		
+	    <el-descriptions-item>
+	        <template #label>
+	            <div class="cell-item">
+	                재고
+	            </div>
+	        </template>
+	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.totalQuantity : '없음' }}
+	    </el-descriptions-item>
+	    
+	    <el-descriptions-item>
+	        <template #label>
+	            <div class="cell-item">
+	                발주
+	            </div>
+	        </template>
+	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.inventoryQuantity : '없음' }}
+	    </el-descriptions-item>
+	    
+	    <el-descriptions-item>
+	        <template #label>
+	            <div class="cell-item">
+	                폐기
+	            </div>
+	        </template>
+	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.discartdQuantity : '없음' }}
+	    </el-descriptions-item>
+	</el-descriptions>
 		<br>
-		
+<c:set var="totalPrice" value="'\${model.quantity * itemPrice}'" />		
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
   		<el-form-item label="수량">
-    		<el-input-number v-model="model.quantity" :min="1" name="quantity" :max="100" @change="handleChange" />
+    		<el-input-number v-model="model.quantity" :min="0" name="quantity" :max="100" @change="handleChange" />
  		 </el-form-item>
  		 <el-form-item label="총 가격">
     		{{ model.totalPrice }}원

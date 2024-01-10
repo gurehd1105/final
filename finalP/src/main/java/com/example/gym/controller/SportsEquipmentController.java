@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
+//@RequestMapping("/employee/sportsEquipment")
 @RequestMapping("sportsEquipment")
 public class SportsEquipmentController {
 	ObjectMapper mapper = new ObjectMapper();
@@ -33,19 +34,14 @@ public class SportsEquipmentController {
 										Model model,
 										@RequestParam(defaultValue = "1") int currentPage,
 										@RequestParam(defaultValue = "") String equipmentActive,
-										@RequestParam(defaultValue = "") String searchWord) {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-		
-		
+										@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {	
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
+		model.addAttribute("sportsEquipmentList", mapper.writeValueAsString(map.get("sportsEquipmentList")));
+		//model.addAttribute("sportsEquipmentList", map.get("sportsEquipmentList"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchWord", map.get("searchWord"));
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
@@ -63,10 +59,6 @@ public class SportsEquipmentController {
 										@RequestParam(defaultValue = "") String searchWord,
 										@RequestParam(defaultValue = "") String equipmentActive,
 	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) throws JsonProcessingException {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 
 		//파일업로드 경로 설정
 	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
@@ -91,10 +83,6 @@ public class SportsEquipmentController {
 											@RequestParam(defaultValue = "1") int currentPage,
 											@RequestParam(defaultValue = "") String equipmentActive,
 											@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {
-//		//session 유효성 검사(직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
@@ -113,12 +101,8 @@ public class SportsEquipmentController {
 	@GetMapping("/updateSportsEquipment")
 	public String updateSportsEquipment(HttpSession session,
 										Model model,
-										@RequestParam int sportsEquipmentNo) {
+										@RequestParam int sportsEquipmentNo) throws JsonProcessingException {
 		
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.sportsEquipmentOneService(session, sportsEquipmentNo);
@@ -131,7 +115,8 @@ public class SportsEquipmentController {
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
 		model.addAttribute("equipmentCreatedate", map.get("equipmentCreatedate"));
 		model.addAttribute("equipmentUpdatedate", map.get("equipmentUpdatedate"));
-		model.addAttribute("sportsEquipmentImgList", map.get("sportsEquipmentImgList"));
+		//model.addAttribute("sportsEquipmentImgList", map.get("sportsEquipmentImgList"));
+		model.addAttribute("sportsEquipmentImgList", mapper.writeValueAsString(map.get("sportsEquipmentImgList")));
 		
 		return "sportsEquipment/updateSportsEquipment";
 	}  
@@ -144,11 +129,6 @@ public class SportsEquipmentController {
 	                                    @RequestParam int sportsEquipmentNo,
 	                                    @RequestParam int itemPrice,
 	                                    @RequestParam String equipmentActive) {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-
 	    
 	    //service 호출
 		sportsEquipmentNo = sportsEquipmentService.updateSportsEquipmentService(session, sportsEquipmentNo, itemName, itemPrice, equipmentActive);
@@ -165,10 +145,6 @@ public class SportsEquipmentController {
 	                                    		@RequestParam int sportsEquipmentImgNo,
 	                                    		@RequestParam int sportsEquipmentNo,
 	                                    		@RequestParam String sportsEquipmentImgFileName ) {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 
 		log.info("개별 삭제할 sportsEquipmentImgFileName : {}", sportsEquipmentImgFileName);
 	    
@@ -187,10 +163,6 @@ public class SportsEquipmentController {
 	                                    		@RequestParam int sportsEquipmentNo,
 	                                    		@RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList ) {
 
-		//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 		//파일업로드 경로 설정
 	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
 	    
@@ -211,11 +183,6 @@ public class SportsEquipmentController {
 	public String sportsEquipmentOne(HttpSession session,
 										Model model,
 										@RequestParam int sportsEquipmentNo) throws JsonProcessingException {
-		
-//		//session 유효성 검사 (직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.sportsEquipmentOneService(session, sportsEquipmentNo);
@@ -249,11 +216,6 @@ public class SportsEquipmentController {
 	                                    		@RequestParam int quantity,
 	                                    		@RequestParam int itemPrice) {
 
-		//		//session 유효성 검사 (지점직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-
 		//디버깅
 		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
 	    
@@ -271,19 +233,15 @@ public class SportsEquipmentController {
 											@RequestParam(defaultValue = "") String searchBranch,
 											@RequestParam(defaultValue = "") String searchItem,
 											@RequestParam(defaultValue = "") String beginDate,
-											@RequestParam(defaultValue = "") String endDate) {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-		
-	
+											@RequestParam(defaultValue = "") String endDate) throws JsonProcessingException{
+
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentOrderByHeadService(session, currentPage, searchBranch, searchItem, beginDate, endDate);
 		
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentOrderList", map.get("sportsEquipmentOrderList"));
+		//model.addAttribute("sportsEquipmentOrderList", map.get("sportsEquipmentOrderList"));
+		model.addAttribute("sportsEquipmentOrderList", mapper.writeValueAsString(map.get("sportsEquipmentOrderList")));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchBranch", map.get("searchBranch"));
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
@@ -302,19 +260,15 @@ public class SportsEquipmentController {
 											@RequestParam(defaultValue = "1") int currentPage,
 											@RequestParam(defaultValue = "") String searchItem,
 											@RequestParam(defaultValue = "") String beginDate,
-											@RequestParam(defaultValue = "") String endDate) {
-//		//session 유효성 검사 (지점직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-		
+											@RequestParam(defaultValue = "") String endDate) throws JsonProcessingException{		
 	
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentOrderByBranchService(session, currentPage, searchItem, beginDate, endDate);
 		
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentOrderList", map.get("sportsEquipmentOrderList"));
+		//model.addAttribute("sportsEquipmentOrderList", map.get("sportsEquipmentOrderList"));
+		model.addAttribute("sportsEquipmentOrderList", mapper.writeValueAsString(map.get("sportsEquipmentOrderList")));
 		model.addAttribute("searchBranch", map.get("searchBranch"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("equipmentActive", map.get("equipmentActive"));
@@ -331,11 +285,6 @@ public class SportsEquipmentController {
 	                                    		@RequestParam int orderNo,
 	                                    		@RequestParam String orderStatus) {
 
-		//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-
 		//디버깅
 		log.info("orderNo : {}", orderNo);
 		log.info("orderStatus : {}", orderStatus);
@@ -351,12 +300,6 @@ public class SportsEquipmentController {
 	public String deleteSportsEquipmentOrder(HttpSession session,
 	                                    		@RequestParam int orderNo,
 	                                    		@RequestParam String orderStatus) {
-
-		//		//session 유효성 검사 (지점직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-
 		//디버깅
 		log.info("orderNo : {}", orderNo);
 		log.info("orderStatus : {}", orderStatus);
@@ -375,18 +318,14 @@ public class SportsEquipmentController {
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
 											@RequestParam(defaultValue = "") String searchBranch,
-											@RequestParam(defaultValue = "") String searchItem) {
-//		//session 유효성 검사 (본사직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
-		
-	
+											@RequestParam(defaultValue = "") String searchItem) throws JsonProcessingException {
+
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentInventoryHeadService(session, currentPage, searchBranch, searchItem);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
+		model.addAttribute("sportsEquipmentInventory", mapper.writeValueAsString(map.get("sportsEquipmentInventory")));
+		//model.addAttribute("sportsEquipmentInventory", map.get("sportsEquipmentInventory"));
 		model.addAttribute("lastPage", map.get("lastPage"));
 		model.addAttribute("searchItem", map.get("searchItem"));
 		model.addAttribute("searchBranch", map.get("searchBranch"));
@@ -400,10 +339,6 @@ public class SportsEquipmentController {
 											Model model,
 											@RequestParam(defaultValue = "1") int currentPage,
 											@RequestParam(defaultValue = "") String searchItem) throws JsonProcessingException {
-//		//session 유효성 검사 (지점직원)
-//		if(session.getAttribute("") == null) {
-//			return "";
-//		}
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentInventoryBranchService(session, currentPage, searchItem);
