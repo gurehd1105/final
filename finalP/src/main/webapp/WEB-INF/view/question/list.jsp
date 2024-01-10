@@ -9,22 +9,26 @@
 
 
 	<el-button type="primary" @click="insert()">문의하기</el-button>
-	
-			<el-table :data="questionList">
-			<el-table-column prop="questionList.questionNo" label="문의번호" width="180" />
-			<el-table-column prop="questionList.questionTitle" label="작성일" width="180" />		
-		    <el-table-column prop="questionList.updatedate" label="제목" />		    
-		</el-table>
-		
-	
-	 
-		<li v-for="question in questionList">
-			<el-div :value="questionNo">{{ question.questionNo }}</el-div>
-			<a href="${ctp}/question/questionOne">{{ question.questionTitle }}</a>
-			{{ question.updatedate }}
-		</li>
-  	 
 
+		
+		<table>
+			<thead>
+				<tr>
+					<th>문의번호</th>
+					<th>제목</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+							
+			<tbody v-for="(question, i) in questionList" :key="i">
+				<tr>
+					<th>{{ question.questionNo }}</th>
+					<th @click="questionOne(question.questionNo)">{{ question.questionTitle }}</th>
+					<th>{{ question.updatedate }}</th>
+				</tr>
+			</tbody>
+		</table>
+		
 </c:set>
 
 <c:set var="script">
@@ -32,13 +36,15 @@
 	data() {
 		return {			
 			questionList: JSON.parse('${ questionList }'),
-			
 		}
 	},
 	
 	methods: {
 		insert(){
 			location.href = '${ctp}/question/insert';
+		},
+		questionOne(questionNo){
+			location.href = '${ctp}/question/questionOne?questionNo=' + questionNo;
 		},
 	},
  
