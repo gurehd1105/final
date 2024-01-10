@@ -635,7 +635,7 @@ public class SportsEquipmentService {
 		log.info("searchItem: {}", searchItem);
 
 		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 6; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
