@@ -70,13 +70,13 @@
 
         },
         
-        sportsEqquipmentOne(sportsEquipmentNo){
-			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo=${equipment.sportsEquipmentNo }';
+        sportsEquipmentOne(sportsEquipmentNo){
+			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo='+sportsEquipmentNo;
 		},
 		
   		changePage(page) {
     		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); // 추가된 부분
+    		console.log('Current Page:', this.currentPage); 
     		location.href = '${ctp}/sportsEquipment/SportsEquipmentList?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
   		}
 	}

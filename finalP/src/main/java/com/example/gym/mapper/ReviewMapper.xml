@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReviewMapper">
+			
+	<select id="selectReviewList" resultType="java.util.Map">
+		SELECT 
+			r.review_no AS reviewNo,
+			r.review_title AS reviewTitle,
+			r.createdate AS createdate,
+			
+			b.branch_name AS branchName,
+			
+			p.program_name AS programName
+			
+		FROM review r
+		INNER JOIN customer_attendance ca
+		ON r.customer_attendance_no = ca.customer_attendance_no
+		INNER JOIN program_reservation pr
+		ON ca.program_reservation_no = pr.program_reservation_no
+		INNER JOIN program_date pd
+		ON pr.program_date_no = pd.program_date_no
+		INNER JOIN program p
+		ON pd.program_no = p.program_no
+		INNER JOIN branch b
+		ON pr.branch_no = b.branch_no
+	</select>
+	
 	<insert id="insertReview" parameterType="com.example.gym.vo.Review">
 		INSERT INTO review (
 			customer_attendance_no,
@@ -24,8 +48,8 @@
 			review_content = #{reviewContent},
 			updatedate = NOW()
 		WHERE review_no = #{reviewNo}
-	</update>
-	
+	</update>	
+
 	<select id="selectReviewOne" parameterType="com.example.gym.vo.Review"
 								resultType="java.util.Map">
 		SELECT 
@@ -33,13 +57,14 @@
 			r.review_title AS reviewTitle,
 			r.review_content AS reviewContent,
 			r.createdate AS createdate,
-			r.updatedate AS updatedate,			
+			r.updatedate AS updatedate,								<!-- 리뷰내용 -->
 			
-			ca.customer_attendance_date AS customerAttendanceDate,
+			ca.customer_attendance_date AS customerAttendanceDate,	<!-- 방문시간 -->
 					
-			pr.branch_no AS branchNo,
+			pr.branch_no AS branchNo,			
+			b.branch_name AS branchName,			<!-- 어느지점 -->
 			
-			b.branch_name AS branchName
+			c.customer_id AS customerId				<!-- 방문자 -->
 			
 		FROM review r 
 		INNER JOIN customer_attendance ca
@@ -49,31 +74,12 @@
 		INNER JOIN branch b
 		ON pr.branch_no = b.branch_no
 		INNER JOIN program_date pd
-		ON pd.program_date_no = pr.program_date_no	
+		ON pd.program_date_no = pr.program_date_no
+		INNER JOIN payment p
+		ON p.payment_no = pr.payment_no
+		INNER JOIN customer c
+		ON c.customer_no = p.customer_no
 		
 		WHERE review_no = #{reviewNo}	
-	</select>
-	
-	<select id="selectReviewList" resultType="java.util.Map">
-		SELECT 
-			r.review_no AS reviewNo,
-			r.review_title AS reviewTitle,
-			r.createdate AS createdate,
-			
-			b.branch_name AS branchName,
-			
-			p.program_name AS programName
-			
-		FROM review r
-		INNER JOIN customer_attendance ca
-		ON r.customer_attendance_no = ca.customer_attendance_no
-		INNER JOIN program_reservation pr
-		ON ca.program_reservation_no = pr.program_reservation_no
-		INNER JOIN program_date pd
-		ON pr.program_date_no = pd.program_date_no
-		INNER JOIN program p
-		ON pd.program_no = p.program_no
-		INNER JOIN branch b
-		ON pr.branch_no = b.branch_no
 	</select>
 </mapper>

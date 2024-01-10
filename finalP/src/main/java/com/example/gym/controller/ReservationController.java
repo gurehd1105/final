@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +17,17 @@ import com.example.gym.service.CalendarService;
 import com.example.gym.service.ReservationService;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.ProgramReservation;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ReservationController {	
+	ObjectMapper mapper = new ObjectMapper();
 	@Autowired CalendarService calendarService;
 	@Autowired ReservationService reservationService;
+	
 	
 	// 캘린더 출력
 	@GetMapping("/calendar")
@@ -30,34 +35,67 @@ public class ReservationController {
 			 			   @RequestParam(required = false) Integer targetYear ,
 			 			   @RequestParam(required = false) Integer targetMonth			 			   		 			   
 			 			   ) {
-							
+		System.out.println("접속성공");					
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
 		model.addAttribute("calendarMap", calendarMap);
 			
 		return "reservation/calendar";
 	}
-	// 예약 상세보기
-		@GetMapping("/reservationOne")
-		public String reservationOne(Model model, @RequestParam Map<String, Object> paramMap, Integer targetDay) {
-			Map<String,Object> rList = new HashMap<>();
-			rList.put("paymentNo", paramMap.get("paymentNo"));
-			rList.put("programDateNo", paramMap.get("programDateNo"));
-			rList.put("branchNo", paramMap.get("branchNo"));
-			
-			List<Map<String, Object>> reservationList = reservationService.selectReservationList(rList);
-	        model.addAttribute("reservationList", reservationList);
-	        model.addAttribute("targetDay", targetDay);
-		    return "reservation/reservationOne";
-			
-		}
-		
 	
+	
+	// 예약 리스트
+	@GetMapping("/reservationList")
+	public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear, Integer targetMonth,	
+								 @RequestParam(defaultValue = "1") int currentPage) throws JsonProcessingException {
+		
+		String targetYear2 = mapper.writeValueAsString(targetYear);
+		String targetMonth2 = mapper.writeValueAsString(targetMonth);
+		String targetDay2 = mapper.writeValueAsString(targetDay);
 
+		String date = targetYear2+targetMonth2+targetDay2;
+		if(targetMonth2.length()== 1){
+			date = targetYear2+"0"+targetMonth2+targetDay2;
+		}
+		System.out.println(date +"날짜" );
+		
+		int rowPerPage = 5;		
+		int beginRow = (currentPage - 1) * rowPerPage ;
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("beginRow", beginRow);
+		paramMap.put("rowPerPage", rowPerPage);
+		paramMap.put("paymentNo", 1);
+		paramMap.put("programDate", date );
+		paramMap.put("branchNo", 2);
+		
+		
+		Map<String, Object> list = reservationService.selectReservationList(paramMap);
+		Object reservationList = list.get("reservationList");
+		
+		System.out.println(reservationList +"<---reservationList");
+		model.addAttribute("reservationList",mapper.writeValueAsString(reservationList));
+		
+		int totalRow = (int) list.get("totalRow");
+		int lastPage = totalRow / rowPerPage;
+		if (totalRow % rowPerPage != 0) {
+			lastPage += 1;
+		}	
 
+		model.addAttribute("targetDay", targetDay);
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("totalRow", totalRow);
+		model.addAttribute("rowPerPage", rowPerPage);
+
+	
+	    return "reservation/reservationList";
+		
+	}
+		
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(Model model, Integer targetDay) {	
-	    model.addAttribute("targetDay", targetDay);
+	public String insertReservation() {
+	
 		return "reservation/insertReservation";
 		
 	}
@@ -68,9 +106,7 @@ public class ReservationController {
         return "redirect:/reservationOne";
     }
 	
-	
-	
-	
+
 	
 	
 }

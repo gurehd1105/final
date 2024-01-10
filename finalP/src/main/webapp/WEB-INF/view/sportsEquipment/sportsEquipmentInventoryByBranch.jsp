@@ -4,79 +4,99 @@
 <c:set var="title" value="스포츠 장비 지점별 재고 리스트" />
 <c:set var="description" value="로그인계정의 소속 지점별 소유하고 있는 물품의 재고를 확인 할 수 있는 페이지" />
 <c:set var="keywords" value="장비,소모품,재고" />
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<div>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>
-	</div>
-	<br>
-   	<div>
-   	<br>
-	<div>
-		<h2>재고목록(지점)</h2>
-	</div>
-	<br>
-	<div>
-		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch">
-	      	<div style="border: 1px solid #ccc;">
-	 			<label for="searchItem">아이템검색 :</label>
-	         	<input type="text" id="searchItem" name="searchItem" value="${searchItem}" placeholder="아이템을 입력하세요">
-	      	</div>
-	        <button type="submit" style="border: 1px solid #ccc;">검색</button>
-   		</form>
-	    <a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">전체보기</a>	         
-   	</div>
-   	
-    <div>
-   		<c:forEach var="inventory" items="${sportsEquipmentInventory}">
-   			<div style="border: 1px solid #ccc;">
-   				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${inventory.sportsEquipmentImgFileName }" width="100" height="100"><br>
-   				지점 : ${inventory.branchName }<br>
-   				이름 : ${inventory.itemName }<br>
-   				번호 : ${inventory.sportsEquipmentNo }<br>
-   				가격 : ${inventory.itemPrice }<br>
-   				재고 : ${inventory.totalQuantity }<br>
-   				발주 : ${inventory.inventoryQuantity }<br>
-   				폐기 : ${inventory.discartdQuantity }<br>
 
-				<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipmentOrder" >
-					<input type="hidden" name="sportsEquipmentNo" value="${inventory.sportsEquipmentNo }">
-					<input type="hidden" name="itemPrice" value="0">
-			      	<div style="border: 1px solid #ccc;">
-			      		<label>폐기 수량을 선택하세요:  <input type="number" name="quantity" value="0" min="-${inventory.totalQuantity }" max="0"> </label>
-			         	<button type="submit" style="border: 1px solid #ccc;"> 폐기</button>
-			      	</div>
-			   	</form>
-			   	<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipmentOrder" >
-					<input type="hidden" name="sportsEquipmentNo" value="${inventory.sportsEquipmentNo }">
-					<input type="hidden" name="itemPrice" value="${inventory.itemPrice }">
-			      	<div style="border: 1px solid #ccc;">
-			      		<label>발주 수량을 선택하세요:  <input type="number" name="quantity" value="0" min="0" max="100"> </label>
-			         	<button type="submit" style="border: 1px solid #ccc;"> 발주</button>
-			      	</div>
-			   	</form>
-			</div>
-   		</c:forEach>
-   	</div>
-   	<!-- 페이징 -->
-   	<div style="border: 1px solid #ccc;">
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=1&searchItem=${searchItem}">처음</a>
-		<c:forEach var="p" begin="1" end="${lastPage}">
-			<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=${p}&searchItem=${searchItem}">${p}</a>
-		</c:forEach>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch?currentPage=${lastPage}&searchItem=${searchItem}">마지막</a>
-    </div>
-</div>
+	<!-- 검색창 -->
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch" method="get" id="searchSportsEquipmentOrderForm">
+		<el-form-item label="검색">
+				<el-input v-model="model.searchItem" name="searchItem" placeholder="검색어를 입력하세요"/>
+	   	</el-form-item>
+	   	<el-form-item>
+				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+	   	</el-form-item>
+	</el-form>
+	<!-- 재고 리스트 -->
+	<el-row :gutter="20">
+  		<el-col :span="8" v-for="(inventory, index) in sportsEquipmentInventory" :key="index">
+    		<el-card :label="inventory.itemName" :body-style="{ padding: '15px' }">
+      			<div style="padding: 14px">
+        			<img :src="'/finalP/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
+        			<span>지점: {{ inventory.branchName }}</span><br>
+        			<span>가격: {{ inventory.itemPrice }}</span><br>
+        			<span>이름: {{ inventory.itemName }}</span><br>
+        			<span>번호: {{ inventory.sportsEquipmentNo }}</span><br>
+        			<span>재고: {{ inventory.totalQuantity }}</span><br>
+        			<span>발주: {{ inventory.inventoryQuantity }}</span><br>
+        			<span>폐기: {{ inventory.discartdQuantity }}</span><br>
+        			<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+  						<el-form-item label="발주수량">
+    						<el-input-number v-model="model.quantity" :min="1" name="quantity" :max="100" @change="handleChange" />
+ 		 				</el-form-item>
+  							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
+ 							<input type="hidden" name="itemPrice" :value="inventory.itemPrice">
+  						<el-form-item>
+    						<el-button type="primary" @click="onSubmit(form)">발주</el-button>
+  						</el-form-item>
+					</el-form>
+					<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+  						<el-form-item label="폐기수량">
+    						<el-input-number v-model="model.quantity" :min="-inventory.totalQuantity" name="quantity"  />
+ 		 				</el-form-item>
+  							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
+ 							<input type="hidden" name="itemPrice" :value="inventory.itemPrice">
+  						<el-form-item>
+    						<el-button type="primary" @click="onSubmit(form)">폐기</el-button>
+  						</el-form-item>
+					</el-form>
+      			</div>
+    		</el-card>
+    		<br>
+  		</el-col>
+	</el-row>
+   	
+	<!-- 페이징 -->
+	<el-row class="mb-8">
+    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
+    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
+    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
+  	</el-row>
+
+
 </c:set>
 <c:set var="script">
-	{
-
+	data() {
+	  	return {
+		    model: {
+			    searchItem: '${searchItem}', 
+			    currentPage: 1, 
+		    },
+		    sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'), 
+		    lastPage: ${lastPage} 
+	  	};
+	},
 	
-	};
+	methods: {
+		searchSubmit() {
+			document.getElementById('searchSportsEquipmentOrderForm').submit();
+		},
+		
+		resetSearchSubmit() {
+			location.href = `${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch`;
+
+        },
+        
+        onSubmit() {
+			document.getElementById('insertOrderForm').submit();
+		},
+        	
+  		changePage(page) {
+    		this.currentPage = page;
+    		console.log('Current Page:', this.currentPage); 
+    		location.href = '${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch?searchItem=${searchItem}&currentPage='+page;
+  		}
+	}
 </c:set>
 
 

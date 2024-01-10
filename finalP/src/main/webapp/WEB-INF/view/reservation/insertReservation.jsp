@@ -12,7 +12,7 @@
 	  	<div>
 		  	<el-select v-model="selectBranch" id="selectBranch" clearable placeholder="지점선택">
 		  		<el-option
-			      v-for="item in options2"
+			      v-for="item in options"
 			      :key="item.value"
 			      :label="item.label"
 			      :value="item.value"
@@ -21,19 +21,6 @@
 			</el-select>
 		</div>
 		<br>
-		<!-- 
-		<div>
-			<el-select v-model="program" id="program" clearable placeholder="종목선택">
-		  		<el-option
-			      v-for="item in options1"
-			      :key="item.value"
-			      :label="item.label"
-			      :value="item.value"
-			      :disabled="item.disabled"
-			    />
-			</el-select>
-	  	</div>
-	  	 -->
 		<el-form-item>
         <el-button type="primary" @click="submit">확인</el-button>
       	</el-form-item>
@@ -44,19 +31,9 @@
 <c:set var="script">
   data() {
     return {
-      program:'',
-      selectBranch:'',
-      options1:[
-      	{
-          value: '1',
-          label: '요가',
-        },
-        {
-          value: '2',
-          label: '필라테스',
-        },
-      ],
-      options2: [
+      program: '',
+      selectBranch: '',
+      options: [
         {
           value: '1',
           label: '서울',
@@ -70,26 +47,33 @@
           label: '부산',
         },
       ],
-      
-      
     };
   },
 
   watch: {
-    // ... (동일)
+
   },
 
   methods: {
     submit() {
-      const type = document.getElementById('type').value;
-      const branch = document.getElementById('selectBranch').value;
+      if (!this.selectBranch) {
+        this.$message.warning('지점을 선택하세요.');
+        return;
+      }
 
-      if (!type || !branch) {
-		alert("종목과 지점을 모두 선택해주세요.")     
-		return;
-       }
- 
-    },
+      // 지점이 선택된 경우 예약 처리 진행
+      const data = {
+        branch: this.selectBranch,
+        program: this.program,
+        date: this.targetDate,
+      };
+
+      this.$axios.post('/insertReservation', data).then(() => {
+        this.$message.success('예약이 완료되었습니다.');
+      }).catch(() => {
+        this.$message.error('예약에 실패하였습니다.');
+      });
+    }
   }
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

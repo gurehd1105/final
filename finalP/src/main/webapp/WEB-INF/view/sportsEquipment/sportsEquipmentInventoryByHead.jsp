@@ -4,15 +4,9 @@
 <c:set var="title" value="스포츠 장비 지점별 재고 리스트" />
 <c:set var="description" value="현재 지점별 소유하고 있는 물품의 재고를 확인 할 수 있는 페이지" />
 <c:set var="keywords" value="장비,소모품,재고" />
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<div>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>	
-	</div>
+
 	<br>
    	<div>
    	<br>
