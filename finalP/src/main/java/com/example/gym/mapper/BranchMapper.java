@@ -13,7 +13,7 @@ public interface BranchMapper {
 	List<Branch> branchList(Map<String, Integer> map);
 	int totalBranch();
 	// 관리자 추가를 위한 지점 조회
-	List<Branch> branchList();
+	List<Branch> branch();
 	
 	// 지점 추가
 	int insertBranch(Map<String, Object> map);

@@ -30,8 +30,8 @@ public class BranchService {
 
 	// 관리자 추가 위한 지점 목록 조회
 	// 지점 목록 조회
-	public List<Branch> branchList() {
-		return branchMapper.branchList();
+	public List<Branch> branch() {
+		return branchMapper.branch();
 	}
 
 	public int insertBranch(Map<String, Object> map) {

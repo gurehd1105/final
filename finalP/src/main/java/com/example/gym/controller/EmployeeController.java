@@ -64,7 +64,7 @@ public class EmployeeController {
 	// 직원 입력 폼
 	@GetMapping("insert")
 	public String insertEmployee(HttpSession session , Model model) {
-		List<Branch> branches = branchService.branchList();
+		List<Branch> branches = branchService.branch();
 		log.info(branches.toString());
         model.addAttribute("branches", branches);
 		return "employee/insert";
