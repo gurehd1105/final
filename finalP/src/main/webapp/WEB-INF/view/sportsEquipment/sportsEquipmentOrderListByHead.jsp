@@ -137,7 +137,7 @@
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch?searchBranch=${searchBranch}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/sportsEquipmentOrderListByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
   		}
 	}
 </c:set>

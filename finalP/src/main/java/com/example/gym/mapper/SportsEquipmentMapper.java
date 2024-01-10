@@ -28,8 +28,10 @@ public interface SportsEquipmentMapper {
 	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
 	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
-	//sportsEquipment CRUD를 위해 본사소속 직원 확인하기
+	//sportsEquipment CRUD를 위해 본사소속 확인하기
 	int selectSearchEmployeeLevel(int employeeNo); 
+	//지점 확인하기
+	int selectSearchEmployeeBranch(int employeeNo); 
 	
 	//sportsEquipment 수정
 	int updateSportsEquipment(SportsEquipment sportsEuipment);
