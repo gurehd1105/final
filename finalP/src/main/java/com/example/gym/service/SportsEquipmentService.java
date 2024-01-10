@@ -267,7 +267,7 @@ public class SportsEquipmentService {
 		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : row - {}", row);
 		    throw new RuntimeException("데이터베이스 삭제 실패");
 		} else {
-		    log.info("sportsEquipmentImg 개별 삭제성공: row - {}", row);
+		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제성공: row - {}", row);
 		}
 		return sportsEquipmentNo;
 	}

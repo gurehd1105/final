@@ -114,7 +114,8 @@
 	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
 		SELECT 
 			sports_equipment_img_file_name sportsEquipmentImgFileName,
-			sports_equipment_img_no sportsEquipmentImgNo
+			sports_equipment_img_no sportsEquipmentImgNo,
+			sports_equipment_no sportsEquipmentNo
 		FROM sports_equipment_img
 		WHERE sports_equipment_no = #{sportsEquipmentNo}
 	</select>
