@@ -19,6 +19,16 @@
         enctype="multipart/form-data"
         id="insertForm"
     >
+	    <el-upload
+		    class="avatar-uploader"
+		    action="/file/upload/employee"
+		    :show-file-list="false"
+		    :on-success="handleSuccess"
+		  >
+		    <img v-if="model.employeeImg" :src="model.employeeImg" class="avatar" />
+		    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+		  </el-upload>
+  
         <el-form-item label="아이디">
             <el-input v-model="model.id" name="employeeId"/>
         </el-form-item>
@@ -68,7 +78,7 @@
                 <el-option
                     v-for="branch in branches"
                     :key="branch.branchNo"
-                    :label="branch.branchNo"
+                    :label="branch.branchName"
                     :value="branch.branchNo"
                 ></el-option>
             </el-select>
@@ -94,6 +104,7 @@
 	    		phone: '',
 	    		employeeEmailId: '',
 	    		employeeEmailJuso: '',
+	    		employeeImg: '',
 	    		branchNo: '' 
 	    	},
 	    	emailSuggestion: [
@@ -103,14 +114,8 @@
 	    		'nate.com',
 	    		'icloud.com'
 	    	],
-            branches: [],
+            branches: JSON.parse('${ branches }'),
 	    }
-	},
-    mounted() {
-        const self = this;
-        axios.get('../branch/list').then((res) => self.branches = res.data);
-    },
-	watch: {
 	},
 	methods: {
 		validCheck() {
@@ -126,7 +131,9 @@
 				employeeGender: this.model.gender,
 				employeePhone: this.model.phone,
 				employeeEmail: this.model.employeeEmailId + '@' + this.model.employeeEmailJuso,
+				employeeImg: this.model.employeeImg,
 			}
+			
 			axios.post('../employee/insert', employee)
 				.then((res) => {
 					self.$notify({
@@ -147,7 +154,41 @@
 			cb(result.map(x => { return { value: x } }));
 			console.log(query, result);
 		},
+		handleSuccess(response, uploadFile) {
+			this.model.employeeImg = '${ctp}/upload/employee/' + response;
+		}
 	}
 </c:set>
+
+<style scoped>
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+</style>
 
 <%@ include file="/inc/admin_layout.jsp" %>

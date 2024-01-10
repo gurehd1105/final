@@ -1,6 +1,5 @@
 package com.example.gym.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("employee")
-public class EmployeeController {
+public class EmployeeController extends DefaultController {
 	@Autowired
 	private EmployeeService employeeService;
 	private CustomerService customerService;
@@ -65,8 +64,7 @@ public class EmployeeController {
 	@GetMapping("insert")
 	public String insertEmployee(HttpSession session , Model model) {
 		List<Branch> branches = branchService.branch();
-		log.info(branches.toString());
-        model.addAttribute("branches", branches);
+        model.addAttribute("branches", toJson(branches));
 		return "employee/insert";
 	}
 
@@ -75,9 +73,7 @@ public class EmployeeController {
 	@ResponseBody
 	public ResponseEntity<?> insertEmployee(HttpSession session, @RequestBody EmployeeForm employeeForm
 			, Model model) {
-		log.info(employeeForm.toString());
-		String path = session.getServletContext().getRealPath("/upload/employee");
-		int result = employeeService.insertEmployee(employeeForm, path);
+		int result = employeeService.insertEmployee(employeeForm);
 		return result == 1 ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
 	}
 
