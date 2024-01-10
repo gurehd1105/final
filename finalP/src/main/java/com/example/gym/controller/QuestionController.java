@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.gym.service.CustomerService;
 import com.example.gym.service.QuestionService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
@@ -20,15 +21,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 @RequestMapping("question")
 public class QuestionController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private QuestionService questionService;
-
+	@Autowired
+	private CustomerService customerService;
 // Question
+	
+	// delete
+	@PostMapping("/delete")
+	public String deleteQuestion(Customer customer, Question question) {
+		System.out.println(question);
+		Customer checkCustomer = customerService.loginCustomer(customer);
+		if (checkCustomer != null) {
+			QuestionReply questionReply = new QuestionReply();
+			questionReply.setQuestionNo(question.getQuestionNo());
+			questionService.deleteQuestionReply(questionReply);
+			questionService.deleteQuestion(question);
+		} else {			
+			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " --Pw 불일치");
+		}
+		return "redirect:list";
+	}
 	
 	// insertForm
 	@GetMapping("/insert")
@@ -116,7 +135,7 @@ public class QuestionController {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		
 		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
-			return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
+			return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
 		}else {
 			model.addAttribute("questionMap", resultMap.get("questionMap"));
 			return "question/update";
@@ -131,22 +150,40 @@ public class QuestionController {
 		return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
 	}	
 	
+	
+	
 // Question	Reply
 	
 	// insertReply
 	@PostMapping("/insertReply")
-	public String insertQuestionReply(QuestionReply questionReply) {
+	public String insertReply(QuestionReply questionReply) {
 
 		questionService.insertQuestionReply(questionReply);
-		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
+		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 	
+	// updateReply
+	@GetMapping("/updateReply")
+	public String updateReply(Question question, Model model) {
+		
+		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
+		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
+		return "question/updateReply";
+	}
+	
+	@PostMapping("/updateReply")
+	public String updateReply(QuestionReply questionReply) {
+		System.out.println(questionReply);
+		
+		questionService.updateQuestionReply(questionReply);
+		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
+	}
 
 	// deleteReply
 	@GetMapping("/deleteReply")
-	public String deleteQuestionReply(QuestionReply questionReply) {
+	public String deleteReply(QuestionReply questionReply) {
 
 		questionService.deleteQuestionReply(questionReply);
-		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
+		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 }
