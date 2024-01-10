@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>    
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>    
 <div id="header" v-cloak>
   <el-header class="!p-0">
     <el-menu
@@ -29,9 +29,9 @@
       handleSelect(key, keyPath) {
         // 메뉴 선택 시 처리할 내용
         if(key == '1'){
-        	window.location.href = '${contextPath}/home';        
+        	window.location.href = '${ctp}/home';        
         }else if(key == '2'){
-        	window.location.href = '${contextPath}/calendar';
+        	window.location.href = '${ctp}/calendar';
         }
       },
     },
