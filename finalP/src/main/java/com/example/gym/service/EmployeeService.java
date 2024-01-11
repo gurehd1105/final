@@ -74,22 +74,21 @@ public class EmployeeService {
 
 	// 직원 퇴사 프로세스 시작
 	public int deleteEmployee(Employee employee) {
-		int result = 0;
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		int result = 0; // 최종 반환값 세팅
+		boolean employeeSuccess = false;
+		boolean employeeDetailSuccess = false;
+		boolean employeeImgSuccess = false;
 
 		Employee check = employeeMapper.loginEmployee(employee);
 		if (check != null) {
 			log.info("PW 확인");
-			row = employeeMapper.updateEmployeeActive(employee);
-			row2 = employeeMapper.deleteEmployeeDetail(employee);
-			row3 = employeeMapper.deleteEmployeeImg(employee);
+			employeeSuccess = employeeMapper.updateEmployeeActive(employee) == 1;
+			employeeDetailSuccess = employeeMapper.deleteEmployeeDetail(employee) == 1;
+			employeeImgSuccess = employeeMapper.deleteEmployeeImg(employee) == 1;
 
 		}
-
-		if (row > 0 && row2 > 0) {
-			log.info("직원 비활성화 완료");
+		
+		if (employeeSuccess && employeeDetailSuccess && employeeImgSuccess) { 
 			result = 1;
 		}
 		return result;
@@ -105,24 +104,18 @@ public class EmployeeService {
 		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
 		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
 		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
-		int row = employeeMapper.updateEmployeeOne(employeeDetail);
+		boolean employeeDetailUpdate = false;
+		employeeDetailUpdate = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
 
-		if (row != 1) {
-			throw new RuntimeException();
-		}
-
-		MultipartFile multipartFile = employeeForm.getEmployeeImg();
-
-		if (multipartFile.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
-			EmployeeImg employeeImg = new EmployeeImg();
+		EmployeeImg employeeImg = new EmployeeImg();
+		
+		if (employeeImg.getEmployeeImgFileName() != 0) { // 사용자가 지정한 Image 정보가 있다면
 			employeeImg.setEmployeeNo(employeeNo);
 			employeeImg.setEmployeeImgOriginName(multipartFile.getOriginalFilename());
 			employeeImg.setEmployeeImgSize(multipartFile.getSize());
 			employeeImg.setEmployeeImgType(multipartFile.getContentType());
 			String fileName = UUID.randomUUID().toString();
 
-			String originName = multipartFile.getOriginalFilename();
-			String fileName2 = originName.substring(originName.lastIndexOf("."));
 			employeeImg.setEmployeeImgFileName(fileName + fileName2); // EmployeeImg 매개값 세팅
 
 			// 변수 삽입 전 employeeImg정보가 있는지 확인
@@ -131,7 +124,7 @@ public class EmployeeService {
 			EmployeeImg check = employeeMapper.checkEmployeeImg(checkImgEmployee);
 
 			// 확인 후 조건에 따른 분기
-			int row2 = 0;
+			boolean employeeImgUpdate = false;
 			if (check == null) { // 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
 				row2 = employeeMapper.insertEmployeeImg(employeeImg);
 			} else { // 원래 등록된 Image 정보가 있다면
