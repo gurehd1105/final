@@ -18,4 +18,9 @@ public class HomeController {
     public ResponseEntity<Boolean> emailCheck() {
     	return ResponseEntity.ok(Math.random() >= 0.5);
     }
+    
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
 }
