@@ -19,4 +19,6 @@ public class Employee {
 	private String employeeActive;
 	private String createdate;
 	private String updatedate;
+	private String branchName;
+	private Branch branch;
 }
