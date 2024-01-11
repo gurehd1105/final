@@ -14,7 +14,7 @@
       <el-menu-item index="1">홈</el-menu-item>
       <el-menu-item index="2" >예약</el-menu-item>
       <el-menu-item index="3" >로그인</el-menu-item> 
-          
+      
     </el-menu>
   </el-header>
 </div>
@@ -29,9 +29,12 @@
       handleSelect(key, keyPath) {
         // 메뉴 선택 시 처리할 내용
         if(key == '1'){
-        	window.location.href = '${ctp}/home';        
+        	location.href = '${ctp}/home';        
         }else if(key == '2'){
-        	window.location.href = '${ctp}/calendar';
+        	location.href = '${ctp}/calendar';
+        }else if(key == '3'){
+        	location.href = '${ctp}/customer/login';
+
         }
       },
     },

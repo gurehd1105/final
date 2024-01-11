@@ -1,5 +1,6 @@
 package com.example.gym.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class ReservationService {
 	   int totalRow = reservationMapper.reservationCount();
 	   resultMap.put("reservationList", reservationList);
 	   resultMap.put("totalRow", totalRow);
-	   System.out.println(reservationList +"서비스");
+	  
 	   return resultMap;
 	   
 	   
