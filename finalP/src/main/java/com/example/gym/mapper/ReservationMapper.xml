@@ -14,6 +14,7 @@
          WHERE pr.payment_no = #{paymentNo}
            AND pd.program_date = #{programDate}
            AND pr.branch_no = #{branchNo}
+           AND p.cutomer_no = #{customerNo}
            LIMIT #{beginRow}, #{rowPerPage}
    </select>
    
@@ -50,14 +51,6 @@
 	</resultMap>
    
    
-	<select id="branchList" parameterType="com.example.gym.vo.Branch" resultMap="Branch">
-	SELECT 
-			branch_no,
-			branch_name,
-			branch_tel,
-			branch_address
-	  FROM  branch
-	</select>  
  
  
    
