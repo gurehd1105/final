@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class Employee {
 	private int employeeNo;
 	private int branchNo;
+	private int branchLevel;
+	private String branchName;
 	private String employeeId;
 	private String employeePw;
 	private String employeeActive;
 	private String createdate;
 	private String updatedate;
-	private String branchName;
-	private Branch branch;
 }
