@@ -34,29 +34,43 @@
 			
 		</el-form>
 	</span>
-	<textarea rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
+	<textarea readonly rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
 	
 	<c:if test="${ replyMap != null }"><!-- 답변 있을 시 답변표시 -->
-		
+		<el-descriptions title="리뷰 답변" column="2" border>
+			<el-descriptions-item v-for:="key of Object.keys(reply)" :label="key">{{ reply[key] }}</el-descriptions-item>
+		</el-descriptions>
+			<el-button type="primary" @click="updateReply(reviewNo)">수정</el-button>
+			<el-button type="primary" @click="deleteReply(reviewNo)">삭제</el-button>
+		<textarea readonly rows="10" cols="160" style="resize: none;">{{ replyContent }}</textarea>
 	
 	
 	</c:if>
 	
-	<c:if test="${ replyMap == null && reviewMap.branchNo == loginEmployee.branchNo }"><!-- 답변 없을 시 입력Form 표시 -> 직원이 소속한, 본인 지점에 대한 리뷰에서만 조회 -->
-		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/insert"
+	<c:if test="${ replyMap == null }">
+		<p>답변이 등록되지 않았습니다. 조금만 기다려주세요.</p>
+	</c:if>
+	
+	
+	<!-- 답변 없을 시 입력Form 표시 -> 직원이 소속한, 본인 지점에 대한 리뷰에서만 조회 예정 -->
+		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/insertReply"
 			method="post" id="insertReplyAct"> 
-			<el-form-item :label="">
+			<el-form-item column="2">
+				<input type="hidden" name="reviewNo" v-model="reviewNo" />
 				<input type="hidden" name="employeeNo" v-model="employeeNo" />
-			</el-form-item>
+			</el-form-item>	
 			
-			<el-form-item :label="">
-				<input type="hidden" name="employeeNo" v-model="employeeNo" />
-			</el-form-item>
+			<el-form-item label="작성자">
+				<input readonly  v-model="employeeId" />
+			</el-form-item>	
 			
-		</el-form>
+			<el-form-item label="답변">
+				<textarea rows="10" cols="160" style="resize: none;" name="reviewReplyContent"></textarea>
+			</el-form-item>
+				<el-button type="primary" @click="insertReply()">등록</el-button>
+		</el-form>	
 	
 	
-	</c:if>
 	
 </c:set>
 
@@ -76,6 +90,7 @@
 				수정일: '${ reviewMap.updatedate }',			
 			},					
 			reply: {
+				소속지점 : '${ replyMap.branchName }',
 				답변자 : '${ replyMap.employeeId }',
 				작성일 : '${ replyMap.createdate }',
 				수정일 : '${ replyMap.updatedate }',
@@ -85,7 +100,8 @@
 			reviewNo: '${ reviewMap.reviewNo }',				
 			reviewContent : '${ reviewMap.reviewContent }',
 			replyContent : '${ replyMap.reviewReplyContent }',
-			employeeNo : '${ loginEmployee.employeeId },
+			employeeNo : '${ loginEmployee.employeeNo }',
+			employeeId : '${ loginEmployee.employeeId }',
 			
 		}
 	},
@@ -100,6 +116,15 @@
 		},		
 		deleteAct(){
 			document.getElementById('deleteAct').submit();
+		},
+		insertReply(){
+			document.getElementById('insertReplyAct').submit();
+		},
+		updateReply(no){
+			location.href = "${ctp}/review/updateReply?reviewNo=" + no;
+		},
+		deleteReply(no){
+			location.href = "${ctp}/review/deleteReply?reviewNo=" + no;
 		},
 	},
 	
