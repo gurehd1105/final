@@ -1,11 +1,9 @@
 package com.example.gym.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.gym.service.BranchService;
 import com.example.gym.service.CalendarService;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReservationService;
@@ -30,6 +29,7 @@ public class ReservationController {
 	@Autowired CalendarService calendarService;
 	@Autowired ReservationService reservationService;
 	@Autowired CustomerService customerService;
+	@Autowired BranchService branchService;
 	
 	// 캘린더 출력
 	@GetMapping("/calendar")
@@ -37,9 +37,12 @@ public class ReservationController {
 			 			   @RequestParam(required = false) Integer targetYear ,
 			 			   @RequestParam(required = false) Integer targetMonth			 			   		 			   
 			 			   ) {
+		List<Branch> branchList = branchService.branch();
+		
 		System.out.println("접속성공");					
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
 		model.addAttribute("calendarMap", calendarMap);
+		model.addAttribute("branchList", branchList);
 			
 		return "reservation/calendar";
 	}
@@ -50,10 +53,11 @@ public class ReservationController {
 	public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear, Integer targetMonth,									
 								 @RequestParam(defaultValue = "1") int currentPage	
 							      ) throws JsonProcessingException {
-		 Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
+		/* 
+		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
 		 if (loginCustomer == null) {
 		 // 로그인이 되어있지 않으면 로그인 페이지로 리다이렉트
-		    return "customer/loginCustomer";
+		    return "customer/login";
 		     }
 		 // 로그인한 사용자의 paymentNo 가져오기
 		Map<String, Object> paymentNo = customerService.customerOne(loginCustomer);
@@ -61,7 +65,7 @@ public class ReservationController {
 		 	// 유효한 paymentNo가 없는 경우	
 		    return "redirect:/reservationList"; 		 		
 		 	}
-
+		*/
 		String targetYear2 = mapper.writeValueAsString(targetYear);
 		String targetMonth2 = mapper.writeValueAsString(targetMonth);
 		String targetDay2 = mapper.writeValueAsString(targetDay);
@@ -79,9 +83,8 @@ public class ReservationController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("paymentNo", paymentNo);
+		paramMap.put("paymentNo", 1);
 		paramMap.put("programDate", date );
-		paramMap.put("branchNo", branchNo);
 		
 		System.out.println(paramMap + "<-- paramMap");
 		
@@ -96,8 +99,7 @@ public class ReservationController {
 		int lastPage = totalRow / rowPerPage;
 		if (totalRow % rowPerPage != 0) {
 			lastPage += 1;
-		}	
-
+		}		
 		model.addAttribute("targetDay", targetDay);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("lastPage", lastPage);
@@ -111,16 +113,14 @@ public class ReservationController {
 		
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(HttpSession session, Model model) {
+	public String insertReservation(HttpSession session, Model model, Integer targetDay) {
 		/*
 		// 1. 로그인 여부 확인
 	    Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
 	    if (loginCustomer == null) {
 	    // 로그인이 되어있지 않으면 로그인 페이지로 리다이렉트
-	    return "customer/loginCustomer";
-	     }
-	    
-	      
+	    return "customer/login";
+	     }      
 	    // 2. paymentNo 및 programDate의 존재 여부 확인
 	    Integer paymentNo = (Integer) session.getAttribute("paymentNo");
 	    Integer programDate = (Integer) session.getAttribute("programDate");
@@ -132,7 +132,8 @@ public class ReservationController {
 	    // 모든 조건을 만족하면 예약 페이지로 이동
 	    model.addAttribute("loginCustomer", loginCustomer);      
 		*/
-	
+		model.addAttribute("targetDay", targetDay);
+		System.out.println(model);
 		return "reservation/insertReservation";
 		
 	}
@@ -140,7 +141,7 @@ public class ReservationController {
 	@PostMapping("/insertReservation")
     public String insertReservation(ProgramReservation reservation) {
 		reservationService.insertReservation(reservation);
-        return "redirect:/reservationOne";
+        return "redirect:/reservationList";
     }
 	
 
