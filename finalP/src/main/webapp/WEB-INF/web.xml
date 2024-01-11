@@ -36,5 +36,6 @@
   <filter-mapping>
     <filter-name>EmployeeLoginFilter</filter-name>
     <url-pattern>/employee/*</url-pattern>
+    <!--  <url-pattern>/sporstEquipment/*</url-pattern> -->
   </filter-mapping>
 </web-app>

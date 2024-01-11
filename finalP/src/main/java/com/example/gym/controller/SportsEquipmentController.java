@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-//@RequestMapping("/employee/sportsEquipment")
 @RequestMapping("sportsEquipment")
 public class SportsEquipmentController {
 	ObjectMapper mapper = new ObjectMapper();
