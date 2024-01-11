@@ -36,8 +36,8 @@
 	},
 	
 	methods: {
-        reservation(targetYear, targetMonth, targetDay) {        
-            location.href = '${ctp}/insertReservation?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay';
+        reservation() {      
+            location.href = '${ctp}/insertReservation?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
         }
     },
 </c:set>

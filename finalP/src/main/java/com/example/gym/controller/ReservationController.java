@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.BranchService;
@@ -53,19 +54,17 @@ public class ReservationController {
 	public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear, Integer targetMonth,									
 								 @RequestParam(defaultValue = "1") int currentPage	
 							      ) throws JsonProcessingException {
-		/* 
+	
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		 if (loginCustomer == null) {
-		 // 로그인이 되어있지 않으면 로그인 페이지로 리다이렉트
+		 if (loginCustomer == null) {		
 		    return "customer/login";
 		     }
-		 // 로그인한 사용자의 paymentNo 가져오기
+	
 		Map<String, Object> paymentNo = customerService.customerOne(loginCustomer);
 		 	if(paymentNo == null) {		
-		 	// 유효한 paymentNo가 없는 경우	
-		    return "redirect:/reservationList"; 		 		
+		    return "redirect:/home"; 		 		
 		 	}
-		*/
+
 		String targetYear2 = mapper.writeValueAsString(targetYear);
 		String targetMonth2 = mapper.writeValueAsString(targetMonth);
 		String targetDay2 = mapper.writeValueAsString(targetDay);
@@ -116,16 +115,20 @@ public class ReservationController {
 	// 예약 추가
 	@GetMapping("/insertReservation")
 	public String insertReservation(HttpSession session, Model model, 
-									@RequestParam(value = "targetYear", required = false) Integer targetYear,
-									@RequestParam(value = "targetMonth", required = false)Integer targetMonth,
-									@RequestParam(value = "targetDay", required = false)Integer targetDay
+									Integer targetYear,
+									Integer targetMonth,
+									Integer targetDay
 									) throws JsonProcessingException {
 		
-
 		List<Branch> branchList = branchService.branch();
-		model.addAttribute("branchList", mapper.writeValueAsString(branchList));		
+		model.addAttribute("branchList", mapper.writeValueAsString(branchList));	
+		model.addAttribute("targetYear", targetYear);
+		model.addAttribute("targetMonth", targetMonth);
 		model.addAttribute("targetDay", targetDay);
+		
 		System.out.println(branchList + "<-- branchList");
+		System.out.println(targetYear + "<-- targetYear");
+		System.out.println(targetMonth + "<-- targetMonth");
 		System.out.println(targetDay + "<-- targetDay");
 		
 		return "reservation/insertReservation";
@@ -133,11 +136,10 @@ public class ReservationController {
 	}
 	
 	@PostMapping("/insertReservation")
-    public String insertReservation(ProgramReservation reservation) {
+    public String insertReservation(@RequestBody ProgramReservation reservation) {
 		reservationService.insertReservation(reservation);
-		
-		
-        return "redirect:/reservationList";
+	
+        return "redirect:/calendar";
     }
 	
 

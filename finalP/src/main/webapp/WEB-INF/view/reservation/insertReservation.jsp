@@ -8,13 +8,13 @@
 
 <c:set var="body">
 	<h1>${targetYear}년 ${targetMonth+1}월 ${targetDay}일</h1>
-    <el-select v-model="selectBranch" clearable placeholder="지점 선택">
+    <el-select v-model="selectBranch" id="insert" clearable placeholder="지점 선택">
         <el-option v-for="(branch, b) in branchList" :key="b" 
         		   :label="branch.branchName" :value="branch.branchNo" >          
         </el-option> 
     </el-select>
     <br>
-    <el-button type="primary" @click="insert">예약하기</el-button>
+    <el-button type="primary" @click="onSubmit">예약하기</el-button>
 </c:set>
 
 <c:set var="script">
@@ -23,12 +23,22 @@
     		selectBranch:'',
     		branchList:JSON.parse('${branchList}'),
     	}
- 
     },
     methods: {
-        insert() {
-        	location.href = '${ctp}/reservationList';
-         		
+        onSubmit() {
+            // 예약 정보를 담을 객체
+            const reservationData = {
+                selectBranch: this.selectBranch,            
+            };
+
+            // Ajax 요청을 사용하여 서버에 예약 정보 전송
+            axios.post('${ctp}/insertReservation', reservationData)
+                .then(response => {
+                    // 서버에서 정상적으로 응답을 받았을 때 처리
+                    console.log(response.data);
+                    // 예약 완료 후 리다이렉트 등 필요한 동작 수행
+                    location.href = '${ctp}/calendar';
+                }) 
         }
     },
 </c:set>
