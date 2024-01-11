@@ -17,44 +17,61 @@
 				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
 	   	</el-form-item>
 	</el-form>
-	<!-- 재고 리스트 -->
-	<el-row :gutter="20">
-  		<el-col :span="8" v-for="(inventory, index) in sportsEquipmentInventory" :key="index">
-    		<el-card :label="inventory.itemName" :body-style="{ padding: '15px' }">
-      			<div style="padding: 14px">
-        			<img :src="'/finalP/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
-        			<span>지점: {{ inventory.branchName }}</span><br>
-        			<span>가격: {{ inventory.itemPrice }}</span><br>
-        			<span>이름: {{ inventory.itemName }}</span><br>
-        			<span>번호: {{ inventory.sportsEquipmentNo }}</span><br>
-        			<span>재고: {{ inventory.totalQuantity }}</span><br>
-        			<span>발주: {{ inventory.inventoryQuantity }}</span><br>
-        			<span>폐기: {{ inventory.discartdQuantity }}</span><br>
-        			<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm1">
+	
+	<!-- 재고 리스트 출력 -->
+    <table class="custom-table">
+      	<thead>
+        	<tr>
+		        <th>지점</th>
+		        <th>이미지</th>
+		        <th>아이템</th>
+		        <th>발주</th>
+		        <th>폐기</th>
+		        <th>재고</th>
+		        <th>발주하기</th>
+		        <th>폐기하기</th>
+        	</tr>
+      	</thead>
+	    <tbody>
+	    	<tr v-for="(inventory, i) in sportsEquipmentInventory" :key="i">
+	        	<td>{{ inventory.branchName }}</td>
+	        	<td>
+	          		<img :src="'/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 100px; height: 100px;" />
+	        	</td>
+	        	<td>{{ inventory.itemName }}</td>
+			    <td>{{ inventory.inventoryQuantity }}</td>
+			    <td>{{ inventory.discartdQuantity }}</td>
+			    <td>{{ inventory.totalQuantity }}</td>
+			    <td>
+			        <el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" 
+			        	action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" :id="'insertOrderForm1' + i">
   						<el-form-item label="발주수량">
-    						<el-input-number v-model="model.quantity1[index]" :min="0" name="quantity" :max="100" />
+    						<el-input-number v-model="model.quantity1[i]" :min="0" name="quantity" :max="100" />
  		 				</el-form-item>
   							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
  							<input type="hidden" name="itemPrice" :value="inventory.itemPrice">
   						<el-form-item>
-    						<el-button type="primary" @click="onSubmit1(form)">발주</el-button>
+    						<el-button type="success" round @click="onSubmit1(i)">발주</el-button>
   						</el-form-item>
 					</el-form>
-					<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm2">
+			    </td>
+			    <td>
+			    	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
+			    		 action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" :id="'insertOrderForm2' + i">
   						<el-form-item label="폐기수량">
-    						<el-input-number v-model="model.quantity2[index]" :min="-inventory.totalQuantity" :max="0" name="quantity"  />
+    						<el-input-number v-model="model.quantity2[i]" :min="-inventory.totalQuantity" :max="0" name="quantity"  />
  		 				</el-form-item>
   							<input type="hidden" name="sportsEquipmentNo" :value="inventory.sportsEquipmentNo">
  							<input type="hidden" name="itemPrice" :value="0">
   						<el-form-item>
-    						<el-button type="primary" @click="onSubmit2(form)">폐기</el-button>
+    						<el-button type="danger" round @click="onSubmit2(i)">폐기</el-button>
   						</el-form-item>
-					</el-form>
-      			</div>
-    		</el-card>
-    		<br>
-  		</el-col>
-	</el-row>
+					</el-form> 
+			    </td>
+	     	</tr>
+	    </tbody>
+    </table>
+    <br>
    	
 	<!-- 페이징 -->
 	<el-row class="mb-8">
@@ -72,7 +89,7 @@
 			    searchItem: '${searchItem}', 
 			    currentPage: 1, 
 			    quantity1: [], 
-			    quantity2: Array(5).fill(0), 
+			    quantity2: [], 
 		    },
 		    sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'), 
 		    lastPage: ${lastPage} 
@@ -89,16 +106,34 @@
 
         },
         
-onSubmit1() {
-	console.log('onSubmit1 Parameters:', form);
-  document.getElementById('insertOrderForm1').submit();
-},
+        
+    onSubmit1(i) {
+        const form = document.getElementById('insertOrderForm1'+i);
+        
+        console.log('onSubmit1 Parameters:', form);
+        console.log('i:', i);
+        console.log('model.quantity1[i]:', this.model.quantity1[i]);
+        
+        if (form) {
+             form.submit();
+        } else {
+            console.error('Form not found.');
+        }
+    },
 
-onSubmit2() {
-	console.log('onSubmit2 Parameters:', form);
-  document.getElementById('insertOrderForm2').submit();
-},
-        	
+    onSubmit2(i) {
+        const form = document.getElementById('insertOrderForm2'+i);
+        
+        console.log('i:', i);
+        console.log('onSubmit2 Parameters:', form);
+        
+        if (form) {
+             form.submit();
+        } else {
+            console.error('Form not found.');
+        }
+    },
+	        	
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
@@ -106,6 +141,32 @@ onSubmit2() {
   		}
 	}
 </c:set>
+<style>
+  .custom-table {
+    border: 1px solid #ccc;
+    width: 100%;
+    border-collapse: collapse;
+  }
 
+  .custom-table th, .custom-table td {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .custom-table th {
+    background-color: #f0f0f0; 
+  }
+
+  .custom-table img {
+    width: 50px;
+    height: 50px;
+  }
+
+ .custom-table button {
+    border: 1px solid #ccc;
+   padding: 5px 10px;
+    text-align: center; 
+ }
+</style>
 
 <%@ include file="/inc/admin_layout.jsp"%>

@@ -51,7 +51,7 @@
 	        	</td>
 	        	<td>{{ equipmentOrder.branchName }}</td>
 	        	<td>
-	          		<img :src="'/finalP/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
+	          		<img :src="'/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
 	        	</td>
 	        	<td>{{ equipmentOrder.itemName }}</td>
 			    <td>{{ equipmentOrder.itemPrice }}</td>

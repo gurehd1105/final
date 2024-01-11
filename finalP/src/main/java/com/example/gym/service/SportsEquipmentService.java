@@ -384,7 +384,7 @@ public class SportsEquipmentService {
 		log.info("endDate: {}", endDate);
 		
 		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -449,7 +449,7 @@ public class SportsEquipmentService {
 		log.info("endDate: {}", endDate);
 		
 		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -583,7 +583,7 @@ public class SportsEquipmentService {
 		log.info("searchItem: {}", searchItem);
 
 		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -648,15 +648,17 @@ public class SportsEquipmentService {
 		paramMap.put("searchItem", searchItem);
 			
 		//세션
-		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		//Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
 		
 		//지점직원은 소속된 지점 확인
 		log.warn("employee session 구현 후 수정");
-		int loginBranchNo = sportsEquipmentMapper.selectSearchEmployeeBranch(loginEmployee.getEmployeeNo());
+		//int loginBranchNo = sportsEquipmentMapper.selectSearchEmployeeBranch(loginEmployee.getEmployeeNo());
+		int loginBranchNo = 2;
 		
 		//지점직원인지 확인
 		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
+		//int loginBranchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
+		int loginBranchLevel = 0;
 		
 		paramMap.put("loginBranchNo", loginBranchNo);
 		paramMap.put("loginBranchLevel", loginBranchLevel);
