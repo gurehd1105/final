@@ -61,7 +61,7 @@ public class SportsEquipmentController {
 	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) throws JsonProcessingException {
 
 		//파일업로드 경로 설정
-	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
+	    String path = session.getServletContext().getRealPath("upload/sportsEquipment");
 	    
 	    //service 호출
 	    sportsEquipmentService.insertSportsEquipmentService(session, path, itemName, itemPrice, sportsEquipmentImgList);

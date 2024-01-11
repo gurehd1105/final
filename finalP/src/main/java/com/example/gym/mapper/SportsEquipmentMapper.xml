@@ -332,11 +332,17 @@
 	
 	<!-- sportsEquipmentInventory 출력 (본사) -->
 	<select id="selectSportsEquipmentInventoryByHead" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT 
+		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
 			se.sports_equipment_no sportsEquipmentNo,
-			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			(
+			SELECT sei.sports_equipment_img_file_name
+			FROM sports_equipment_img sei
+			WHERE sei.sports_equipment_no = se.sports_equipment_no
+			ORDER BY sei.sports_equipment_img_file_name
+			LIMIT 1
+			) sportsEquipmentImgFileName,
 			SUM(seo.quantity) AS totalQuantity,
 			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
    			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
@@ -365,12 +371,18 @@
 	
 	<!-- sportsEquipmentInventory 출력 (지점) -->
 	<select id="selectSportsEquipmentInventoryByBranch" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT 
+		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
 			se.item_Price itemPrice,
 			se.sports_equipment_no sportsEquipmentNo,
-			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			(
+			SELECT sei.sports_equipment_img_file_name
+			FROM sports_equipment_img sei
+			WHERE sei.sports_equipment_no = se.sports_equipment_no
+			ORDER BY sei.sports_equipment_img_file_name
+			LIMIT 1
+			) sportsEquipmentImgFileName,
 			SUM(seo.quantity) AS totalQuantity,
 			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
    			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
@@ -378,8 +390,9 @@
 		ON b.branch_no = seo.branch_no
 		INNER JOIN sports_equipment se
 		ON seo.sports_equipment_no = se.sports_equipment_no
-		INNER JOIN sports_equipment_img sei
+		INNER JOIN sports_equipment_img sei		
 		ON se.sports_equipment_no = sei.sports_equipment_no
+
 		WHERE seo.order_status = '승인'
        	<!-- 로그인한 계정의 소속 지점만 -->
         <if test="loginBranchLevel == 0">

@@ -79,7 +79,7 @@
 				<el-image
 	    			v-for="(img, index) in sportsEquipmentImgList"
 	    			:key="index"
-	    			:src="'/finalP/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" 
+	    			:src="'/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" 
 	    			style="max-width: 300px; max-height: 300px; margin-right: 10px;" 
 	    			fit="cover"
 	  			></el-image>
@@ -134,7 +134,7 @@
   		<input type="hidden" name="sportsEquipmentNo" :value="sportsEquipmentNo">
  		<input type="hidden" name="itemPrice" :value="itemPrice">
   		<el-form-item>
-    		<el-button type="primary" @click="onSubmit(form)">발주</el-button>
+    		<el-button type="success" @click="onSubmit(form)">발주</el-button>
   		</el-form-item>
 	</el-form>
 
