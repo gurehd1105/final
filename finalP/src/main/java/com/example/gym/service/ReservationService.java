@@ -26,7 +26,7 @@ public class ReservationService {
 	   int totalRow = reservationMapper.reservationCount();
 	   resultMap.put("reservationList", reservationList);
 	   resultMap.put("totalRow", totalRow);
-	   System.out.println(reservationList +"서비스");
+	  
 	   return resultMap;
 	   
 	   

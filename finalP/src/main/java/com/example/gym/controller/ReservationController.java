@@ -105,6 +105,8 @@ public class ReservationController {
 		model.addAttribute("lastPage", lastPage);
 		model.addAttribute("totalRow", totalRow);
 		model.addAttribute("rowPerPage", rowPerPage);
+		System.out.println(targetDay + "<-- targetDay");
+
 
 	
 	    return "reservation/reservationList";
@@ -113,27 +115,19 @@ public class ReservationController {
 		
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(HttpSession session, Model model, Integer targetDay) {
-		/*
-		// 1. 로그인 여부 확인
-	    Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-	    if (loginCustomer == null) {
-	    // 로그인이 되어있지 않으면 로그인 페이지로 리다이렉트
-	    return "customer/login";
-	     }      
-	    // 2. paymentNo 및 programDate의 존재 여부 확인
-	    Integer paymentNo = (Integer) session.getAttribute("paymentNo");
-	    Integer programDate = (Integer) session.getAttribute("programDate");
+	public String insertReservation(HttpSession session, Model model, 
+									@RequestParam(value = "targetYear", required = false) Integer targetYear,
+									@RequestParam(value = "targetMonth", required = false)Integer targetMonth,
+									@RequestParam(value = "targetDay", required = false)Integer targetDay
+									) throws JsonProcessingException {
+		
 
-	    if (paymentNo == null || programDate == null) {
-	    // paymentNo 또는 programDate가 없으면 다른 페이지로 리다이렉트 또는 에러 처리
-	    return "redirect:/reservationList";
-	    }
-	    // 모든 조건을 만족하면 예약 페이지로 이동
-	    model.addAttribute("loginCustomer", loginCustomer);      
-		*/
+		List<Branch> branchList = branchService.branch();
+		model.addAttribute("branchList", mapper.writeValueAsString(branchList));		
 		model.addAttribute("targetDay", targetDay);
-		System.out.println(model);
+		System.out.println(branchList + "<-- branchList");
+		System.out.println(targetDay + "<-- targetDay");
+		
 		return "reservation/insertReservation";
 		
 	}
@@ -141,6 +135,8 @@ public class ReservationController {
 	@PostMapping("/insertReservation")
     public String insertReservation(ProgramReservation reservation) {
 		reservationService.insertReservation(reservation);
+		
+		
         return "redirect:/reservationList";
     }
 	
