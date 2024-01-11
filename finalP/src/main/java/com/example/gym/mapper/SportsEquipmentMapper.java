@@ -28,8 +28,10 @@ public interface SportsEquipmentMapper {
 	Map<String,Object> selectSportsEquipmentOne(int sportsEquipmentNo);
 	List<SportsEquipmentImg> selectSportsEquipmentImgList(int sportsEquipmentNo);
 	
-	//sportsEquipment CRUD를 위해 본사소속 직원 확인하기
+	//sportsEquipment CRUD를 위해 본사소속 확인하기
 	int selectSearchEmployeeLevel(int employeeNo); 
+	//지점 확인하기
+	int selectSearchEmployeeBranch(int employeeNo); 
 	
 	//sportsEquipment 수정
 	int updateSportsEquipment(SportsEquipment sportsEuipment);
@@ -69,4 +71,14 @@ public interface SportsEquipmentMapper {
 	
 	//sportsEquipmentInventory 출력 (지점)
 	List<Map<String,Object>> selectSportsEquipmentInventoryByBranch(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipmentInventory 수 (본사)
+	int selectSportsEquipmentInventoryByHeadCnt(Map<String,Object> paramMap);
+	
+	//lastPage 구하기 위한 sportsEquipmentInventory 수 (지점)
+	int selectSportsEquipmentInventoryByBranchCnt(Map<String,Object> paramMap);
+	
+	//장비 상세보기 창에서 지점 재고확인 (지점)
+	Map<String,Object> selectSportsEquipmentInventoryOneByBranch(Map<String,Object> paramMap);
 }
+

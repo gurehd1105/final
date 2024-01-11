@@ -4,89 +4,131 @@
 <c:set var="title" value="스포츠 장비 관리 및 리스트" />
 <c:set var="description" value="현재 발주 할 수 있는 장비를 추가할 수 있는 사이트" />
 <c:set var="keywords" value="장비,소모품,수정,삭제,추가" />
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<div>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>
-	</div>
-	<div>
-		<h2>장비 추가 하기</h2>
-	</div>
-	<br>
-	<form method="post" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" enctype="multipart/form-data">
-		<div style="border: 1px solid #ccc;">
-		    <label for="itemName">이름 :</label>
-		    <input type="text" id="itemName" name="itemName" placeholder="이름을 입력하세요.">
-		</div>
-		<div style="border: 1px solid #ccc;">
-		    <label for="itemPrice">가격 :</label>
-		    <input type="number" id="itemPrice" name="itemPrice" placeholder="가격을 입력하세요.">
-		</div>
-		<div style="border: 1px solid #ccc;">
-		    <label for="sportsEquipmentImg">이미지 :</label>
-		    <input type="file" id="sportsEquipmentImg" name="sportsEquipmentImg" multiple>
-		</div>
-      <div>
-         <button type="submit" style="border: 1px solid #ccc;">입력</button>
-      </div>
-   	</form>
-   	<div>
-   	<br>
-	<div>
-		<h2>장비 리스트</h2>
-	</div>
-	<br>
-	<div>
-		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" enctype="multipart/form-data">
-			<div style="border: 1px solid #ccc;">
-    			<label for="equipmentActive">상태 :</label>
-    			주문 가능: <input type="radio" id="equipmentActive1" name="equipmentActive" value="Y"
-           		<c:if test="${equipmentActive == 'Y'}">checked</c:if>>
-    			품절: <input type="radio" id="equipmentActive2" name="equipmentActive" value="N"
-           		<c:if test="${equipmentActive == 'N'}">checked</c:if>>
-			</div>
-	      	<div style="border: 1px solid #ccc;">
-	 			<label for="searchWord">검색 :</label>
-	         	<input type="text" id="searchWord" name="searchWord" value="${searchword}" placeholder="검색어를 입력하세요.">
-	         	<button type="submit" style="border: 1px solid #ccc;">검색</button>
-	         	<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment?searchWord=" style="border: 1px solid #ccc;">전체보기</a>	         
-	      	</div>
-   		</form>
-   	</div>
-    <div>
-   		<c:forEach var="equipment" items="${sportsEquipmentList}">
-   			<div style="border: 1px solid #ccc;">
-   				이름 : ${equipment.itemName }<br>
-   				가격 : ${equipment.itemPrice }<br>
-   				상태 : <c:if test="${equipment.equipmentActive == 'Y' }"> 재고있음</c:if>
-   					  <c:if test="${equipment.equipmentActive == 'N' }"> 품절</c:if><br>
-   				이미지<br>
-   				<img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipment.sportsEquipmentImgFileName }" width="100" height="100"><br>
-   				<a href="${pageContext.request.contextPath}/sportsEquipment/updateSportsEquipment?sportsEquipmentNo=${equipment.sportsEquipmentNo}">수정</a>
-   			
-   			</div>
-   		</c:forEach>
-   	</div>
+	
+	<!-- 장비 추가 폼 -->
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
+			 action="${ctp}/sportsEquipment/insertSportsEquipment" enctype="multipart/form-data" method="post" id="insertSportsEquipment">
+		<el-form-item label="이름">
+			<el-input type="text" v-model="model.itemName" name="itemName" placeholder="이름을 입력하세요." />			
+		</el-form-item> 
 
-   	<!-- 페이징 -->
-   	<div style="border: 1px solid #ccc;">
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment?currentPage=1&searchWord=${searchWord}&equipmentActive=${equipmentActive}">처음</a>
-		<c:forEach var="p" begin="1" end="${lastPage}">
-			<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment?currentPage=${p}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">${p}</a>
-		</c:forEach>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment?currentPage=${lastPage}&searchWord=${searchWord}&equipmentActive=${equipmentActive}">마지막</a>
-    </div>
-</div>
+		<el-form-item label="가격">
+			<el-input type="number" v-model="model.itemPrice" name="itemPrice" placeholder="가격을 입력하세요." />			
+		</el-form-item> 
+	
+		<el-form-item label="이미지">
+			<el-input type="file" v-model="model.sportsEquipmentImg" name="sportsEquipmentImg" multiple  />			
+		</el-form-item> 
+	
+		<el-form-item>
+			<el-button type="primary" @click="onSubmit(form)">입력</el-button>
+		</el-form-item> 
+	</el-form>
+	
+	<template>
+		<el-alert v-if="showErrorAlert" title="전부 다 입력하세요" type="error" />
+	</template>	
+
+	<!-- 검색창 -->
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipment" method="get" enctype="multipart/form-data" id="searchSportsEquipmentForm">
+	   	<el-form-item label="상태">
+			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
+				<el-radio label="Y">주문가능</el-radio>
+				<el-radio label="N">품절</el-radio>
+			</el-radio-group>
+	   	</el-form-item>
+		<el-form-item label="검색">
+				<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+	   	</el-form-item>
+	   	<el-form-item>
+				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+	   	</el-form-item>
+	</el-form>
+   	
+	<!-- 장비 리스트 -->
+	<el-row :gutter="20">
+  		<el-col :span="8" v-for="(equipment, index) in sportsEquipmentList" :key="index">
+    		<el-card :label="equipment.itemName" :body-style="{ padding: '15px' }">
+      			<div style="padding: 14px">
+        			<img :src="'/finalP/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
+        			<span>상품명: {{ equipment.itemName }}</span><br>
+        			<span>가격: {{ equipment.itemPrice }}</span><br>
+        			<span>상태: {{ equipment.equipmentActive === 'Y' ? '주문가능' : '품절' }}</span><br>
+          			<el-button type="primary" @click="updateSportsEquipment(equipment.sportsEquipmentNo)">수정</el-button>
+      			</div>
+    		</el-card>
+    		<br>
+  		</el-col>
+	</el-row>
+   	
+	<!-- 페이징 -->
+	<el-row class="mb-8">
+    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
+    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
+    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
+  	</el-row>
+
 </c:set>
 <c:set var="script">
-	{
+	data() {
+		return {
+			 showErrorAlert: false,
+			model: {
+			    searchWord: '${searchWord}', 
+			   	equipmentActive: '${equipmentActive}',
+			    currentPage: 1, 
+		    	itemName: '',
+		    	itemPrice: '',
+		    	sportsEquipmentImg: '',
+		    	
+		    },
+		    
+		    sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
+		    lastPage: ${lastPage},
+	  	};
+	},
+	methods: {
+			searchSubmit() {
+				document.getElementById('searchSportsEquipmentForm').submit();
+			},
+			
+			resetSearchSubmit() {
+				location.href = `${ctp}/sportsEquipment/insertSportsEquipment`;
 
+        	},
+        	
+        	chekForm(){
+        		console.log('validateAndSubmit 메서드 실행');
+    			this.$refs.form.validate((valid) => {
+      			if (valid) {
+        			this.onSubmit();
+      			} else {
+        			this.showErrorAlert = true;
+        			console.log('true 변경');
+      			}
+    		});
+        	
+        	},
+        	
+			onSubmit(){
+				console.log('onSubmit 메서드 실행');
+				document.getElementById('insertSportsEquipment').submit();
+			},
+			
+			updateSportsEquipment(sportsEquipmentNo){
+				location.href = '${ctp}/sportsEquipment/updateSportsEquipment?sportsEquipmentNo='+sportsEquipmentNo;
+			},
+					
+			changePage(page) {
+    			this.currentPage = page;
+    			console.log('Current Page:', this.currentPage); 
+    			location.href = '${ctp}/sportsEquipment/insertSportsEquipment?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
+  			}
 	
-	};
+	}
 </c:set>
 
 

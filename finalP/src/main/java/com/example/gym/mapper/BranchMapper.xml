@@ -1,7 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.BranchMapper">
-
-
-
+	<resultMap id="Branch" type="com.example.gym.vo.Branch">		
+		<result property="branchNo"		column="branch_no"/>
+		<result property ="branchName" column = "branch_name"/>
+		<result property = "branchTel" column = "branch_tel"/>
+		<result property = "branchAddress" column = "branch_address"/>
+		<result property="branchLevel"		column="branch_level"/>
+		<result property="branchActive"		column="branch_active"/>
+	</resultMap>
+	<insert id="insertBranch"
+		parameterType="map">
+		INSERT INTO branch (
+		branch_name ,
+		branch_tel ,
+		branch_address
+		)
+		VALUES (
+			#{branchName} ,
+			#{branchTel} ,
+			#{branchAddress} 
+		)
+	</insert>
+	<!-- 관리자 추가시 필요한 지점 조회 -->
+	<select id="branch" resultMap="Branch">
+		SELECT *
+		FROM branch
+	</select>
+	<select id="branchList"  parameterType="java.util.Map"
+						resultMap="Branch">
+		SELECT 
+			branch_no ,
+			branch_name ,
+			branch_tel ,
+			branch_address
+		FROM branch
+		ORDER BY 1 asc
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+	<!-- 전체 지점 갯수 확인 -->
+	<select id="totalBranch" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM branch
+	</select>
+	
+	
 </mapper>
