@@ -74,22 +74,21 @@ public class EmployeeService {
 
 	// 직원 퇴사 프로세스 시작
 	public int deleteEmployee(Employee employee) {
-		int result = 0;
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		int result = 0; // 최종 반환값 세팅
+		boolean employeeSuccess = false;
+		boolean employeeDetailSuccess = false;
+		boolean employeeImgSuccess = false;
 
 		Employee check = employeeMapper.loginEmployee(employee);
 		if (check != null) {
 			log.info("PW 확인");
-			row = employeeMapper.updateEmployeeActive(employee);
-			row2 = employeeMapper.deleteEmployeeDetail(employee);
-			row3 = employeeMapper.deleteEmployeeImg(employee);
+			employeeSuccess = employeeMapper.updateEmployeeActive(employee) == 1;
+			employeeDetailSuccess = employeeMapper.deleteEmployeeDetail(employee) == 1;
+			employeeImgSuccess = employeeMapper.deleteEmployeeImg(employee) == 1;
 
 		}
-
-		if (row > 0 && row2 > 0) {
-			log.info("직원 비활성화 완료");
+		
+		if (employeeSuccess && employeeDetailSuccess && employeeImgSuccess) { 
 			result = 1;
 		}
 		return result;
@@ -105,13 +104,8 @@ public class EmployeeService {
 		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
 		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
 		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
-		int row = employeeMapper.updateEmployeeOne(employeeDetail);
-
-		if (row != 1) {
-			throw new RuntimeException();
-		}
-
-		MultipartFile multipartFile = employeeForm.getEmployeeImg();
+		boolean employeeDetailUpdate = false;
+		employeeDetailUpdate = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
 
 		if (multipartFile.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
 			EmployeeImg employeeImg = new EmployeeImg();

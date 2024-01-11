@@ -87,14 +87,19 @@
 		parameterType="com.example.gym.vo.Employee"
 		resultType="com.example.gym.vo.Employee">
 		SELECT
-		employee_no employeeNo ,
-		employee_id employeeId ,
-		employee_active employeeActive
-		FROM employee
-		WHERE employee_id = #{employeeId}
+		e.employee_no employeeNo ,
+		e.employee_id employeeId ,
+		e.employee_active employeeActive,
+		e.employee_level employeeLevel ,
+		e.branch_no branchNo ,
+		b.branch_name branchName  
+		FROM employee e
+		INNER JOIN branch b ON
+		e.branch_no = b.branch_no 
+		WHERE e.employee_id = #{employeeId}
 		AND
-		employee_pw = PASSWORD(#{employeePw})
-		AND employee_active = 'Y'
+		e.employee_pw = PASSWORD(#{employeePw})
+		AND e.employee_active = 'Y'
 	</select>
 
 	<!-- 관리자 목록 -->
