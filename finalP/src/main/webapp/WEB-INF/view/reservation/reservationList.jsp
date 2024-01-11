@@ -8,29 +8,38 @@
 
 
 <c:set var="body">
-
-    <el-descriptions title="${targetYear}년 ${targetMonth+1}월 ${targetDay}일" :column="1" border>
-        <el-descriptions-item v-for="key of Object.keys(program_reservation)" :label="key">{{program_reservation[key] }}</el-descriptions-item>
-    </el-descriptions>
+	<h1>${targetYear}년 ${targetMonth+1}월 ${targetDay}일 예약</h1>
+	<table>
+		<tr>
+			<th>번호</th>
+			<th>결제일</th>		
+			<th>지점명</th>		
+		</tr>
+		<tbody v-for="(reservation, r) in  reservationList" :key="r">
+			<tr>
+			<th>{{reservation.programReservationNo}}</th>
+			<th>{{reservation.paymentDate}}</th>		
+			<th>{{reservation.branchName}}</th>		
+			</tr>			
+		</tbody>		    
+    </table>
 	<br>
-    <el-button type="primary" @click="reservation()">예약하기</el-button>
-
+	<el-button type="primary" @click="reservation()">예약하기</el-button>
 </c:set>
 
 <c:set var="script">
     data() {
-        return {
-           program_reservation: {
-                결제날짜:'${paymentDate}',
-                지점명: '${bName}',
-            },
-        };
-    },
-    methods: {
-        reservation() {
+		return {			
+			reservationList: JSON.parse('${reservationList}'),
+			
+		}
+	},
+	
+	methods: {
+        reservation() {        
             location.href = '${ctp}/insertReservation';
         }
-    }
+    },
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>

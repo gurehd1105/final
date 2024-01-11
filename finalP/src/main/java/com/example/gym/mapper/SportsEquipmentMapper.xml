@@ -44,10 +44,21 @@
 	    )
 	</insert>
 	
-	<!-- sportsEquipment CRUD를 위해 본사소속 직원 확인하기  -->
+	<!-- sportsEquipment CRUD를 위해 본사소속 확인하기  -->
 	<select id="selectSearchEmployeeLevel" parameterType="int" resultType="int">
 		SELECT 
-			b.branch_level branchLevel
+			b.branch_level branchLevel,
+			b.branch_no branchNo
+		FROM employee e 
+		INNER JOIN branch b
+		ON e.branch_no = b.branch_no
+		WHERE employee_no = #{employeeNo}
+	</select>
+	
+	<!-- 지점 확인하기  -->
+	<select id="selectSearchEmployeeBranch" parameterType="int" resultType="int">
+		SELECT 
+			b.branch_no branchNo
 		FROM employee e 
 		INNER JOIN branch b
 		ON e.branch_no = b.branch_no
@@ -114,7 +125,8 @@
 	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
 		SELECT 
 			sports_equipment_img_file_name sportsEquipmentImgFileName,
-			sports_equipment_img_no sportsEquipmentImgNo
+			sports_equipment_img_no sportsEquipmentImgNo,
+			sports_equipment_no sportsEquipmentNo
 		FROM sports_equipment_img
 		WHERE sports_equipment_no = #{sportsEquipmentNo}
 	</select>

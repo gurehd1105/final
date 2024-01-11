@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.mapper.SportsEquipmentMapper;
+import com.example.gym.vo.Employee;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
 import com.example.gym.vo.SportsEquipmentOrder;
@@ -36,9 +37,13 @@ public class SportsEquipmentService {
 												MultipartFile[] sportsEquipmentImgList) {
 		
 		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
-		log.warn( "employee session 구현 후 수정");
+		log.warn( "employee session 구현 후 수정 완료");
+		
+		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		
 		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
+		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
+		
 		log.info( branchLevel + " <-- 1:본사 0:지점");
 		if(branchLevel != 1) {	
 			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
@@ -267,7 +272,7 @@ public class SportsEquipmentService {
 		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : row - {}", row);
 		    throw new RuntimeException("데이터베이스 삭제 실패");
 		} else {
-		    log.info("sportsEquipmentImg 개별 삭제성공: row - {}", row);
+		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제성공: row - {}", row);
 		}
 		return sportsEquipmentNo;
 	}
@@ -379,7 +384,7 @@ public class SportsEquipmentService {
 		log.info("endDate: {}", endDate);
 		
 		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -444,7 +449,7 @@ public class SportsEquipmentService {
 		log.info("endDate: {}", endDate);
 		
 		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
+		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		//mapper의 매개변수로 들어갈 paramMap 생성
@@ -641,12 +646,17 @@ public class SportsEquipmentService {
 		//mapper의 매개변수로 들어갈 paramMap 생성
 		Map<String,Object> paramMap = new HashMap<>();
 		paramMap.put("searchItem", searchItem);
+			
+		//세션
+		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
 		
-		//지점직원은 소속된 지점의 데이터 출력
+		//지점직원은 소속된 지점 확인
 		log.warn("employee session 구현 후 수정");
-		int loginBranchNo = 2;
+		int loginBranchNo = sportsEquipmentMapper.selectSearchEmployeeBranch(loginEmployee.getEmployeeNo());
+		
+		//지점직원인지 확인
 		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 0;
+		int loginBranchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
 		
 		paramMap.put("loginBranchNo", loginBranchNo);
 		paramMap.put("loginBranchLevel", loginBranchLevel);

@@ -9,15 +9,6 @@
 		<result property="branchLevel"		column="branch_level"/>
 		<result property="branchActive"		column="branch_active"/>
 	</resultMap>
-	<select id="branchList" resultMap="Branch">
-		SELECT 
-			branch_no ,
-			branch_name ,
-			branch_tel ,
-			branch_address
-		FROM branch
-	</select>
-
 	<insert id="insertBranch"
 		parameterType="map">
 		INSERT INTO branch (
@@ -31,5 +22,28 @@
 			#{branchAddress} 
 		)
 	</insert>
-
+	<!-- 관리자 추가시 필요한 지점 조회 -->
+	<select id="branch" resultMap="Branch">
+		SELECT *
+		FROM branch
+	</select>
+	<select id="branchList"  parameterType="java.util.Map"
+						resultMap="Branch">
+		SELECT 
+			branch_no ,
+			branch_name ,
+			branch_tel ,
+			branch_address
+		FROM branch
+		ORDER BY 1 asc
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+	<!-- 전체 지점 갯수 확인 -->
+	<select id="totalBranch" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM branch
+	</select>
+	
+	
 </mapper>

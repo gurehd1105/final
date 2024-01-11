@@ -4,113 +4,155 @@
 <c:set var="title" value="스포츠 장비발주 리스트" />
 <c:set var="description" value="지점에서 현재 발주요청, 처리 된 이력을 알 수 있는 사이트" />
 <c:set var="keywords" value="장비,소모품,발주" />
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<div>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/SportsEquipmentList" style="border: 1px solid #ccc;">장비리스트(지점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/insertSportsEquipment" style="border: 1px solid #ccc;">장비리스트 추가(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">발주내역(지점:부산점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByHead" style="border: 1px solid #ccc;">발주내역(본점)</a>
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByHead" style="border: 1px solid #ccc;">재고(본점)</a>	
-		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentInventoryByBranch" style="border: 1px solid #ccc;">재고(지점:부산점)</a>	
-	</div>
+
+	<!-- 검색창 -->
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch" method="get" id="searchForm">
+		<el-form-item label="아이템검색">
+				<el-input v-model="model.searchItem" name="searchItem" placeholder="아이템을 입력하세요"/>
+	   	</el-form-item>
+		<el-form-item label="시작일">
+				<el-input type="date" v-model="model.beginDate" name="beginDate"/>
+	   	</el-form-item>
+		<el-form-item label="마지막일">
+				<el-input type="date" v-model="model.endDate" name="endDate" />
+	   	</el-form-item>
+	   	
+	   	<el-form-item>
+				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+	   	</el-form-item>
+	</el-form>
 	
-	<div>
-		<h2>발주 리스트(지점:부산점)</h2>
-	</div>
-	<br>
-	<div>
-		<form method="get" action="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch">
-	      	<div style="border: 1px solid #ccc;">
-	 			<label for="searchItem">아이템검색 :</label>
-	         	<input type="text" id="searchItem" name="searchItem" value="${searchItem}" placeholder="아이템을 입력하세요">
-	      	</div>
-	      	<div>
-	      		<label for="beginDate">검색할 시작일</label>
-	         	<input type="date" id="beginDate" name="beginDate" value="${beginDate}" >
-	      		<label for="endDate">검색할 마지막일</label>
-	         	<input type="date" id="endDate" name="endDate" value="${endDate}" >
-	      	</div>
-	         	<button type="submit" style="border: 1px solid #ccc;">검색</button>
-   		</form>
-	    <a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch" style="border: 1px solid #ccc;">전체보기</a>	         
-   	</div>
-    <div>
-   		<table style="border: 1px solid #ccc;">
-   			<thead>
-   				<tr>
-   					<th>발주/페기</th>
-   					<th>지점</th>
-   					<th>이미지</th>
-   					<th>아이템</th>
-   					<th>가격</th>
-   					<th>수량</th>
-   					<th>총가격</th>
-   					<th>발주일</th>
-   					<th>결재일</th>
-   					<th>현재상태</th>
-   					<th>취소</th>
-   				</tr>
-   			</thead>
-   			<tbody>
-   				<c:forEach var="equipmentOrder" items="${sportsEquipmentOrderList}">
-   					<tr>
-   						<td>
-   							<c:if test="${equipmentOrder.quantity > 0}">
-   								발주
-   							</c:if>
-   							<c:if test="${equipmentOrder.quantity < 0}">
-   								폐기
-   							</c:if>
-   						</td>
-   						<td>${equipmentOrder.branchName }</td>
-   						<td><img src="${pageContext.request.contextPath}/upload/sportsEquipment/${equipmentOrder.sportsEquipmentImgFileName}" width="50" height="50"></td>
-   						<td>${equipmentOrder.itemName }</td>
-   						<td>${equipmentOrder.itemPrice }</td>
-   						<td>${equipmentOrder.quantity }</td>
-   						<td>${equipmentOrder.totalPrice }</td>
-   						<td>${equipmentOrder.createdate }</td>
-   						<td>
-   							<c:if test="${equipmentOrder.updatedate == equipmentOrder.createdate}">
-   								대기중
-   							</c:if>
-   							<c:if test="${equipmentOrder.updatedate != equipmentOrder.createdate}">
-   								${equipmentOrder.updatedate }
-   							</c:if>
-   						</td>
-   						<td>${equipmentOrder.orderStatus }</td>
-   						<td>
-   							<c:if test="${equipmentOrder.orderStatus== '대기' }">
-	   						    <form action="${pageContext.request.contextPath}/sportsEquipment/deleteSportsEquipmentOrder" method="post">
-	                    			<input type="hidden" name="orderNo" value="${equipmentOrder.orderNo}">
-	                    			<input type="hidden" name="orderStatus" value="${equipmentOrder.orderStatus }">
-	                    			<button type="submit" style="border: 1px solid #ccc;">취소</button>
-	                			</form>
-   							</c:if>
-   							<c:if test="${equipmentOrder.orderStatus != '대기' }">
-   								본사승인완료
-   							</c:if>
-   						</td>
-   					</tr>
-   				</c:forEach>
-   			</tbody>
-   		</table>
-   		<!-- 페이징 -->
-      	<div style="border: 1px solid #ccc;">
-      		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch?currentPage=1&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}">처음</a>
-      			<c:forEach var="p" begin="1" end="${lastPage}">
-         			<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch?currentPage=${p}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}">${p}</a>
-      			</c:forEach>
-      		<a href="${pageContext.request.contextPath}/sportsEquipment/sportsEquipmentOrderListByBranch?currentPage=${lastPage}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}">마지막</a>
-    	</div>
-   	</div>
+
+    <!-- 발주 리스트 출력 -->
+    <table class="custom-table">
+      	<thead>
+        	<tr>
+          		<th>발주/폐기</th>
+		        <th>지점</th>
+		        <th>이미지</th>
+		        <th>아이템</th>
+		        <th>가격</th>
+		        <th>수량</th>
+		        <th>총가격</th>
+		        <th>발주일</th>
+		        <th>결재일</th>
+		        <th>현재상태</th>
+		        <th>취소</th>
+        	</tr>
+      	</thead>
+	    <tbody>
+	    	<tr v-for="(equipmentOrder, i) in model.sportsEquipmentOrderList" :key="i">
+	        	<td>
+	          		<span v-if="equipmentOrder.quantity > 0" style="color: blue;">발주</span>
+	          		<span v-else-if="equipmentOrder.quantity < 0" style="color: red;">폐기</span>
+	        	</td>
+	        	<td>{{ equipmentOrder.branchName }}</td>
+	        	<td>
+	          		<img :src="'/finalP/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
+	        	</td>
+	        	<td>{{ equipmentOrder.itemName }}</td>
+			    <td>{{ equipmentOrder.itemPrice }}</td>
+			    <td>{{ equipmentOrder.quantity }}</td>
+			    <td>{{ equipmentOrder.totalPrice }}</td>
+				<td>{{ new Date(equipmentOrder.createdate).toLocaleString() }}</td>
+	        	<td>
+	          		<span v-if="equipmentOrder.updatedate == equipmentOrder.createdate">대기중</span>
+	          		<span v-else>{{ new Date(equipmentOrder.updatedate).toLocaleString() }}</span>
+	        	</td>
+	        	<td>{{ equipmentOrder.orderStatus }}</td>
+	        	<td>
+					<span v-if="equipmentOrder.orderStatus === '대기'">
+  						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/deleteSportsEquipmentOrder" method="post" id="deleteSportsEquipmentOrder">
+	   						<el-form-item>
+								<el-button type="warning" round @click="onSubmit(form)">취소</el-button>
+	   					</el-form-item>
+	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
+	   					<input type="hidden" name="orderStatus" :value="equipmentOrder.orderStatus">
+						</el-form>
+					</span>
+	          		<span v-else style="color: blue; font-weight: bold;">{{ equipmentOrder.orderStatus }} 완료</span>
+	        	</td>
+	     	</tr>
+	    </tbody>
+    </table>
+
+
+   		<br>
+	<!-- 페이징 -->
+	<el-row class="mb-8">
+    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
+    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
+    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
+  	</el-row>
 
 </c:set>
 <c:set var="script">
-	{
-		
+	data() {
+	  	return {
+		    model: {
+			    searchItem: '${searchItem}', 
+			    searchItem: '${beginDate}', 
+			    searchItem: '${endDate}', 
+			    currentPage: 1, 
+			  	sportsEquipmentOrderList: JSON.parse('${sportsEquipmentOrderList}'),
+		    },
+			
+		    lastPage: ${lastPage} 
+	  	};
+	},
 	
-	};
+	methods: {
+		searchSubmit() {
+			document.getElementById('searchForm').submit();
+		},
+		
+		resetSearchSubmit() {
+			location.href = `${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch`;
+
+        },
+        
+        onSubmit() {
+			document.getElementById('deleteSportsEquipmentOrder').submit();
+		},
+        	
+  		changePage(page) {
+    		this.currentPage = page;
+    		console.log('Current Page:', this.currentPage); 
+    		location.href = '${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch?searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
+  		},
+  		
+	}
 </c:set>
 
+<style>
+  .custom-table {
+    border: 1px solid #ccc;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .custom-table th, .custom-table td {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .custom-table th {
+    background-color: #f0f0f0; 
+  }
+
+  .custom-table img {
+    width: 50px;
+    height: 50px;
+  }
+
+ .custom-table button {
+    border: 1px solid #ccc;
+   padding: 5px 10px;
+    text-align: center; 
+ }
+</style>
 
 <%@ include file="/inc/admin_layout.jsp"%>
