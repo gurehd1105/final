@@ -13,8 +13,8 @@ public interface QuestionMapper {
 	// question 시작
 	int insertQuestion(Question question);
 	
-	List<Question> selectQuestionList(Map<String, Integer> map);
-	int selectCountOfQuestion();
+	List<Question> selectQuestionList(Map<String, Integer> paramMap);
+	Integer selectCountOfQuestion();
 	
 	Map<String, Object> selectQuestionOne(Question question);
 	

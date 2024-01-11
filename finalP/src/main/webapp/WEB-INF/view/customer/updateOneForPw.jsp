@@ -17,11 +17,11 @@
 	</el-form-item> 
 	
 	<el-form-item label="비밀번호">
-		<el-input type="password" name="customerPw" v-model="pw"/> 
+		<el-input type="password" name="customerPw" v-model="pw" placeholder="PASSWORD"/> 
 	</el-form-item> 
 	
 	<el-form-item>
-		<el-button type="primary" @click="submit(form)">확인</el-button> 
+		<el-button type="primary" @click="submit()">확인</el-button> 
 	</el-form-item> 
 	
 	</el-form>

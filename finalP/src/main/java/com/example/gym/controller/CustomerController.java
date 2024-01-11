@@ -45,7 +45,7 @@ public class CustomerController {
 
 		} else { // 정보 없을 시
 			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
-			return "redirect:/login";
+			return "redirect:login";
 		}
 	}
 	// insert (회원가입) Form
@@ -182,7 +182,7 @@ public class CustomerController {
 
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
 		customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
-		return "redirect:/customer/customerOne";
+		return "redirect:customerOne";
 	}
 
 	// PW 수정 Form

@@ -22,7 +22,7 @@
 			</el-form-item> 
 			
 			<el-form-item>
-				<el-button type="primary" @click="submit(form)">탈퇴</el-button>
+				<el-button type="primary" @click="submit()">탈퇴</el-button>
 			</el-form-item> 
 			 
 			 
