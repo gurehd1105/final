@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<c:set var="title" value="문의상세" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="title" value="문의작성" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
+
 <c:set var="body">
 
 
@@ -15,33 +15,27 @@
 		
 		<el-button type="primary" @click="update(question)">수정</el-button>
 		<el-button type="primary" @click="deleteForm()" id="deleteBtn">삭제</el-button>
-			<span id="deleteForm" style="display:none; ">
 			
-			<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-		 action="${ctp}/question/delete" method="post" id="deleteAct">	
-		 	<el-form-item>
-				<input type="hidden" name="customerId" v-model="question.customerId">
-			</el-form-item>
-			
-			<el-form-item>
-				<input type="hidden" name="questionNo" v-model="question.questionNo">
-			</el-form-item>
-			
-			<el-form-item label="PW">
-				<input type="password" name="customerPw" placeholder="PW 입력"/><el-button type="primary" @click="deleteAct()">삭제</el-button>
-			</el-form-item>
-			
-				
-			</el-form>
-			
-			</span>
+	<span id="deleteForm" style="display:none; "> 
+			<!-- 삭제 시 고객PW 입력 form / 삭제버튼 클릭 시 보여지도록 구성 -->
+		<el-form label-position="right" ref="form" label-width="150px"
+			status-icon class="max-w-lg" action="${ctp}/question/delete"
+			method="post" id="deleteAct"> <el-form-item>
+		<input type="hidden" name="customerId" v-model="question.customerId">
+		</el-form-item> <el-form-item> <input type="hidden" name="questionNo"
+			v-model="question.questionNo"> </el-form-item> <el-form-item label="PW">
+		<input type="password" name="customerPw" placeholder="PW 입력" /> <el-button
+			type="primary" @click="deleteAct()">삭제</el-button> </el-form-item> </el-form>
+	</span>
+	
 			<br>
-			<br>
-			
-			<br>
-			<br>
+			<br>			
+
+		<strong>Content</strong>
 	<textarea readonly  rows="20" cols="170" style="resize: none; ">{{ questionContent }}</textarea>
-		<br>
+	
+			<br>
+			<br>
 		
 		<!-- 답변 내용 -->
 	<c:if test="${ replyMap != null }">
@@ -51,6 +45,12 @@
 		    <el-button type="primary" @click="updateReply()">수정</el-button>
 			<el-button type="primary" @click="deleteReply()">삭제</el-button>
 		</eldescriptions>
+		
+			<br>
+			<br>
+			
+		<strong>Reply</strong>
+		<textarea readonly  rows="20" cols="170" style="resize: none; ">{{ replyContent }}</textarea>
 	</c:if>
 	
 	
@@ -58,8 +58,8 @@
 	<c:if test="${ replyMap == null }">
 		<p>답변이 등록되지 않았습니다. 조금만 기다려주세요.</p>
 	</c:if>
-	
-	<c:if test="${ replyMap == null  }">
+		<!-- 답변 없을 시 + 관리자에게만 표시 -->
+	<c:if test="${ replyMap == null && loginEmployee != null }">
 		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 		 action="${ctp}/question/insertReply" method="post" id="insertReplyAct">
 	    <el-form-item label="답변자">
@@ -86,6 +86,7 @@
 	
 	data() {
 		return{
+		<!-- question 관련 데이터 -->
 			question: {
 				questionNo: '${ questionMap.questionNo }',
 				customerId: '${ questionMap.customerId }',
@@ -94,22 +95,21 @@
 			},
 			questionContent: '${ questionMap.questionContent }',
 			
+		<!-- reply 관련 데이터 -->	
 			reply: {
 				replyNo: '${ replyMap.questionReplyNo }' ,
-				employeeId: '${ replyMap.employeeId }' ,
-				replyContent: '${ replyMap.questionReplyContent }',
-				updatedate:  '${ replyMap.updatedate }',
-				
+				employeeId: '${ replyMap.employeeId }' ,				
+				updatedate:  '${ replyMap.updatedate }',				
 			},
+			replyContent: '${ replyMap.questionReplyContent }',
+			
+		<!-- reply insert 시 필요 데이터 -->	
 			employee: {
 				employeeNo: '${ loginEmployee.employeeNo }',
 				employeeId: '${ loginEmployee.employeeId }',
 				replyContent: '',
 				questionNo: '${ questionMap.questionNo }',
-			},
-			
-			
-			
+			},		
 		}
 	},
 	

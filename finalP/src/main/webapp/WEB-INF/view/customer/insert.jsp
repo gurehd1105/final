@@ -11,42 +11,42 @@
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 		 action="${ctp}/customer/insert" method="post" enctype="multipart/form-data" id="insertForm">
 	    <el-form-item label="아이디">
-	        <el-input v-model="model.id" name="customerId" placeholder="ID"/>
+	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="비밀번호">
-	        <el-input v-model="model.pw" type="password" show-password name="customerPw" placeholder="PASSWORD"/>
+	        <el-input v-model="customer.pw" type="password" show-password name="customerPw" placeholder="PASSWORD"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="비밀번호 확인">
-	        <el-input v-model="model.pwChk" type="password" show-password placeholder="PASSWORD CHECK"/>
+	        <el-input v-model="customer.pwChk" type="password" show-password placeholder="PASSWORD CHECK"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="이름">
-	        <el-input v-model="model.name" name="customerName" placeholder="NAME"/>
+	        <el-input v-model="customer.name" name="customerName" placeholder="NAME"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="성별">
-		    <el-radio-group v-model="model.gender" name="customerGender" class="ml-4" >
+		    <el-radio-group v-model="customer.gender" name="customerGender" class="ml-4" >
 		      <el-radio label="남">남자</el-radio>
 		      <el-radio label="여">여자</el-radio>
 		    </el-radio-group>
 	    </el-form-item>
 	    
 	    <el-form-item label="연락처">
-	        <el-input v-model="model.phone" name="customerPhone" placeholder="PHONE"/>
+	        <el-input v-model="customer.phone" name="customerPhone" placeholder="PHONE"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="키">
-			<el-input-number v-model="model.height" controls-position="right" name="customerHeight"/>
+			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="몸무게">
-			<el-input-number v-model="model.weight" controls-position="right" name="customerWeight"/>
+			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="우편번호">
-	        <el-input v-model="model.address.postCode" disabled>
+	        <el-input v-model="customer.address.postCode" disabled>
 		      <template #append>
 		        <el-button @click="openPostCode()">
 		        	우편번호 찾기
@@ -56,25 +56,25 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="model.address.address" name="address1" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.address" name="address1" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="상세주소">
-			<el-input v-model="model.address.detailAddr" name="address2" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.detailAddr" name="address2" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="참고주소">
-			<el-input v-model="model.address.extraAddr" name="address3" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="이메일">
 	    	<el-col :span="14">
-		        <el-input v-model="model.customerEmailId" placeholder="EMAILID"/>
+		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
 	        </el-col>
 	        <el-col :span="2" class="text-center">@</el-col>
 	        <el-col :span="8">
 	        	<el-autocomplete
-			        v-model="model.customerEmailJuso"
+			        v-model="customer.customerEmailJuso"
 			        :fetch-suggestions="getSuggestion"
 			        clearable
 			        class="inline-input w-full"
@@ -83,11 +83,11 @@
 	        </el-col>	      
 	    </el-form-item>
 	    <el-form-item>
-	    	  <el-input type="hidden" name="customerEmail" :value="model.customerEmailId + '@' +model.customerEmailJuso">
+	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
 	    </el-input>
 	    
 	    <el-form-item label="사진(선택)">
-	    	<el-input type="file" name="customerImg" v-model="model.customerImg">
+	    	<el-input type="file" name="customerImg" v-model="customer.customerImg">
 	    </el-form-item>
 	   
 	    <el-form-item>
@@ -99,7 +99,7 @@
 <c:set var="script">
 	data() {
 	    return {
-	    	model: {
+	    	customer: {
 	    		id: '',
 	    		pw: '',
 	    		pwChk: '',
@@ -182,7 +182,7 @@
 					}
 					
 					// 데이터 바인딩
-					self.model.address = {
+					self.customer.address = {
 						postCode: data.zonecode,
 						address: addr,
 						detailAddress: '',
