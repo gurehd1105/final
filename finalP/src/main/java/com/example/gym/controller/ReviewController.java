@@ -80,7 +80,7 @@ public class ReviewController {
 	@PostMapping("/delete")
 	public String delete(Review review, Customer customer) { 
 		Customer checkCustomer = customerService.loginCustomer(customer);
-		if(checkCustomer != null) {	// 입력한 계정PW 일치
+		if(checkCustomer != null) {	// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
 			ReviewReply reviewReply = new ReviewReply();
 			reviewReply.setReviewNo(review.getReviewNo());
 			reviewService.deleteReviewReply(reviewReply);
@@ -88,7 +88,7 @@ public class ReviewController {
 		} else {
 			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " --Pw 불일치");
 		}		
-		return "redirect:review/list";
+		return "redirect:list";
 	}
 	
 	

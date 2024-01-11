@@ -75,6 +75,7 @@
 			pr.branch_no AS branchNo,			
 			b.branch_name AS branchName,			<!-- 어느지점 -->
 			
+			c.customer_no AS customerNo,
 			c.customer_id AS customerId				<!-- 방문자 -->
 			
 		FROM review r 

@@ -13,7 +13,7 @@
 		</eldescriptions>
 			<br>
 		
-		<el-button type="primary" @click="update(question)">수정</el-button>
+		<el-button type="primary" @click="updateForm(question)">수정</el-button>
 		<el-button type="primary" @click="deleteForm()" id="deleteBtn">삭제</el-button>
 			
 	<span id="deleteForm" style="display:none; "> 
@@ -114,7 +114,7 @@
 	},
 	
 	methods: {
-		update(){
+		updateForm(){
 			location.href = '${ctp}/question/update?questionNo=${ questionMap.questionNo }';
 		},	
 		updateReply(){
