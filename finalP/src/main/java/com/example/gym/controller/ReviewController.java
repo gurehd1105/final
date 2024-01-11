@@ -116,5 +116,34 @@ public class ReviewController {
 		return "review/reviewOne";
 	}
 	
+							/*		review 끝 reply 시작	*/
+	@PostMapping("/deleteReply")
+	public String deleteReply(ReviewReply reply) {
+		reviewService.deleteReviewReply(reply);	
+		
+		return "redirect:review/reviewOne?" + reply.getReviewNo();
+	}
 	
+	/** 리플 수정보류 -  비동기 확인
+	@GetMapping
+	public String updateReply(ReviewReply reply, Model model) {
+		reviewService.deleteReviewReply(reply);	
+		
+		return "redirect:review/reviewOne?" + reply.getReviewNo();
+	}
+	
+	@PostMapping
+	public String updateReply(ReviewReply reply) {
+		reviewService.deleteReviewReply(reply);	
+		
+		return "redirect:review/reviewOne?" + reply.getReviewNo();
+	}
+	*/
+	
+	@PostMapping("/insertReply")
+	public String insertReply(ReviewReply reply) {
+		reviewService.insertReviewReply(reply);
+		
+		return "redirect:review/reviewOne?" + reply.getReviewNo();
+	}
 }
