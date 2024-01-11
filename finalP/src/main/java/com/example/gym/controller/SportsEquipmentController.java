@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-//@RequestMapping("/employee/sportsEquipment")
 @RequestMapping("sportsEquipment")
 public class SportsEquipmentController {
 	ObjectMapper mapper = new ObjectMapper();
@@ -61,7 +60,7 @@ public class SportsEquipmentController {
 	                                    @RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) throws JsonProcessingException {
 
 		//파일업로드 경로 설정
-	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
+	    String path = session.getServletContext().getRealPath("upload/sportsEquipment");
 	    
 	    //service 호출
 	    sportsEquipmentService.insertSportsEquipmentService(session, path, itemName, itemPrice, sportsEquipmentImgList);

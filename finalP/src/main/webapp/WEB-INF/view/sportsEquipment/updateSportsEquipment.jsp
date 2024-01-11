@@ -45,28 +45,26 @@
 	
    <!-- 장비 이미지 삭제 폼 -->
 	<el-row :gutter="20">
-	  <el-col :span="20" v-for="(img, index) in model.sportsEquipmentImgList" :key="index">
+	  <el-col :span="10" v-for="(img, i) in model.sportsEquipmentImgList" :key="i">
 	    <el-card :label="img.sportsEquipmentImgNo" :body-style="{ padding: '15px' }">
 	      <div style="padding: 14px">
-	        <img :src="'/finalP/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
+	        <img :src="'/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
 	      </div>
 	      <el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-	               action="${ctp}/sportsEquipment/deleteOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="deleteEquipmentImgForm">
-	        <el-form-item label="이미지">
-	        	<span>파일네임 : {{ img.sportsEquipmentImgFileName }}</span><br>
+	               action="${ctp}/sportsEquipment/deleteOneSportsEquipmentImg" 
+	               enctype="multipart/form-data" method="post" :id="'deleteEquipmentImgForm'+ i">
   				<input type="hidden" name="sportsEquipmentNo" :value="model.sportsEquipmentNo">
-	          	<input type="hidden" name="sportsEquipmentImgFileName" v-model="img.sportsEquipmentImgFileName" @input="updateImageFileName(index, $event)">
+	          	<input type="hidden" name="sportsEquipmentImgFileName" v-model="img.sportsEquipmentImgFileName" >
 	          	<input type="hidden" name="sportsEquipmentImgNo" v-model="img.sportsEquipmentImgNo">
-	        </el-form-item>
 	        <el-form-item>
-	          <el-button type="primary" @click="deleteSubmit(form)">삭제</el-button>
+	          <el-button type="primary" @click="deleteSubmit(i)">삭제</el-button>
 	        </el-form-item>
 	      </el-form>
 	    </el-card>
 	  </el-col>
 	</el-row>
 
-	
+	<br>
 	<!-- 장비이미지 추가 폼 -->
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 	         action="${ctp}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="insertOneSportsEquipmentImg">
@@ -108,20 +106,21 @@
 			document.getElementById('insertOneSportsEquipmentImg').submit();
 		},
 		
-		deleteSubmit(){
-			document.getElementById('deleteEquipmentImgForm').submit();
+		deleteSubmit(i){
+			const form = document.getElementById('deleteEquipmentImgForm'+i);
+			console.log('i:', i);
+        	console.log('deleteSubmit Parameters:', form);
+        
+        	if (form) {
+             	form.submit();  
+        	} else {
+            	console.error('Form not found.');
+        	}
 		},
 		
 		updateSubmit() {
 			document.getElementById('updateSportsEquipmentForm').submit();
 		},
-		
-		updateImageFileName(index, event) {
-    		this.$set(this.model.sportsEquipmentImgList, index, {
-      		...this.model.sportsEquipmentImgList[index],
-      		sportsEquipmentImgFileName: event.target.value
-    });
-  },
 		
 	}
 </c:set>

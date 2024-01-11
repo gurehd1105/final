@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<c:set var="title" value="문의목록" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="title" value="문의작성" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
+
 <c:set var="body">
 
 
@@ -17,6 +17,7 @@
 					<th>문의번호</th>
 					<th>제목</th>
 					<th>작성일</th>
+					<th>수정일</th>
 				</tr>
 			</thead>
 							
@@ -24,7 +25,8 @@
 				<tr>
 					<th>{{ question.questionNo }}</th>
 					<th @click="questionOne(question.questionNo)">{{ question.questionTitle }}</th>
-					<th>{{ question.updatedate }}</th>
+					<th>{{ question.createdate }}</th>
+					<th>{{ question.updatedate }}</th><!-- 이상해~ 확인 예정 -->
 				</tr>
 			</tbody>
 		</table>
@@ -43,8 +45,8 @@
 		insert(){
 			location.href = '${ctp}/question/insert';
 		},
-		questionOne(questionNo){
-			location.href = '${ctp}/question/questionOne?questionNo=' + questionNo;
+		questionOne(no){
+			location.href = '${ctp}/question/questionOne?questionNo=' + no;
 		},
 	},
  

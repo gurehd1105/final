@@ -2,11 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReviewMapper">
 			
-	<select id="selectReviewList" resultType="java.util.Map">
+	<select id="selectReviewList" parameterType="java.util.Map"
+						resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
 			r.review_title AS reviewTitle,
-			r.createdate AS createdate,
+			r.createdate,
+			r.updatedate,
 			
 			b.branch_name AS branchName,
 			
@@ -22,7 +24,16 @@
 		INNER JOIN program p
 		ON pd.program_no = p.program_no
 		INNER JOIN branch b
-		ON pr.branch_no = b.branch_no
+		ON pr.branch_no = b.branch_no				
+		<if test="branchName != null and branchName != ''">
+			WHERE b.branch_name = #{branchName}
+		</if>
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<select id="selectCountOfReview" resultType="Integer">
+		SELECT 
+			COUNT(*)
+		FROM review
 	</select>
 	
 	<insert id="insertReview" parameterType="com.example.gym.vo.Review">
@@ -64,6 +75,7 @@
 			pr.branch_no AS branchNo,			
 			b.branch_name AS branchName,			<!-- 어느지점 -->
 			
+			c.customer_no AS customerNo,
 			c.customer_id AS customerId				<!-- 방문자 -->
 			
 		FROM review r 
@@ -82,4 +94,54 @@
 		
 		WHERE review_no = #{reviewNo}	
 	</select>
+	
+							<!-- review 관련 종료 / reply 관련 시작 -->
+	<select id="selectReviewReply" parameterType="com.example.gym.vo.Review"
+									resultType="java.util.Map">
+		SELECT
+			r.review_reply_no AS reviewReplyNo,
+			r.review_no AS reviewNo,
+			r.employee_no AS employeeNo,
+			r.review_reply_content AS reviewReplyContent,
+			r.createdate, r.updatedate,
+			
+			e.employee_id AS employeeId,
+			e.branch_no AS branchNo,
+			
+			b.branch_name AS branchName
+		FROM review_reply r
+		INNER JOIN employee e
+		ON r.employee_no = e.employee_no
+		INNER JOIN branch b
+		ON e.branch_no = b.branch_no
+		
+		WHERE r.review_no = #{reviewNo}
+	
+	</select>	
+										
+	<insert id="insertReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		INSERT INTO review_reply (
+			review_no,
+			employee_no,
+			review_reply_content
+		) VALUES (
+			#{reviewNo},
+			#{employeeNo},
+			#{reviewReplyContent}
+		)	
+	</insert>
+	
+	<delete id="deleteReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		DELETE FROM review_reply
+			WHERE review_no = #{reviewNo}	
+	</delete>
+	
+	<update id="updateReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		UPDATE review_reply SET
+			employee_no = #{employeeNo},
+			review_reply_content = #{reviewReplyContent},
+			updatedate = NOW()
+		WHERE review_reply_no = #{reviewReplyNo}	
+	</update>
+						
 </mapper>

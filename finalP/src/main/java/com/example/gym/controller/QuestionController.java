@@ -36,9 +36,8 @@ public class QuestionController {
 	// delete
 	@PostMapping("/delete")
 	public String deleteQuestion(Customer customer, Question question) {
-		System.out.println(question);
 		Customer checkCustomer = customerService.loginCustomer(customer);
-		if (checkCustomer != null) {
+		if (checkCustomer != null) {	// 입력한 계정PW 일치
 			QuestionReply questionReply = new QuestionReply();
 			questionReply.setQuestionNo(question.getQuestionNo());
 			questionService.deleteQuestionReply(questionReply);
@@ -93,6 +92,7 @@ public class QuestionController {
 		Object questionList = resultMap.get("questionList");
 		model.addAttribute("questionList", mapper.writeValueAsString(questionList)); // questionList 출력 완
 
+		
 		// 페이징
 		int totalRow = (int) resultMap.get("totalRow");
 		int lastPage = totalRow / rowPerPage;

@@ -20,7 +20,7 @@
 		 </el-form-item>
 		 
 		 <el-form-item>
-		 	<el-button type="primary" @click="onSubmit(form)">로그인</el-button>
+		 	<el-button type="primary" @click="submit()">로그인</el-button>
 		 	<el-button type="primary" @click="insertCustomer()">회원가입</el-button>
 		 </el-form-item>
 		 
@@ -36,7 +36,7 @@
 		}		
 	},
 	methods: {
-			onSubmit(){
+			submit(){
 				document.getElementById('loginForm').submit();
 			},
 			insertCustomer(){

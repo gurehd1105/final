@@ -87,14 +87,19 @@
 		parameterType="com.example.gym.vo.Employee"
 		resultType="com.example.gym.vo.Employee">
 		SELECT
-		employee_no employeeNo ,
-		employee_id employeeId ,
-		employee_active employeeActive
-		FROM employee
-		WHERE employee_id = #{employeeId}
+		e.employee_no employeeNo ,
+		e.employee_id employeeId ,
+		e.employee_active employeeActive,
+		e.branch_no branchNo ,
+		b.branch_level branchLevel ,
+		b.branch_name branchName  
+		FROM employee e
+		INNER JOIN branch b ON
+		e.branch_no = b.branch_no 
+		WHERE e.employee_id = #{employeeId}
 		AND
-		employee_pw = PASSWORD(#{employeePw})
-		AND employee_active = 'Y'
+		e.employee_pw = PASSWORD(#{employeePw})
+		AND e.employee_active = 'Y'
 	</select>
 
 	<!-- 관리자 목록 -->
@@ -113,10 +118,7 @@
 		ed.employee_email AS employeeEmail,
 
 		ei.employee_img_no AS employeeImgNo,
-		ei.employee_img_origin_name AS employeeImgOriginName,
-		ei.employee_img_file_name AS employeeImgFileName,
-		ei.employee_img_size AS employeeImgSize,
-		ei.employee_img_type AS employeeImgType
+		ei.employee_img_origin_name AS employeeImgOriginName
 		FROM
 		employee e 
 		INNER JOIN employee_detail ed
@@ -143,10 +145,7 @@
 		ed.employee_email AS employeeEmail,
 
 		ei.employee_img_no AS employeeImgNo,
-		ei.employee_img_origin_name AS employeeImgOriginName,
-		ei.employee_img_file_name AS employeeImgFileName,
-		ei.employee_img_size AS employeeImgSize,
-		ei.employee_img_type AS employeeImgType
+		ei.employee_img_origin_name AS employeeImgOriginName
 		FROM
 		employee e 
 		INNER JOIN employee_detail ed
@@ -174,10 +173,7 @@
 	<update id="updateEmployeeImg" parameterType="com.example.gym.vo.EmployeeImg">
 		<if test="employeeImg != null">
 		UPDATE employee_img SET
-			employee_img_origin_name = #{employeeImgOriginName},
-			employee_img_file_name = #{employeeImgFileName},
-			employee_img_size = #{employeeImgSize},
-			employee_img_type = #{employeeImgType},
+			employee_img_origin_name = #{employeeImgOriginName}
 			updatedate = NOW()
 		WHERE employee_no = #{employeeNo}		
 		</if>
@@ -188,10 +184,7 @@
 		SELECT
 			employee_img_no AS employeeImgNo,
 			employee_no AS employeeNo,
-			employee_img_origin_name AS employeeImgOriginName,
-			employee_img_file_name AS employeeImgFileName,
-			employee_img_size AS employeeImgSize,
-			employee_img_type AS employeeImgType,
+			employee_img_origin_name AS employeeImgOriginName
 			createdate, updatedate
 		FROM employee_img
 			WHERE employee_no = #{employeeNo}
