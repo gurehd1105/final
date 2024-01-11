@@ -22,8 +22,8 @@
 				<th @click="reviewOne(review.reviewNo)">{{ review.reviewTitle }}</th>
 				<th>{{ review.branchName }}</th>
 				<th>{{ review.programName }}</th>
-				<th>{{ new Date(review.createdate).toLocaleDateString() }}</th>
-				<th>{{ review.createdate == review.updatedate ? "-" : new Date(review.updatedate).toLocaleDateString() }}</th>
+				<th>{{ review.createdate }}</th>
+				<th>{{ review.createdate == review.updatedate ? "-" : review.updatedate }}</th>
 			</tr>
 		</tbody>
 	</table>
