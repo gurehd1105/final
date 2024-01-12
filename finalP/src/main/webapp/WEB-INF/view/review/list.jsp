@@ -23,7 +23,9 @@
 				<th>{{ review.branchName }}</th>
 				<th>{{ review.programName }}</th>
 				<th>{{ new Date(review.createdate).toLocaleDateString() }}</th>
-				<th>{{ review.createdate == review.updatedate ? "-" : new Date(review.updatedate).toLocaleDateString() }}</th>
+				<th>
+				{{ new Date(review.createdate).toLocaleDateString() == new Date(review.updatedate).toLocaleDateString() ? "-" : new Date(review.updatedate).toLocaleDateString() }}
+				</th>
 			</tr>
 		</tbody>
 	</table>

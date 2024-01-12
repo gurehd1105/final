@@ -80,6 +80,8 @@ public class ReviewController {
 	@PostMapping("/delete")
 	public String delete(Review review, Customer customer) { 
 		Customer checkCustomer = customerService.loginCustomer(customer);
+		System.out.println(customer);
+		System.out.println(review);
 		if(checkCustomer != null) {	// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
 			ReviewReply reviewReply = new ReviewReply();
 			reviewReply.setReviewNo(review.getReviewNo());
@@ -95,8 +97,7 @@ public class ReviewController {
 	@GetMapping("/update")
 	public String update(Review review, Model model) { 
 		Map<String, Object> resultMap = reviewService.selectReviewOne(review);
-		model.addAttribute("resultMap", resultMap);
-		
+		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
 		return "review/update";
 	}
 	
@@ -104,7 +105,7 @@ public class ReviewController {
 	@PostMapping("/update")
 	public String update(Review review) { 
 		reviewService.updateReview(review);		
-		return "redirect:review/reviewOne?" + review.getReviewNo();
+		return "redirect:reviewOne?reviewNo=" + review.getReviewNo();
 	}
 		
 	@GetMapping("/reviewOne")
@@ -117,33 +118,35 @@ public class ReviewController {
 	}
 	
 							/*		review 끝 reply 시작	*/
-	@PostMapping("/deleteReply")
+	@GetMapping("/deleteReply")
 	public String deleteReply(ReviewReply reply) {
 		reviewService.deleteReviewReply(reply);	
+		System.out.println(reply);
 		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
+		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
 	}
 	
-	/** 리플 수정보류 -  비동기 확인
-	@GetMapping
-	public String updateReply(ReviewReply reply, Model model) {
-		reviewService.deleteReviewReply(reply);	
+	
+	@GetMapping("/updateReply")
+	public String updateReply(Review review, Model model) {
+		Map<String, Object> resultMap = reviewService.selectReviewOne(review);
 		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
+		model.addAttribute("replyMap", resultMap.get("replyMap"));
+		return "review/updateReply";
 	}
 	
-	@PostMapping
+	@PostMapping("/updateReply")
 	public String updateReply(ReviewReply reply) {
-		reviewService.deleteReviewReply(reply);	
+		reviewService.updateReviewReply(reply);
 		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
+		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
 	}
-	*/
+	
 	
 	@PostMapping("/insertReply")
 	public String insertReply(ReviewReply reply) {
 		reviewService.insertReviewReply(reply);
 		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
+		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
 	}
 }
