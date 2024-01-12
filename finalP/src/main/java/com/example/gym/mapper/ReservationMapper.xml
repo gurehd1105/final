@@ -16,42 +16,43 @@
            LIMIT #{beginRow}, #{rowPerPage}
    </select>
    
-   <select id="reservationCount"
-         resultType="Integer">
-      SELECT count(*)
-        FROM program_reservation
+   <select id="reservationCount" resultType="Integer">
+	      SELECT count(*)
+	        FROM program_reservation
+   </select>
+   <select id="selectProgram" parameterType="com.example.gym.vo.ProgramDate"
+   		   resultType="java.util.Map">
+   		    SELECT 
+			       pd.program_date_no  programDateNo,
+			       p.program_name programName
+			  FROM program p INNER JOIN program_date pd
+			    ON p.program_no = pd.program_no
+			 WHERE pd.program_date = #{programDate}
+
    </select>
    
-   <insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
-          INSERT INTO program_reservation (
-              payment_no,
-              program_date_no,
-              branch_no
-          ) VALUES (
-              #{paymentNo},
-              #{programDateNo},
-              #{branchNo}
+   
+   
+   <insert id="insertReservation" parameterType="java.util.Map">
+		INSERT INTO program_reservation (
+					payment_no,
+					program_date_no,
+					branch_no
+		   ) VALUES (
+					 #{paymentNo},
+					 #{programDateNo},
+					 (SELECT branch_no FROM branch WHERE branch_name = #{branchName})
+					)
    </insert>
    
    <delete id="deleteReservation" parameterType="com.example.gym.vo.ProgramReservation">
-          DELETE FROM program_reservation
-          WHERE payment_no = #{paymentNo}
-            AND program_date_no = #{programDateNo}
-            AND branch_no = #{branchNo}
+       	  DELETE FROM program_reservation
+          		WHERE program_reservation_no = #{programReservationNo}           	  
    </delete>
    
-   <!-- 지점 리스트조회 -->
-   	<resultMap id="Branch" type="com.example.gym.vo.Branch">
-	<result column="branch_no" property="branchNo"/>
-	<result column="branch_name" property="branchName"/>
-	<result column="branch_tel" property="branchTel"/>
-	<result column="branch_address" property="branchAddress"/>
-	</resultMap>
+   
+   
    
    
  
- 
-   
-   
-      
 </mapper>
