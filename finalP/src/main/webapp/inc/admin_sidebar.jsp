@@ -51,47 +51,55 @@
            </el-menu-item>
        </el-sub-menu>
    </el-sub-menu>
-         <el-sub-menu index="2">
+   <el-sub-menu index="2">
+       <template #title>
+           프로그램
+       </template>
+           <el-menu-item index="2-1">
+            <a href="${ctp}/program/list">프로그램</a>
+           </el-menu-item> 
+   </el-sub-menu>
+         <el-sub-menu index="3">
            <template #title>
              예시 페이지
            </template>
            <el-menu-item-group>
              <template #title>Group 1</template>
-             <el-menu-item index="2-1">Option 1</el-menu-item>
-             <el-menu-item index="2-2">Option 2</el-menu-item>
+             <el-menu-item index="3-1">Option 1</el-menu-item>
+             <el-menu-item index="3-2">Option 2</el-menu-item>
            </el-menu-item-group>
            <el-menu-item-group title="Group 2">
-             <el-menu-item index="2-3">Option 3</el-menu-item>
+             <el-menu-item index="3-3">Option 3</el-menu-item>
            </el-menu-item-group>
-           <el-sub-menu index="2-4">
+           <el-sub-menu index="3-4">
              <template #title>Option 4</template>
-             <el-menu-item index="2-4-1">Option 4-1</el-menu-item>
+             <el-menu-item index="3-4-1">Option 4-1</el-menu-item>
            </el-sub-menu>
          </el-sub-menu>
-         <el-sub-menu index="3">
+         <el-sub-menu index="4">
           	<template #title>
              스포츠 장비
            </template>
            <el-menu-item-group>
              <template #title>본사</template>
-             <el-menu-item index="3-1">
+             <el-menu-item index="4-1">
              		<a href="${ctp}/sportsEquipment/insertSportsEquipment">장비리스트 추가</a>	
              </el-menu-item>
-             <el-menu-item index="3-2">
+             <el-menu-item index="4-2">
              		<a href="${ctp}/sportsEquipment/sportsEquipmentOrderListByHead">발주내역</a>
              </el-menu-item>
-             <el-menu-item index="3-3">
+             <el-menu-item index="4-3">
              		<a href="${ctp}/sportsEquipment/sportsEquipmentInventoryByHead">재고</a>
              </el-menu-item>
            </el-menu-item-group>
            <el-menu-item-group title="지점">
-             <el-menu-item index="3-4">
+             <el-menu-item index="4-4">
              		<a href="${ctp}/sportsEquipment/SportsEquipmentList">장비리스트</a>
              </el-menu-item>
-             <el-menu-item index="3-5">
+             <el-menu-item index="4-5">
              		<a href="${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch">발주내역(지점:부산점)</a>
              </el-menu-item>
-             <el-menu-item index="3-6">
+             <el-menu-item index="4-6">
              		<a href="${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch">재고(지점:부산점)</a>
              </el-menu-item>
            </el-menu-item-group>

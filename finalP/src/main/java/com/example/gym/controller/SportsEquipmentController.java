@@ -36,13 +36,13 @@ public class SportsEquipmentController {
 										@RequestParam(defaultValue = "") String equipmentActive,
 										@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {	
 		
-		//본사직원 확인
-		Employee loginSession = (Employee) session.getAttribute("loginEmployee");
-		int branchLevel = loginSession.getBranchLevel();
-		if(branchLevel != 1) {
-			//지점 장비 리스트로 리턴
-			return "redirect:/sportsEquipment/SportsEquipmentList";
-		}
+//		//본사직원 확인
+//		Employee loginSession = (Employee) session.getAttribute("loginEmployee");
+//		int branchLevel = loginSession.getBranchLevel();
+//		if(branchLevel != 1) {
+//			//지점 장비 리스트로 리턴
+//			return "redirect:/sportsEquipment/SportsEquipmentList";
+//		}
 		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
@@ -92,13 +92,13 @@ public class SportsEquipmentController {
 											@RequestParam(defaultValue = "") String equipmentActive,
 											@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {
 		
-		//지점직원 확인
-		Employee loginSession = (Employee) session.getAttribute("loginEmployee");
-		int branchLevel = loginSession.getBranchLevel();
-		if(branchLevel != 0) {
-			//본사 장비 리스트로 리턴
-			return "redirect:/sportsEquipment/insertSportsEquipment";
-		}
+//		//지점직원 확인
+//		Employee loginSession = (Employee) session.getAttribute("loginEmployee");
+//		int branchLevel = loginSession.getBranchLevel();
+//		if(branchLevel != 0) {
+//			//본사 장비 리스트로 리턴
+//			return "redirect:/sportsEquipment/insertSportsEquipment";
+//		}
 			
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
