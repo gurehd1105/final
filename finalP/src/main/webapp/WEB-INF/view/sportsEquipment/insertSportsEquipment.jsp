@@ -53,10 +53,11 @@
   		<el-col :span="8" v-for="(equipment, index) in sportsEquipmentList" :key="index">
     		<el-card :label="equipment.itemName" :body-style="{ padding: '15px' }">
       			<div style="padding: 14px">
-        			<img :src="'/finalP/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
+        			<img :src="'/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
         			<span>상품명: {{ equipment.itemName }}</span><br>
-        			<span>가격: {{ equipment.itemPrice }}</span><br>
+        			<span>가격: {{ equipment.itemPrice }}원</span><br>
         			<span>상태: {{ equipment.equipmentActive === 'Y' ? '주문가능' : '품절' }}</span><br>
+        			<br>
           			<el-button type="primary" @click="updateSportsEquipment(equipment.sportsEquipmentNo)">수정</el-button>
       			</div>
     		</el-card>

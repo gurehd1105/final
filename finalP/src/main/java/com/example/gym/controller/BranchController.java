@@ -49,6 +49,7 @@ public class BranchController {
 
 		int rowPerPage = 5;
 		int beginRow = (currentPage - 1) * rowPerPage;
+		
 		Map<String, Integer> paramMap = new HashMap<>();
 		paramMap.put("rowPerPage", rowPerPage);
 		paramMap.put("beginRow", beginRow);

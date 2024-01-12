@@ -13,8 +13,6 @@
             ON pr.branch_no = b.branch_no       
          WHERE pr.payment_no = #{paymentNo}
            AND pd.program_date = #{programDate}
-           AND pr.branch_no = #{branchNo}
-           AND p.cutomer_no = #{customerNo}
            LIMIT #{beginRow}, #{rowPerPage}
    </select>
    

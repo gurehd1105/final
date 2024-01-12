@@ -3,7 +3,7 @@
 <c:set var="title" value="메인페이지" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -29,7 +29,7 @@
             const year = nv.getFullYear();
             const month = nv.getMonth() + 1;
             const day = nv.getDate();
-            this.openPopup(year, month, day);
+            this.openPage(year, month, day);
         }
     },
     methods: {
@@ -42,9 +42,9 @@
                 this.date = new Date(this.date.getFullYear(), this.date.getMonth() + 1);
             }
         },
-        openPopup(targetYear, targetMonth, targetDay) {
-            var url = "${contextPath}/reservationList?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
-            window.open(url, "popupWindow", "width=800, height=600");
+       openPage(targetYear, targetMonth, targetDay) {
+          location.href = "${ctp}/reservationList?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+          
         }
     }
 </c:set>

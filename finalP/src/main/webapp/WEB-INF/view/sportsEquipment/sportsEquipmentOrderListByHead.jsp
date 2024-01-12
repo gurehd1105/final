@@ -54,7 +54,7 @@
 	        	</td>
 	        	<td>{{ equipmentOrder.branchName }}</td>
 	        	<td>
-	          		<img :src="'/finalP/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
+	          		<img :src="'/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
 	        	</td>
 	        	<td>{{ equipmentOrder.itemName }}</td>
 			    <td>{{ equipmentOrder.itemPrice }}</td>
@@ -65,12 +65,12 @@
 	          		<span v-if="equipmentOrder.updatedate == equipmentOrder.createdate">대기중</span>
 	          		<span v-else>{{ new Date(equipmentOrder.updatedate).toLocaleString() }}</span>
 	        	</td>
-	        	<td>{{ equipmentOrder.orderStatus }}</td>
+	        	<td :style="{ backgroundColor: equipmentOrder.orderStatus === '승인' ? 'blue' : 'red', color: 'white' }">{{ equipmentOrder.orderStatus }}</td>
 	        	<td>
 					<span v-if="equipmentOrder.orderStatus === '대기'">
   						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/updateSportsEquipmentOrder" method="post" id="updateSportsEquipmentOrder1">
 	   						<el-form-item>
-								<el-button type="warning" round @click="onSubmit1(form)">승인</el-button>
+								<el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
 	   						</el-form-item>
 	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
 	   					<input type="hidden" name="orderStatus" value="승인">
@@ -79,7 +79,7 @@
 					<span v-if="equipmentOrder.orderStatus === '대기'">
   						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/updateSportsEquipmentOrder" method="post" id="updateSportsEquipmentOrder2">
 	   						<el-form-item>
-								<el-button type="warning" round @click="onSubmit2(form)">거부</el-button>
+								<el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
 	   						</el-form-item>
 	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
 	   					<input type="hidden" name="orderStatus" value="거부">

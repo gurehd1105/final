@@ -18,7 +18,7 @@
 		<tbody v-for="(reservation, r) in  reservationList" :key="r">
 			<tr>
 			<th>{{reservation.programReservationNo}}</th>
-			<th>{{reservation.paymentDate}}</th>		
+			<th>{{new Date(reservation.paymentDate).toLocaleDateString()}}</th>		
 			<th>{{reservation.branchName}}</th>		
 			</tr>			
 		</tbody>		    
@@ -36,8 +36,8 @@
 	},
 	
 	methods: {
-        reservation() {        
-            location.href = '${ctp}/insertReservation';
+        reservation() {      
+            location.href = '${ctp}/insertReservation?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
         }
     },
 </c:set>
