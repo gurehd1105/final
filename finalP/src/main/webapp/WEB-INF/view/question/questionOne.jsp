@@ -21,9 +21,9 @@
 		<el-form label-position="right" ref="form" label-width="150px"
 			status-icon class="max-w-lg" action="${ctp}/question/delete"
 			method="post" id="deleteAct"> <el-form-item>
-		<input type="hidden" name="customerId" v-model="question.customerId">
+		<input type="hidden" name="customerId" v-model="question.작성자">
 		</el-form-item> <el-form-item> <input type="hidden" name="questionNo"
-			v-model="question.questionNo"> </el-form-item> <el-form-item label="PW">
+			v-model="question.문의번호"> </el-form-item> <el-form-item label="PW">
 		<input type="password" name="customerPw" placeholder="PW 입력" /> <el-button
 			type="primary" @click="deleteAct()">삭제</el-button> </el-form-item> </el-form>
 	</span>
@@ -69,14 +69,16 @@
 	    <el-form-item>
 	        <el-input type="hidden" name="employeeNo" v-model="employee.employeeNo" />
 	    </el-form-item>
-	    
-	    <el-form-item label="답변내용">
-	        <el-input name="questionReplyContent" v-model="employee.replyContent" />
-	    </el-form-item>
-	    
+	   
 	    <el-form-item>
 	        <el-input type="hidden" name="questionNo" v-model="employee.questionNo" />
 	    </el-form-item>
+	    
+	     
+	    <el-form-item label="답변내용">
+	        <textarea rows="10" cols="50" style="resize: none;" name="questionReplyContent" v-model="employee.replyContent"></textarea>
+	    </el-form-item>
+	    
 	    
 	    	<el-button type="primary" @click="insertReply()">등록</el-button>
 	</c:if>
@@ -88,18 +90,18 @@
 		return{
 		<!-- question 관련 데이터 -->
 			question: {
-				questionNo: '${ questionMap.questionNo }',
-				customerId: '${ questionMap.customerId }',
-				updatedate: '${ questionMap.updatedate }',
-				questionTitle: '${ questionMap.questionTitle }', 				
+				문의번호: '${ questionMap.questionNo }',
+				작성자: '${ questionMap.customerId }',
+				작성일: '${ questionMap.updatedate }',
+				제목: '${ questionMap.questionTitle }', 				
 			},
 			questionContent: '${ questionMap.questionContent }',
 			
 		<!-- reply 관련 데이터 -->	
 			reply: {
-				replyNo: '${ replyMap.questionReplyNo }' ,
-				employeeId: '${ replyMap.employeeId }' ,				
-				updatedate:  '${ replyMap.updatedate }',				
+				답변번호: '${ replyMap.questionReplyNo }' ,
+				직원ID: '${ replyMap.employeeId }' ,				
+				작성일:  '${ replyMap.updatedate }',				
 			},
 			replyContent: '${ replyMap.questionReplyContent }',
 			
@@ -125,7 +127,18 @@
 		},
 		
 		deleteReply(){
-			location.href = '${ctp}/question/deleteReply?questionNo=${ replyMap.questionNo }';
+			const self = this;
+			const reply = {
+				questionNo: this.question.문의번호,
+			};
+			
+			axios.post('${ctp}/question/deleteReply', reply)
+			.then((res) => {
+				alert('삭제가 완료되었습니다.');
+				location.reload();
+			}).catch((res) => {
+				alert('error');
+			})
 		},
 		
 		deleteForm(){

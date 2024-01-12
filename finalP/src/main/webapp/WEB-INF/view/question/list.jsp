@@ -12,9 +12,9 @@
 
 		
 		<table>
-			<thead>
+			<thead style="font-size: 20px;">
 				<tr>
-					<th>문의번호</th>
+					<th>No</th>
 					<th>제목</th>
 					<th>작성일</th>
 					<th>수정일</th>
@@ -23,10 +23,10 @@
 							
 			<tbody v-for="(question, i) in questionList" :key="i">
 				<tr>
-					<th>{{ question.questionNo }}</th>
+					<th>{{ i+1 }}</th>
 					<th @click="questionOne(question.questionNo)">{{ question.questionTitle }}</th>
-					<th>{{ question.createdate }}</th>
-					<th>{{ question.createdate == question.updatedate ? "-" : question.updatedate}}</th>
+					<th>{{ new Date(question.createdate).toLocaleDateString() }}</th>
+					<th>{{ question.createdate == question.updatedate ? "-" : new Date(question.updatedate).toLocaleDateString()}}</th>
 				</tr>
 			</tbody>
 		</table>

@@ -36,10 +36,10 @@
 <c:set var="script">
 	data() {
 		return {
-			customerId = '${ loginCustomer.customerId }',
-			reviewTitle = '',
-			reviewContent = '',
-			customerAttendanceNo = '${ loginCustomer.customerAttendanceNo }',
+			customerId: '${ loginCustomer.customerId }',
+			reviewTitle: '',
+			reviewContent: '',
+			customerAttendanceNo: '',
 		}
 	},
 	

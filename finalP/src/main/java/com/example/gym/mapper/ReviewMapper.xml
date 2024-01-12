@@ -6,7 +6,7 @@
 						resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
-			r.review_title AS reviewTitle,
+			CONCAT(substr(r.review_title, 1, 5), '...') AS reviewTitle,
 			r.createdate,
 			r.updatedate,
 			

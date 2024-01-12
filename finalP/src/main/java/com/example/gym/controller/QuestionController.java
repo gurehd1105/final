@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.QuestionService;
@@ -25,8 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("question")
-public class QuestionController {
-	ObjectMapper mapper = new ObjectMapper();
+public class QuestionController extends DefaultController{
 	@Autowired
 	private QuestionService questionService;
 	@Autowired
@@ -90,7 +91,7 @@ public class QuestionController {
 
 		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
 		Object questionList = resultMap.get("questionList");
-		model.addAttribute("questionList", mapper.writeValueAsString(questionList)); // questionList 출력 완
+		model.addAttribute("questionList", toJson(questionList));
 
 		
 		// 페이징
@@ -172,18 +173,21 @@ public class QuestionController {
 	}
 	
 	@PostMapping("/updateReply")
-	public String updateReply(QuestionReply questionReply) {
-		System.out.println(questionReply);
+	public String updateReply(@RequestBody QuestionReply questionReply) {
 		
 		questionService.updateQuestionReply(questionReply);
 		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
 	}
 
 	// deleteReply
-	@GetMapping("/deleteReply")
-	public String deleteReply(QuestionReply questionReply) {
-
-		questionService.deleteQuestionReply(questionReply);
-		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
+	@PostMapping("/deleteReply")
+	@ResponseBody
+	public int deleteReply(@RequestBody QuestionReply questionReply) {		
+		int result = questionService.deleteQuestionReply(questionReply);
+		if(result ==1) {
+			log.info("삭제 성공");
+		}
+		
+		return result;
 	}
 }

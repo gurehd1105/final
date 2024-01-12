@@ -43,7 +43,7 @@
 			<el-descriptions-item v-for:="key of Object.keys(reply)" :label="key">{{ reply[key] }}</el-descriptions-item>
 		</el-descriptions>
 			<el-button type="primary" @click="updateReply(reviewNo)">수정</el-button>
-			<el-button type="primary" @click="deleteReply(reviewNo)">삭제</el-button>
+			<el-button type="primary" @click="deleteReply()">삭제</el-button>
 			<h2> 답변 내용 </h2>
 		<textarea readonly rows="10" cols="160" style="resize: none;">{{ replyContent }}</textarea>
 	</c:if>
@@ -124,8 +124,19 @@
 		updateReply(review){
 			location.href = '${ctp}/review/updateReply?reviewNo=' + review;
 		},
-		deleteReply(review){
-			location.href = '${ctp}/review/deleteReply?reviewNo=' + review;
+		deleteReply(){
+			const self = this;
+			const reply = {
+				reviewNo: this.reviewNo,
+			};
+			
+			axios.post('${ctp}/review/deleteReply', reply)
+			.then((res) => {
+				alert('삭제가 완료되었습니다');
+				location.reload();
+			}).catch((res) => {
+				alert('error');
+			})
 		},
 		list(){
 			location.href = '${ctp}/review/list';

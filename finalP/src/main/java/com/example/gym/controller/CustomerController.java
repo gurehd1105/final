@@ -82,11 +82,8 @@ public class CustomerController {
 	// customerDetail)
 	@GetMapping("/delete")
 	public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
+		
+		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");		
 
 		model.addAttribute("loginCustomer", loginCustomer);
 		return "customer/delete";
@@ -128,9 +125,6 @@ public class CustomerController {
 	public String customerOneForCheckPw(HttpSession session) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/loginCustomer";
-		}
 
 		return "customer/updateOneForPw";
 	}
@@ -179,12 +173,9 @@ public class CustomerController {
 	// PW 수정 Form
 	@GetMapping("/updatePw")
 	public String updateCustomerPw(HttpSession session, Model model) { // ID값 표기 위한 세션 세팅
-		// id 유효성검사
+		
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-
+		
 		model.addAttribute("loginCustomer", loginCustomer);
 		return "customer/updatePw";
 	}
