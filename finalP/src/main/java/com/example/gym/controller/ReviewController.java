@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
@@ -24,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("review")
-public class ReviewController {
+public class ReviewController extends DefaultController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private ReviewService reviewService;
@@ -44,7 +46,7 @@ public class ReviewController {
 		
 		Map<String, Object> resultMap = reviewService.selectReviewList(paramMap);
 		Object reviewList = resultMap.get("reviewList");
-		model.addAttribute("reviewList", mapper.writeValueAsString(reviewList));
+		model.addAttribute("reviewList", toJson(reviewList));
 		
 		
 		// 페이징
@@ -80,8 +82,7 @@ public class ReviewController {
 	@PostMapping("/delete")
 	public String delete(Review review, Customer customer) { 
 		Customer checkCustomer = customerService.loginCustomer(customer);
-		System.out.println(customer);
-		System.out.println(review);
+		
 		if(checkCustomer != null) {	// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
 			ReviewReply reviewReply = new ReviewReply();
 			reviewReply.setReviewNo(review.getReviewNo());
@@ -118,12 +119,13 @@ public class ReviewController {
 	}
 	
 							/*		review 끝 reply 시작	*/
-	@GetMapping("/deleteReply")
-	public String deleteReply(ReviewReply reply) {
-		reviewService.deleteReviewReply(reply);	
-		System.out.println(reply);
-		
-		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
+	@PostMapping("/deleteReply")
+	@ResponseBody
+	public int deleteReply(@RequestBody ReviewReply reply) {
+		System.out.println("접속 성공 / 리뷰");
+		System.out.println(reply + "  reply");
+		int result = reviewService.deleteReviewReply(reply);			
+		return result;
 	}
 	
 	
