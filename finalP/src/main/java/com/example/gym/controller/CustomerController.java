@@ -6,13 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.gym.filter.CustomerLoginFilter;
 import com.example.gym.service.CustomerService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerForm;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
+	
+	@ModelAttribute("loginCustomer")
+	public String getLoginSession(HttpSession session) {
+		
+		return (String) session.getAttribute("loginCustomer");		
+	}
 
 	// login (로그인) Form
 	@GetMapping("/login")
@@ -112,9 +122,7 @@ public class CustomerController {
 	public String customerOne(HttpSession session, Model model) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
+		
 
 		Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 		model.addAttribute("resultMap", resultMap);

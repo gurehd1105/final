@@ -5,6 +5,8 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
+
+		<el-button type="primary" @click="list()">목록으로</el-button>
 	<el-descriptions title="" :column="2" border>
 		<el-descriptions-item v-for="key of Object.keys(review)" :label="key">{{ review[key] }}</el-descriptions-item>
 	</el-descriptions>
@@ -16,24 +18,24 @@
 		
 	<span id="deleteForm" style="display:none; "> 
 			<!-- 삭제 시 고객PW 입력 form / 삭제버튼 클릭 시 보여지도록 구성 -->
-		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/question/delete"
+		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/delete"
 			method="post" id="deleteAct"> 
-			
-			<el-form-item>
-				<input type="hidden" name="customerId" v-model="review.customerId">
+					
+			<el-form-item label="PW" >
+				<input type="password" name="customerPw" placeholder="PW 입력" />&nbsp;			
+				<el-button type="primary" @click="deleteAct()">삭제</el-button>
+		 </el-form-item> 
+		 <el-form-item>
+				<input type="hidden" name="customerId" v-model="review.아이디">
 			</el-form-item> 
 			
 			<el-form-item> 
-				<input type="hidden" name="questionNo"	v-model="customerNo"> 
+				<input type="hidden" name="reviewNo"	v-model="reviewNo"> 
 			</el-form-item> 
-			
-			<el-form-item label="PW">
-				<input type="password" name="customerPw" placeholder="PW 입력" /> 
-				<el-button type="primary" @click="deleteAct()">삭제</el-button>
-		 </el-form-item> 
 			
 		</el-form>
 	</span>
+		<h2> 리뷰 내용 </h2>
 	<textarea readonly rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
 	
 	<c:if test="${ replyMap != null }"><!-- 답변 있을 시 답변표시 -->
@@ -42,9 +44,8 @@
 		</el-descriptions>
 			<el-button type="primary" @click="updateReply(reviewNo)">수정</el-button>
 			<el-button type="primary" @click="deleteReply(reviewNo)">삭제</el-button>
+			<h2> 답변 내용 </h2>
 		<textarea readonly rows="10" cols="160" style="resize: none;">{{ replyContent }}</textarea>
-	
-	
 	</c:if>
 	
 	<c:if test="${ replyMap == null }">
@@ -52,7 +53,7 @@
 	</c:if>
 	
 	
-	<!-- 답변 없을 시 입력Form 표시 -> 직원이 소속한, 본인 지점에 대한 리뷰에서만 조회 예정 -->
+	<c:if test="${ replyMap == null }">
 		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/insertReply"
 			method="post" id="insertReplyAct"> 
 			<el-form-item column="2">
@@ -69,7 +70,7 @@
 			</el-form-item>
 				<el-button type="primary" @click="insertReply()">등록</el-button>
 		</el-form>	
-	
+	</c:if>
 	
 	
 </c:set>
@@ -120,11 +121,14 @@
 		insertReply(){
 			document.getElementById('insertReplyAct').submit();
 		},
-		updateReply(no){
-			location.href = "${ctp}/review/updateReply?reviewNo=" + no;
+		updateReply(review){
+			location.href = '${ctp}/review/updateReply?reviewNo=' + review;
 		},
-		deleteReply(no){
-			location.href = "${ctp}/review/deleteReply?reviewNo=" + no;
+		deleteReply(review){
+			location.href = '${ctp}/review/deleteReply?reviewNo=' + review;
+		},
+		list(){
+			location.href = '${ctp}/review/list';
 		},
 	},
 	

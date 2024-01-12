@@ -21,6 +21,7 @@
 		SELECT 
 			question_no AS questionNo,
 			question_title AS questionTitle,
+			createdate,
 			updatedate
 		FROM question
 		LIMIT #{beginRow},#{rowPerPage}

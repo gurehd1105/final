@@ -26,7 +26,7 @@
 					<th>{{ question.questionNo }}</th>
 					<th @click="questionOne(question.questionNo)">{{ question.questionTitle }}</th>
 					<th>{{ question.createdate }}</th>
-					<th>{{ question.updatedate }}</th><!-- 이상해~ 확인 예정 -->
+					<th>{{ question.createdate == question.updatedate ? "-" : question.updatedate}}</th>
 				</tr>
 			</tbody>
 		</table>
