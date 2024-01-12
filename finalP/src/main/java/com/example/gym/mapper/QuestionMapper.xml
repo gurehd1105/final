@@ -24,6 +24,7 @@
 			createdate,
 			updatedate
 		FROM question
+		ORDER BY updatedate DESC
 		LIMIT #{beginRow},#{rowPerPage}
 	</select>
 		<!-- 페이징 기능위한 전체 Question Counting -->

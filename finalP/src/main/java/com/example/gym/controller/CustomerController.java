@@ -27,11 +27,6 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 	
-	@ModelAttribute("loginCustomer")
-	public String getLoginSession(HttpSession session) {
-		
-		return (String) session.getAttribute("loginCustomer");		
-	}
 
 	// login (로그인) Form
 	@GetMapping("/login")
@@ -73,11 +68,9 @@ public class CustomerController {
 	@PostMapping("/insert")
 	public String insertCustomer(HttpSession session, CustomerForm customerForm,
 								String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
-
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 
-		int result = customerService.insertCustomer(customerForm, path);
+		int result = customerService.insertCustomer(customerForm);
 		if (result == 1) { // 가입 완
 			return "customer/login";
 		} else { // 예외발생
@@ -122,7 +115,6 @@ public class CustomerController {
 	public String customerOne(HttpSession session, Model model) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		
 
 		Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 		model.addAttribute("resultMap", resultMap);
@@ -164,15 +156,7 @@ public class CustomerController {
 			resultMap.put("emailId", customerEmailId);
 			resultMap.put("emailJuso", customerEmailJuso);
 
-			// 성별 option 값 표기
-			String customerGender = (String) resultMap.get("customerGender");
-			String customerOtherGender = null;
-			if (customerGender.equals("남")) {
-				customerOtherGender = "여";
-			} else {
-				customerOtherGender = "남";
-			}
-			resultMap.put("customerOtherGender", customerOtherGender);
+			
 
 			model.addAttribute("resultMap", resultMap);
 
@@ -184,12 +168,11 @@ public class CustomerController {
 	@PostMapping("/updateOne")
 	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
 									String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
-
+		System.out.println(customerForm.getCustomerImg() +  " Image");
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
+		customerService.updateCustomerOne(customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
 		return "redirect:customerOne";
 	}
 
