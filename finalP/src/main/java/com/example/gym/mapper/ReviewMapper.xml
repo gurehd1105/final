@@ -28,6 +28,7 @@
 		<if test="branchName != null and branchName != ''">
 			WHERE b.branch_name = #{branchName}
 		</if>
+		ORDER BY updatedate DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	<select id="selectCountOfReview" resultType="Integer">

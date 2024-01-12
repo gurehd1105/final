@@ -5,7 +5,7 @@
 		<!-- 로그인 -->
 	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
 						resultType="com.example.gym.vo.Customer">
-		SELECT
+	SELECT
 				customer_no AS customerNo,
 				customer_id AS customerId,
 				customer_active AS customerActive,
@@ -68,16 +68,10 @@
 	<insert id="insertCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
 		INSERT INTO customer_img (
 			customer_no,
-			customer_img_origin_name,
-			customer_img_file_name,
-			customer_img_size,
-			customer_img_type			
+			customer_img_origin_name			
 		) VALUES (
 			#{customerNo},
-			#{customerImgOriginName},
-			#{customerImgFileName},
-			#{customerImgSize},
-			#{customerImgType}
+			#{customerImgOriginName}
 		)			
 	</insert>
 	<!-- 가입 프로세스 종료 -->
@@ -126,9 +120,6 @@
 			
 			ci.customer_img_no AS customerImgNo,
 			ci.customer_img_origin_name AS customerImgOriginName,
-			ci.customer_img_file_name AS customerImgFileName,
-			ci.customer_img_size AS customerImgSize,
-			ci.customer_img_type AS customerImgType,
 			ci.createdate AS ciCreatedate, 
 			ci.updatedate AS ciUpdatedate
 		FROM customer c 
@@ -156,15 +147,12 @@
 	</update>
 		<!-- 이미지 변경 -->
 	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
-		<if test="customerImg != null">
+		
 		UPDATE customer_img SET
 			customer_img_origin_name = #{customerImgOriginName},
-			customer_img_file_name = #{customerImgFileName},
-			customer_img_size = #{customerImgSize},
-			customer_img_type = #{customerImgType},
 			updatedate = NOW()
 		WHERE customer_no = #{customerNo}		
-		</if>
+		
 	</update>
 		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"

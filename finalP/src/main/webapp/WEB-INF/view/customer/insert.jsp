@@ -10,6 +10,19 @@
 <c:set var="body">
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 		 action="${ctp}/customer/insert" method="post" enctype="multipart/form-data" id="insertForm">
+		 
+			<el-form label="사진">
+		<el-upload
+		   class="avatar-uploader"
+		   action="/file/upload/customer"
+		   :show-file-list="false"
+		   :on-success="handleSuccess"
+		 >
+		   <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar" />
+		   <el-icon v-else class="avatar-uploader-icon" ><Plus /><span>+</span></el-icon>
+		 </el-upload> <strong style="margin-left: 55%;"> 사진 </strong>
+				 </el-form>
+		  
 	    <el-form-item label="아이디">
 	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>
 	    </el-form-item>
@@ -86,10 +99,6 @@
 	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
 	    </el-input>
 	    
-	    <el-form-item label="사진(선택)">
-	    	<el-input type="file" name="customerImg" v-model="customer.customerImg">
-	    </el-form-item>
-	   
 	    <el-form-item>
 	      	<el-button type="primary" @click="onSubmit(form)">회원가입</el-button>
 	    </el-form-item>
@@ -139,6 +148,10 @@
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);
 			cb(result.map(x => { return { value: x } }));
 			console.log(query, result);
+		},
+		
+		handleSuccess(response, uploadFile) {
+			this.customer.customerImg = '${ctp}/upload/customer/' + response;
 		},
 			
 		openPostCode() {
@@ -190,8 +203,41 @@
 					}
 				}
 			}).open();
-		}
+		},
+		
 	}
 </c:set>
+
+<style scoped>
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+  margin-left: 40%;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+</style>
 
 <%@ include file="/inc/user_layout.jsp" %>
