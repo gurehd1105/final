@@ -69,13 +69,14 @@ public class CustomerController {
 	public String insertCustomer(HttpSession session, CustomerForm customerForm,
 								String address1, String address2, String address3) {
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-
-		int result = customerService.insertCustomer(customerForm);
-		if (result == 1) { // 가입 완
-			return "customer/login";
+		
+		int result = customerService.insertCustomer(customerForm); 
+		
+		if (result == 1) {// 가입 완 		  
+			return "customer/login"; 
 		} else { // 예외발생
 			return "customer/insert";
-		}
+		}		
 	}
 
 	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg ,
@@ -162,11 +163,11 @@ public class CustomerController {
 	@PostMapping("/updateOne")
 	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
 									String address1, String address2, String address3) {
-		System.out.println(customerForm.getCustomerImg() +  " Image");
+
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		customerService.updateCustomerOne(customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
+		customerService.updateCustomerOne(customerForm, loginCustomer.getCustomerNo());
 		return "redirect:customerOne";
 	}
 
