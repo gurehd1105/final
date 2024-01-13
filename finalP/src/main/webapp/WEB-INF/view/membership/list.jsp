@@ -6,7 +6,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
 	<table>
-		<thead>
+		<thead style="font-size: 20px;">
 			<tr>
 				<th>No</th>
 				<th>상품명</th>
@@ -18,15 +18,15 @@
 		</thead>
 		<tbody v-for="(membership, i) in membershipList" :key="i">
 			<tr>
-				<td>{{ i+1 }}</td>
-				<td>{{ (membership.membershipName }}</td>
-			 	<td>{{ membership.membershipPrice }}</td>
-				<td>{{ new Date(membership.createdate).toLocaleDateString() }}</td>
-				<td>{{ membership.createdate == membership.updatedate ? "-" : new Date(membership.updatedate).toLocaleDateString() }}</td>
-				<td colspan="2">
+				<th>{{ i+1 }}</th>
+				<th>{{ membership.membershipName }}</th>
+			 	<th>{{ membership.membershipPrice }}</th>
+				<th>{{ new Date(membership.createdate).toLocaleDateString() }}</th>
+				<th>{{ membership.createdate == membership.updatedate ? "-" : new Date(membership.updatedate).toLocaleDateString() }}</th>
+				<th colspan="2">
 					<el-button type="primary" @click="update(membership.membershipNo)">수정</el-button>
-					<el-button type="primary" @click="delete()">삭제</el-button>
-				</td>
+					<el-button type="primary" @click="delete(membership.membershipNo)">삭제</el-button>
+				</th>
 			</tr>
 		</tbody>			
 	</table>
@@ -34,7 +34,7 @@
 <c:set var="script">
 	data() {
 		return {
-			membershipList : '${ membershipList }',
+			membershipList : JSON.parse('${ membershipList }'),
 		}
 	},
 	methods: {
@@ -42,8 +42,8 @@
 			location.href = '${ctp}/membership/update?membershipNo='+no;
 		},
 		
-		delete(){
-		
+		delete(no){
+			location.href = '${ctp}/membership/delete?membershipNo='+no;
 		},
 	},
 </c:set>

@@ -18,9 +18,10 @@
 		    :show-file-list="false"
 		    :on-success="handleSuccess"
 		  >
-		    <img name="customerImgOriginName" v-if="customer.customerImg" :src="customer.customerImg" class="avatar" />
+		    <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar" />
 		    <el-icon v-else class="avatar-uploader-icon"><Plus /><span>+</span></el-icon>
-		  </el-upload> <strong style="margin-left: 55%;"> 사진 </strong>
+		  </el-upload> 
+		 <input v-if="customer.customerImg" type="hidden" :value="customer.customerImg" name="customerImg"/>
 		 
 		  </el-form-item>
 			

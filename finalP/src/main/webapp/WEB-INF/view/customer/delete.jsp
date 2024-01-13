@@ -22,6 +22,10 @@
 			</el-form-item> 
 			
 			<el-form-item>
+				<el-input type="hidden" :value="no" v-model="id" name="customerNo" />			
+			</el-form-item> 
+			
+			<el-form-item>
 				<el-button type="primary" @click="submit()">탈퇴</el-button>
 			</el-form-item> 
 			 
@@ -32,6 +36,7 @@
 <c:set var="script">
 	data() {
 		return {
+			no: '${ loginCustomer.customerNo }',
 			id: '${ loginCustomer.customerId }',
 			pw: '',
 			pwCk: '',

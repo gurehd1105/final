@@ -48,10 +48,9 @@
 				몸무게: '${resultMap.customerWeight}',
 				전화번호: '${resultMap.customerPhone}',
 				주소: '${resultMap.customerAddress}',
-				이메일: '${resultMap.customerEmail}',	
-				사진: '${resultMap.customerImgOriginName}',			
+				이메일: '${resultMap.customerEmail}',		
 			},
-				url: '${ctp}/upload/customer/${resultMap.customerImgOriginName}',
+				url: '${ctp}${resultMap.customerImgOriginName}',
 		}
 	},
 	methods: {

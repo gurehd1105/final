@@ -11,17 +11,18 @@
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 		 action="${ctp}/customer/insert" method="post" enctype="multipart/form-data" id="insertForm">
 		 
-			<el-form label="사진">
-		<el-upload
+			<el-form-item label="사진">
+		<el-upload 
 		   class="avatar-uploader"
 		   action="/file/upload/customer"
 		   :show-file-list="false"
 		   :on-success="handleSuccess"
 		 >
-		   <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar" />
+		   <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar"/>		   	
 		   <el-icon v-else class="avatar-uploader-icon" ><Plus /><span>+</span></el-icon>
-		 </el-upload> <strong style="margin-left: 55%;"> 사진 </strong>
-				 </el-form>
+		 </el-upload>
+		 <input v-if="customer.customerImg" type="hidden" :value="customer.customerImg" name="customerImg"/>
+				 </el-form-item>
 		  
 	    <el-form-item label="아이디">
 	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>

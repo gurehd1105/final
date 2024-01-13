@@ -69,23 +69,22 @@ public class CustomerService {
 	// 탈퇴
 	public int deleteCustomer(Customer paramCustomer) {
 		int result = 0;
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		boolean updateActive = false;
+		boolean deleteDetail = false;
+		boolean deleteImg = false;
 		Customer check = customerMapper.loginCustomer(paramCustomer);
 
 		if (check != null) {
 			log.info("PW 정상확인");
 
-			row = customerMapper.updateCustomerActive(paramCustomer);
+			updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
 
-			row2 = customerMapper.deleteCustomerDetail(paramCustomer);
+			deleteDetail = customerMapper.deleteCustomerDetail(paramCustomer) == 1;
 
-			row3 = customerMapper.deleteCustomerImg(paramCustomer);
+			deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
 		}
 
-		if (row > 0 && row2 > 0) {
-			log.info("정상 탈퇴");
+		if (updateActive && deleteDetail && deleteImg) {
 			result = 1;
 		}
 		return result;
@@ -124,7 +123,7 @@ public class CustomerService {
 		if (updateCustomerDetail && updateCustomerImg) {
 			result = 1;
 		}
-		System.out.println(result);
+
 			return result;
 	}
 	 

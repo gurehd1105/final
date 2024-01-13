@@ -23,7 +23,7 @@ public class MembershipController extends DefaultController{
 	@GetMapping("/list")
 	public String list(Model model) {
 		List<Membership> membershipList = membershipService.list();
-		model.addAttribute("membershipList", membershipList );
+		model.addAttribute("membershipList", toJson(membershipList));
 		return "membership/list";
 	}
 	
@@ -40,20 +40,13 @@ public class MembershipController extends DefaultController{
 		return "redirect:list";
 	}
 	
-	@GetMapping("/delete")
-	@ResponseBody
-	public int delete(Membership membership) {
-		int result = membershipService.delete(membership);
-		
-		return result;
-	}
-	
 	@GetMapping("/update")
 	public String update(Membership membership, Model model) {
+		System.out.println(membership.getMembershipNo());
 		Membership membershipOne = membershipService.membershipOne(membership);
 		model.addAttribute("membership" , membershipOne);		
 		
-		return "";
+		return "membership/update";
 	}
 	
 	@PostMapping("/update")
@@ -61,6 +54,14 @@ public class MembershipController extends DefaultController{
 		membershipService.update(membership);
 		
 		return "";
+	}
+	
+	@PostMapping("/delete")
+	public String delete(Membership membership) {
+		System.out.println(membership);
+		/* int result = membershipService.delete(membership); */
+		
+		return "membership/list";
 	}
 	
 	

@@ -32,43 +32,8 @@ public class QuestionController extends DefaultController{
 	private QuestionService questionService;
 	@Autowired
 	private CustomerService customerService;
-// Question
 	
-	// delete
-	@PostMapping("/delete")
-	public String deleteQuestion(Customer customer, Question question) {
-		Customer checkCustomer = customerService.loginCustomer(customer);
-		if (checkCustomer != null) {	// 입력한 계정PW 일치
-			QuestionReply questionReply = new QuestionReply();
-			questionReply.setQuestionNo(question.getQuestionNo());
-			questionService.deleteQuestionReply(questionReply);
-			questionService.deleteQuestion(question);
-		} else {			
-			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " --Pw 불일치");
-		}
-		return "redirect:list";
-	}
-	
-	// insertForm
-	@GetMapping("/insert")
-	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-		model.addAttribute("loginCustomer", loginCustomer);
-		return "question/insert";
-	}
-	
-	// insertAct
-	@PostMapping("/insert")
-	public String insertQuestion(Question question) {
-		questionService.insertQuestion(question);
-		return "redirect:list";
-	}
-	
-	// selectQuestionList
+	// 리스트
 	@GetMapping("/list")
 	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) throws JsonProcessingException {
 		// id 유효성검사
@@ -106,28 +71,25 @@ public class QuestionController extends DefaultController{
 		model.addAttribute("rowPerPage", rowPerPage);
 
 		return "question/list";
-	}	
-	
-	// select - questionOne
-	@GetMapping("/questionOne")
-	public String selectQuestionOne(Question question, Model model, HttpSession session) {
-		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
-		model.addAttribute("questionMap", resultMap.get("questionMap"));
-		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
-
-		// id 유효성검사
-		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
+	}
 		
-		if (loginEmployee != null) {
-			model.addAttribute("loginEmployee", loginEmployee);
+	// insertForm
+	@GetMapping("/insert")
+	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
+		// id 유효성검사
+		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
+		if (loginCustomer == null) {
+			return "customer/login";
 		}
-
-		if (loginCustomer != null) {
-			model.addAttribute("loginCustomer", loginCustomer);
-		}
-
-		return "question/questionOne";
+		model.addAttribute("loginCustomer", loginCustomer);
+		return "question/insert";
+	}
+	
+	// insertAct
+	@PostMapping("/insert")
+	public String insertQuestion(Question question) {
+		questionService.insertQuestion(question);
+		return "redirect:list";
 	}
 	
 	// updateForm
@@ -151,6 +113,44 @@ public class QuestionController extends DefaultController{
 		return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
 	}	
 	
+	// delete
+	@PostMapping("/delete")
+	@ResponseBody
+	public int deleteQuestion(@RequestBody Map<String, Object> paramMap) { // questionNo , customerId, customerPw 정보
+																			// 필요하나 axios방식으로 두 vo값 받을 수 없어 Map형식 사용
+		boolean checked = false;
+		// 확인 후 customer 매개값 세팅
+		Customer checkCustomer = new Customer();
+		checkCustomer.setCustomerId((String) paramMap.get("customerId"));
+		checkCustomer.setCustomerPw((String) paramMap.get("customerPw"));
+		
+		checked = customerService.loginCustomer(checkCustomer) != null;
+		log.info("PW 일치여부 /" + checked);		 // 로그인 구조 이용해 입력한 작성자PW 일치여부 확인
+		
+		int result = 0;
+		if (checked) { // 입력한 계정PW 일치
+			QuestionReply questionReply = new QuestionReply();
+			questionReply.setQuestionNo(Integer.parseInt((String)paramMap.get("questionNo")));
+			questionService.deleteQuestionReply(questionReply); // 해당 글에 작성된 답변글 일괄 삭제
+
+			Question question = new Question();
+			question.setQuestionNo(Integer.parseInt((String)paramMap.get("questionNo")));
+			result = questionService.deleteQuestion(question); // 최종 문의글 삭제
+		}
+		return result;
+	}		
+	
+	// select - questionOne
+	@GetMapping("/questionOne")
+	public String selectQuestionOne(Question question, Model model, HttpSession session) {
+		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
+		model.addAttribute("questionMap", resultMap.get("questionMap"));
+		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
+		
+
+		return "question/questionOne";
+	}
+	
 	
 	
 // Question	Reply
@@ -161,22 +161,14 @@ public class QuestionController extends DefaultController{
 
 		questionService.insertQuestionReply(questionReply);
 		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
-	}
+	}	
 	
 	// updateReply
-	@GetMapping("/updateReply")
-	public String updateReply(Question question, Model model) {
-		
-		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
-		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
-		return "question/updateReply";
-	}
-	
 	@PostMapping("/updateReply")
-	public String updateReply(@RequestBody QuestionReply questionReply) {
-		
-		questionService.updateQuestionReply(questionReply);
-		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
+	@ResponseBody
+	public int updateReply(@RequestBody QuestionReply questionReply) {
+		int result = questionService.updateQuestionReply(questionReply);
+		return result;
 	}
 
 	// deleteReply
@@ -184,9 +176,6 @@ public class QuestionController extends DefaultController{
 	@ResponseBody
 	public int deleteReply(@RequestBody QuestionReply questionReply) {		
 		int result = questionService.deleteQuestionReply(questionReply);
-		if(result ==1) {
-			log.info("삭제 성공");
-		}
 		
 		return result;
 	}
