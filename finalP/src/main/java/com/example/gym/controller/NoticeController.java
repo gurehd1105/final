@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import com.example.gym.vo.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,53 +32,38 @@ public class NoticeController extends DefaultController{
 
 	// 공지사항 조회(목록)
 	@GetMapping("/list")
-	public String NoticeList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum) 
+	public String NoticeList(Model model, Page page) 
 			throws JsonProcessingException {
-		// 매개변수 디버깅
-		log.info("getNoticeList", "pageNum", pageNum);
 		// 페이징 변수들
-		int rowPerPage = 5; // 페이지당 보여주는 게시글 수는 5개로 고정 (추후 필요시 수정)
-		Page page = new Page();
-		page.setRowPerPage(rowPerPage);
-		page.setBeginRow(pageNum * page.getRowPerPage());
 		int totalCount = noticeService.getNoticeTotal(); // 게시글 총 갯수
+		page.setTotalCount(totalCount);
 
 		// 서비스 호출
 		List<Notice> noticeList = noticeService.getNoticeList(page);
 		model.addAttribute("noticeList", mapper.writeValueAsString(noticeList));
+		
 		// 결과물 디버깅
-		log.debug(noticeList.toString());
-
-		// 다음버튼 플래그 false이면 다음버튼 비활성화
-		boolean nextFlag = true;
-		if (totalCount <= (page.getBeginRow() + page.getRowPerPage())) { // 총갯수가 적으면 다음버튼 비활성화
-			nextFlag = false;
-		}
+		log.info(noticeList.toString());
 
 		// 모델객체에 담아서 뷰에 전달
-		model.addAttribute("pageNum", pageNum);
-		model.addAttribute("nextFlag", nextFlag);
-		model.addAttribute("noticeList", noticeList);
-
+		model.addAttribute("page", page);
+		
 		return "notice/list";
 	}
 
 	// 공지사항 상세보기
-	@GetMapping("/one")
-	public String getNoticeOne(Model model, @RequestParam(value = "noticeNo", required = true) int noticeNo,
-			@RequestParam(value = "pageNum", defaultValue = "0") int pageNum) {
+	@GetMapping("/read/{noticeNo}")
+	public String getNoticeOne(Model model, @PathVariable int noticeNo) {
 		// 매개변수 디버깅
-		log.debug("getNoticeOne", "noticeNo", noticeNo);
-		log.debug("getNoticeOne", "pageNum", pageNum);
+		log.info("getNoticeOne", "noticeNo", noticeNo);
 		// 서비스 호출
 		Map<String, Object> noticeOne = noticeService.getNoticeOne(noticeNo);
 		// 결과물 디버깅
-		log.debug("getNoticeOne", "noticeOne", noticeOne.toString());
+		log.info("getNoticeOne", "noticeOne", noticeOne.toString());
 
 		model.addAttribute("noticeOne", noticeOne);
-		model.addAttribute("pageNum", pageNum);
 
-		return "notice/one";
+		return "notice/noticeOne";
 	}
 
 	// 공지사항 추가 폼
@@ -106,16 +93,14 @@ public class NoticeController extends DefaultController{
 	}
 
 	// 공지사항 수정 폼
-	@GetMapping("/update")
-	public String updateNotice(Model model, @RequestParam(value = "noticeNo", required = true) int noticeNo) {
+	@GetMapping("/update/{noticeNo}")
+	public String updateNotice(Model model, @PathVariable int noticeNo) {
 		// 매개변수 디버깅
 		log.debug("updateNotice", "noticeNo", noticeNo);
 		// 공지사항 기존 내용 가져오기
-		Map<String, Object> noticeOne = noticeService.getNoticeOne(noticeNo);
-		// 결과값 디버깅
-		log.debug("getNoticeOne", "noticeOne", noticeOne.toString());
+		Map<String, Object> notice = noticeService.getNoticeOne(noticeNo);
 
-		model.addAttribute("noticeOne", noticeOne);
+		model.addAttribute("notice", notice);
 
 		return "notice/update";
 	}
@@ -124,22 +109,17 @@ public class NoticeController extends DefaultController{
 	@PostMapping("/update")
 	public String updateNotice(Notice notice, HttpSession session) {
 
-		if (session.getAttribute("loginEmployee") == null) {
-			return "redirect:/home";
-		}
 		// 매개변수 디버깅
-		log.debug("modifyNotice", "notice", notice.toString());
+		log.info(notice.toString());
 		// 서비스 호출
 		int updateRow = noticeService.updateNotice(notice);
-		// 수정 확인 디버깅
-		log.debug("updateNotice", "updateRow", updateRow);
-
-		return "redirect:/getNoticeOne?noticeId=" + notice.getNoticeNo();
+		
+		return "redirect:/notice/list";
 	}
 
 	// 공지사항 삭제 액션
-	@GetMapping("/delete")
-	public String deleteNotice(@RequestParam(value = "noticeNo", required = true) int noticeNo, HttpSession session) {
+	@GetMapping("/delete/{noticeNo}")
+	public String deleteNotice(@PathVariable int noticeNo, HttpSession session) {
 		if (session.getAttribute("loginEmployee") == null) {
 			return "redirect:/home";
 		}
@@ -149,6 +129,6 @@ public class NoticeController extends DefaultController{
 		int deleteRow = noticeService.deleteNotice(noticeNo);
 		// 삭제 확인 디버깅
 		log.debug("deleteNotice", "deleteRow", deleteRow);
-		return "notice/list";
+		return "redirect:/notice/list";
 	}
 }

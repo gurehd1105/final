@@ -9,7 +9,7 @@
 
 <c:set var="body">
 
-	<el-form action="${ctp}/customer/updateOneForm" ref="form" id="updateForm"
+	<el-form action="${ctp}/employee/updateOneForPw" ref="form" id="updateForm"
 		label-position="right" label-width="150px" status-icon method="post"> 
 		
 	<el-form-item label="아이디">
@@ -17,7 +17,7 @@
 	</el-form-item> 
 	
 	<el-form-item label="비밀번호">
-		<el-input type="password" name="customerPw" v-model="pw" placeholder="PASSWORD"/> 
+		<el-input type="password" name="employeePw" v-model="pw" placeholder="PASSWORD"/> 
 	</el-form-item> 
 	
 	<el-form-item>
@@ -30,7 +30,7 @@
 <c:set var="script">
 	data() {
 		return {
-			id: '${loginEmployee.empId}',
+			id: '${loginEmployee.employeeId}',
 			pw: '',
 		}
 	},
@@ -40,4 +40,4 @@
 		},
 	},
 </c:set>
-<%@ include file="/inc/user_layout.jsp" %>
+<%@ include file="/inc/admin_layout.jsp" %>
