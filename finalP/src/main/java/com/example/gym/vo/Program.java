@@ -15,6 +15,7 @@ public class Program {
 	private int employeeNo;
 	private String programName;
 	private int programMaxCustomer;
+	private String active;
 	private String createdate;
 	private String updatedate;
 }
