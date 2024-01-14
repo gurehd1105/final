@@ -28,34 +28,60 @@
 		WHERE program_no = #{programNo}
 	</update>
 	
-	<select id="selectProgramList" resultType="com.example.gym.vo.Program">
-		SELECT
-			program_no AS programNo,
-			employee_no AS employeeNo,
-			program_name AS programName,
-			program_max_customer AS programMaxCustomer,
-			createdate, updatedate			
-		FROM program		
+	<!-- program 리스트 출력 -->
+	<select id="selectProgramList" parameterType="java.util.Map" resultType="java.util.Map">
+	   	SELECT 
+			e.employee_id employeeId,
+			p.program_no programNo,
+			p.program_name programName,
+			p.program_max_customer maxCustomer,
+			p.createdate createdate,
+			p.updatedate updatedate,
+			p.active programActive
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != ''">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	    ORDER BY p.createdate DESC
+	    LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	
-	<select id="selectProgramOne" parameterType="com.example.gym.vo.Program"
+	<!-- 총 program 수 -->
+	<select id="programCnt" parameterType="java.util.Map" resultType="int">
+	   	SELECT 
+			COUNT(DISTINCT p.program_no) 
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != ''">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	</select>
+	
+	<!-- program 수정 폼 -->
+	<select id="selectProgramOne" parameterType="int"
 				resultType="java.util.Map">
 		SELECT
-			p.program_no AS programNo,
-			p.employee_no AS employeeNo,
-			p.program_name AS programName,
-			p.program_max_customer AS programMaxCustomer,
-			p.createdate, p.updatedate,
-			
-			ed.employee_name AS employeeName,
-			ed.employee_phone AS employeePhone,
-			ed.employee_email AS employeeEmail,
-			ed.employee_gender AS employeeGender
-			
+			p.program_no programNo,
+			e.employee_id employeeId,
+			p.program_name programName,
+			p.program_max_customer maxCustomer,
+			p.active programActive,
+			p.createdate createdate,
+			p.updatedate updatedate
 		FROM program p
-		INNER JOIN employee_detail ed
-		ON p.employee_no = ed.employee_no
-		
+		INNER JOIN employee e
+		ON p.employee_no = e.employee_no
 		WHERE program_no = #{programNo}
 	</select>
 	
