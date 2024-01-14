@@ -169,7 +169,7 @@ public class SportsEquipmentService {
 		log.warn("employee session 구현 후 수정 " );
 		int branchLevel = 0;
 		int branchNo = 2;
-		if(branchLevel != 1) {
+		if(branchLevel !=1) {
 			Map<String,Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
 			paramMap.put("branchNo", branchNo);

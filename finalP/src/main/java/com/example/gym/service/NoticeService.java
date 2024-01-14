@@ -19,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeService {
 	@Autowired NoticeMapper noticeMapper;
 	
-// 공지사항 조회 (목록)
+	// 공지사항 조회 (목록)
 	public List<Notice> getNoticeList(Page page) {
-		return noticeMapper.selectNotice(page);
+		return noticeMapper.noticeList(page);
 	}
 	
 	public int getNoticeTotal() {

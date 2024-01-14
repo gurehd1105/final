@@ -61,7 +61,7 @@
 	  	return {
 		    model: {
 			    searchItem: '${searchItem}', 
-			    searchItem: '${searchBranch}', 
+			    searchBranch: '${searchBranch}', 
 			    currentPage: 1, 		
 		    },
 		    
@@ -76,7 +76,7 @@
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/sportsEquipmentOrderListByHead`;
+			location.href = `${ctp}/sportsEquipment/sportsEquipmentInventoryByHead`;
         },
             	
   		changePage(page) {

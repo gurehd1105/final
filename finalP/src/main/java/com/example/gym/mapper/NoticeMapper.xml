@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.NoticeMapper">
 	<!-- 공지사항 조회 (목록) -->
-	<select id="selectNotice"
+	<select id="noticeList"
 			parameterType="com.example.gym.vo.Page"
 			resultType="com.example.gym.vo.Notice">
 		SELECT
@@ -10,10 +10,10 @@
 			n.employee_no employeeNo,
 			ed.employee_name employeeName,
 			n.notice_title noticeTitle,
-			DATE_FORMAT(n.createdate, '%Y-%m-%d') 
+			n.createdate createdate 
 		FROM notice n
 			JOIN employee e ON n.employee_no = e.employee_no
-			INNER JOIN employee_detail ed on e.employee_no = ed.employee_no
+			LEFT OUTER JOIN employee_detail ed on e.employee_no = ed.employee_no
 		ORDER BY noticeNo DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
@@ -31,14 +31,14 @@
 			resultType="map">
 		SELECT
 			n.notice_no noticeNo,
-			n.employee_id employeeId,
+			n.employee_no employeeNo,
 			ed.employee_name employeeName,
 			n.notice_title noticeTitle,
 			n.notice_content noticeContent,
-			DATE_FORMAT(n.createdate, '%Y-%m-%d')
+			n.createdate
 		FROM notice n
 		INNER JOIN employee e ON n.employee_no = e.employee_no
-		INNER JOIN employee_detail ed on e.employee_no = ed.employee_no
+		LEFT OUTER JOIN employee_detail ed on e.employee_no = ed.employee_no
 		<where>
 			notice_no = #{noticeNo}
 		</where>
@@ -62,10 +62,12 @@
 	<update id="updateNotice"
 			parameterType="com.example.gym.vo.Notice">
 		UPDATE notice
+		SET
 			notice_title = #{noticeTitle},
-			notice_content = #{noticeContent}
+			notice_content = #{noticeContent},
+			updatedate = NOW()
 		<where>
-			employee_no = #{employeeNo}
+			notice_no = #{noticeNo}
 		</where>
 	</update>
 	

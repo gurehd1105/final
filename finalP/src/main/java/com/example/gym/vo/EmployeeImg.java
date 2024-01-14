@@ -15,9 +15,6 @@ public class EmployeeImg {
 	private int employeeImgNo;
 	private int employeeNo;
 	private String employeeImgOriginName;
-	private String employeeImgFileName;
-	private long employeeImgSize;
-	private String employeeImgType;
 	private String createdate;
 	private String updatedate;
 }

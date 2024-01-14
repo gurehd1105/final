@@ -26,7 +26,7 @@ public interface EmployeeMapper {
 	int deleteEmployeeDetail(Employee employee);
 
 	// 상세보기 = 마이페이지
-	Map<String, Object> employeeOne(Employee employee);
+	Map<String, Object> getEmployee(Employee employee);
 
 	// 정보수정
 	int updateEmployeePw(Employee employee);
