@@ -26,3 +26,17 @@ pageEncoding="UTF-8"%>
     });
     header.mount("#header");
 </script>
+    const header = Vue.createApp({
+        data() {
+            return {
+                a_class:
+                    "hover:bg-gray-700 text-lg text-white font-bold py-2 px-4 rounded-md cursor-pointer",
+                isLogin: Boolean("${loginEmployee}"),
+            };
+        },
+    });
+    header.use(ElementPlus, {
+        locale: ElementPlusLocaleKo,
+    });
+    header.mount("#header");
+</script>
