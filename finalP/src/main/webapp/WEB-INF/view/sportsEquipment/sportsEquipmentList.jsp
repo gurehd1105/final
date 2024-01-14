@@ -44,7 +44,7 @@
 	<!-- 페이징 -->
 	<el-row class="mb-8">
     	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
+    	<el-button :type="model.currentPage == p ? 'primary' : 'info'"v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
     	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
   	</el-row>
 	
