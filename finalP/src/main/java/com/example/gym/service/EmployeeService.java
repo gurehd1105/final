@@ -96,55 +96,28 @@ public class EmployeeService {
 
 	// 직원 정보 수정
 	// detail , img 수정
-	public void updateEmployeeOne(String path, EmployeeForm employeeForm, int employeeNo) {
+	public boolean updateEmployee(EmployeeForm form) {
+		boolean employeeDetailSuccess = false;
+		boolean employeeImgSuccess = false;
+		
 		// employeeDetail 수정
 		EmployeeDetail employeeDetail = new EmployeeDetail();
-		employeeDetail.setEmployeeNo(employeeNo);
-		employeeDetail.setEmployeeName(employeeForm.getEmployeeName());
-		employeeDetail.setEmployeeGender(employeeForm.getEmployeeGender());
-		employeeDetail.setEmployeePhone(employeeForm.getEmployeePhone());
-		employeeDetail.setEmployeeEmail(employeeForm.getEmployeeEmail());
-		boolean employeeDetailUpdate = false;
-		employeeDetailUpdate = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
+		employeeDetail.setEmployeeNo(form.getEmployeeNo());
+		employeeDetail.setEmployeeName(form.getEmployeeName());
+		employeeDetail.setEmployeeGender(form.getEmployeeGender());
+		employeeDetail.setEmployeePhone(form.getEmployeePhone());
+		employeeDetail.setEmployeeEmail(form.getEmployeeEmail());
+		employeeDetailSuccess = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
 
 		EmployeeImg employeeImg = new EmployeeImg();
+		// fileName 이외 모든 값 세팅
+		employeeImg.setEmployeeNo(form.getEmployeeNo());
+		employeeImg.setEmployeeImgOriginName(form.getEmployeeImg());
 		
-		if (employeeImg.getEmployeeImgFileName() != 0) { // 사용자가 지정한 Image 정보가 있다면
-			employeeImg.setEmployeeNo(employeeNo);
-			employeeImg.setEmployeeImgOriginName(multipartFile.getOriginalFilename());
-			employeeImg.setEmployeeImgSize(multipartFile.getSize());
-			employeeImg.setEmployeeImgType(multipartFile.getContentType());
-			String fileName = UUID.randomUUID().toString();
-
-			employeeImg.setEmployeeImgFileName(fileName + fileName2); // EmployeeImg 매개값 세팅
-
-			// 변수 삽입 전 employeeImg정보가 있는지 확인
-			Employee checkImgEmployee = new Employee();
-			checkImgEmployee.setEmployeeNo(employeeNo);
-			EmployeeImg check = employeeMapper.checkEmployeeImg(checkImgEmployee);
-
-			// 확인 후 조건에 따른 분기
-			boolean employeeImgUpdate = false;
-			if (check == null) { // 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
-				row2 = employeeMapper.insertEmployeeImg(employeeImg);
-			} else { // 원래 등록된 Image 정보가 있다면
-				row2 = employeeMapper.updateEmployeeImg(employeeImg);
-			}
-
-			if (row2 != 1) {
-				throw new RuntimeException();
-			}
-
-			// path 저장
-			File file = new File(path +"/"+ fileName + fileName2);
-			try {
-				multipartFile.transferTo(file);
-			} catch (IllegalStateException | IOException e) {
-				throw new RuntimeException();
-			} 
-
-	} 
-}
+		employeeImgSuccess = employeeMapper.updateEmployeeImg(employeeImg) == 1;
+		
+		return employeeDetailSuccess && employeeImgSuccess;
+	}
 
 	// 비밀번호 수정
 	public int updateEmployeePw(Employee checkEmployee, String employeeNewPw) {
@@ -166,8 +139,8 @@ public class EmployeeService {
 	}
 
 	// 직원 상세목록
-	public Map<String, Object> employeeOne(Employee employee) {
-		Map<String, Object> resultMap = employeeMapper.employeeOne(employee);
+	public Map<String, Object> getEmployee(Employee employee) {
+		Map<String, Object> resultMap = employeeMapper.getEmployee(employee);
 		return resultMap;
 	}
 

@@ -1,7 +1,5 @@
 package com.example.gym.vo;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmployeeForm {
 	private int branchNo;
+	private int employeeNo;
 	private String employeeId;
 	private String employeePw;
 	private String employeeName;

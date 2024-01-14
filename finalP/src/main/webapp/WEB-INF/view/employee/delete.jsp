@@ -9,6 +9,9 @@
 
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 			 action="${ctp}/employee/delete" method="post" id="delete">
+			 <el-form-item label="사번">
+				<el-input v-model="no" name="employeeNo" type="hidden" />			
+			</el-form-item> 
 			<el-form-item label="아이디">
 				<el-input v-model="id" name="employeeId" readonly />			
 			</el-form-item> 
@@ -32,6 +35,7 @@
 <c:set var="script">
 	data() {
 		return {
+			no: '${ loginEmployee.employeeNo }',
 			id: '${ loginEmployee.employeeId }',
 			pw: '',
 			pwCk: '',
