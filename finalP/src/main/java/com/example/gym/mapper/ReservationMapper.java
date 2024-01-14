@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.Branch;
+import com.example.gym.vo.CustomerAttendance;
 import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
@@ -28,5 +29,8 @@ public interface ReservationMapper {
    
    // 예약삭제
    int deleteReservation(ProgramReservation reservation);
-     
+  
 }
+   
+   
+   

@@ -18,6 +18,7 @@ import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReservationService;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Customer;
+import com.example.gym.vo.CustomerAttendance;
 import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
@@ -117,14 +118,16 @@ public class ReservationController {
 	    return "reservation/reservationList";
 		
 	}
-	@GetMapping("/programList")
+	
+	// 임시 프로그램 리스트
+	@GetMapping("/testList")
 	public String programList(ProgramDate programDate, Model model) throws JsonProcessingException {
 		List<Map<String, Object>> programList= reservationService.selectProgram(programDate);
 
 		model.addAttribute("programList", mapper.writeValueAsString(programList));		
 		
 		System.out.println(programList +"<----프로그램");
-		return "reservation/programList";
+		return "reservation/testList";
 		
 	}
 		
@@ -142,20 +145,17 @@ public class ReservationController {
 		String targetYear2 = mapper.writeValueAsString(targetYear);
 		String targetMonth2 = mapper.writeValueAsString(targetMonth);
 		String targetDay2 = mapper.writeValueAsString(targetDay);
-	
-	
+		
 		String date = targetYear2+targetMonth2+targetDay2;
 		if(targetMonth2.length()== 1){
 			date = targetYear2+"0"+targetMonth2+targetDay2;
 		}
-		
-
 		programDate.setProgramDate(date);
 		System.out.println(date + "<-- date");
 		
 		List<Branch> branchList = branchService.branch();
 		List<Map<String, Object>> programList= reservationService.selectProgram(programDate);
-		model.addAttribute("programList", programList);		
+		model.addAttribute("programList", mapper.writeValueAsString(programList));		
 		model.addAttribute("branchList", mapper.writeValueAsString(branchList));	
 		model.addAttribute("targetYear", targetYear);
 		model.addAttribute("targetMonth", targetMonth);
@@ -171,10 +171,12 @@ public class ReservationController {
 	}
 	
 	@PostMapping("/insertReservation")
-    public String insertReservation(ProgramReservation reservation) {
+    public String insertReservation2(ProgramReservation reservation) {
 		reservationService.insertReservation(reservation);
-        return "redirect:/reservation/reservationList";
+        return "redirect:/reservationList";
     }
+	
+	
 	
 	// 예약 삭제
 	@GetMapping("/deleteReservationList")
@@ -185,6 +187,7 @@ public class ReservationController {
 		System.out.println(reservation.getProgramReservationNo()+"<-- 예약번호");
 		return "redirect:/reservationList?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
 	}
+	
 	
 	
 }

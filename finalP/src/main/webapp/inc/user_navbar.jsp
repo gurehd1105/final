@@ -14,6 +14,7 @@
       <el-menu-item index="1">홈</el-menu-item>
       <el-menu-item index="2" >예약</el-menu-item>
       <el-menu-item index="3" >로그인</el-menu-item> 
+      <el-menu-item index="4" >출석체크</el-menu-item> 
       
     </el-menu>
   </el-header>
@@ -34,7 +35,8 @@
         	location.href = '${ctp}/calendar';
         }else if(key == '3'){
         	location.href = '${ctp}/customer/login';
-
+        }else if(key == '4'){
+        	location.href = '${ctp}/insertAttendance';
         }
       },
     },

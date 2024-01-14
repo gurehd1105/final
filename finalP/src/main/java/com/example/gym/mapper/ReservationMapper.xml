@@ -20,15 +20,14 @@
 	      SELECT count(*)
 	        FROM program_reservation
    </select>
+   
+   <!-- 임시 프로그램 리스트 -->
    <select id="selectProgram" parameterType="com.example.gym.vo.ProgramDate"
    		   resultType="java.util.Map">
-   		    SELECT 
-			       pd.program_date_no  programDateNo,
-			       p.program_name programName
-			  FROM program p INNER JOIN program_date pd
-			    ON p.program_no = pd.program_no
-			 WHERE pd.program_date = #{programDate}
+   		    SELECT program_name programName			 
+			  FROM program
 
+			   
    </select>
    
    
@@ -41,7 +40,7 @@
 		   ) VALUES (
 					 #{paymentNo},
 					 #{programDateNo},
-					 (SELECT branch_no FROM branch WHERE branch_name = #{branchName})
+					 #{branchNo}
 					)
    </insert>
    
@@ -50,9 +49,19 @@
           		WHERE program_reservation_no = #{programReservationNo}           	  
    </delete>
    
-   
-   
-   
-   
- 
+   <!-- 출석체크 -->
+   <insert id="insertAttendance" parameterType="com.example.gym.vo.CustomerAttendance">
+	INSERT INTO customer_attendance(
+				program_reservation_no,
+				customer_attendance_date,
+				customer_attendance_enter_time
+				
+		)VALUES(
+				#{programReservationNo},
+				#{customerAttendanceDate},
+				#{customerAttendanceEnterTime}
+				)
+  </insert>
+
+
 </mapper>
