@@ -136,7 +136,7 @@
 		e.employee_no AS employeeNo,
 		e.employee_id AS employeeId,
 		e.employee_active AS employeeActive,
-		
+		e.createdate createdate , 
 		b.branch_name AS branchName ,
 		
 		ed.employee_name AS employeeName,
@@ -153,8 +153,7 @@
 		INNER JOIN branch b
 		ON e.branch_no = b.branch_no
 		LEFT OUTER JOIN employee_img ei
-		ON e.employee_no = ei_employee_no
-		s
+		ON e.employee_no = ei.employee_no
 		WHERE e.employee_no = #{employeeNo}
 	</select>
 	

@@ -86,6 +86,8 @@ public class EmployeeController extends DefaultController {
 		if (loginEmployee == null) {
 			return "employee/login";
 		}
+		Integer employeeNo = (Integer) session.getAttribute("employeeNo");
+		model.addAttribute("employeeNo", employeeNo);
 		model.addAttribute("loginEmployee", loginEmployee);
 		return "employee/delete";
 	}
@@ -215,7 +217,7 @@ public class EmployeeController extends DefaultController {
 		return "employee/employeeOne";
 	}
 	
-	// 관리자 목록 리스트
+	// 고객 목록 리스트
 		@GetMapping("/list")
 		public String customerList(Model model) {
 			Map<String, Object> customerList = customerService.selectAllCustomer();

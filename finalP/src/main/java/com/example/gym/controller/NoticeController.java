@@ -16,6 +16,7 @@ import com.example.gym.service.NoticeService;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.Notice;
 import com.example.gym.vo.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("notice")
-public class NoticeController {
+public class NoticeController extends DefaultController{
 	@Autowired
 	NoticeService noticeService;
 
 	// 공지사항 조회(목록)
 	@GetMapping("/list")
-	public String NoticeList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum) {
+	public String NoticeList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum) 
+			throws JsonProcessingException {
 		// 매개변수 디버깅
 		log.info("getNoticeList", "pageNum", pageNum);
 		// 페이징 변수들
@@ -41,8 +43,9 @@ public class NoticeController {
 
 		// 서비스 호출
 		List<Notice> noticeList = noticeService.getNoticeList(page);
+		model.addAttribute("noticeList", mapper.writeValueAsString(noticeList));
 		// 결과물 디버깅
-		log.debug("getNoticeList", "noticeList", noticeList.toString());
+		log.debug(noticeList.toString());
 
 		// 다음버튼 플래그 false이면 다음버튼 비활성화
 		boolean nextFlag = true;

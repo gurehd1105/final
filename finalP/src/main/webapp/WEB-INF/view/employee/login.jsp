@@ -35,7 +35,7 @@
 			axios.post('', { ...data } ).then((res) => {
 				const isSuccess = res.data === 'success';
 				if (isSuccess) {
-					location.href = '/employee/insert';
+					location.href = '/employee/employeeOne';
 				} else {
 					alert('로그인 실패');
 				}
