@@ -15,7 +15,7 @@
 		</el-form-item> 
 
 		<el-form-item label="가격">
-			<el-input type="number" v-model="model.itemPrice" name="itemPrice" placeholder="가격을 입력하세요." />			
+			<el-input type="number" v-model="model.itemPrice" name="itemPrice" :min="0" placeholder="가격을 입력하세요." />			
 		</el-form-item> 
 	
 		<el-form-item label="이미지">

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -69,4 +70,41 @@ public class ProgramController extends DefaultController{
 		
 		return "program/update";
 	}	
+	
+	//program 수정 액션 (본사 직원 접근 가능)
+	@PostMapping("/update")
+	public String selectProgramList(HttpSession session,
+									Model model,
+									@RequestParam int programNo,
+									@RequestParam int maxCustomer,
+									@RequestParam String programActive){
+		
+		//service 호출
+		programService.updateProgramOneService(session, programNo, maxCustomer, programActive);
+		
+		return "redirect:/program/update?programNo="+programNo;
+	}
+	
+	//program 추가 폼 (본사 직원 접근 가능)
+	@GetMapping("/insert")
+	public String insertProgram(HttpSession session){
+		
+		//service 호출
+		programService.insertProgramService(session);
+		
+		return "program/insert";
+	}
+	
+	//program 추가 액션 (본사 직원 접근 가능)
+	@PostMapping("/insert")
+	public String selectProgramList(HttpSession session,
+									@RequestParam String programName,
+									@RequestParam int maxCustomer,
+									@RequestParam String programActive){
+		
+		//service 호출
+		programService.insertProgramService(session, programName, maxCustomer, programActive);
+		
+		return "redirect:/program/list";
+	}
 }
