@@ -20,9 +20,11 @@
 									resultType="com.example.gym.vo.Question">
 		SELECT 
 			question_no AS questionNo,
-			question_title AS questionTitle,
+			CONCAT(substr(question_title,1, 5), '...') AS questionTitle,
+			createdate,
 			updatedate
 		FROM question
+		ORDER BY updatedate DESC
 		LIMIT #{beginRow},#{rowPerPage}
 	</select>
 		<!-- 페이징 기능위한 전체 Question Counting -->

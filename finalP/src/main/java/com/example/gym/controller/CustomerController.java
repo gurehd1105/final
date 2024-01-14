@@ -6,13 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.gym.filter.CustomerLoginFilter;
 import com.example.gym.service.CustomerService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerForm;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
+	
 
 	// login (로그인) Form
 	@GetMapping("/login")
@@ -63,27 +68,23 @@ public class CustomerController {
 	@PostMapping("/insert")
 	public String insertCustomer(HttpSession session, CustomerForm customerForm,
 								String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
-
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-
-		int result = customerService.insertCustomer(customerForm, path);
-		if (result == 1) { // 가입 완
-			return "customer/login";
+		
+		int result = customerService.insertCustomer(customerForm); 
+		
+		if (result == 1) {// 가입 완 		  
+			return "customer/login"; 
 		} else { // 예외발생
 			return "customer/insert";
-		}
+		}		
 	}
 
 	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg ,
 	// customerDetail)
 	@GetMapping("/delete")
 	public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
+		
+		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");		
 
 		model.addAttribute("loginCustomer", loginCustomer);
 		return "customer/delete";
@@ -112,9 +113,6 @@ public class CustomerController {
 	public String customerOne(HttpSession session, Model model) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
 
 		Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
 		model.addAttribute("resultMap", resultMap);
@@ -128,9 +126,6 @@ public class CustomerController {
 	public String customerOneForCheckPw(HttpSession session) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/loginCustomer";
-		}
 
 		return "customer/updateOneForPw";
 	}
@@ -156,15 +151,7 @@ public class CustomerController {
 			resultMap.put("emailId", customerEmailId);
 			resultMap.put("emailJuso", customerEmailJuso);
 
-			// 성별 option 값 표기
-			String customerGender = (String) resultMap.get("customerGender");
-			String customerOtherGender = null;
-			if (customerGender.equals("남")) {
-				customerOtherGender = "여";
-			} else {
-				customerOtherGender = "남";
-			}
-			resultMap.put("customerOtherGender", customerOtherGender);
+			
 
 			model.addAttribute("resultMap", resultMap);
 
@@ -176,24 +163,20 @@ public class CustomerController {
 	@PostMapping("/updateOne")
 	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
 									String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
 
 		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
 
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
+		customerService.updateCustomerOne(customerForm, loginCustomer.getCustomerNo());
 		return "redirect:customerOne";
 	}
 
 	// PW 수정 Form
 	@GetMapping("/updatePw")
 	public String updateCustomerPw(HttpSession session, Model model) { // ID값 표기 위한 세션 세팅
-		// id 유효성검사
+		
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-
+		
 		model.addAttribute("loginCustomer", loginCustomer);
 		return "customer/updatePw";
 	}

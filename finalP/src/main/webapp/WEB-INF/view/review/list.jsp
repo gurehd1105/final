@@ -8,6 +8,7 @@
 
 		<el-button type="primary" @click="insert()">리뷰작성</el-button>
 	<table>
+		<thead style="font-size: 20px;">
 			<tr>
 				<th>No</th>
 				<th>제목</th>
@@ -16,9 +17,10 @@
 				<th>작성일</th>
 				<th>수정일</th>
 			</tr>
+		</thead>
 		<tbody v-for="(review,i) in reviewList" :key="i">
 			<tr>
-				<th>{{ review.reviewNo }}</th>
+				<th>{{ i+1 }}</th>
 				<th @click="reviewOne(review.reviewNo)">{{ review.reviewTitle }}</th>
 				<th>{{ review.branchName }}</th>
 				<th>{{ review.programName }}</th>

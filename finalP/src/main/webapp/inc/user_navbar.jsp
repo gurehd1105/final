@@ -12,9 +12,14 @@
       style="background-color:#c6e2ff"
     >
       <el-menu-item index="1">홈</el-menu-item>
-      <el-menu-item index="2" >예약</el-menu-item>
-      <el-menu-item index="3" >로그인</el-menu-item> 
+      <el-menu-item index="2" >로그인</el-menu-item> 
+      <el-menu-item index="3" >문의하기</el-menu-item>
       
+	<c:if test="${ loginCustomer != null }">		
+	  <el-menu-item index="4" >예약</el-menu-item>
+	  <el-menu-item index="5" >리뷰</el-menu-item>
+	  <el-menu-item index="6" >내정보</el-menu-item>
+	</c:if>
     </el-menu>
   </el-header>
 </div>
@@ -31,10 +36,15 @@
         if(key == '1'){
         	location.href = '${ctp}/home';        
         }else if(key == '2'){
-        	location.href = '${ctp}/calendar';
-        }else if(key == '3'){
         	location.href = '${ctp}/customer/login';
-
+        }else if(key == '3'){
+        	location.href = '${ctp}/question/list';
+        }else if(key == '4'){
+        	location.href = '${ctp}/calendar';
+        }else if(key == '5'){
+        	location.href = '${ctp}/review/list';
+        }else if(key == '6'){
+        	location.href = '${ctp}/customer/customerOne';
         }
       },
     },
