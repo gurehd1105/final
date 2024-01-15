@@ -6,6 +6,10 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
 
+		<p>리뷰 목록 </p>
+			<span></span><!-- 			programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
+				<el-button type="primary" @click="select(customerName)">조회</el-button>
+				
 	<el-button type="primary" @click="insert()">리뷰작성</el-button>
 	<el-table :data="reviewList" class="w-fit" @row-click="rowClick" class-name="cursor-pointer">
 	    <el-table-column prop="reviewNo" label="No"></el-table-column>
@@ -15,7 +19,7 @@
 	    <el-table-column prop="customerId" label="작성자" ></el-table-column>
 		<c:if test="${ loginEmployee != null }">
 
-		    <el-table-column label="수정/삭제" >
+		    <el-table-column label="삭제" >
 	     		<template #default="scope">
 		    		<el-button type="primary" @click="remove(scope.row)">삭제</el-button> 
 		    	</template>
@@ -49,12 +53,12 @@
 			location.href='${ctp}/review/insert';
 		},
 				
-		loadPage(pageNum) {
-      	const param = new URLSearchParams();
-      	param.set('pageNum', this.pageNum);
-      	param.set('rowPerPage', this.rowPerPage);      	
-		location.href = '/review/list?' + param.toString();
-      },
+		loadPage(pageNum) {	<!-- 페이징함수 -->
+	      	const param = new URLSearchParams();
+	      	param.set('pageNum', this.pageNum);
+	      	param.set('rowPerPage', this.rowPerPage);      	
+			location.href = '/review/list?' + param.toString();
+      	},
       rowClick(row, column){
       	console.log('Row.data:',row, column);
       	if (column.property) {

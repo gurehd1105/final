@@ -43,6 +43,7 @@ public class ReviewController extends DefaultController {
 		paramMap.put("rowPerPage", page.getRowPerPage());
 		paramMap.put("programName", programName);
 		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);
+		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
 		model.addAttribute("reviewList", toJson(reviewList));
 		model.addAttribute("page", page);
 		

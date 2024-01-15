@@ -37,14 +37,14 @@
 			location.href = '${ctp}/membership/insert';
 		},
 		
-		update(no){
-			location.href = '${ctp}/membership/update?membershipNo='+no.membershipNo;
+		update(row){
+			location.href = '${ctp}/membership/update?membershipNo='+row.membershipNo;
 		},
 		
-		remove(no){
+		remove(row){
 			if(confirm('삭제 후 원복할 수 없습니다. 해당 상품을 삭제하시겠습니까?')){
 				const self = this;
-				const membership = {membershipNo: no.membershipNo,};
+				const membership = {membershipNo: row.membershipNo,};
 				
 				axios.post('${ctp}/membership/delete', membership)
 				.then((res) => {
@@ -52,8 +52,8 @@
 						alert('삭제가 완료되었습니다.');
 						location.reload();
 					}
-				}).catch((res) => {
-					alert('error');
+				}).catch((res) => {	<!-- 외래키 제약조건에 의해 삭제 안될 수 있음 / result = 0 도출이 아닌 DB 측 오류로 조회되기에 catch란에 메시지 작성 -->
+					alert('기존 이용자 수가 많아 삭제할 수 없습니다. 담당자에게 문의하세요.');
 				})
 			}
 		},
@@ -69,8 +69,8 @@
 				.then((res) => {
 					if(res.data == 1){
 						alert('결제가 완료되었습니다 !');
-					}
-				}).catch((res) => {
+					} 
+				}).catch((res) => {	
 					alert('error');
 				})
 			}

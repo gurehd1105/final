@@ -15,4 +15,6 @@ public interface PaymentMapper {
 	int delete(Payment payment);
 	
 	List<Map<String, Object>> select(Map<String, Object> paramMap);
+	
+	int countOfPayment();
 }

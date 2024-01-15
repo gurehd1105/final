@@ -12,7 +12,7 @@
 
 		
 		
-	<el-table :data="questionList" class="w-fit" @row-click="rowClick">
+	<el-table :data="questionList" @row-click="rowClick">
    		<el-table-column prop="questionNo" label="No" ></el-table-column>
 	    <el-table-column prop="questionTitle" label="제목" ></el-table-column>
 	    <el-table-column prop="customerId" label="작성자" ></el-table-column>

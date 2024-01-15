@@ -22,16 +22,12 @@
 							resultType="java.util.Map"><!-- 전 고객 결제정보 및 특정고객 결제정보 -->
 		SELECT
 			p.payment_no AS paymentNo,
-			p.customer_no AS customerNo,
-			p.membership_no AS membershipNo,
 			p.payment_date AS paymentDate,
 			
 			c.customer_id AS customerId,
-			c.customer_active AS customerActive,
 			
 			cd.customer_name AS customerName,
 			
-			m.membership_no AS membershipNo,
 			m.membership_name AS membershipName,
 			m.membership_month AS membershipMonth,
 			m.membership_price AS membershipPrice
@@ -42,11 +38,16 @@
 		ON c.customer_no = cd.customer_no
 		INNER JOIN membership m
 		ON m.membership_no = p.membership_no
-		<if test="customerName != null || customerName != ''">
+		<if test="customerName != ''">
 			
-			WHERE cd.customer_name = #{customerName}
+			WHERE cd.customer_name LIKE CONCAT('%',#{customerName},'%')
 			
 		</if>
 		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<select id="countOfPayment" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM payment
 	</select>
 </mapper>

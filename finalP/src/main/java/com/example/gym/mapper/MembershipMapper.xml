@@ -10,6 +10,7 @@
 		membership_price AS membershipPrice,
 		createdate, updatedate
 	FROM membership
+	ORDER BY updatedate DESC
 </select>
 
 <insert id="insert" parameterType="com.example.gym.vo.Membership">
