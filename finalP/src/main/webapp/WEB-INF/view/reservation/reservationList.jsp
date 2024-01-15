@@ -21,8 +21,8 @@
             <tr>
                 <th>{{r+1}}</th>
                 <th>{{new Date(reservation.paymentDate).toLocaleDateString()}}</th>        
-                <th>{{reservation.branchName}}</th>    
-                <th><el-button type="danger" @click="deleteReservation(reservation.programReservationNo,targetYear,targetMonth,targetDay)">삭제</el-button></th>    
+                <th>{{reservation.branchName}}</th>  
+                <th><el-button type="danger" @click="deleteReservation(reservation.programReservationNo,targetYear,targetMonth,targetDay)">삭제</el-button></th>  
             </tr>            
         </tbody>            
     </table>
