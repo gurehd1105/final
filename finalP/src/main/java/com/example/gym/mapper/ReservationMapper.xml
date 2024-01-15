@@ -82,20 +82,5 @@
 		WHERE program_reservation_no = #{programReservationNo}
 	</delete>
 
-	<!-- 출석체크 -->
-	<insert id="insertAttendance"
-		parameterType="com.example.gym.vo.CustomerAttendance">
-		INSERT INTO customer_attendance(
-			program_reservation_no,
-			customer_attendance_date,
-			customer_attendance_enter_time
-
-		)VALUES(
-			#{programReservationNo},
-			#{customerAttendanceDate},
-			#{customerAttendanceEnterTime}
-		)
-	</insert>
-
 
 </mapper>
