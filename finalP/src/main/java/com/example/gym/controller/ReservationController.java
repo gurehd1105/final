@@ -5,28 +5,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.BranchService;
 import com.example.gym.service.CalendarService;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReservationService;
 import com.example.gym.vo.Branch;
-import com.example.gym.vo.Customer;
-import com.example.gym.vo.CustomerAttendance;
-import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 public class ReservationController {	
 	ObjectMapper mapper = new ObjectMapper();
@@ -135,45 +137,30 @@ public class ReservationController {
 	// 예약 추가
 	@GetMapping("/insertReservation")
 	public String insertReservation(HttpSession session, Model model, 
-									ProgramDate programDate,
-									Integer targetYear,
-									Integer targetMonth,
-									Integer targetDay
-									
-									) throws JsonProcessingException {
-		System.out.println( "<-- 접속");
-		String targetYear2 = mapper.writeValueAsString(targetYear);
-		String targetMonth2 = mapper.writeValueAsString(targetMonth);
-		String targetDay2 = mapper.writeValueAsString(targetDay);
-		
-		String date = targetYear2+targetMonth2+targetDay2;
-		if(targetMonth2.length()== 1){
-			date = targetYear2+"0"+targetMonth2+targetDay2;
-		}
-		programDate.setProgramDate(date);
-		System.out.println(date + "<-- date");
-		
+									ProgramDate programDate) throws JsonProcessingException {
 		List<Branch> branchList = branchService.branch();
 		List<Map<String, Object>> programList= reservationService.selectProgram(programDate);
-		model.addAttribute("programList", mapper.writeValueAsString(programList));		
-		model.addAttribute("branchList", mapper.writeValueAsString(branchList));	
-		model.addAttribute("targetYear", targetYear);
-		model.addAttribute("targetMonth", targetMonth);
-		model.addAttribute("targetDay", targetDay);
-		
-		System.out.println(programList + "<-- programList");
-		System.out.println(branchList + "<-- branchList");
-		System.out.println(targetYear + " " + targetMonth + " " + targetDay + " " + "<--날짜");
-
+		model.addAttribute("programList", mapper.writeValueAsString(programList));
+		model.addAttribute("branchList", mapper.writeValueAsString(branchList));
 		
 		return "reservation/insertReservation";
-		
+	}
+	
+	@GetMapping("/program/{program_no}/reservationInfo")
+	@ResponseBody
+	public ResponseEntity<List<ProgramDate>> reservationInfos(@PathVariable int program_no) {
+		var result = reservationService.selectProgramDates(program_no);
+		return ResponseEntity.ok(result);
 	}
 	
 	@PostMapping("/insertReservation")
-    public String insertReservation2(ProgramReservation reservation) {
+	@ResponseBody
+    public ResponseEntity<?> insertReservation2(@RequestBody ProgramReservation reservation) {
+		log.info(reservation.toString());
+		// TODO: PaymentNo 세팅하는 코드 내부 정책에 맞춰 적절히 수정하기
+		reservation.setPaymentNo(1);
 		reservationService.insertReservation(reservation);
-        return "redirect:/reservationList";
+        return ResponseEntity.ok("예약이 정상적으로 완료되었습니다.");
     }
 	
 	

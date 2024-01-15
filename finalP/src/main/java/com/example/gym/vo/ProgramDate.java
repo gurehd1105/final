@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class ProgramDate {
 	private int programDateNo;
 	private int programNo;
+	private int maxCustomer;
+	private int cntCustomer;
 	private String programDate;
 	private String createdate;
 	private String updatedate;

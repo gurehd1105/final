@@ -42,7 +42,11 @@ public class ReservationService {
 	public List<Map<String, Object>> selectProgram(ProgramDate programDate) {
 		List<Map<String, Object>> resultMap = reservationMapper.selectProgram(programDate);
 		return resultMap;
-
+	}
+	
+	// 프로그램 예약 가능 정보 조회
+	public List<ProgramDate> selectProgramDates(int program_no) {
+		return reservationMapper.selectProgramDates(program_no);
 	}
 
 	// 예약 삭제
