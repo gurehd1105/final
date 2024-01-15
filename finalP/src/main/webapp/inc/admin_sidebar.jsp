@@ -70,6 +70,19 @@ pageEncoding="UTF-8"%>
                             </el-menu-item>
                         </a>
                     </el-sub-menu>
+                    <el-sub-menu index="1-4">
+                        <template #title>프로그램 관리</template>
+                       	<a href="${ctp}/program/insert">
+                            <el-menu-item index="1-4-1">
+                                프로그램 추가
+                            </el-menu-item>
+                        </a>
+                        <a href="${ctp}/program/list">
+                            <el-menu-item index="1-4-2">
+                                프로그램 목록 조회
+                            </el-menu-item>
+                        </a> 
+                    </el-sub-menu>
                 </el-sub-menu>
                 <el-sub-menu index="2">
                     <template #title> 스포츠 장비 </template>

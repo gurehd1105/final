@@ -6,6 +6,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
 
+	<h2>검색창</h2>
 	<!-- 검색창 -->
 	<el-form label-position="right" 
 			 ref="form" 
@@ -14,8 +15,8 @@
 			 action="${ctp}/program/list" 
 			 method="get" 
 			 id="searchProgramForm"
-	>
-			 
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+	> 
 	   	<el-form-item label="상태">
 			<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
 				<el-radio label="Y">활성화</el-radio>
@@ -93,6 +94,10 @@
 		
 		resetSearchSubmit() {
 			location.href = `${ctp}/program/list`;
+        },
+        
+        updateProgram(list){
+        	location.href = '${ctp}/program/update?programNo=' + list.programNo;
         },
         
   		changePage(page) {

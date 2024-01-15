@@ -43,7 +43,7 @@ public class SportsEquipmentController {
 //			//지점 장비 리스트로 리턴
 //			return "redirect:/sportsEquipment/SportsEquipmentList";
 //		}
-		
+//		
 		//service 호출
 		Map<String,Object> map = sportsEquipmentService.selectSportsEquipmentByPageService(session, currentPage, equipmentActive, searchWord);
 		

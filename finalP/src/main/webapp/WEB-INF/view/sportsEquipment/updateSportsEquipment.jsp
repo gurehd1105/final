@@ -45,7 +45,7 @@
 	
    <!-- 장비 이미지 삭제 폼 -->
 	<el-row :gutter="20">
-	  <el-col :span="10" v-for="(img, i) in model.sportsEquipmentImgList" :key="i">
+	  <el-col :span="10" v-for="(img, i) in sportsEquipmentImgList" :key="i">
 	    <el-card :label="img.sportsEquipmentImgNo" :body-style="{ padding: '15px' }">
 	      <div style="padding: 14px">
 	        <img :src="'/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
@@ -70,7 +70,7 @@
 	         action="${ctp}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="insertOneSportsEquipmentImg">
 	
 	 	<el-form-item label="이미지">
-			<el-input type="file" v-model="model.sportsEquipmentImg" name="sportsEquipmentImg" multiple  />			
+			<el-input type="file" v-model="sportsEquipmentImg" name="sportsEquipmentImg" multiple  />			
 		</el-form-item> 
 	
 	  	<input type="hidden" name="sportsEquipmentNo" :value="model.sportsEquipmentNo">
@@ -94,15 +94,33 @@
 				    equipmentActive: '${equipmentActive}',
 				    equipmentCreatedate: '${equipmentCreatedate}',
 				    equipmentUpdatedate: '${equipmentUpdatedate}',
+	  			},
+	  			
 				    sportsEquipmentImgList: JSON.parse('${sportsEquipmentImgList}'),
-				    sportsEquipmentImg: [],		     
-	  			}
-			}
+				    sportsEquipmentImg: [],	  
+	  				updateModel : {},
+		};
+		},
+		
+	created() {
+  			this.updateModel = {
+    				sportsEquipmentNo: this.model.sportsEquipmentNo,
+    				itemPrice: this.model.itemPrice,
+    				employeeId: this.model.employeeId,
+    				itemName: this.model.itemName,
+    				equipmentActive: this.model.equipmentActive,
+    				equipmentCreatedate: this.model.equipmentCreatedate,
+    				equipmentUpdatedate: this.model.equipmentUpdatedate,
+  				};
 		},
 	
 	methods: {
 	
 		insertSubmit(){
+		 	if (this.sportsEquipmentImg.length === 0) {
+      			alert('파일을 선택해주세요');
+     		 return;
+    		}
 			document.getElementById('insertOneSportsEquipmentImg').submit();
 		},
 		
@@ -118,9 +136,39 @@
         	}
 		},
 		
+	
 		updateSubmit() {
-			document.getElementById('updateSportsEquipmentForm').submit();
+			console.log('제출 전에 변경 사항이 있는지 확인');
+            if (this.checkChanges()) {
+            	console.log('변경 사항 있음');
+            	this.compareModels();
+                document.getElementById('updateSportsEquipmentForm').submit();
+            } else {
+                alert('변경된 내용이 없습니다.');
+            }
 		},
+		
+
+	    checkChanges() {
+            for (const key in this.model) {
+                if (this.model[key] !== this.updateModel[key]) {
+                   	console.log('true');
+                    return true;
+                }
+            }
+            console.log('false');
+            return false;
+        },
+        
+
+ 		 compareModels() {
+
+    		for (const key in this.updateModel) {
+      			if (this.updateModel[key] !== this.model[key]) {
+       				 console.log(`${key}: `, this.updateModel[key], `->`, this.model[key]);
+      			}
+    		}
+ 		 },
 		
 	}
 </c:set>

@@ -2,32 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ProgramMapper">
 	
+	<!-- program 추가 -->
 	<insert id="insertProgram" parameterType="com.example.gym.vo.Program">
 		INSERT INTO program (
 			employee_no,
 			program_name,
-			program_max_customer
+			program_max_customer,
+			active
 		) VALUES (
 			#{employeeNo},
 			#{programName},
-			#{programMaxCustomer}
+			#{programMaxCustomer},
+			#{active}
 		)		
 	</insert>
-	
-	<delete id="deleteProgram" parameterType="com.example.gym.vo.Program">
-		DELETE FROM program
-			WHERE program_no = #{programNo}
-	</delete>
-	
-	<update id="updateProgram" parameterType="com.example.gym.vo.Program">
-		UPDATE program SET
-			employee_no = #{employeeNo},
-			program_name = #{programName},
-			program_max_customer = #{programMaxCustomer},
-			updatedate = NOW()
-		WHERE program_no = #{programNo}
-	</update>
-	
+
 	<!-- program 리스트 출력 -->
 	<select id="selectProgramList" parameterType="java.util.Map" resultType="java.util.Map">
 	   	SELECT 
@@ -84,6 +73,15 @@
 		ON p.employee_no = e.employee_no
 		WHERE program_no = #{programNo}
 	</select>
+	
+	<!-- program 수정 액션 -->
+	<update id="updateProgram" parameterType="java.util.Map">
+		UPDATE program SET
+			active = #{programActive},
+			program_max_customer = #{maxCustomer},
+			updatedate = NOW()
+		WHERE program_no = #{programNo}
+	</update>
 	
 			
 	
