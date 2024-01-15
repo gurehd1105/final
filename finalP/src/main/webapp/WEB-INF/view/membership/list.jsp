@@ -5,57 +5,57 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<table>
-		<thead style="font-size: 20px;">
-			<tr>
-				<th>No</th>
-				<th>상품명</th>
-				<th>가격</th>
-			<c:if test="${ loginEmployee != null}">
-				<th>생성일</th>
-				<th>수정일</th>
-			
-				<th>수정/삭제</th>
-			</c:if>
-			<c:if test="${ loginCustomer != null}">
-				<th>결제</th>
-			</c:if>
-			</tr>
-		</thead>
-		<tbody v-for="(membership, i) in membershipList" :key="i">
-			<tr>
-				<th>{{ i+1 }}</th>
-				<th>{{ membership.membershipName }}</th>
-			 	<th>{{ membership.membershipPrice }}</th>
-			 <c:if test="${ loginEmployee != null}">
-				<th>{{ new Date(membership.createdate).toLocaleDateString() }}</th>
-				<th>{{ membership.createdate == membership.updatedate ? "-" : new Date(membership.updatedate).toLocaleDateString() }}</th>
-				<th colspan="2">
-					<el-button type="primary" @click="update(membership.membershipNo)">수정</el-button>
-					<el-button type="primary" @click="delete(membership.membershipNo)">삭제</el-button>
-				</th>
-			</c:if>
-			<c:if test="${ loginCustomer != null}">
-				<th><el-button type="primary" @click="insertPayment(membership)">결제하기</el-button></th>
-			</c:if>
-			</tr>
-		</tbody>			
-	</table>
+
+		<el-button type="primary" @click="insert()">상품추가</el-button>
+	<el-table :data="membershipList" style="width: 100%">	
+		<el-table-column prop="membershipNo" label="No"></el-table-column>
+		<el-table-column prop="membershipName" label="상품명"></el-table-column>
+		<el-table-column prop="membershipPrice" label="가격"></el-table-column>
+		<c:if test="${ loginCustomer == null && loginEmployee != null }">
+			<el-table-column label="수정/삭제"> <template #default="scope"><el-button
+				type="primary" @click="update(scope.row)">수정</el-button> <el-button
+				type="primary" @click="remove(scope.row)">삭제</el-button></template> </el-table-column>
+		</c:if>
+		<c:if test="${ loginCustomer != null && loginEmployee == null }">
+			<el-table-column label="결제"> <template #default="scope">
+			<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
+				</template></el-table-column>
+
+		</c:if>
+	
+	</el-table>
+
 </c:set>
 <c:set var="script">
 	data() {
 		return {
 			membershipList : JSON.parse('${ membershipList }'),
-
 		}
 	},
 	methods: {
-		update(no){
-			location.href = '${ctp}/membership/update?membershipNo='+no;
+		insert(){
+			location.href = '${ctp}/membership/insert';
 		},
 		
-		delete(no){
-			location.href = '${ctp}/membership/delete?membershipNo='+no;
+		update(no){
+			location.href = '${ctp}/membership/update?membershipNo='+no.membershipNo;
+		},
+		
+		remove(no){
+			if(confirm('삭제 후 원복할 수 없습니다. 해당 상품을 삭제하시겠습니까?')){
+				const self = this;
+				const membership = {membershipNo: no.membershipNo,};
+				
+				axios.post('${ctp}/membership/delete', membership)
+				.then((res) => {
+					if(res.data == 1){
+						alert('삭제가 완료되었습니다.');
+						location.reload();
+					}
+				}).catch((res) => {
+					alert('error');
+				})
+			}
 		},
 		
 		insertPayment(membership){

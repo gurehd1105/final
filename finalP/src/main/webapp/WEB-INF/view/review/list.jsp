@@ -62,9 +62,11 @@
       	}
       },
 	  remove(row) {
+	  	console.log('row -> ', row.reviewNo)
          if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
-            const reviewNo = row.reviewNo;  <!-- 여기서 reviewNo를 추출합니다 -->
-            axios.post('${ctp}/review/delete', { reviewNo: reviewNo })
+         	const self = this;
+            const reviewNo = {reviewNo : row.reviewNo,};  <!-- 여기서 reviewNo를 추출합니다 -->
+            axios.post('${ctp}/review/delete', reviewNo)
             .then((res) => {
                if(res.data == 1){
                   alert('삭제가 완료되었습니다.');

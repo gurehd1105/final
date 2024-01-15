@@ -24,7 +24,7 @@
 		</tr>
 		
 		<tr>
-			<th>가격</th>
+			<th>가격</th> 
 			<td><el-input-number name="membershipPrice" v-model="membership.membershipPrice"/></td>
 		</tr>
 	</table>
@@ -34,11 +34,7 @@
 <c:set var="script">
 	data(){
 		return {
-			membership: {
-				membershipName = ${ membership.membershipName },
-				membershipMonth = ${ membership.membershipMonth },
-				membershipPrice = ${ membership.membershipPrice },
-			},			
+			membership: JSON.parse('${membership}'),			
 		}
 	},
 </c:set>

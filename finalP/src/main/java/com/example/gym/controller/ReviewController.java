@@ -81,16 +81,18 @@ public class ReviewController extends DefaultController {
 	
 	@PostMapping("/delete")
 	@ResponseBody
-	public int delete(@RequestBody Map<String, Object> paramMap) { // customer, review정보 axios 방식으로 둘 다 받을 수 없어 Map 사용
+	public int delete(@RequestBody Map<String, Object> paramMap, HttpSession session) { // customer, review정보 axios 방식으로 둘 다 받을 수 없어 Map 사용
+		
+		int result = 0;
+		System.out.println(paramMap);
+		if(session.getAttribute("loginCustomer")!=null && session.getAttribute("loginEmployee")==null) {	// 고객 본인 리뷰 삭제
 		boolean checked = false;
 		Customer checkCustomer = new Customer();
 		checkCustomer.setCustomerId((String) paramMap.get("customerId"));
 		checkCustomer.setCustomerPw((String) paramMap.get("customerPw"));
 		
 		checked = customerService.loginCustomer(checkCustomer) != null;
-		
-		int result = 0;
-		if(checked) {	// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
+		if(checked) {											// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
 			ReviewReply reviewReply = new ReviewReply();
 			reviewReply.setReviewNo(Integer.parseInt((String)paramMap.get("reviewNo")));
 			reviewService.deleteReviewReply(reviewReply);
@@ -98,8 +100,20 @@ public class ReviewController extends DefaultController {
 			Review review = new Review();
 			review.setReviewNo(Integer.parseInt((String)paramMap.get("reviewNo")));
 			result = reviewService.deleteReview(review);
-		}
+			
+			
+		} 
+		}	else if(session.getAttribute("loginCustomer")==null && session.getAttribute("loginEmployee")!=null) {	// 관리자 즉시삭제
+			ReviewReply reviewReply = new ReviewReply();
+			reviewReply.setReviewNo((int)paramMap.get("reviewNo"));
+			reviewService.deleteReviewReply(reviewReply);
+			
+			Review review = new Review();
+			review.setReviewNo((int)paramMap.get("reviewNo"));
+			result = reviewService.deleteReview(review);			
 		
+	}	
+		log.info("result : " + result);
 		return result;
 	}	
 		

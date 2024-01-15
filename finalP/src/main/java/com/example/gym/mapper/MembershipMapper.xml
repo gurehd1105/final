@@ -48,7 +48,8 @@
 		employee_no AS employeeNo,
 		membership_name AS membershipName,  
 		membership_month AS membershipMonth,
-		membership_price AS membershipPrice
+		membership_price AS membershipPrice,
+		createdate, updatedate
 	FROM membership
 	WHERE membership_no = #{membershipNo}
 </select>

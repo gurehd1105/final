@@ -42,10 +42,10 @@ public class MembershipController extends DefaultController{
 	
 	@GetMapping("/update")
 	public String update(Membership membership, Model model) {
-		System.out.println(membership.getMembershipNo());
+		System.out.println(membership);
 		Membership membershipOne = membershipService.membershipOne(membership);
-		model.addAttribute("membership" , membershipOne);		
-		
+		model.addAttribute("membership" , toJson(membershipOne));		
+		System.out.println(toJson(membershipOne));
 		return "membership/update";
 	}
 	
@@ -57,11 +57,12 @@ public class MembershipController extends DefaultController{
 	}
 	
 	@PostMapping("/delete")
-	public String delete(Membership membership) {
-		System.out.println(membership);
-		/* int result = membershipService.delete(membership); */
+	@ResponseBody
+	public int delete(@RequestBody Membership membership) {
+		int result = 0;
+		result = membershipService.delete(membership);
 		
-		return "membership/list";
+		return result;
 	}
 	
 	
