@@ -6,22 +6,21 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
 
-		<el-button type="primary" @click="insert()">리뷰작성</el-button>
-	<el-table :data="reviewList"  class="w-fit" @row-click="rowClick(scope.row)">
+	<el-button type="primary" @click="insert()">리뷰작성</el-button>
+	<el-table :data="reviewList" class="w-fit" @row-click="rowClick" class-name="cursor-pointer">
 	    <el-table-column prop="reviewNo" label="No"></el-table-column>
 	    <el-table-column prop="branchName" label="지점명" ></el-table-column>
-	     <el-table-column prop="programName" label="프로그램명" ></el-table-column>	
+	    	<el-table-column prop="programName" label="프로그램명" ></el-table-column>	
 	    <el-table-column prop="reviewTitle" label="제목" ></el-table-column>
 	    <el-table-column prop="customerId" label="작성자" ></el-table-column>
-	<c:if test="${ loginEmployee != null }">
-	
-	    <el-table-column label="수정/삭제" >
-	     <template #default="scope">
-	    	<el-button type="primary" @click="remove(scope.row)">
-	    	삭제</el-button> 
-	    	</template>
-	    </el-table-column>
-	</c:if>
+		<c:if test="${ loginEmployee != null }">
+
+		    <el-table-column label="수정/삭제" >
+	     		<template #default="scope">
+		    		<el-button type="primary" @click="remove(scope.row)">삭제</el-button> 
+		    	</template>
+		    </el-table-column>
+		</c:if>
 	</el-table>
 	
 	 <!-- 페이징 네비게이션 -->
@@ -56,9 +55,11 @@
       	param.set('rowPerPage', this.rowPerPage);      	
 		location.href = '/review/list?' + param.toString();
       },
-      rowClick(row){
-      	console.log('Row.data:',row);
-      	location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
+      rowClick(row, column){
+      	console.log('Row.data:',row, column);
+      	if (column.property) {
+      	  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
+      	}
       },
 	  remove(row) {
          if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
