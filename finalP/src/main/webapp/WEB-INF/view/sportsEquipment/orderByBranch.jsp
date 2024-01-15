@@ -8,7 +8,17 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch" method="get" id="searchForm">
+	<h2>검색</h2>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/orderByBranch" 
+			 method="get" 
+			 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"	 
+	>
+	
 		<el-form-item label="아이템검색">
 				<el-input v-model="model.searchItem" name="searchItem" placeholder="아이템을 입력하세요"/>
 	   	</el-form-item>
@@ -44,36 +54,44 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(equipmentOrder, i) in model.sportsEquipmentOrderList" :key="i">
+	    	<tr v-for="(order, i) in model.orderList" :key="i">
 	        	<td>
-	          		<span v-if="equipmentOrder.quantity > 0" style="color: blue;">발주</span>
-	          		<span v-else-if="equipmentOrder.quantity < 0" style="color: red;">폐기</span>
+	          		<span v-if="order.quantity > 0" style="color: blue;">발주</span>
+	          		<span v-else-if="order.quantity < 0" style="color: red;">폐기</span>
 	        	</td>
-	        	<td>{{ equipmentOrder.branchName }}</td>
+	        	<td>{{ order.branchName }}</td>
 	        	<td>
-	          		<img :src="'/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
+	          		<img :src="'/upload/sportsEquipment/' + order.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
 	        	</td>
-	        	<td>{{ equipmentOrder.itemName }}</td>
-			    <td>{{ equipmentOrder.itemPrice }}</td>
-			    <td>{{ equipmentOrder.quantity }}</td>
-			    <td>{{ equipmentOrder.totalPrice }}</td>
-				<td>{{ new Date(equipmentOrder.createdate).toLocaleString() }}</td>
+	        	<td>{{ order.itemName }}</td>
+			    <td>{{ order.itemPrice }}</td>
+			    <td>{{ order.quantity }}</td>
+			    <td>{{ order.totalPrice }}</td>
+				<td>{{ new Date(order.createdate).toLocaleString() }}</td>
 	        	<td>
-	          		<span v-if="equipmentOrder.updatedate == equipmentOrder.createdate">대기중</span>
-	          		<span v-else>{{ new Date(equipmentOrder.updatedate).toLocaleString() }}</span>
+	          		<span v-if="order.updatedate == order.createdate">대기중</span>
+	          		<span v-else>{{ new Date(order.updatedate).toLocaleString() }}</span>
 	        	</td>
-	        	<td>{{ equipmentOrder.orderStatus }}</td>
+	        	<td>{{ order.orderStatus }}</td>
 	        	<td>
-					<span v-if="equipmentOrder.orderStatus === '대기'">
-  						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/deleteSportsEquipmentOrder" method="post" id="deleteSportsEquipmentOrder">
+					<span v-if="order.orderStatus === '대기'">
+  						<el-form label-position="right" 
+  								 ref="form" 
+  								 label-width="150px" 
+  								 status-icon class="max-w-lg" 
+  								 action="${ctp}/sportsEquipment/deleteOrder" 
+  								 method="post" 
+  								 id="deleteOrder"
+  						>
+  						
 	   						<el-form-item>
 								<el-button type="warning" round @click="onSubmit(form)">취소</el-button>
 	   					</el-form-item>
-	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
-	   					<input type="hidden" name="orderStatus" :value="equipmentOrder.orderStatus">
+	   					<input type="hidden" name="orderNo" :value="order.orderNo">
+	   					<input type="hidden" name="orderStatus" :value="order.orderStatus">
 						</el-form>
 					</span>
-	          		<span v-else style="color: blue; font-weight: bold;">{{ equipmentOrder.orderStatus }} 완료</span>
+	          		<span v-else style="color: blue; font-weight: bold;">{{ order.orderStatus }} 완료</span>
 	        	</td>
 	     	</tr>
 	    </tbody>
@@ -97,7 +115,7 @@
 			    searchItem: '${beginDate}', 
 			    searchItem: '${endDate}', 
 			    currentPage: 1, 
-			  	sportsEquipmentOrderList: JSON.parse('${sportsEquipmentOrderList}'),
+			  	orderList: JSON.parse('${orderList}'),
 		    },
 			
 		    lastPage: ${lastPage} 
@@ -110,18 +128,18 @@
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch`;
+			location.href = `${ctp}/sportsEquipment/orderByBranch`;
 
         },
         
         onSubmit() {
-			document.getElementById('deleteSportsEquipmentOrder').submit();
+			document.getElementById('deleteOrder').submit();
 		},
         	
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch?searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/orderByBranch?searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
   		},
   		
 	}

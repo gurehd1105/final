@@ -3,7 +3,7 @@
 <mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
 
 	<!-- sportsEquipment 추가  -->
-	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	<insert id="insert" parameterType="com.example.gym.vo.SportsEquipment">
 	
 		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
 		SELECT last_insert_id();<!-- 제일 마지막에 입력된 키값을 받아옴 -->
@@ -24,7 +24,7 @@
 	</insert> 
 	
 	<!-- sportsEquipmentImg 추가  -->
-	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
+	<insert id="insertImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
 	    INSERT INTO sports_equipment_img(
 	        sports_equipment_no,
 	        sports_equipment_img_origin_name,
@@ -66,7 +66,7 @@
 	</select>
 
 	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
-	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="list" parameterType="java.util.Map" resultType="java.util.Map">
 	    SELECT 
 	        se.sports_equipment_no sportsEquipmentNo,
 	        se.item_name itemName,
@@ -91,7 +91,7 @@
 	</select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
-	<select id="selectSportsEquipmentCnt" parameterType="java.util.Map" resultType="int">
+	<select id="sportsEquipmentCnt" parameterType="java.util.Map" resultType="int">
 	    SELECT 
 	        COUNT(sports_equipment_no)
 	    FROM sports_equipment
@@ -106,7 +106,7 @@
 	</select>
 	
 	<!--sportsEquipment 상세보기(정보)-->
-	<select id="selectSportsEquipmentOne" parameterType="int" resultType="java.util.Map">
+	<select id="sportsEquipmentOne" parameterType="int" resultType="java.util.Map">
 		SELECT 
 			se.sports_equipment_no sportsEquipmentNo,
 			e.employee_id employeeId,
@@ -122,7 +122,7 @@
 	</select>
 	
 	<!--sportsEquipment 상세보기(이미지)-->
-	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
+	<select id="imgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
 		SELECT 
 			sports_equipment_img_file_name sportsEquipmentImgFileName,
 			sports_equipment_img_no sportsEquipmentImgNo,
@@ -132,7 +132,7 @@
 	</select>
 	
 	<!--sportsEquipment 정보 수정-->
-	<update id="updateSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	<update id="update" parameterType="com.example.gym.vo.SportsEquipment">
 		UPDATE sports_equipment
 		SET 
 			employee_no = #{employeeNo},
@@ -144,13 +144,13 @@
 	</update>
 	
 	<!--sportsEquipmentImg 개별 삭제-->
-	<delete id="deleteOneSportsEquipmentImg" parameterType="int">
+	<delete id="deleteImg" parameterType="int">
 		DELETE FROM sports_equipment_img
 		WHERE sports_equipment_img_no = #{sportsEquipmentImgNo}
 	</delete>
 	
 	<!-- sportsEquipmentOrder 추가  -->
-	<insert id="insertSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipmentOrder">
+	<insert id="insertOrder" parameterType="com.example.gym.vo.SportsEquipmentOrder">
 		INSERT INTO sports_equipment_order(
 				branch_no,
 				sports_equipment_no,
@@ -165,7 +165,7 @@
 	</insert> 
 	
    <!-- sportsEquipmentOrder 리스트 + 지점검색 + 페이징 (본사)  -->
-   <select id="selectSportsEquipmentOrderByHead" parameterType="java.util.Map" resultType="java.util.Map">
+   <select id="orderByHead" parameterType="java.util.Map" resultType="java.util.Map">
        SELECT 
            b.branch_name branchName,
            se.item_name itemName,
@@ -211,7 +211,7 @@
    </select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipmentOrder 수 (본사) -->
-	<select id="selectSportsEquipmentOrderHeadCnt" parameterType="java.util.Map" resultType="int">
+	<select id="orderHeadCnt" parameterType="java.util.Map" resultType="int">
 		SELECT 
 			COUNT(seo.order_no)
 		FROM branch b
@@ -243,7 +243,7 @@
 	</select>
 	
    <!-- sportsEquipmentOrder 리스트 + 지점검색 + 페이징 (지점)  -->
-   <select id="selectSportsEquipmentOrderByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+   <select id="orderByBranch" parameterType="java.util.Map" resultType="java.util.Map">
        SELECT 
            b.branch_name branchName,
            se.item_name itemName,
@@ -286,7 +286,7 @@
    </select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipmentOrder 수 (지점) -->
-	<select id="selectSportsEquipmentOrderBranchCnt" parameterType="java.util.Map" resultType="int">
+	<select id="orderBranchCnt" parameterType="java.util.Map" resultType="int">
 		SELECT 
 			COUNT(seo.order_no)
 		FROM branch b
@@ -315,7 +315,7 @@
 	</select>
 	
 	<!--sportsEquipmentOrder 상태 수정 (본사)-->
-	<update id="updateSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipment">
+	<update id="updateOrder" parameterType="com.example.gym.vo.SportsEquipment">
 		UPDATE sports_equipment_order
 		SET 
 			order_status = #{orderStatus},
@@ -324,14 +324,14 @@
 	</update>
 	
 	<!--sportsEquipmentOrder 삭제 (지점)-->
-	<delete id="deleteSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipment">
+	<delete id="deleteOrder" parameterType="com.example.gym.vo.SportsEquipment">
 		DELETE FROM sports_equipment_order
 		WHERE order_no = #{orderNo}
 		AND order_status= '대기'
 	</delete>
 	
 	<!-- sportsEquipmentInventory 출력 (본사) -->
-	<select id="selectSportsEquipmentInventoryByHead" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="inventoryByHead" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
@@ -370,7 +370,7 @@
 	</select>
 	
 	<!-- sportsEquipmentInventory 출력 (지점) -->
-	<select id="selectSportsEquipmentInventoryByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="inventoryByBranch" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
@@ -408,7 +408,7 @@
 	</select>
 	
 	<!--lastPage 구하기 위한 sportsEquipmentInventory 수 (본사) -->
-	<select id="selectSportsEquipmentInventoryByHeadCnt" parameterType="java.util.Map" resultType="int">
+	<select id="inventoryByHeadCnt" parameterType="java.util.Map" resultType="int">
 		SELECT 
     		(SELECT COUNT(*) 
      		FROM (
@@ -436,7 +436,7 @@
 	</select>
 	
 	<!--lastPage 구하기 위한 sportsEquipmentInventory 수 (지점) -->
-	<select id="selectSportsEquipmentInventoryByBranchCnt" parameterType="java.util.Map" resultType="int">
+	<select id="inventoryByBranchCnt" parameterType="java.util.Map" resultType="int">
 		SELECT 
     		(SELECT COUNT(*) 
      		FROM (
@@ -464,7 +464,7 @@
 	</select>
 	
 	<!--장비 상세보기 창에서 지점 재고확인 (지점) -->
-	<select id="selectSportsEquipmentInventoryOneByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="inventoryOneByBranch" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
 			se.item_name,
 			SUM(seo.quantity) AS totalQuantity,

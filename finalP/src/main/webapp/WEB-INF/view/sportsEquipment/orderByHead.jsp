@@ -8,7 +8,17 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentOrderListByHead" method="get" id="searchForm">
+	<h2>검색</h2>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/orderByHead" 
+			 method="get" 
+			 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+	>
+	
 		<el-form-item label="지점검색">
 				<el-input v-model="model.searchBranch" name="searchBranch" placeholder="지점을 입력하세요"/>
 	   	</el-form-item>
@@ -47,7 +57,7 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(equipmentOrder, i) in model.sportsEquipmentOrderList" :key="i">
+	    	<tr v-for="(equipmentOrder, i) in model.orderList" :key="i">
 	        	<td>
 	          		<span v-if="equipmentOrder.quantity > 0" style="color: blue;">발주</span>
 	          		<span v-else-if="equipmentOrder.quantity < 0" style="color: red;">폐기</span>
@@ -68,7 +78,15 @@
 	        	<td :style="{ backgroundColor: equipmentOrder.orderStatus === '승인' ? 'blue' : 'red', color: 'white' }">{{ equipmentOrder.orderStatus }}</td>
 	        	<td>
 					<span v-if="equipmentOrder.orderStatus === '대기'">
-  						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/updateSportsEquipmentOrder" method="post" id="updateSportsEquipmentOrder1">
+  						<el-form label-position="right" 
+  								 ref="form" 
+  								 label-width="150px" 
+  								 status-icon class="max-w-lg" 
+  								 action="${ctp}/sportsEquipment/updateOrder"
+  								 method="post" 
+  						 		 id="updateOrder1"
+  						 >
+  						 
 	   						<el-form-item>
 								<el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
 	   						</el-form-item>
@@ -76,8 +94,16 @@
 	   					<input type="hidden" name="orderStatus" value="승인">
 						</el-form>
 					</span>
+					
 					<span v-if="equipmentOrder.orderStatus === '대기'">
-  						<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/updateSportsEquipmentOrder" method="post" id="updateSportsEquipmentOrder2">
+  						<el-form label-position="right" 
+  								 ref="form" 
+  								 label-width="150px" 
+  								 status-icon class="max-w-lg" 
+  								 action="${ctp}/sportsEquipment/updateOrder" 
+  								 method="post" 
+  								 id="updateOrder2"
+  						>
 	   						<el-form-item>
 								<el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
 	   						</el-form-item>
@@ -85,6 +111,7 @@
 	   					<input type="hidden" name="orderStatus" value="거부">
 						</el-form>
 					</span>
+					
 	          		<span v-else style="color: blue; font-weight: bold;" >{{ equipmentOrder.orderStatus }} 완료</span>
 	        	</td>
 	     	</tr>
@@ -109,7 +136,7 @@
 			    searchItem: '${beginDate}', 
 			    searchItem: '${endDate}', 
 			    currentPage: 1, 
-			  	sportsEquipmentOrderList: JSON.parse('${sportsEquipmentOrderList}'),
+			  	orderList: JSON.parse('${orderList}'),
 		    },
 			
 		    lastPage: ${lastPage} 
@@ -122,22 +149,22 @@
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/sportsEquipmentOrderListByHead`;
+			location.href = `${ctp}/sportsEquipment/orderByHead`;
 
         },
         
         onSubmit1() {
-			document.getElementById('updateSportsEquipmentOrder1').submit();
+			document.getElementById('updateOrder1').submit();
 		},
 		
         onSubmit2() {
-			document.getElementById('updateSportsEquipmentOrder2').submit();
+			document.getElementById('updateOrder2').submit();
 		},
         	
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/sportsEquipmentOrderListByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/orderByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
   		}
 	}
 </c:set>

@@ -7,7 +7,17 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/SportsEquipmentList" method="get" enctype="multipart/form-data" id="searchSportsEquipmentForm">
+	<h2>검색</h2>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/list" 
+			 method="get" 
+			 enctype="multipart/form-data" 
+	  		 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+	>
 	   	<el-form-item label="상태">
 			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
 				<el-radio label="Y">주문가능</el-radio>
@@ -22,10 +32,11 @@
 				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
 	   	</el-form-item>
 	</el-form>
-	    
+	   
+	<br>
 	<!-- 장비 리스트 -->
 	<el-row :gutter="20">
-  		<el-col :span="8" v-for="(equipment, index) in sportsEquipmentList" :key="index">
+  		<el-col :span="8" v-for="(equipment, index) in list" :key="index">
     		<el-card :label="equipment.itemName" :body-style="{ padding: '15px' }">
       			<div style="padding: 14px">
         			<img :src="'/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
@@ -57,17 +68,17 @@
 			    equipmentActive: '${equipmentActive}',
 			    currentPage: 1, 
 		    },
-		    sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
+		    list: JSON.parse('${list}'), 
 		    lastPage: ${lastPage} 
 	  	};
 	},
 	methods: {
 		searchSubmit() {
-			document.getElementById('searchSportsEquipmentForm').submit();
+			document.getElementById('searchForm').submit();
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/SportsEquipmentList`;
+			location.href = `${ctp}/sportsEquipment/list`;
 
         },
         
@@ -78,7 +89,7 @@
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/SportsEquipmentList?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/list?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
   		}
 	}
 </c:set>

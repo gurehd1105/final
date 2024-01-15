@@ -88,37 +88,37 @@ pageEncoding="UTF-8"%>
                     <template #title> 스포츠 장비 </template>
                     <el-menu-item-group>
                         <template #title>본사</template>
-                        <a href="${ctp}/sportsEquipment/insertSportsEquipment">
+                        <a href="${ctp}/sportsEquipment/insert">
                             <el-menu-item index="2-1">
                                 장비리스트 추가
                             </el-menu-item>
                         </a>
                         <a
-                            href="${ctp}/sportsEquipment/sportsEquipmentOrderListByHead"
+                            href="${ctp}/sportsEquipment/orderByHead"
                         >
                             <el-menu-item index="2-2"> 발주내역 </el-menu-item>
                         </a>
                         <a
-                            href="${ctp}/sportsEquipment/sportsEquipmentInventoryByHead"
+                            href="${ctp}/sportsEquipment/inventoryByHead"
                         >
                             <el-menu-item index="2-3"> 재고 </el-menu-item>
                         </a>
                     </el-menu-item-group>
                     <el-menu-item-group title="지점">
-                        <a href="${ctp}/sportsEquipment/SportsEquipmentList">
+                        <a href="${ctp}/sportsEquipment/list">
                             <el-menu-item index="2-4">
                                 장비리스트
                             </el-menu-item>
                         </a>
                         <a
-                            href="${ctp}/sportsEquipment/sportsEquipmentOrderListByBranch"
+                            href="${ctp}/sportsEquipment/orderByBranch"
                         >
                             <el-menu-item index="2-5">
                                 발주내역(지점:부산점)
                             </el-menu-item>
                         </a>
                         <a
-                            href="${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch"
+                            href="${ctp}/sportsEquipment/inventoryByBranch"
                         >
                             <el-menu-item index="2-6">
                                 재고(지점:부산점)

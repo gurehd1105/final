@@ -45,7 +45,7 @@
 	
    <!-- 장비 이미지 삭제 폼 -->
 	<el-row :gutter="20">
-	  <el-col :span="10" v-for="(img, i) in sportsEquipmentImgList" :key="i">
+	  <el-col :span="10" v-for="(img, i) in imgList" :key="i">
 	    <el-card :label="img.sportsEquipmentImgNo" :body-style="{ padding: '15px' }">
 	      <div style="padding: 14px">
 	        <img :src="'/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
@@ -70,7 +70,7 @@
 	         action="${ctp}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="insertOneSportsEquipmentImg">
 	
 	 	<el-form-item label="이미지">
-			<el-input type="file" v-model="sportsEquipmentImg" name="sportsEquipmentImg" multiple  />			
+			<el-input type="file" v-model="img" name="img" multiple  />			
 		</el-form-item> 
 	
 	  	<input type="hidden" name="sportsEquipmentNo" :value="model.sportsEquipmentNo">
@@ -96,8 +96,8 @@
 				    equipmentUpdatedate: '${equipmentUpdatedate}',
 	  			},
 	  			
-				    sportsEquipmentImgList: JSON.parse('${sportsEquipmentImgList}'),
-				    sportsEquipmentImg: [],	  
+				    imgList: JSON.parse('${imgList}'),
+				    img: [],	  
 	  				updateModel : {},
 		};
 		},

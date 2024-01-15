@@ -8,7 +8,17 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch" method="get" id="searchSportsEquipmentOrderForm">
+	<h2>검색</h2>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/inventoryByBranch"
+			 method="get" 
+			 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+	>
+	
 		<el-form-item label="검색">
 				<el-input v-model="model.searchItem" name="searchItem" placeholder="검색어를 입력하세요"/>
 	   	</el-form-item>
@@ -33,7 +43,7 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(inventory, i) in sportsEquipmentInventory" :key="i">
+	    	<tr v-for="(inventory, i) in inventoryList" :key="i">
 	        	<td>{{ inventory.branchName }}</td>
 	        	<td>
 	          		<img :src="'/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 100px; height: 100px;" />
@@ -44,7 +54,7 @@
 			    <td>{{ inventory.totalQuantity }}</td>
 			    <td>
 			        <el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" 
-			        	action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" :id="'insertOrderForm1' + i">
+			        	action="${ctp}/sportsEquipment/insertOrder" method="post" :id="'insertOrderForm1' + i">
   						<el-form-item label="발주수량">
     						<el-input-number v-model="model.quantity1[i]" :min="0" name="quantity" :max="100" />
  		 				</el-form-item>
@@ -57,7 +67,7 @@
 			    </td>
 			    <td>
 			    	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-			    		 action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" :id="'insertOrderForm2' + i">
+			    		 action="${ctp}/sportsEquipment/insertOrder" method="post" :id="'insertOrderForm2' + i">
   						<el-form-item label="폐기수량">
     						<el-input-number v-model="model.quantity2[i]" :min="-inventory.totalQuantity" :max="0" name="quantity"  />
  		 				</el-form-item>
@@ -91,18 +101,18 @@
 			    quantity1: [], 
 			    quantity2: [], 
 		    },
-		    sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'), 
+		    inventoryList: JSON.parse('${inventoryList}'), 
 		    lastPage: ${lastPage} 
 	  	};
 	},
 	
 	methods: {
 		searchSubmit() {
-			document.getElementById('searchSportsEquipmentOrderForm').submit();
+			document.getElementById('searchForm').submit();
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch`;
+			location.href = `${ctp}/sportsEquipment/inventoryByBranch`;
 
         },
         
@@ -137,7 +147,7 @@
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/sportsEquipmentInventoryByBranch?searchItem=${searchItem}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/inventoryByBranch?searchItem=${searchItem}&currentPage='+page;
   		}
 	}
 </c:set>
