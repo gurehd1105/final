@@ -8,8 +8,19 @@
 <c:set var="body">
 	
 	<!-- 장비 추가 폼 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-			 action="${ctp}/sportsEquipment/insertSportsEquipment" enctype="multipart/form-data" method="post" id="insertSportsEquipment">
+	<h2>장비 추가</h2>
+	<br>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg"
+			 action="${ctp}/sportsEquipment/insert" 
+			 enctype="multipart/form-data" 
+			 method="post" 
+			 id="insert"
+			 style="border: 1px solid #ccc; padding: 50px; border-radius: 5px;"
+			 >
+			 
 		<el-form-item label="이름">
 			<el-input type="text" v-model="model.itemName" name="itemName" placeholder="이름을 입력하세요." />			
 		</el-form-item> 
@@ -27,12 +38,20 @@
 		</el-form-item> 
 	</el-form>
 	
-	<template>
-		<el-alert v-if="showErrorAlert" title="전부 다 입력하세요" type="error" />
-	</template>	
-
+	<br>
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipment" method="get" enctype="multipart/form-data" id="searchSportsEquipmentForm">
+	<h2>검색</h2>
+	<br>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px" 
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/insert"
+			 method="get"  
+			 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 50px; border-radius: 5px;"
+			 >
+			 
 	   	<el-form-item label="상태">
 			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
 				<el-radio label="Y">주문가능</el-radio>
@@ -47,10 +66,11 @@
 				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
 	   	</el-form-item>
 	</el-form>
+	<br>
    	
 	<!-- 장비 리스트 -->
 	<el-row :gutter="20">
-  		<el-col :span="8" v-for="(equipment, index) in sportsEquipmentList" :key="index">
+  		<el-col :span="8" v-for="(equipment, index) in list" :key="index">
     		<el-card :label="equipment.itemName" :body-style="{ padding: '15px' }">
       			<div style="padding: 14px">
         			<img :src="'/upload/sportsEquipment/' + equipment.sportsEquipmentImgFileName" class="image" style="width: 300%; height: 400px;"/>
@@ -58,7 +78,7 @@
         			<span>가격: {{ equipment.itemPrice }}원</span><br>
         			<span>상태: {{ equipment.equipmentActive === 'Y' ? '주문가능' : '품절' }}</span><br>
         			<br>
-          			<el-button type="primary" @click="updateSportsEquipment(equipment.sportsEquipmentNo)">수정</el-button>
+          			<el-button type="primary" @click="update(equipment.sportsEquipmentNo)">수정</el-button>
       			</div>
     		</el-card>
     		<br>
@@ -87,46 +107,45 @@
 		    	
 		    },
 		    
-		    sportsEquipmentList: JSON.parse('${sportsEquipmentList}'), 
+		    list: JSON.parse('${list}'), 
 		    lastPage: ${lastPage},
 	  	};
 	},
 	methods: {
 			searchSubmit() {
-				document.getElementById('searchSportsEquipmentForm').submit();
+				document.getElementById('searchForm').submit();
 			},
 			
 			resetSearchSubmit() {
-				location.href = `${ctp}/sportsEquipment/insertSportsEquipment`;
+				location.href = `${ctp}/sportsEquipment/insert`;
 
         	},
         	
-        	chekForm(){
-        		console.log('validateAndSubmit 메서드 실행');
-    			this.$refs.form.validate((valid) => {
-      			if (valid) {
-        			this.onSubmit();
-      			} else {
-        			this.showErrorAlert = true;
-        			console.log('true 변경');
-      			}
-    		});
         	
-        	},
-        	
-			onSubmit(){
-				console.log('onSubmit 메서드 실행');
-				document.getElementById('insertSportsEquipment').submit();
+	onSubmit(){
+			if (this.model.itemName === '' || this.model.itemPrice === '' ) {
+			
+      			alert('아이템 이름, 가격 모두 입력하세요.');
+      			
+    		} else if( this.model.sportsEquipmentImg.length === 0){
+    		
+    			alert('이미지 파일을 1개 이상 등록하세요');
+    			
+    		} else {
+
+      			document.getElementById('insert').submit();
+   			}
+
 			},
 			
-			updateSportsEquipment(sportsEquipmentNo){
-				location.href = '${ctp}/sportsEquipment/updateSportsEquipment?sportsEquipmentNo='+sportsEquipmentNo;
+			update(sportsEquipmentNo){
+				location.href = '${ctp}/sportsEquipment/update?sportsEquipmentNo='+sportsEquipmentNo;
 			},
 					
 			changePage(page) {
     			this.currentPage = page;
     			console.log('Current Page:', this.currentPage); 
-    			location.href = '${ctp}/sportsEquipment/insertSportsEquipment?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
+    			location.href = '${ctp}/sportsEquipment/insert?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
   			}
 	
 	}

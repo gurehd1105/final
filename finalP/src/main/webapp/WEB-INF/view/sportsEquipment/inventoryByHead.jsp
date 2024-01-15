@@ -8,7 +8,17 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/sportsEquipmentInventoryByHead" method="get" id="searchForm">
+	<h2>검색</h2>
+	<el-form label-position="right" 
+			 ref="form" 
+			 label-width="150px"
+			 status-icon class="max-w-lg" 
+			 action="${ctp}/sportsEquipment/inventoryByHead" 
+			 method="get" 
+			 id="searchForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+	>
+	
 		<el-form-item label="지점검색">
 				<el-input v-model="model.searchBranch" name="searchBranch" placeholder="지점을 입력하세요"/>
 	   	</el-form-item>
@@ -34,7 +44,7 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(inventory, i) in sportsEquipmentInventory" :key="i">
+	    	<tr v-for="(inventory, i) in inventoryList" :key="i">
 	        	<td>{{ inventory.branchName }}</td>
 	        	<td>
 	          		<img :src="'/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 100px; height: 100px;" />
@@ -65,7 +75,7 @@
 			    currentPage: 1, 		
 		    },
 		    
-			sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'),
+			inventoryList: JSON.parse('${inventoryList}'),
 		    lastPage: ${lastPage} 
 	  	};
 	},
@@ -76,13 +86,13 @@
 		},
 		
 		resetSearchSubmit() {
-			location.href = `${ctp}/sportsEquipment/sportsEquipmentInventoryByHead`;
+			location.href = `${ctp}/sportsEquipment/inventoryByHead`;
         },
             	
   		changePage(page) {
     		this.currentPage = page;
     		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/sportsEquipmentInventoryByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&currentPage='+page;
+    		location.href = '${ctp}/sportsEquipment/inventoryByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&currentPage='+page;
   		}
 	}
 </c:set>
