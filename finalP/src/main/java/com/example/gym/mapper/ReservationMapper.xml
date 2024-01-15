@@ -20,27 +20,17 @@
 			ON pr.payment_no = p.payment_no INNER JOIN program_date pd
 			ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
 			ON pr.branch_no = b.branch_no
-<<<<<<< HEAD
+
 		<if test="paymentNo!=null">
 		WHERE pr.payment_no = #{paymentNo}
 		</if>
 		<if test="programDate!=null">
 		  AND pd.program_date = #{programDate}
 		</if>
-=======
-		WHERE pr.payment_no = #{paymentNo}
-			AND pd.program_date = #{programDate}
-		LIMIT #{beginRow}, #{rowPerPage}
->>>>>>> branch '도헌' of https://github.com/gurehd1105/final.git
+
 	</select>
 
-<<<<<<< HEAD
-=======
-	<select id="reservationCount" resultType="Integer">
-		SELECT count(*)
-		FROM program_reservation
-	</select>
->>>>>>> branch '도헌' of https://github.com/gurehd1105/final.git
+
 
 	<!-- 임시 프로그램 리스트 -->
 	<select id="selectProgram"
@@ -72,8 +62,6 @@
 			d.program_no = p.program_no
 		<where>p.program_no = #{ program_no }</where>;
 	</select>
-
-
 
 	<insert id="insertReservation"
 		parameterType="com.example.gym.vo.ProgramReservation">

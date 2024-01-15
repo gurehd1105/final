@@ -34,7 +34,7 @@
     	</el-form-item>
     	
     	<el-form-item>
-<<<<<<< HEAD
+
     		<el-calendar v-model="selectDate" >
     			<template #date-cell="{ data }">
 			      <p
@@ -43,17 +43,7 @@
 			      		data.isSelected ? 'is-selected' : '',
 			      		getInfo(data.day) ? '' : 'text-gray-200 hover:cursor-not-allowed',
 			      	]"
-			      	
-=======
-    		<el-calendar v-model="selectDate">
-    			<template #date-cell="{ data }">
-			      <p
-			      	:key="selectProgram" 
-			      	:class="[
-			      		data.isSelected ? 'is-selected' : '',
-			      		getInfo(data.day) ? '' : 'text-gray-200 hover:cursor-not-allowed',
-			      	]"
->>>>>>> branch '도헌' of https://github.com/gurehd1105/final.git
+			     
 			      	>
 			        {{ getDayString(data.day) }}
 			      </p>
@@ -79,13 +69,9 @@
             selectProgram: null,
             reservationInfos: [],
             selectDate: new Date(),
-<<<<<<< HEAD
-            
-=======
->>>>>>> branch '도헌' of https://github.com/gurehd1105/final.git
         }
     },
-    watch: {
+    watch: { 
     	selectProgram: function(now, before) {
     		const self = this;
     		if (now) {
