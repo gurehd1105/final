@@ -51,7 +51,7 @@ public class ProgramController extends DefaultController{
 	
 	//program 수정 폼 (본사 직원 접근 가능)
 	@GetMapping("/update")
-	public String selectProgramList(HttpSession session,
+	public String updateProgram(HttpSession session,
 									Model model,
 									@RequestParam int programNo	){
 		
@@ -73,7 +73,7 @@ public class ProgramController extends DefaultController{
 	
 	//program 수정 액션 (본사 직원 접근 가능)
 	@PostMapping("/update")
-	public String selectProgramList(HttpSession session,
+	public String updateProgram(HttpSession session,
 									Model model,
 									@RequestParam int programNo,
 									@RequestParam int maxCustomer,
