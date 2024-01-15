@@ -137,13 +137,14 @@
 	    }
 	},
 	watch: {
+		
 	},
 	methods: {
 		validCheck() {
 			return true;
 		},
 		onSubmit() {
-			document.getElementById('insertForm').submit();
+			<!-- document.getElementById('insertForm').submit(); -->
 		},
 		getSuggestion(query, cb) {
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);

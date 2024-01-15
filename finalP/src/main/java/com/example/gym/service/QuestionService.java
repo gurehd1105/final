@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gym.mapper.QuestionMapper;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
 
@@ -27,15 +28,14 @@ public class QuestionService {
 	}
 
 	// questionList 조회
-	public Map<String, Object> selectQuestionList(Map<String, Integer> paramMap) {
-		Map<String, Object> resultMap = new HashMap<>();
-
-		List<Question> questionList = questionMapper.selectQuestionList(paramMap);
-		int totalRow = questionMapper.selectCountOfQuestion();
-
-		resultMap.put("questionList", questionList);
-		resultMap.put("totalRow", totalRow);
-		return resultMap;
+	public List<Map<String, Object>> selectQuestionList(Page page) {
+		List<Map<String, Object>> list = questionMapper.selectQuestionList(page);	
+		return list;
+	}
+	// tatalCount 조회
+	public int totalCount() {
+		int result = questionMapper.selectCountOfQuestion();
+		return result;
 	}
 	
 	// questionOne 조회
