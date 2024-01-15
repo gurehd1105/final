@@ -19,7 +19,7 @@
 			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
 	>
 	   	<el-form-item label="상태">
-			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
+			<el-radio-group v-model="model.active" name="active" class="ml-4" >
 				<el-radio label="Y">주문가능</el-radio>
 				<el-radio label="N">품절</el-radio>
 			</el-radio-group>
@@ -65,7 +65,7 @@
 	  	return {
 		    model: {
 			    searchWord: '${searchWord}', 
-			    equipmentActive: '${equipmentActive}',
+			    active: '${active}',
 			    currentPage: 1, 
 		    },
 		    list: JSON.parse('${list}'), 

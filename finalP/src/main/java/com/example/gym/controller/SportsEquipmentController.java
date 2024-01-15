@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.service.SportsEquipmentService;
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.SportsEquipmentSearchResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SportsEquipmentController extends DefaultController{
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired SportsEquipmentService sportsEquipmentService;
+	@Autowired SportsEquipmentSearchResult result;
 	
 //----------------------------------------- SportsEquipment -------------------------------------
 	
@@ -45,13 +47,18 @@ public class SportsEquipmentController extends DefaultController{
 //		}
 //		
 		//service 호출
-		Map<String,Object> map = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		//Map<String,Object> map = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		result = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("list",toJson(map.get("list")));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("searchWord", map.get("searchWord"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
+//		model.addAttribute("list",toJson(map.get("list")));
+//		model.addAttribute("lastPage", map.get("lastPage"));
+//		model.addAttribute("searchWord", map.get("searchWord"));
+//		model.addAttribute("equipmentActive", map.get("equipmentActive"));
+		model.addAttribute("list",toJson(result.getList()));
+		model.addAttribute("lastPage", result.getLastPage());
+		model.addAttribute("searchWord", result.getSearchWord());
+		model.addAttribute("equipmentActive", result.getEquipmentActive());
 		
 		return "sportsEquipment/insert";
 	}  
@@ -72,13 +79,19 @@ public class SportsEquipmentController extends DefaultController{
 	    
 	    //service 호출
 	    sportsEquipmentService.insert(session, path, itemName, itemPrice, sportsEquipmentImgList);
-	  	Map<String,Object> map = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+	    
+	    result = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+	  	//Map<String,Object> map = 
 	  		
+	    System.out.println(result+"<--result");
 	  	//jsp에서 출력할 model
-	  	
-	  	model.addAttribute("list",toJson(map.get("list")));
-	  	model.addAttribute("lastPage", map.get("lastPage"));
-	  	model.addAttribute("searchWord", map.get("searchWord"));
+	  	model.addAttribute("list",toJson(result.getList()));
+	  	model.addAttribute("lastPage", result.getLastPage());
+	  	model.addAttribute("searchWord", result.getSearchWord());
+	    
+//	  	model.addAttribute("list",toJson(map.get("list")));
+//	  	model.addAttribute("lastPage", map.get("lastPage"));
+//	  	model.addAttribute("searchWord", map.get("searchWord"));
 
 		return "sportsEquipment/insert";
 	}
@@ -100,14 +113,14 @@ public class SportsEquipmentController extends DefaultController{
 //		}
 			
 		//service 호출
-		Map<String,Object> map = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		//Map<String,Object> map = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		result = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
 		
 		//jsp에서 출력할 model
-		model.addAttribute("list",toJson(map.get("list")));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("currentPage", map.get("currentPage"));
-		model.addAttribute("searchWord", map.get("searchWord"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
+		model.addAttribute("list",toJson(result.getList()));
+		model.addAttribute("lastPage", result.getLastPage());
+		model.addAttribute("searchWord",result.getSearchWord());
+		model.addAttribute("equipmentActive",result.getEquipmentActive());
 		
 		return "sportsEquipment/list";
 	}
