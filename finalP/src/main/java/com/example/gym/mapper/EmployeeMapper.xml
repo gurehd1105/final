@@ -109,8 +109,8 @@
 		e.branch_no AS branchNo,
 		e.employee_id AS employeeId,
 		e.employee_active AS employeeActive,
-		
 		b.branch_name AS branchName ,
+		DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
 		
 		ed.employee_name AS employeeName,
 		ed.employee_gender AS employeeGender,
@@ -136,7 +136,8 @@
 			e.employee_no AS employeeNo,
 			e.employee_id AS employeeId,
 			e.employee_active AS employeeActive,
-			e.createdate createdate , 
+			DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
+			
 			b.branch_name AS branchName ,
 			
 			ed.employee_name AS employeeName,

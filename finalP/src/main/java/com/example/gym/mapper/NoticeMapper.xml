@@ -10,7 +10,7 @@
 			n.employee_no employeeNo,
 			ed.employee_name employeeName,
 			n.notice_title noticeTitle,
-			n.createdate createdate 
+			DATE_FORMAT(n.createdate, '%Y-%m-%d') AS createdate 
 		FROM notice n
 			JOIN employee e ON n.employee_no = e.employee_no
 			LEFT OUTER JOIN employee_detail ed on e.employee_no = ed.employee_no
@@ -35,7 +35,7 @@
 			ed.employee_name employeeName,
 			n.notice_title noticeTitle,
 			n.notice_content noticeContent,
-			n.createdate
+			DATE_FORMAT(n.createdate, '%Y-%m-%d') AS createdate
 		FROM notice n
 		INNER JOIN employee e ON n.employee_no = e.employee_no
 		LEFT OUTER JOIN employee_detail ed on e.employee_no = ed.employee_no
