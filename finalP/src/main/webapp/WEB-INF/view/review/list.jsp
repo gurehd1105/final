@@ -7,34 +7,41 @@
 <c:set var="body">
 
 		<el-button type="primary" @click="insert()">리뷰작성</el-button>
-	<table>
-		<thead style="font-size: 20px;">
-			<tr>
-				<th>No</th>
-				<th>제목</th>
-				<th>지점명</th>
-				<th>프로그램</th>
-				<th>작성일</th>
-				<th>수정일</th>
-			</tr>
-		</thead>
-		<tbody v-for="(review,i) in reviewList" :key="i">
-			<tr>
-				<th>{{ i+1 }}</th>
-				<th @click="reviewOne(review.reviewNo)">{{ review.reviewTitle }}</th>
-				<th>{{ review.branchName }}</th>
-				<th>{{ review.programName }}</th>
-				<th>{{ new Date(review.createdate).toLocaleDateString() }}</th>
-				<th>{{ review.createdate == review.updatedate ? "-" : new Date(review.updatedate).toLocaleDateString() }}</th>
-			</tr>
-		</tbody>
-	</table>
+	<el-table :data="reviewList"  class="w-fit" @row-click="rowClick(scope.row)">
+	    <el-table-column prop="reviewNo" label="No"></el-table-column>
+	    <el-table-column prop="branchName" label="지점명" ></el-table-column>
+	     <el-table-column prop="programName" label="프로그램명" ></el-table-column>	
+	    <el-table-column prop="reviewTitle" label="제목" ></el-table-column>
+	    <el-table-column prop="customerId" label="작성자" ></el-table-column>
+	<c:if test="${ loginEmployee != null }">
+	
+	    <el-table-column label="수정/삭제" >
+	     <template #default="scope">
+	    	<el-button type="primary" @click="remove(scope.row)">
+	    	삭제</el-button> 
+	    	</template>
+	    </el-table-column>
+	</c:if>
+	</el-table>
+	
+	 <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
 
 </c:set>
 <c:set var="script">
 	data() {
 		return {
 			reviewList: JSON.parse('${reviewList}'),
+			pageNum: ${page.pageNum},
+			rowPerPage: ${page.rowPerPage },
+			totalCount: ${page.totalCount},
+			totalPage: ${page.totalPage },
 		}
 	},
 	
@@ -42,9 +49,32 @@
 		insert() {
 			location.href='${ctp}/review/insert';
 		},
-		reviewOne(no){
-			location.href='${ctp}/review/reviewOne?reviewNo=' + no;
-		},
-	},
+				
+		loadPage(pageNum) {
+      	const param = new URLSearchParams();
+      	param.set('pageNum', this.pageNum);
+      	param.set('rowPerPage', this.rowPerPage);      	
+		location.href = '/review/list?' + param.toString();
+      },
+      rowClick(row){
+      	console.log('Row.data:',row);
+      	location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
+      },
+	  remove(row) {
+         if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
+            const reviewNo = row.reviewNo;  <!-- 여기서 reviewNo를 추출합니다 -->
+            axios.post('${ctp}/review/delete', { reviewNo: reviewNo })
+            .then((res) => {
+               if(res.data == 1){
+                  alert('삭제가 완료되었습니다.');
+                  location.reload();
+               }
+            }).catch((error) => {
+               alert('삭제 중 에러가 발생했습니다.');
+               console.error(error);
+            })
+         }
+      },  
+   },
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

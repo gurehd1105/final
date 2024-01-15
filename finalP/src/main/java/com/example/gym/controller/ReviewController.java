@@ -1,6 +1,7 @@
 package com.example.gym.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
 import com.example.gym.vo.Customer;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Review;
 import com.example.gym.vo.ReviewReply;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,38 +28,24 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("review")
 public class ReviewController extends DefaultController {
-	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	private ReviewService reviewService;
 	@Autowired
 	private CustomerService customerService;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model, @RequestParam(defaultValue = "1") int currentPage, 
-											@RequestParam(defaultValue = "") String branchName) throws JsonProcessingException {		
-		
-		int rowPerPage = 10;
-		int beginRow = (currentPage - 1) * rowPerPage;
+	public String reviewList(Model model, Page page,
+								@RequestParam(defaultValue = "") String programName) {		
+		page.setTotalCount(reviewService.totalCount());
+		page.setRowPerPage(10);
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("branchName", branchName);
-		
-		Map<String, Object> resultMap = reviewService.selectReviewList(paramMap);
-		Object reviewList = resultMap.get("reviewList");
+		paramMap.put("beginRow", page.getBeginRow());
+		paramMap.put("rowPerPage", page.getRowPerPage());
+		paramMap.put("programName", programName);
+		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);
 		model.addAttribute("reviewList", toJson(reviewList));
+		model.addAttribute("page", page);
 		
-		
-		// 페이징
-		int totalRow = (int) resultMap.get("totalRow");
-		int lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("lastPage", lastPage);
-		model.addAttribute("totalRow", totalRow);
-		model.addAttribute("rowPerPage", rowPerPage);
 		return "review/list";
 	}
 	

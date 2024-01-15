@@ -1,6 +1,6 @@
 package com.example.gym.controller;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.QuestionService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -35,7 +32,7 @@ public class QuestionController extends DefaultController{
 	
 	// 리스트
 	@GetMapping("/list")
-	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) throws JsonProcessingException {
+	public String questionList(HttpSession session, Page page, Model model) {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
@@ -48,28 +45,12 @@ public class QuestionController extends DefaultController{
 			model.addAttribute("loginCustomer", loginCustomer);
 		}
 
-		int rowPerPage = 10;
-		int beginRow = (currentPage - 1) * rowPerPage;
-		Map<String, Integer> paramMap = new HashMap<>();
-		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("beginRow", beginRow);
-
-		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
-		Object questionList = resultMap.get("questionList");
-		model.addAttribute("questionList", toJson(questionList));
-
+		page.setTotalCount(questionService.totalCount());
+		page.setRowPerPage(10);
+		List<Map<String, Object>> list = questionService.selectQuestionList(page);
+		model.addAttribute("questionList", toJson(list));
+		model.addAttribute("page", page);	// 페이징 위해 함께 전달
 		
-		// 페이징
-		int totalRow = (int) resultMap.get("totalRow");
-		int lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("lastPage", lastPage);
-		model.addAttribute("totalRow", totalRow);
-		model.addAttribute("rowPerPage", rowPerPage);
-
 		return "question/list";
 	}
 		

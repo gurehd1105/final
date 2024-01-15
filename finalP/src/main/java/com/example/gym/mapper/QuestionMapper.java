@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
 
@@ -13,7 +14,7 @@ public interface QuestionMapper {
 	// question 시작
 	int insertQuestion(Question question);
 	
-	List<Question> selectQuestionList(Map<String, Integer> paramMap);
+	List<Map<String, Object>> selectQuestionList(Page page);
 	Integer selectCountOfQuestion();
 	
 	Map<String, Object> selectQuestionOne(Question question);
