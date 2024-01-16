@@ -67,10 +67,7 @@ public class CustomerService {
 		result = 1;
 	}
 	return result;
-}
-
-	
-	
+}	
 	
 	// 탈퇴
 	public int deleteCustomer(Customer paramCustomer) {
@@ -109,6 +106,7 @@ public class CustomerService {
 		boolean updateCustomerDetail = false;
 		boolean updateCustomerImg = false;
 		
+		
 		// customerDetail 수정
 		CustomerDetail customerDetail = new CustomerDetail();
 		customerDetail.setCustomerNo(customerNo);
@@ -124,11 +122,17 @@ public class CustomerService {
 		CustomerImg customerImg = new CustomerImg();
 		customerImg.setCustomerNo(customerNo);
 		customerImg.setCustomerImgOriginName(paramCustomerForm.getCustomerImg());
+		
+		
 		updateCustomerImg = customerMapper.updateCustomerImg(customerImg) == 1;
+		
+		if(!updateCustomerImg) {
+			updateCustomerImg = customerMapper.insertCustomerImg(customerImg) == 1;
+		}		
 		
 		if (updateCustomerDetail && updateCustomerImg) {
 			result = 1;
-		}
+		} 
 
 			return result;
 	}

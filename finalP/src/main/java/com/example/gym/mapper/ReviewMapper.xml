@@ -6,10 +6,7 @@
 						resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
-				case when CHAR_LENGTH(r.review_title) <![CDATA[ <= ]]>  10
-				then r.review_title
-				ELSE CONCAT(substr(r.review_title,1, 10), '...')
-				END AS reviewTitle,	
+			r.review_title AS reviewTitle,	
 			
 			b.branch_name AS branchName,
 			

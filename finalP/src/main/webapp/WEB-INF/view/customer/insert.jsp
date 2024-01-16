@@ -19,16 +19,16 @@
 		   :on-success="handleSuccess"
 		 >
 		   <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar"/>		   	
-		   <el-icon v-else class="avatar-uploader-icon" ><Plus /><span>+</span></el-icon>
+		   <el-icon v-else class="avatar-uploader-icon" ><Plus /><span>(선택)</span></el-icon>
 		 </el-upload>
 		 <input v-if="customer.customerImg" type="hidden" :value="customer.customerImg" name="customerImg"/>
 				 </el-form-item>
 		  
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" name="customerId" placeholder="ID"><template #append>
+	        <el-input v-model="customer.id" id="checkId" placeholder="ID"><template #append>
         <el-button @click="duplication()">중복확인</el-button>
       </template></el-input>
-	    </el-form-item>
+	    </el-form-item>   
 	    
 	    <el-form-item label="비밀번호">
 	        <el-input v-model="customer.pw" type="password" show-password name="customerPw" placeholder="PASSWORD"/>
@@ -62,7 +62,7 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="우편번호">
-	        <el-input v-model="customer.address.postCode" disabled>
+	        <el-input v-model="customer.address.postCode" id="postCode" disabled>
 		      <template #append>
 		        <el-button @click="openPostCode()">
 		        	우편번호 찾기
@@ -72,21 +72,17 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="customer.address.address" name="address1" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.address" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="상세주소">
-			<el-input v-model="customer.address.detailAddr" name="address2" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.detailAddr" id="detailAddr" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="참고주소">
-			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.extraAddr" placeholder="ADDRESS"/>
 	    </el-form-item>
-	    
-	    <el-form-item>
-			<el-input type="hidden" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="address"/>
-	    </el-form-item>
-	    
+	    	    
 	    <el-form-item label="이메일">
 	    	<el-col :span="14">
 		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
@@ -101,13 +97,22 @@
 			        placeholder="EMAIL ADDRESS"
 			      />
 	        </el-col>	      
-	    </el-form-item>
-	    <el-form-item>
-	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
-	    </el-input>
+	    </el-form-item>	   
 	    
 	    <el-form-item>
 	      	<el-button type="primary" @click="onSubmit(form)">회원가입</el-button>
+	    </el-form-item>
+	    
+	    <el-form-item>
+	        <el-input type="hidden" id="customerId" name="customerId"/>
+	    </el-form-item>
+	    
+	     <el-form-item>
+	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
+	    </el-input>	    
+	    
+	    <el-form-item>
+			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="address"/>
 	    </el-form-item>
 	</el-form>
 </c:set>
@@ -149,9 +154,7 @@
 		validCheck() {
 			return true;
 		},
-		onSubmit() {
-			<!-- document.getElementById('insertForm').submit(); -->
-		},
+		
 		getSuggestion(query, cb) {
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);
 			cb(result.map(x => { return { value: x } }));
@@ -161,9 +164,7 @@
 		handleSuccess(response, uploadFile) {
 			this.customer.customerImg = '${ctp}/upload/customer/' + response;
 		},
-		duplication(){
-			<!-- 중복확인 -->
-		},			
+					
 		openPostCode() {
 			const self = this;
 			new daum.Postcode(
@@ -213,6 +214,54 @@
 					}
 				}
 			}).open();
+		},
+		
+		onSubmit() {	<!-- submit 및 계정정보 유효성검사 -->
+		const finalId = document.getElementById('customerId').value;
+		const address = document.getElementById('address').value;
+		const detailAddr = document.getElementById('detailAddr').value;
+		const postCode = document.getElementById('postCode').value;
+			if(finalId.length < 1){
+				alert('ID 중복을 확인해주세요.');
+			} else if(this.customer.pw.length < 4 || this.customer.phone.length < 4
+			 || this.customer.customerEmailId.length < 4 || this.customer.customerEmailJuso.length < 4 ){
+				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+			} else if(this.customer.name.length < 2) {
+				alert('이름은 2글자 이상 입력해주세요.');
+			} else if(this.customer.gender.length < 1) {
+				alert('성별을 선택해주세요.');
+			} else if(this.customer.pw != this.customer.pwChk) {
+				alert('비밀번호 확인 란이 정확하지 않습니다.');
+			} else if(detailAddr.length < 1 || postCode.length < 1) {
+				alert('우편번호 및 상세주소를 입력해주세요.');
+			} else {
+				document.getElementById('insertForm').submit();
+			}		
+		},
+		
+		duplication(){<!-- 중복확인 -->
+			if(this.customer.id.length < 4){
+				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+				document.getElementById('customerId').value = '';
+			} else{
+				const self = this;
+				const customer = {
+					customerId: this.customer.id,
+				};
+				axios.post('${ctp}/customer/idCheck', customer)
+				.then((res) => {
+					if(res.data == 0){
+						alert('사용가능한 ID입니다.');
+						document.getElementById('customerId').value = '';
+						document.getElementById('customerId').value = this.customer.id;
+					} else {
+						alert('중복 ID입니다.');
+						document.getElementById('customerId').value = '';
+					}
+				}).catch((res) => {
+					alert('error');
+				})	
+			}		
 		},
 		
 	}

@@ -1,83 +1,77 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="title" value="리뷰상세" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
-<c:set var="ctp" value="${pageContext.request.contextPath}"/>
+<c:set var="ctp" value="${pageContext.request.contextPath}" />
 <c:set var="body">
 
-		<el-button type="primary" @click="list()">목록으로</el-button>
-	<el-descriptions title="" :column="2" border>
-		<el-descriptions-item v-for="key of Object.keys(review)" :label="key">{{ review[key] }}</el-descriptions-item>
-	</el-descriptions>
-		<br>		
-	<el-button type="primary" @click="updateForm()">수정</el-button>
-	<el-button type="primary" @click="deleteForm()" id="deleteBtn">삭제</el-button>
+	<el-button type="primary" @click="list()">목록으로</el-button>
+	<el-descriptions title="" :column="2" border> <el-descriptions-item
+		v-for="key of Object.keys(review)" :label="key">{{
+	review[key] }}</el-descriptions-item> </el-descriptions>
+	<c:if test="${ loginCustomer.customerNo == reviewMap.customerNo }">
+		<!-- 로그인된 본인 글에만 표시 -->
 		<br>
+		<el-button type="primary" @click="updateForm()">수정</el-button>
+		<el-button type="primary" @click="deleteForm()" id="deleteBtn">삭제</el-button>
 
-		
-	<span id="deleteForm" style="display:none; "> 
-			<!-- 삭제 시 고객PW 입력 form / 삭제버튼 클릭 시 보여지도록 구성 -->
-		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/delete"
-			method="post" id="deleteAct"> 
-					
-			<el-form-item label="PW" >
-				<input type="password" id="customerPw" placeholder="PW 입력" />&nbsp;			
-				<el-button type="primary" @click="deleteAct()">삭제</el-button>
-		 </el-form-item> 
-		 <el-form-item>
-				<input type="hidden" name="customerId" v-model="review.아이디">
-			</el-form-item> 
-			
-			<el-form-item> 
-				<input type="hidden" name="reviewNo"	v-model="reviewNo"> 
-			</el-form-item> 
-			
-		</el-form>
-	</span>
-		<strong> Content </strong>
-	<textarea readonly rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
-	
-	<c:if test="${ replyMap != null }"><!-- 답변 있을 시 답변표시 -->
-		<el-descriptions title="리뷰 답변" column="2" border>
-			<el-descriptions-item v-for:="key of Object.keys(reply)" :label="key">{{ reply[key] }}</el-descriptions-item>
-		</el-descriptions>
-		<span id="replyBtn">
-			<el-button type="primary" @click="updateReply()">수정</el-button>
-			<el-button type="primary" @click="deleteReply()">삭제</el-button>
+		<span id="deleteForm" style="display: none;"> <!-- 삭제 시 고객PW 입력 form / 삭제버튼 클릭 시 보여지도록 구성 -->
+			<el-form label-position="right" ref="form" label-width="150px"
+				status-icon class="max-w-lg" action="${ctp}/review/delete"
+				method="post" id="deleteAct"> <el-form-item label="PW">
+			<input type="password" id="customerPw" placeholder="PW 입력" />&nbsp;
+			<el-button type="primary" @click="deleteAct()">삭제</el-button> </el-form-item> <el-form-item>
+			<input type="hidden" name="customerId" v-model="review.아이디">
+			</el-form-item> <el-form-item> <input type="hidden" name="reviewNo"
+				v-model="reviewNo"> </el-form-item> </el-form>
 		</span>
-			<span id="updateReplyBtn" style="display: none;">
-			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
+	</c:if>
+	<br>
+
+	<strong> Content </strong>
+	<br>
+	<textarea readonly rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
+
+	<c:if test="${ replyMap != null }">
+		<!-- 답변 있을 시 답변표시 -->
+		<el-descriptions title="리뷰 답변" column="2" border> <el-descriptions-item
+			v-for:="key of Object.keys(reply)" :label="key">{{
+		reply[key] }}</el-descriptions-item> </el-descriptions>
+		<span id="replyBtn"> <el-button type="primary"
+				@click="updateReply()">수정</el-button> <el-button type="primary"
+				@click="deleteReply()">삭제</el-button>
+		</span>
+		<span id="updateReplyBtn" style="display: none;"> <el-button
+				type="primary" @click="updateReplyAct()">완료</el-button>
 			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
-			</span>
-		<textarea id="reviewReplyContent" readonly rows="10" cols="160" style="resize: none;">{{ replyContent }}</textarea>
-	
+		</span>
+		<textarea id="reviewReplyContent" readonly rows="10" cols="160"
+			style="resize: none;">{{ replyContent }}</textarea>
+
 	</c:if>
-	
+	<br>
+	<br>
 	<c:if test="${ replyMap == null }">
+		<!-- 답변 없을 시 답변표시 -->
 		<p>답변이 등록되지 않았습니다. 조금만 기다려주세요.</p>
-	</c:if>	
-	
-	<c:if test="${ replyMap == null }">
-		<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/review/insertReply"
-			method="post" id="insertReplyAct"> 
-			<el-form-item column="2">
-				<input type="hidden" name="reviewNo" v-model="reviewNo" />
-				<input type="hidden" name="employeeNo" v-model="employeeNo" />
-			</el-form-item>	
-			
-			<el-form-item label="작성자">
-				<input readonly  v-model="employeeId" />
-			</el-form-item>	
-			
-			<el-form-item label="답변">
-				<textarea rows="10" cols="160" style="resize: none;" name="reviewReplyContent"></textarea>
-			</el-form-item>
-				<el-button type="primary" @click="insertReply()">등록</el-button>
-		</el-form>	
 	</c:if>
-	
-	
+
+	<c:if test="${ replyMap == null && loginEmployee != null}">
+		<!-- 등록답변 없음 + 관리자 로그인 시 표시 -->
+		<el-form label-position="right" ref="form" label-width="150px"
+			status-icon class="max-w-lg" action="${ctp}/review/insertReply"
+			method="post" id="insertReplyAct"> <el-form-item column="2">
+		<input type="hidden" name="reviewNo" v-model="reviewNo" /> <input
+			type="hidden" name="employeeNo" v-model="employeeNo" /> </el-form-item> <el-form-item
+			label="작성자"> <input readonly v-model="employeeId" />
+		</el-form-item> <el-form-item label="답변"> <textarea rows="10"
+			cols="160" style="resize: none;" name="reviewReplyContent"></textarea>
+		</el-form-item> <el-button type="primary" @click="insertReply()">등록</el-button> </el-form>
+	</c:if>
+
+	<br>
 </c:set>
 
 <c:set var="script">	
@@ -198,4 +192,4 @@
 	
 </c:set>
 
-<%@ include file="/inc/user_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp"%>

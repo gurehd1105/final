@@ -1,40 +1,40 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="title" value="리뷰목록" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
-<c:set var="ctp" value="${pageContext.request.contextPath}"/>
+<c:set var="ctp" value="${pageContext.request.contextPath}" />
 <c:set var="body">
 
-		<p>리뷰 목록 </p>
-			<span></span><!-- 			programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
-				<el-button type="primary" @click="select(customerName)">조회</el-button>
-				
-	<el-button type="primary" @click="insert()">리뷰작성</el-button>
-	<el-table :data="reviewList" class="w-fit" @row-click="rowClick" class-name="cursor-pointer">
-	    <el-table-column prop="reviewNo" label="No"></el-table-column>
-	    <el-table-column prop="branchName" label="지점명" ></el-table-column>
-	    	<el-table-column prop="programName" label="프로그램명" ></el-table-column>	
-	    <el-table-column prop="reviewTitle" label="제목" ></el-table-column>
-	    <el-table-column prop="customerId" label="작성자" ></el-table-column>
-		<c:if test="${ loginEmployee != null }">
+	<p>리뷰 목록</p>
+	<span></span>
+	<!-- 			programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
+	<input />&nbsp;
+				<el-button type="primary" @click="select(customerName)">검색</el-button>
 
-		    <el-table-column label="삭제" >
-	     		<template #default="scope">
-		    		<el-button type="primary" @click="remove(scope.row)">삭제</el-button> 
-		    	</template>
-		    </el-table-column>
-		</c:if>
-	</el-table>
-	
-	 <!-- 페이징 네비게이션 -->
-    <div class="flex justify-center">
-      <el-pagination layout="prev, pager, next" 
-      	:page-size="rowPerPage" 
-		v-model:current-page="pageNum" 
-		:total="totalCount"
-		@change="loadPage" />
-    </div>
+	<el-button type="primary" @click="insert()">리뷰작성</el-button>
+	<el-table :data="reviewList" class="w-fit" @row-click="rowClick"
+		class-name="cursor-pointer"> <el-table-column
+		prop="reviewNo" label="No"></el-table-column> <el-table-column
+		prop="branchName" label="지점명"></el-table-column> <el-table-column
+		prop="programName" label="프로그램명"></el-table-column> <el-table-column
+		prop="reviewTitle" label="제목"></el-table-column> <el-table-column
+		prop="customerId" label="작성자"></el-table-column> <c:if
+		test="${ loginEmployee != null }">
+
+		<el-table-column label="삭제">
+		<template #default="scope">
+			<el-button type="primary" @click="remove(scope.row)">삭제</el-button>
+		</template>
+		</el-table-column>
+	</c:if> </el-table>
+
+	<!-- 페이징 네비게이션 -->
+	<div class="flex justify-center">
+		<el-pagination layout="prev, pager, next" :page-size="rowPerPage"
+			v-model:current-page="pageNum" :total="totalCount" @change="loadPage" />
+	</div>
 
 </c:set>
 <c:set var="script">
@@ -84,4 +84,4 @@
       },  
    },
 </c:set>
-<%@ include file="/inc/user_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp"%>
