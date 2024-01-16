@@ -26,8 +26,9 @@ public class CustomerLoginFilter implements Filter {
         
         boolean isLogin = request.getSession().getAttribute("loginCustomer") != null;
         boolean isLoginPath = request.getServletPath().equals("/customer/login");
+        boolean isInsertPath = request.getServletContext().equals("/customer/insert");
         // 세션에서 로그인 정보를 체크하는 로직
-        if (!isLogin && !isLoginPath) {
+        if (!isLogin && !isLoginPath && isInsertPath) {
             // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리
             response.sendRedirect("/customer/login"); // 로그인 페이지로 리다이렉트하는 예시
             return;

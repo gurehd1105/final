@@ -35,6 +35,8 @@
 		<el-button type="primary" @click="updateOne()">정보수정</el-button>
 		
 		<el-button type="primary" @click="updatePw()">PW변경</el-button>
+		
+		<el-button type="primary" @click="remove()">계정탈퇴</el-button>
 </c:set>
 
 <c:set var="script">
@@ -59,7 +61,10 @@
 		},
 		updatePw(){
 			location.href = '${ctp}/customer/updatePw';
-		}
+		},
+		remove(){
+			location.href = '${ctp}/customer/delete';
+		},
 	}
 
 </c:set>

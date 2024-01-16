@@ -29,6 +29,10 @@
 		</el-form-item>
 		
 		<el-form-item>
+			<el-input type="hidden" v-model="no" name="customerNo"/>
+		</el-form-item>
+		
+		<el-form-item>
 			<el-button type="primary" @click="submit()">완료</el-button>
 		</el-form-item>
 		
@@ -40,6 +44,7 @@
 <c:set var="script">
 	data() {
 		return {
+			no: '${loginCustomer.customerNo}',
 			id: '${loginCustomer.customerId}',
 			pw: '',
 			newPw: '',

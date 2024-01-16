@@ -11,7 +11,7 @@ import com.example.gym.vo.CustomerImg;
 @Mapper
 public interface CustomerMapper {
 	// login
-	Customer loginCustomer(Customer customer);
+	Map<String, Object> loginCustomer(Customer customer);
 	
 	// insert (가입)
 		// ID 중복체크
@@ -27,7 +27,7 @@ public interface CustomerMapper {
 	int deleteCustomerDetail(Customer customer);
 	
 	// 상세보기 = 마이페이지
-	Map<String, Object> customerOne(Customer customer);
+	Map<String, Object> customerOne(int customerNo);
 	
 	// 정보수정
 		// 상세정보 변경

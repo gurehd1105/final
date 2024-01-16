@@ -25,7 +25,9 @@
 				 </el-form-item>
 		  
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>
+	        <el-input v-model="customer.id" name="customerId" placeholder="ID"><template #append>
+        <el-button @click="duplication()">중복확인</el-button>
+      </template></el-input>
 	    </el-form-item>
 	    
 	    <el-form-item label="비밀번호">
@@ -155,7 +157,9 @@
 		handleSuccess(response, uploadFile) {
 			this.customer.customerImg = '${ctp}/upload/customer/' + response;
 		},
-			
+		duplication(){
+			<!-- 중복확인 -->
+		},			
 		openPostCode() {
 			const self = this;
 			new daum.Postcode(

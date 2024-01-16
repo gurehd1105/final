@@ -73,17 +73,17 @@
 		SELECT 
 			r.review_no AS reviewNo,
 			r.review_title AS reviewTitle,
-			r.review_content AS reviewContent,
+			r.review_content AS reviewContent,		<!-- 리뷰내용 -->
 			r.createdate AS createdate,
-			r.updatedate AS updatedate,								<!-- 리뷰내용 -->
-			
-			ca.customer_attendance_date AS customerAttendanceDate,	<!-- 방문시간 -->
-					
+			r.updatedate AS updatedate,							
+			pr.program_reservation_no AS programReservationNo,
+			ca.customer_attendance_enter_time AS customerAttendanceEnterTime,			<!-- 방문시시간 -->
+			pro.program_name AS programName,
 			pr.branch_no AS branchNo,			
-			b.branch_name AS branchName,			<!-- 어느지점 -->
+			b.branch_name AS branchName,		<!-- 방문지점 -->
 			
-			c.customer_no AS customerNo,
-			c.customer_id AS customerId				<!-- 방문자 -->
+			c.customer_no AS customerNo,			<!-- 방문자 -->
+			c.customer_id AS customerId		
 			
 		FROM review r 
 		INNER JOIN customer_attendance ca
@@ -98,6 +98,8 @@
 		ON p.payment_no = pr.payment_no
 		INNER JOIN customer c
 		ON c.customer_no = p.customer_no
+		INNER JOIN program pro
+		ON pro.program_no = pd.program_no
 		
 		WHERE review_no = #{reviewNo}	
 	</select>

@@ -23,9 +23,15 @@ public class CustomerService {
 	private CustomerMapper customerMapper;
 
 	// 로그인
-	public Customer loginCustomer(Customer paramCustomer) {
-		Customer loginCustomer = customerMapper.loginCustomer(paramCustomer);
+	public Map<String, Object> loginCustomer(Customer paramCustomer) {
+		Map<String, Object> loginCustomer = customerMapper.loginCustomer(paramCustomer);
 		return loginCustomer;
+	}
+	// ID 중복확인 / 회원가입
+	public Customer checkId(Customer customer) {
+		Customer check = customerMapper.checkId(customer);
+		
+		return check;
 	}
 	
 	// 회원가입
@@ -72,9 +78,9 @@ public class CustomerService {
 		boolean updateActive = false;
 		boolean deleteDetail = false;
 		boolean deleteImg = false;
-		Customer check = customerMapper.loginCustomer(paramCustomer);
+		boolean check = customerMapper.loginCustomer(paramCustomer) != null;
 
-		if (check != null) {
+		if (check) {
 			log.info("PW 정상확인");
 
 			updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
@@ -91,8 +97,8 @@ public class CustomerService {
 	}
 
 	// 상세보기
-	public Map<String, Object> customerOne(Customer paramCustomer) {
-		Map<String, Object> resultMap = customerMapper.customerOne(paramCustomer);
+	public Map<String, Object> customerOne(int customerNo) {
+		Map<String, Object> resultMap = customerMapper.customerOne(customerNo);
 		return resultMap;
 	}
 	
@@ -131,10 +137,10 @@ public class CustomerService {
 	// 비밀번호 수정
 	public int updateCustomerPw(Customer checkCustomer, String customerNewPw) {
 		int result = 0;
-		Customer check = customerMapper.loginCustomer(checkCustomer);
-		if (check != null) {
+		boolean check = customerMapper.loginCustomer(checkCustomer) != null;
+		if (check) {
 			Customer updatePw = new Customer();
-			updatePw.setCustomerNo(check.getCustomerNo());
+			updatePw.setCustomerNo(checkCustomer.getCustomerNo());
 			updatePw.setCustomerPw(customerNewPw);
 			result = customerMapper.updateCustomerPw(updatePw);
 		}
