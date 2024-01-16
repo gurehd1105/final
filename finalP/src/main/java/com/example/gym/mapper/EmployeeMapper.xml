@@ -45,16 +45,10 @@
 		parameterType="com.example.gym.vo.EmployeeImg">
 		INSERT INTO employee_img (
 		employee_no,
-		employee_img_origin_name,
-		employee_img_file_name,
-		employee_img_size,
-		employee_img_type
+		employee_img_origin_name
 		) VALUES (
 		#{employeeNo},
-		#{employeeImgOriginName},
-		#{employeeImgFileName},
-		#{employeeImgSize},
-		#{employeeImgType}
+		#{employeeImgOriginName}
 		)
 	</insert>
 	<!-- 직원추가 끝 -->
