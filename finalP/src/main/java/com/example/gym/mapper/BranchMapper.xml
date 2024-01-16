@@ -22,11 +22,11 @@
 			#{branchAddress} 
 		)
 	</insert>
-	<!-- 관리자 추가시 필요한 지점 조회 -->
+		<!-- 관리자 추가시 필요한 지점 조회 -->
 	<select id="branch" resultMap="Branch">
 		SELECT *
 		FROM branch
-		WHERE branchActive = 'Y'
+		WHERE branch_active = 'Y'
 	</select>
 	<!-- 고객과 본점 관리자를 위한 지점 목록 조회  -->
 	<select id="branchList"  parameterType="com.example.gym.vo.Page"
@@ -75,7 +75,7 @@
 		SET
 			branch_name = #{branchName},
 			branch_tel = #{branchTel},
-			branch_address = #{branch_address},
+			branch_address = #{branchAddress},
 			updatedate = NOW()
 		<where>
 			branch_no = #{branchNo}
