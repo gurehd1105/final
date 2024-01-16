@@ -13,11 +13,15 @@
 		label-position="right" label-width="150px" status-icon method="post"> 
 		
 	<el-form-item label="아이디">
-		<el-input readonly v-model="id" /> 
+		<el-input readonly name = "customerId" v-model="id" /> 
 	</el-form-item> 
 	
 	<el-form-item label="비밀번호">
 		<el-input type="password" name="customerPw" v-model="pw" placeholder="PASSWORD"/> 
+	</el-form-item> 
+	
+	<el-form-item>
+		<el-input type="hidden" name="customerNo" v-model="no"/> 
 	</el-form-item> 
 	
 	<el-form-item>
@@ -30,6 +34,7 @@
 <c:set var="script">
 	data() {
 		return {
+			no: '${loginCustomer.customerNo}',
 			id: '${loginCustomer.customerId}',
 			pw: '',
 		}

@@ -4,17 +4,31 @@
 
 		<!-- 로그인 -->
 	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
-						resultType="com.example.gym.vo.Customer">
-	SELECT
-				customer_no AS customerNo,
-				customer_id AS customerId,
-				customer_active AS customerActive,
-				createdate, updatedate
-		FROM customer
-	
-	WHERE customer_id = #{customerId}
-	AND customer_pw = PASSWORD(#{customerPw})
-	AND customer_active = 'Y'
+						resultType="java.util.Map">
+		SELECT
+		   c.customer_no AS customerNo,
+		   c.customer_id AS customerId,
+		   c.customer_active AS customerActive,
+		   c.createdate, c.updatedate,
+		   n.paymentNo
+		FROM customer c
+		LEFT OUTER JOIN 
+		(SELECT 
+		      p.payment_no AS paymentNo,
+		      p.customer_no AS customerNo,
+		      p.membership_no AS membershipNo,
+		      p.payment_date AS paymentDate,
+		      p.createdate, p.updatedate
+		   FROM payment p
+		   INNER JOIN customer c
+		   ON p.customer_no = c.customer_no
+		WHERE c.customer_id= #{customerId}
+		ORDER BY createdate DESC
+		LIMIT 0,1) n
+		ON c.customer_no = n.customerNo
+		WHERE customer_id = #{customerId}
+		AND customer_pw = PASSWORD(#{customerPw})
+		AND customer_active = 'Y'
 	</select>
 	
 	<!-- 가입 프로세스 시작 -->
@@ -97,7 +111,7 @@
 	<!-- 탈퇴 프로세스 종료 -->
 	
 	<!-- 상세정보/이미지 -> 마이페이지  -->
-	<select id="customerOne" parameterType="com.example.gym.vo.Customer"
+	<select id="customerOne" parameterType="Integer"
 										resultType="java.util.Map">
 		SELECT
 			c.customer_no AS customerNo,
@@ -123,7 +137,7 @@
 			ci.createdate AS ciCreatedate, 
 			ci.updatedate AS ciUpdatedate
 		FROM customer c 
-		INNER JOIN customer_detail cd
+		LEFT OUTER JOIN customer_detail cd
 		ON c.customer_no = cd.customer_no
 		LEFT OUTER JOIN customer_img ci
 		ON c.customer_no = ci.customer_no

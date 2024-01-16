@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="title" value="문의작성" />
+<c:set var="title" value="문의내용" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
@@ -46,6 +46,12 @@
 		questionOne(no){
 			location.href = '${ctp}/question/questionOne?questionNo=' + no;
 		},
+		rowClick(row, column){
+	      	console.log('Row.data:',row, column);
+	      	if (column.property) {
+	      	  location.href='${ctp}/question/questionOne?questionNo=' + row.questionNo;
+	      	}
+	      },
 		
 		loadPage(pageNum) {
       	const param = new URLSearchParams();

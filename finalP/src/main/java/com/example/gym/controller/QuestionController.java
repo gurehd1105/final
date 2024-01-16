@@ -33,18 +33,6 @@ public class QuestionController extends DefaultController{
 	// 리스트
 	@GetMapping("/list")
 	public String questionList(HttpSession session, Page page, Model model) {
-		// id 유효성검사
-		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-
-		if (loginEmployee != null) {
-			model.addAttribute("loginEmployee", loginEmployee);
-		}
-
-		if (loginCustomer != null) {
-			model.addAttribute("loginCustomer", loginCustomer);
-		}
-
 		page.setTotalCount(questionService.totalCount());
 		page.setRowPerPage(10);
 		List<Map<String, Object>> list = questionService.selectQuestionList(page);
@@ -57,12 +45,6 @@ public class QuestionController extends DefaultController{
 	// insertForm
 	@GetMapping("/insert")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-		model.addAttribute("loginCustomer", loginCustomer);
 		return "question/insert";
 	}
 	
