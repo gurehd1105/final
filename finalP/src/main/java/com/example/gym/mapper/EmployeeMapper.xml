@@ -6,7 +6,7 @@
 	<select id="checkId" parameterType="com.example.gym.vo.Employee"
 		resultType="com.example.gym.vo.Employee">
 		SELECT
-		employee_id AS employeeId,
+		    employee_id AS employeeId,
 		FROM employee
 		WHERE employee_id = #{employeeId}
 	</select>
@@ -15,40 +15,40 @@
 		<selectKey order="AFTER" resultType="Integer"
 			keyProperty="employeeNo">SELECT last_insert_id()</selectKey>
 		INSERT INTO employee (
-		branch_no ,
-		employee_id ,
-		employee_pw
+            branch_no ,
+            employee_id ,
+            employee_pw
 		) VALUES (
-		#{branchNo} ,
-		#{employeeId} ,
-		PASSWORD(#{employeePw})
+            #{branchNo} ,
+            #{employeeId} ,
+            PASSWORD(#{employeePw})
 		)
 	</insert>
 	<insert id="insertEmployeeDetail"
 		parameterType="com.example.gym.vo.EmployeeDetail">
 		INSERT INTO employee_detail (
-		employee_no ,
-		employee_name ,
-		employee_phone ,
-		employee_email ,
-		employee_gender
+            employee_no ,
+            employee_name ,
+            employee_phone ,
+            employee_email ,
+            employee_gender
 		) VALUES (
-		#{employeeNo} ,
-		#{employeeName} ,
-		#{employeePhone} ,
-		#{employeeEmail} ,
-		#{employeeGender}
+            #{employeeNo} ,
+            #{employeeName} ,
+            #{employeePhone} ,
+            #{employeeEmail} ,
+            #{employeeGender}
 		)
 	</insert>
 	<!-- empImg Insert -->
 	<insert id="insertEmployeeImg"
 		parameterType="com.example.gym.vo.EmployeeImg">
 		INSERT INTO employee_img (
-		employee_no,
-		employee_img_origin_name
+            employee_no,
+            employee_img_origin_name
 		) VALUES (
-		#{employeeNo},
-		#{employeeImgOriginName}
+            #{employeeNo},
+            #{employeeImgOriginName}
 		)
 	</insert>
 	<!-- 직원추가 끝 -->
