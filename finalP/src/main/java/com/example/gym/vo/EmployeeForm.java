@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmployeeForm {
 	private int branchNo;
+	private String branchName;
 	private int employeeNo;
 	private String employeeId;
 	private String employeePw;

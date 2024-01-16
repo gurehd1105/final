@@ -17,8 +17,12 @@
 	<el-form-item label="제목">
 		<el-input v-model="branch.branchName" name="branchName">
 	</el-form-item>
-	<el-form-item label="제목">
+	<el-form-item label="전화번호">
 		<el-input v-model="branch.branchTel" name="branchTel">
+	</el-form-item>
+	
+	<el-form-item label="현주소">
+		<el-input v-model="branch.branchAddress" name="branchAddress" type="readonly">
 	</el-form-item>
 	
 	<el-form-item label="우편번호">
@@ -55,6 +59,7 @@
                 branchNo: ${branch.branchNo}, 
                 branchName: '${branch.branchName}', 
                 branchTel: '${branch.branchTel}', 
+                branchAddress: '${branch.branchAddress}', 
                 address: {
                     postCode: '${branch.address.postCode}',  <!-- 기존 주소 정보 로드  --> 
                     address: '${branch.address.address}',  <!-- 기존 주소 정보 로드  --> 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,9 @@ import com.example.gym.service.EmployeeService;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeForm;
+import com.example.gym.vo.Notice;
+import com.example.gym.vo.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -207,13 +211,24 @@ public class EmployeeController extends DefaultController {
 		return "employee/employeeOne";
 	}
 
-	// 고객 목록 리스트
+	// 직원 조회(목록)
 	@GetMapping("/list")
-	public String customerList(Model model) {
-		Map<String, Object> customerList = customerService.selectAllCustomer();
-		log.info(customerList.toString());
+	public String EmployeeList(Model model, Page page) 
+		throws JsonProcessingException {
+		// 페이징 변수들
+		int totalCount = employeeService.getEmployeeTotal(); // 게시글 총 갯수
+		page.setTotalCount(totalCount);
 
-		model.addAttribute("customerList", customerList);
+		// 서비스 호출
+		List<Employee> employeeList = employeeService.list(page);
+		model.addAttribute("employeeList", mapper.writeValueAsString(employeeList));
+		
+		// 결과물 디버깅
+		log.info(employeeList.toString());
+
+		// 모델객체에 담아서 뷰에 전달
+		model.addAttribute("page", page);
+		
 		return "employee/list";
 	}
 }
