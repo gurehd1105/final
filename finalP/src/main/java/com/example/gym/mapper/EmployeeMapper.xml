@@ -40,7 +40,7 @@
 		#{employeeGender}
 		)
 	</insert>
-	<!-- customerImg Insert -->
+	<!-- empImg Insert -->
 	<insert id="insertEmployeeImg"
 		parameterType="com.example.gym.vo.EmployeeImg">
 		INSERT INTO employee_img (
@@ -103,12 +103,12 @@
 	</select>
 
 	<!-- 관리자 목록 -->
-	<select id="selectAllEmployee" resultType="java.util.Map">
+	<select id="list" parameterType="com.example.gym.vo.Page"
+				resultType="com.example.gym.vo.EmployeeForm">
 		SELECT
 		e.employee_no AS employeeNo,
 		e.branch_no AS branchNo,
 		e.employee_id AS employeeId,
-		e.employee_active AS employeeActive,
 		b.branch_name AS branchName ,
 		DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
 		
@@ -121,14 +121,25 @@
 		ei.employee_img_origin_name AS employeeImgOriginName
 		FROM
 		employee e 
-		INNER JOIN employee_detail ed
-		ON e.employee_no = ed.employee_no
 		INNER JOIN branch b
 		ON e.branch_no = b.branch_no
+		LEFT OUTER JOIN employee_detail ed
+		ON e.employee_no = ed.employee_no
 		LEFT OUTER JOIN employee_img ei
-		ON e.employee_no = ei_employee_no
+		ON e.employee_no = ei.employee_no
+		WHERE e.employee_active='Y'
+		ORDER BY createdate DESC
+		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
-	
+	<!--  전체 관리자 수 조회를 위한 쿼리 -->
+	<select id="selectEmployeeTotal"
+			resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			employee
+		WHERE employee_active='Y'
+	</select>
 	<!-- 상세정보/이미지 -> 마이페이지  -->
 	<select id="getEmployee" parameterType="com.example.gym.vo.Employee"
 										resultType="java.util.Map">
