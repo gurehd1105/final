@@ -8,17 +8,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HomeController {
 
+    @GetMapping("/")
+    public String index() {
+        return home();
+    }
+
     @GetMapping("/home")
     public String home() {
         return "home";
     }
-    
+
     @GetMapping("/emailCheck")
     @ResponseBody
     public ResponseEntity<Boolean> emailCheck() {
-    	return ResponseEntity.ok(Math.random() >= 0.5);
+        return ResponseEntity.ok(Math.random() >= 0.5);
     }
-    
+
     @GetMapping("/dashboard")
     public String dashboard() {
         return "dashboard";

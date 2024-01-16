@@ -8,7 +8,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="container min-w-[400px]"
 		 action="${ctp}/customer/login" method="post"  id="loginForm">
 		 
 		 <el-form-item label="아이디">
@@ -23,9 +23,7 @@
 		 	<el-button type="primary" @click="submit()">로그인</el-button>
 		 	<el-button type="primary" @click="insertCustomer()">회원가입</el-button>
 		 </el-form-item>
-		 
-		
-</el-form>
+    </el-form>
 </c:set>
 
 <c:set var="script">
