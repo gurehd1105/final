@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
-<div id="footer" class="border-t p-10" v-cloak>
+<div id="footer" class="border-t p-10 bg-gray-50" v-cloak>
     <el-footer class="!h-auto">
         <div class="flex flex-row justify-between">
             <div>대충 이미지나 로고 때려박는 곳</div>
