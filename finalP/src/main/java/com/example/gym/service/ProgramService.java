@@ -131,7 +131,7 @@ public class ProgramService {
 	}	
 	
 	//program 추가 폼
-	public void insertProgramService(HttpSession session) {
+	public void insert(HttpSession session) {
 
 		//본사 직원 확인
 //		Employee employee =(Employee)session.getAttribute("loginEmployee");
@@ -144,11 +144,13 @@ public class ProgramService {
 	}	
 
 	//program 추가 액션
-	public void insertProgramService(HttpSession session,
-												String programName,
-												int maxCustomer,
-												String programActive) {
+	public void insert(HttpSession session,
+					   String programContent,
+					   String programName,
+					   int maxCustomer,
+					   String programActive) {
 		//디버깅
+		log.info("programContent : {}", programContent);
 		log.info("programName : {}", programName);
 		log.info("maxCustomer : {}", maxCustomer);
 		log.info("programActive : {}", programActive);
@@ -170,16 +172,17 @@ public class ProgramService {
 		program.setActive(programActive);
 		program.setProgramMaxCustomer(maxCustomer);
 		program.setProgramName(programName);
+		program.setProgramContent(programContent);
 		
 		
 		//mapper 호출
-		int row  = programMapper.insertProgram(program);
+		boolean success  = programMapper.insert(program) != 1;
 
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("program 추가실패 : row - {}", row);
+		if (success) {
+		    log.info("program 추가실패 : success - {}", success);
 		} else {
-		    log.info("program 추가성공: row - {}", row);
+		    log.info("program 추가성공: success - {}", success);
 		}
 	}	
 }

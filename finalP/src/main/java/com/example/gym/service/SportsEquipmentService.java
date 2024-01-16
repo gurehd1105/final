@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.mapper.SportsEquipmentMapper;
-import com.example.gym.vo.Employee;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
 import com.example.gym.vo.SportsEquipmentOrder;
+import com.example.gym.vo.SportsEquipmentSearchResult;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class SportsEquipmentService {
 	@Autowired private SportsEquipmentMapper sportsEquipmentMapper;
+	@Autowired private SportsEquipmentSearchResult result;
 	
 //----------------------------------------- SportsEquipment -------------------------------------
 	
@@ -105,7 +106,7 @@ public class SportsEquipmentService {
 	}
 
 	//sportsEquipmentList 출력
-	public Map<String,Object> list(HttpSession session,
+	public SportsEquipmentSearchResult list(HttpSession session,
 								   int currentPage,
 								   String equipmentActive,
 								   String searchWord) {
@@ -143,17 +144,15 @@ public class SportsEquipmentService {
 		paramMap2.put("rowPerPage", rowPerPage);
 		
 		//mapper 호출
-		List<Map<String,Object>> list = sportsEquipmentMapper.list(paramMap2);
+		List<Map<String, Object>> list = sportsEquipmentMapper.list(paramMap2);
 		
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
+		return  result.toBuilder()
+		        .list(list)
+		        .searchWord(searchWord)
+		        .equipmentActive(equipmentActive)
+		        .lastPage(lastPage)
+		        .build();
 		
-		resultMap.put("searchWord", searchWord);
-		resultMap.put("equipmentActive", equipmentActive);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("list", list);
-		
-		return resultMap;
 	}
 	
 	//sportsEquipment 수정 폼

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
 import com.example.gym.vo.SportsEquipmentOrder;
+import com.example.gym.vo.SportsEquipmentSearchResult;
 
 @Mapper
 public interface SportsEquipmentMapper {

@@ -8,13 +8,15 @@
 <c:set var="body">
 	
 	<!-- 장비 추가 폼 -->
+	<h2>장비추가</h2>
 	<el-form label-position="right" 
 			 ref="form" 
 			 label-width="150px" 
 			 status-icon class="max-w-lg"
 			 action="${ctp}/program/insert" 
 			 method="post" 
-			 id="insertProgramForm"
+			 id="insertForm"
+			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
 	>
 	
 		<el-form-item label="이름">
@@ -32,8 +34,13 @@
 			</el-radio-group>
 		</el-form-item> 
 		
+		<el-form-item label="내용">
+    		<el-input type="textarea" v-model="model.programContent" name="programContent" :rows="5">
+    		</el-input>
+		</el-form-item>
+		
 		<el-form-item>
-			<el-button type="primary" @click="onSubmit(form)">장비추가</el-button>
+			<el-button type="primary" @click="onSubmit(form)">프로그램추가</el-button>
 		</el-form-item> 
 	</el-form>
 
@@ -45,6 +52,7 @@
 			    programName: '', 
 			    programActive: '', 
 			    maxCustomer: '', 
+			    programContent: '지점 : \n진행 : \n일자 :\n시간 : AM 00:00 - PM 00:00', 
 		    },
 	  	};
 
@@ -52,7 +60,22 @@
 	methods: {
      	
 			onSubmit(){
-				document.getElementById('insertProgramForm').submit();
+				if (this.model.programName === '' || this.model.maxCustomer === '' ) {
+				
+	      			alert('이름, 최대인원을 입력하세요.');
+	      			
+	    		} else if(this.model.programActive === ''){
+	    		
+	    			alert('프로그램 활성화 여부를 선택하세요.');
+	    			
+	    		} else if(this.model.programContent === '지점 : \n진행 : \n일자 :\n시간 : AM 00:00 - PM 00:00'){
+	    		
+	    			alert('프로그램 내용을 수정하세요.');
+	    			
+	    		} else {
+	
+	      			document.getElementById('insertForm').submit();
+	   			}
 			},
 
 	
