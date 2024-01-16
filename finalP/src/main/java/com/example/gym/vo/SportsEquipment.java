@@ -17,5 +17,6 @@ public class SportsEquipment {
 	private String createdate;
 	private String updatedate;
 	private String equipmentActive;
+	private String sportsEquipmentImgFileName;
 	private int itemPrice;
 }
