@@ -1,5 +1,9 @@
 package com.example.gym.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.AttendanceService;
 import com.example.gym.service.ReservationService;
@@ -49,8 +55,22 @@ public class AttendanceController {
 	    return "attendance/insertAttendance";
 	}
 	
-	
-	
+	  @PostMapping("/insertAttendance")
+	    @ResponseBody
+	    public int insertAttendance(@RequestBody Map<String, Object> paramMap ) {
+		  System.out.println(paramMap + "<-- paramMap");
+	    // 출석 정보 생성 및 처리 로직
+	    CustomerAttendance attendance = new CustomerAttendance();
+	    attendance.setProgramReservationNo(Integer.parseInt((String)paramMap.get("reservationNo")));
+	    attendance.setCustomerAttendanceEnterTime((String) paramMap.get("currentTime"));
+
+	    // 출석 정보 저장
+	    int result = attendanceService.insertAttendance(attendance);
+		
+	    return result;
+   
+	  }
+		
 
 	
 	

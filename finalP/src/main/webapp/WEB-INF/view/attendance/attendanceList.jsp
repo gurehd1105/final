@@ -12,8 +12,7 @@
         <table>
         <tr>
             <th>번호</th>
-            <th>예약번호</th>        
-            <th>출석날짜</th>    
+            <th>예약번호</th>            
             <th>출석시간</th>        
         </tr>
         
@@ -21,8 +20,8 @@
             <tr>
                 <th>{{a+1}}</th>
                 <th>{{attendance.programReservationNo}}</th>        
-                <th>{{new Date(attendance.customerAttendanceDate).toLocaleDateString()}}</th> 
-                <th>{{attendance.customerAttendanceEnterTime}}</th>   
+                <th>{{new Date(attendance.customerAttendanceEnterTime).toLocaleDateString() + ", " + new Date(attendance.customerAttendanceEnterTime).toLocaleTimeString()}}</th>
+ 
                 
             </tr>            
         </tbody>            

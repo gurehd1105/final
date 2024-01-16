@@ -12,6 +12,7 @@ import com.example.gym.vo.ProgramReservation;
 public interface AttendanceMapper {
 	// 출석 정보 조회
 	List<Map<String, Object>> selectCustomerAttendance(CustomerAttendance attendance);
+	
 	// 출석 체크
 	int insertAttendance(CustomerAttendance attendance);
 }

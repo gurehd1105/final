@@ -5,11 +5,9 @@
 	<insert id="insertAttendance" parameterType="java.util.Map">
 		INSERT INTO customer_attendance (
 					program_reservation_no,
-					customer_attendance_date,
 					customer_attendance_enter_time
-		   ) VALUES (
-					 #{programrReservationNo},
-					 #{customerAttendanceDate},
+		   )VALUES (
+					 #{programReservationNo},
 					 #{customerAttendanceEnterTime}
 					)
 	</insert>
@@ -17,17 +15,8 @@
 	<select id="selectCustomerAttendance" parameterType="java.util.Map" 
 	        resultType="java.util.Map">
         SELECT program_reservation_no programReservationNo,
-        	   customer_attendance_date customerAttendanceDate,
         	   customer_attendance_enter_time customerAttendanceEnterTime
           FROM customer_attendance 
     </select>
-
-
-
-
-
-
-
-
 
 </mapper>
