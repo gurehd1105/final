@@ -110,14 +110,18 @@ public class EmployeeService {
 		employeeDetail.setEmployeePhone(form.getEmployeePhone());
 		employeeDetail.setEmployeeEmail(form.getEmployeeEmail());
 		employeeDetailSuccess = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
+		if(!employeeDetailSuccess){
+			employeeImgSuccess = employeeMapper.insertEmployeeDetail(employeeDetail) == 1;
+	      } 
 
 		EmployeeImg employeeImg = new EmployeeImg();
 		// fileName 이외 모든 값 세팅
 		employeeImg.setEmployeeNo(form.getEmployeeNo());
 		employeeImg.setEmployeeImgOriginName(form.getEmployeeImg());
-		
 		employeeImgSuccess = employeeMapper.updateEmployeeImg(employeeImg) == 1;
-		
+		if(employeeImgSuccess == false) {
+			employeeImgSuccess = employeeMapper.insertEmployeeImg(employeeImg) == 1;
+	      }
 		return employeeDetailSuccess && employeeImgSuccess;
 	}
 
