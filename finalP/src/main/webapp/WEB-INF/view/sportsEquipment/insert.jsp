@@ -98,7 +98,6 @@
 <c:set var="script">
 	data() {
 		return {
-			 showErrorAlert: false,
 			model: {
 			    searchWord: '${searchWord}', 
 			   	equipmentActive: '${equipmentActive}',

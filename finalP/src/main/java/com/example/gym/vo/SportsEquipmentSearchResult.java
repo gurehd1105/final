@@ -27,4 +27,8 @@ public class SportsEquipmentSearchResult {
     private String inventory;
     private String inventoryList;
     private String orderList;
+    
+    public void setList(List<Map<String, Object>> list) {
+        this.list = list;
+    }
 }

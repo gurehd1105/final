@@ -144,26 +144,15 @@ public class SportsEquipmentService {
 		paramMap2.put("rowPerPage", rowPerPage);
 		
 		//mapper 호출
-		List<Map<String,Object>> list = sportsEquipmentMapper.list(paramMap2);
+		List<Map<String, Object>> list = sportsEquipmentMapper.list(paramMap2);
 		
-//		//controller에 보내줄 resultMap 생성
-//		Map<String,Object> resultMap = new HashMap<>();
-//		
-//		resultMap.put("searchWord", searchWord);
-//		resultMap.put("equipmentActive", equipmentActive);
-//		resultMap.put("lastPage", lastPage);
-//		resultMap.put("list", list);
-//		
-//		return resultMap;
+		return  result.toBuilder()
+		        .list(list)
+		        .searchWord(searchWord)
+		        .equipmentActive(equipmentActive)
+		        .lastPage(lastPage)
+		        .build();
 		
-		//controller에 보내줄 result 객체 생성
-		result = new SportsEquipmentSearchResult();
-		
-		return result.toBuilder()
-	            .searchWord(searchWord)
-	            .lastPage(lastPage)
-	            .list(list)
-	            .build();
 	}
 	
 	//sportsEquipment 수정 폼
