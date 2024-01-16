@@ -21,7 +21,7 @@
 		      p.payment_date AS paymentDate,
 		      p.createdate, p.updatedate,
 		      case 
-				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) >= m.membership_month
+				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) <![CDATA[ >= ]]> m.membership_month
 				then '기한만료' ELSE '사용중' END  AS payment_active
 		   FROM payment p
 		   INNER JOIN customer c
