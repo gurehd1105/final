@@ -1,57 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReservationMapper">
-
-   <select id="selectReservationList" parameterType="java.util.Map"
-         resultType="java.util.Map">
-        SELECT pr.program_reservation_no programReservationNo,
-        	   p.payment_date paymentDate,
-               b.branch_name branchName
-          FROM program_reservation pr INNER JOIN payment p
-            ON pr.payment_no = p.payment_no INNER JOIN program_date pd
-            ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
-            ON pr.branch_no = b.branch_no       
-         WHERE pr.payment_no = #{paymentNo}
-           AND pd.program_date = #{programDate}
-           LIMIT #{beginRow}, #{rowPerPage}
-   </select>
-   
-   <select id="reservationCount"
-         resultType="Integer">
-      SELECT count(*)
-        FROM program_reservation
-   </select>
-   
-   <insert id="insertReservation" parameterType="com.example.gym.vo.ProgramReservation">
-          INSERT INTO program_reservation (
-              payment_no,
-              program_date_no,
-              branch_no
-          ) VALUES (
-              #{paymentNo},
-              #{programDateNo},
-              #{branchNo}
-   </insert>
-   
-   <delete id="deleteReservation" parameterType="com.example.gym.vo.ProgramReservation">
-          DELETE FROM program_reservation
-          WHERE payment_no = #{paymentNo}
-            AND program_date_no = #{programDateNo}
-            AND branch_no = #{branchNo}
-   </delete>
-   
-   <!-- 지점 리스트조회 -->
-   	<resultMap id="Branch" type="com.example.gym.vo.Branch">
-	<result column="branch_no" property="branchNo"/>
-	<result column="branch_name" property="branchName"/>
-	<result column="branch_tel" property="branchTel"/>
-	<result column="branch_address" property="branchAddress"/>
+	<resultMap type="com.example.gym.vo.Program" id="Program">
+		<result property="programNo" column="program_no"></result>
+		<result property="employeeNo" column="employee_no"></result>
+		<result property="programName" column="program_name"></result>
+		<result property="programContent" column="program_content"></result>
+		<result property="programMaxCustomer" column="program_max_customer"></result>
+		<result property="createdate" column="createdate"></result>
+		<result property="createdate" column="updatedate"></result>
 	</resultMap>
-   
-   
- 
- 
-   
-   
-      
+
+	<select id="selectReservationList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT pr.program_reservation_no programReservationNo,
+			p.payment_date paymentDate,
+			b.branch_name branchName
+		FROM program_reservation pr INNER JOIN payment p
+			ON pr.payment_no = p.payment_no INNER JOIN program_date pd
+			ON pr.program_date_no = pd.program_date_no INNER JOIN branch b
+			ON pr.branch_no = b.branch_no
+
+		<if test="paymentNo!=null">
+		WHERE pr.payment_no = #{paymentNo}
+		</if>
+		<if test="programDate!=null">
+		  AND pd.program_date = #{programDate}
+		</if>
+
+	</select>
+
+
+
+	<!-- 임시 프로그램 리스트 -->
+	<select id="selectProgram"
+		parameterType="com.example.gym.vo.ProgramDate"
+		resultMap="Program">
+		SELECT *
+		FROM program
+	</select>
+	
+	<select id="selectProgramDates" parameterType="int" resultType="com.example.gym.vo.ProgramDate">
+		SELECT
+			p.program_no as programNo,
+			p.program_name as programName,
+			p.program_max_customer as maxCustomer,
+			d.program_date_no as programDateNo,
+			d.program_date as programDate,
+			IFNULL(r.cnt, 0) as cntCustomer
+		FROM
+			program_date d
+		LEFT OUTER JOIN 
+			(
+				SELECT program_date_no, count(*) as 'cnt'
+				FROM program_reservation
+				GROUP BY program_date_no
+			 ) r 
+				ON
+			d.program_date_no = r.program_date_no
+		INNER JOIN program p ON
+			d.program_no = p.program_no
+		<where>p.program_no = #{ program_no }</where>;
+	</select>
+
+	<insert id="insertReservation"
+		parameterType="com.example.gym.vo.ProgramReservation">
+		INSERT INTO program_reservation (
+			payment_no,
+			program_date_no,
+			branch_no
+		) VALUES (
+			#{paymentNo},
+			#{programDateNo},
+			#{branchNo}
+		)
+	</insert>
+
+	<delete id="deleteReservation"
+		parameterType="com.example.gym.vo.ProgramReservation">
+		DELETE FROM program_reservation
+		WHERE program_reservation_no = #{programReservationNo}
+	</delete>
+
+
 </mapper>
