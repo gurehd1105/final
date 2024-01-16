@@ -10,7 +10,8 @@
 		   c.customer_id AS customerId,
 		   c.customer_active AS customerActive,
 		   c.createdate, c.updatedate,
-		   n.paymentNo
+		   n.paymentNo,
+			n.payment_active AS paymentActive
 		FROM customer c
 		LEFT OUTER JOIN 
 		(SELECT 
@@ -18,10 +19,16 @@
 		      p.customer_no AS customerNo,
 		      p.membership_no AS membershipNo,
 		      p.payment_date AS paymentDate,
-		      p.createdate, p.updatedate
+		      p.createdate, p.updatedate,
+		      case 
+				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) >= m.membership_month
+				then '기한만료' ELSE '사용중' END  AS payment_active
 		   FROM payment p
 		   INNER JOIN customer c
 		   ON p.customer_no = c.customer_no
+		   
+		   INNER JOIN membership m
+		   ON p.membership_no = m.membership_no
 		WHERE c.customer_id= #{customerId}
 		ORDER BY createdate DESC
 		LIMIT 0,1) n

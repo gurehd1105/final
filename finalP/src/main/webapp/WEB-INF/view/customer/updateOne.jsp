@@ -45,11 +45,11 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="키">
-			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight"/>
+			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight" max="250"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="몸무게">
-			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight"/>
+			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight" max="150"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="우편번호">
@@ -73,7 +73,7 @@
 	    <el-form-item label="참고주소">
 			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
 	    </el-form-item>
-	    
+	   
 	    <el-form-item label="이메일">
 	    	<el-col :span="14">
 		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
@@ -89,10 +89,10 @@
 			      />
 	        </el-col>	      
 	    </el-form-item>
-	    <el-form-item>
+	     <el-form-item>
 	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
 	    </el-input>
-	    
+	   
 	    <el-form-item>
 	      	<el-button type="primary" @click="onSubmit()">완료</el-button>
 	    </el-form-item>
@@ -112,6 +112,7 @@
 	    		address: {
 	    			postCode: '',	    			
 	    		},
+	    		customerAddress: '${ resultMap.customerAddress }',
 	    		customerEmailId: '${ resultMap.emailId }',
 	    		customerEmailJuso: '${ resultMap.emailJuso }',
 	    		customerImg: '${ resultMap.customerImgOriginName }',

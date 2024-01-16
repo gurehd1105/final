@@ -51,17 +51,13 @@ public class ReviewController extends DefaultController {
 	}
 	
 	@GetMapping("/insert")
-	public String insert(HttpSession session, Model model) {
-		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
-		
-		model.addAttribute("loginCustomer", loginCustomer);
+	public String insert(HttpSession session, Model model) {		
 		return "review/insert";
 	}
 	
 	/*
 	@PostMapping("insert")
 	public String insert() { // customer_attendance_no 생성까지 보류
-		
 		return "redirect:list";
 	}
 	*/
@@ -72,8 +68,6 @@ public class ReviewController extends DefaultController {
 		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
 		return "review/update";
 	}
-	
-	
 	@PostMapping("/update")
 	public String update(Review review) { 
 		reviewService.updateReview(review);		

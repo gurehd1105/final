@@ -54,11 +54,11 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="키">
-			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight"/>
+			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight" max="250"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="몸무게">
-			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight"/>
+			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight" max="150"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="우편번호">
@@ -81,6 +81,10 @@
 	    
 	    <el-form-item label="참고주소">
 			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
+	    </el-form-item>
+	    
+	    <el-form-item>
+			<el-input type="hidden" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="address"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="이메일">
