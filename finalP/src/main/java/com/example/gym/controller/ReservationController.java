@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.gym.service.BranchService;
 import com.example.gym.service.CalendarService;
 import com.example.gym.service.CustomerService;
+import com.example.gym.service.ProgramService;
 import com.example.gym.service.ReservationService;
 import com.example.gym.vo.Branch;
+import com.example.gym.vo.Customer;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,14 +39,23 @@ public class ReservationController {
 	@Autowired ReservationService reservationService;
 	@Autowired CustomerService customerService;
 	@Autowired BranchService branchService;
+	@Autowired ProgramService programService;
 	
 	// 캘린더 출력
 	@GetMapping("/calendar")
 	public String calendar(Model model, HttpSession session,
+							Page page,
 			 			   @RequestParam(required = false) Integer targetYear ,
 			 			   @RequestParam(required = false) Integer targetMonth			 			   		 			   
 			 			   ) {
-		List<Branch> branchList = branchService.branch();
+		// id 유효성검사
+		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+		if (loginCustomer == null) {
+			return "customer/login";
+		}
+		
+		System.out.println(loginCustomer);
+		List<Branch> branchList = branchService.getBranchList(page);
 		
 		System.out.println("접속성공");					
 		Map<String, Object> calendarMap = calendarService.getCalendar(targetYear, targetMonth, session);
@@ -58,17 +70,7 @@ public class ReservationController {
 	@GetMapping("/reservationList")
 	public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear, Integer targetMonth								
 									) throws JsonProcessingException {
-	/*
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		 if (loginCustomer == null) {		
-		    return "customer/login";
-		     }
-	
-		Map<String, Object> paymentNo = customerService.customerOne(loginCustomer);
-		 	if(paymentNo == null) {		
-		    return "redirect:/home"; 		 		
-		 	}
-	*/
+		
 		String targetYear2 = mapper.writeValueAsString(targetYear);
 		String targetMonth2 = mapper.writeValueAsString(targetMonth);
 		String targetDay2 = mapper.writeValueAsString(targetDay);
@@ -79,13 +81,14 @@ public class ReservationController {
 			date = targetYear2+"0"+targetMonth2+targetDay2;
 		}
 		System.out.println(date +"날짜" );
-		Map<String, Object> paramMap = new HashMap<>();
 		
-		paramMap.put("paymentNo", 1);
+		Map<String, Object> paramMap = new HashMap<>();
+		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+		paramMap.put("paymentNo", loginCustomer.get("paymentNo"));
 		paramMap.put("programDate", date );		
 		System.out.println(paramMap + "<-- paramMap");
 		
-	
+		
 		Map<String, Object> list = reservationService.selectReservationList(paramMap);
 		Object reservationList = list.get("reservationList");
 		
@@ -108,28 +111,24 @@ public class ReservationController {
 		
 	}
 	
-	// 임시 프로그램 리스트
-	@GetMapping("/testList")
-	public String programList(ProgramDate programDate, Model model) throws JsonProcessingException {
-		List<Map<String, Object>> programList= reservationService.selectProgram(programDate);
-
-		model.addAttribute("programList", mapper.writeValueAsString(programList));		
-		
-		System.out.println(programList +"<----프로그램");
-		return "reservation/testList";
-		
-	}
-		
-		
 	// 예약 추가
 	@GetMapping("/insertReservation")
-	public String insertReservation(HttpSession session, Model model, 
+	public String insertReservation(HttpSession session, Model model, Page page,
+									@RequestParam(defaultValue = "1") int currentPage,
+									@RequestParam(defaultValue = "Y") String programActive,
+									@RequestParam(defaultValue = "") String searchWord,
 									ProgramDate programDate) throws JsonProcessingException {
-		List<Branch> branchList = branchService.branch();
-		List<Map<String, Object>> programList= reservationService.selectProgram(programDate);
+		
+		page.setRowPerPage(-1);
+		List<Branch> branchList = branchService.getBranchList(page);
+		Map<String,Object> programList= programService.selectProgramListService(session, currentPage, programActive, searchWord);
+		
 		model.addAttribute("programList", mapper.writeValueAsString(programList));
 		model.addAttribute("branchList", mapper.writeValueAsString(branchList));
-		
+
+		System.out.println(branchList + "<--branchList");
+		System.out.println(programList + "<--programList");
+
 		return "reservation/insertReservation";
 	}
 	

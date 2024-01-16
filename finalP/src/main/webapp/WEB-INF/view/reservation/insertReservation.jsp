@@ -23,18 +23,18 @@
     	</el-form-item>
     	
     	<el-form-item>
-	        <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택">
-	            <el-option v-for="(program, p) in programList" 
-	            	:key="p" 
-	                :label="program.programName" 
-	                :value="program.programNo"
-	                :selected="p === 0">
-	            </el-option> 
-	        </el-select>
+	         <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택">
+		        <el-option v-for="(program, p) in programList.programList" 
+		            :key="p" 
+		            :label="program.programName" 
+		            :value="program.programNo"
+		            :selected="p === 0">
+		        </el-option> 
+		    </el-select>
     	</el-form-item>
     	
+    	
     	<el-form-item>
-
     		<el-calendar v-model="selectDate" >
     			<template #date-cell="{ data }">
 			      <p
@@ -60,8 +60,6 @@
 
 <c:set var="script">
     data() {
-        console.log('Program List:', this.programList);
-
         return {         
             branchList: JSON.parse('${branchList}'),           
             programList: JSON.parse('${programList}'),

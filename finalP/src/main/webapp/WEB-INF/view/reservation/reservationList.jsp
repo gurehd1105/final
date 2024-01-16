@@ -11,9 +11,10 @@
     <h1>${targetYear}년 ${targetMonth}월 ${targetDay}일 예약</h1>
     <table>
         <tr>
-            <th>번호</th>
+            <th>NO</th>
             <th>결제일</th>        
-            <th>지점명</th>    
+            <th>지점명</th> 
+            <th>예약번호</th> 
             <th>삭제</th>        
         </tr>
         
@@ -21,7 +22,8 @@
             <tr>
                 <th>{{r+1}}</th>
                 <th>{{new Date(reservation.paymentDate).toLocaleDateString()}}</th>        
-                <th>{{reservation.branchName}}</th>  
+                <th>{{reservation.branchName}}</th>
+                <th>{{reservation.programReservationNo}}</th>    
                 <th><el-button type="danger" @click="deleteReservation(reservation.programReservationNo,targetYear,targetMonth,targetDay)">삭제</el-button></th>  
             </tr>            
         </tbody>            
@@ -38,6 +40,7 @@
             targetMonth:'${targetMonth}', 
             targetDay:'${targetDay}',  
         };
+      
     },
     
     methods: {
@@ -53,4 +56,4 @@
     },
 </c:set>
 
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>
