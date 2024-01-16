@@ -12,8 +12,12 @@
       style="background-color:#c6e2ff"
     >
       <el-menu-item index="1">홈</el-menu-item>
-
+<c:if test="${ loginCustomer == null }">
       <el-menu-item index="2" >로그인</el-menu-item> 
+</c:if>
+<c:if test="${ loginCustomer != null }">
+	 <el-menu-item index="10" >로그아웃</el-menu-item> 
+</c:if>
       <el-menu-item index="3" >멤버십 상품</el-menu-item>
        <el-menu-item index="4" >프로그램</el-menu-item>
       <el-menu-item index="5" >문의하기</el-menu-item>
@@ -57,7 +61,8 @@
         	location.href = '${ctp}/calendar';
         }else if(key == '9'){
         	location.href = '${ctp}/customer/customerOne';
-
+        }else if(key == '10'){
+        	location.href = '${ctp}/customer/logout';
         }
       },
     },

@@ -8,10 +8,7 @@
 									resultType="java.util.Map">
 		SELECT 
 			q.question_no AS questionNo,	
-				case when CHAR_LENGTH(q.question_title) <![CDATA[ <= ]]>  10
-				then q.question_title
-				ELSE CONCAT(substr(q.question_title,1, 10), '...')
-				END AS questionTitle,
+			q.question_title AS questionTitle,
 			c.customer_no AS customerNo,
 			c.customer_id AS customerId
 		FROM question q
@@ -48,7 +45,8 @@
 			q.question_content AS questionContent,
 			q.createdate AS createdate, 
 			q.updatedate AS updatedate,
-						
+				
+			c.customer_no AS customerNo,		
 			c.customer_id AS customerId
 			
 		FROM question q

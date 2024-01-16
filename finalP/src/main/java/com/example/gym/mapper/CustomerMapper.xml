@@ -22,7 +22,7 @@
 		      p.createdate, p.updatedate,
 		      case 
 				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) <![CDATA[ >= ]]> m.membership_month
-				then '기한만료' ELSE '사용중' END  AS payment_active
+				then '기한만료' ELSE '사용중' END  AS payment_active			<!-- 세션 내 가장 최근 결제정보 활성화 상태 저장 / '사용중' or '기한만료'  -->
 		   FROM payment p
 		   INNER JOIN customer c
 		   ON p.customer_no = c.customer_no

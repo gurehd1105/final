@@ -62,7 +62,7 @@ public class CustomerController {
 		return "customer/insert";
 	}
 	// ID 중복체크
-	@GetMapping("/idCheck")
+	@PostMapping("/idCheck")
 	@ResponseBody
 	public int idCheck(@RequestBody Customer customer) {
 		int result = 0;
