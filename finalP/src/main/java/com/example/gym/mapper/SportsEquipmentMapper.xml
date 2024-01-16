@@ -66,7 +66,7 @@
 	</select>
 
 	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
-	<select id="list" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="list" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipment">
 	    SELECT 
 	        se.sports_equipment_no sportsEquipmentNo,
 	        se.item_name itemName,
@@ -79,14 +79,25 @@
 	        ) sportsEquipmentImgFileName
 	    FROM sports_equipment se
 	    <where>
-	        <if test="searchWord != ''">
-	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        <if test="where != null">
+		        <foreach collection="where" item="item" separator="AND">
+	                ${item.key} ${item.operator} #{item.value}
+	            </foreach>
 	        </if>
-			<if test="equipmentActive != ''">
-    			AND se.equipment_active = #{equipmentActive}
+	        
+	        <if test="query != ''">
+	            AND item_name LIKE CONCAT('%',#{query},'%')
+	        </if>
+			<if test="active != ''">
+    			AND equipment_active = #{active}
 			</if>
 	    </where>
-	    ORDER BY se.createdate DESC
+	    <if test="order != null">
+		    ORDER BY se.createdate DESC,
+	    	<foreach collection="order" item="item" separator="AND">
+                ${item.key} ${item.value}
+            </foreach>
+	    </if>
 	    LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	
@@ -101,6 +112,27 @@
 	        </if>
 			<if test="equipmentActive != ''">
     			AND equipment_active = #{equipmentActive}
+			</if>
+	    </where>
+	</select>
+	
+	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
+	<select id="totalCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
+	    SELECT 
+	        COUNT(sports_equipment_no)
+	    FROM sports_equipment
+	    <where>
+	        <if test="where != null">
+		        <foreach collection="where" item="item" separator="AND">
+	                ${item.key} ${item.operator} #{item.value}
+	            </foreach>
+	        </if>
+	        
+	        <if test="query != ''">
+	            AND item_name LIKE CONCAT('%',#{query},'%')
+	        </if>
+			<if test="active != ''">
+    			AND equipment_active = #{active}
 			</if>
 	    </where>
 	</select>

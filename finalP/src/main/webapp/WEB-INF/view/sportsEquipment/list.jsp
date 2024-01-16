@@ -25,7 +25,7 @@
 			</el-radio-group>
 	   	</el-form-item>
 		<el-form-item label="검색">
-				<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+			<el-input v-model="model.query" name="query" placeholder="검색어를 입력하세요"/>
 	   	</el-form-item>
 	   	<el-form-item>
 				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
@@ -62,14 +62,15 @@
 </c:set>
 <c:set var="script">
 	data() {
+		const model = JSON.parse('${result}');
 	  	return {
 		    model: {
-			    searchWord: '${searchWord}', 
-			    active: '${active}',
-			    currentPage: 1, 
+			    query: model.param.query ?? '', 
+			    active: model.param.active ?? '',
+			    currentPage: model.param.pageNum,
 		    },
-		    list: JSON.parse('${list}'), 
-		    lastPage: ${lastPage} 
+		    list: model.list, 
+		    lastPage: model.param.totalPage,
 	  	};
 	},
 	methods: {
