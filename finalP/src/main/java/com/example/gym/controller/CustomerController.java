@@ -29,19 +29,14 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 	
-
 	// login (로그인) Form
 	@GetMapping("/login")
 	public String loginCustomer(HttpSession session) {
-		// id 유효성검사
-		Map<String,Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
-		if (loginCustomer != null) {
-			return "home";
+		if (session.getAttribute("loginCustomer") != null) {	// 로그인 상태
+			return "home";										// 홈으로
 		}
- 
 		return "customer/login";
 	}
-
 	// login 후 Act -> session 세팅 후 home.jsp로 이동
 	@PostMapping("/login")
 	public String loginCustomer(HttpSession session, Customer customer) {
@@ -51,10 +46,11 @@ public class CustomerController {
 			return "home";
 
 		} else { // 정보 없을 시
-			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
+			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");
 			return "redirect:login";
 		}
 	}
+	
 	// insert (회원가입) Form
 	@GetMapping("/insert")
 	public String insertCustomer(HttpSession session) {
@@ -65,6 +61,7 @@ public class CustomerController {
 		}
 		return "customer/insert";
 	}
+	// ID 중복체크
 	@GetMapping("/idCheck")
 	@ResponseBody
 	public int idCheck(@RequestBody Customer customer) {
@@ -76,13 +73,9 @@ public class CustomerController {
 		}
 		return result;
 	}
-
 	// insert (회원가입) Act
 	@PostMapping("/insert")
-	public String insertCustomer(HttpSession session, CustomerForm customerForm,
-								String address1, String address2, String address3) {
-		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-		
+	public String insertCustomer(HttpSession session, CustomerForm customerForm) {
 		int result = customerService.insertCustomer(customerForm); 
 		
 		if (result == 1) {// 가입 완 		  
@@ -98,7 +91,6 @@ public class CustomerController {
 	public String deleteCustomer(HttpSession session, Model model) {
 		return "customer/delete";
 	}
-
 	// delete (탈퇴) Act
 	@PostMapping("/delete")
 	public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {
@@ -133,10 +125,8 @@ public class CustomerController {
 	// 접속 전 PW 확인
 	@GetMapping("/updateOneForPw")
 	public String customerOneForCheckPw(HttpSession session) {
-
 		return "customer/updateOneForPw";
 	}
-
 	// PW확인 후 Form 접속
 	@PostMapping("/updateOneForm")
 	public String updateCustomerOne(HttpSession session, Model model, Customer customer) {
@@ -155,15 +145,11 @@ public class CustomerController {
 			String customerEmailJuso = customerEmail.substring(customerEmail.lastIndexOf("@") + 1);
 			resultMap.put("emailId", customerEmailId);
 			resultMap.put("emailJuso", customerEmailJuso);
-
-			
-
 			model.addAttribute("resultMap", resultMap);
 
 			return "customer/updateOne";
 		}
 	}
-
 	// 내정보 수정 Act
 	@PostMapping("/updateOne")
 	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
@@ -181,7 +167,6 @@ public class CustomerController {
 	public String updateCustomerPw(HttpSession session, Model model) { // ID값 표기 위한 세션 세팅
 		return "customer/updatePw";
 	}
-
 	// PW 수정 Act
 	@PostMapping("/updatePw")
 	public String updateCustomerPw(HttpSession session, Customer customer, String customerNewPw) {
