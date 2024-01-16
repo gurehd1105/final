@@ -19,14 +19,13 @@ public class ReviewService {
 	private ReviewMapper reviewMapper;
 	
 	
-	public Map<String,Object> selectReviewList(Map<String, Object> paramMap) {
-		Map<String,Object> resultMap = new HashMap<>();
-		List<Map<String,Object>> reviewList = reviewMapper.selectReviewList(paramMap);
+	public List<Map<String,Object>> selectReviewList(Map<String, Object> paramMap) {
+		List<Map<String,Object>> reviewList = reviewMapper.selectReviewList(paramMap);	
+		return reviewList;
+	}
+	public int totalCount() {
 		int totalRow = reviewMapper.selectCountOfReview();
-		
-		resultMap.put("reviewList", reviewList);
-		resultMap.put("totalRow", totalRow);		
-		return resultMap;
+		return totalRow;		
 	}
 	
 	public int insertReview(Review review) {

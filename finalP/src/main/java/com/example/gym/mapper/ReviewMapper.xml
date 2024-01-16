@@ -6,13 +6,15 @@
 						resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
-			r.review_title AS reviewTitle,
-			r.createdate,
-			r.updatedate,
+				case when CHAR_LENGTH(r.review_title) <![CDATA[ <= ]]>  10
+				then r.review_title
+				ELSE CONCAT(substr(r.review_title,1, 10), '...')
+				END AS reviewTitle,	
 			
 			b.branch_name AS branchName,
 			
-			p.program_name AS programName
+			p.program_name AS programName,
+			c.customer_id AS customerId
 			
 		FROM review r
 		INNER JOIN customer_attendance ca
@@ -24,10 +26,15 @@
 		INNER JOIN program p
 		ON pd.program_no = p.program_no
 		INNER JOIN branch b
-		ON pr.branch_no = b.branch_no				
-		<if test="branchName != null and branchName != ''">
-			WHERE b.branch_name = #{branchName}
+		ON pr.branch_no = b.branch_no
+		INNER JOIN payment pa
+		ON pa.payment_no = pr.payment_no
+		INNER JOIN customer c
+		ON c.customer_no = pa.customer_no
+		<if test="programName != ''">
+			WHERE p.program_name= #{programName}
 		</if>
+		ORDER BY r.updatedate DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	<select id="selectCountOfReview" resultType="Integer">

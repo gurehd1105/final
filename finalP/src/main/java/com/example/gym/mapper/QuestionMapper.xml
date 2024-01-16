@@ -3,7 +3,30 @@
 <mapper namespace="com.example.gym.mapper.QuestionMapper"> <!-- question / question_reply 모두진행 -->
 
 	
-		<!-- question 시작 -->
+		<!-- question 시작 -->	
+	<select id="selectQuestionList" parameterType="com.example.gym.vo.Page"
+									resultType="java.util.Map">
+		SELECT 
+			q.question_no AS questionNo,	
+				case when CHAR_LENGTH(q.question_title) <![CDATA[ <= ]]>  10
+				then q.question_title
+				ELSE CONCAT(substr(q.question_title,1, 10), '...')
+				END AS questionTitle,
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId
+		FROM question q
+		INNER JOIN customer c
+		ON q.customer_no = c.customer_no
+		ORDER BY q.updatedate DESC
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+		<!-- 페이징 기능위한 전체 Question Counting -->
+	<select id="selectCountOfQuestion" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM question
+	</select>
+	
 	<insert id="insertQuestion" parameterType="com.example.gym.vo.Question">
 		INSERT INTO question (
 			customer_no,
@@ -14,23 +37,7 @@
 			#{questionTitle},
 			#{questionContent}
 		)
-	</insert>
-	 
-	<select id="selectQuestionList" parameterType="java.util.Map"
-									resultType="com.example.gym.vo.Question">
-		SELECT 
-			question_no AS questionNo,
-			question_title AS questionTitle,
-			updatedate
-		FROM question
-		LIMIT #{beginRow},#{rowPerPage}
-	</select>
-		<!-- 페이징 기능위한 전체 Question Counting -->
-	<select id="selectCountOfQuestion" resultType="Integer">
-		SELECT
-			COUNT(*)
-		FROM question
-	</select>
+	</insert>	 
 	
 	<select id="selectQuestionOne" parameterType="com.example.gym.vo.Question"
 										resultType="java.util.Map">

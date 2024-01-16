@@ -16,6 +16,7 @@ public class Program {
 	private String programName;
 	private String programContent;
 	private int programMaxCustomer;
+	private String active;
 	private String createdate;
 	private String updatedate;
 }

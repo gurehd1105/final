@@ -11,26 +11,20 @@
 	<el-button type="primary" @click="insert()">문의하기</el-button>
 
 		
-		<table>
-			<thead>
-				<tr>
-					<th>문의번호</th>
-					<th>제목</th>
-					<th>작성일</th>
-					<th>수정일</th>
-				</tr>
-			</thead>
-							
-			<tbody v-for="(question, i) in questionList" :key="i">
-				<tr>
-					<th>{{ question.questionNo }}</th>
-					<th @click="questionOne(question.questionNo)">{{ question.questionTitle }}</th>
-					<th>{{ question.createdate }}</th>
-					<th>{{ question.updatedate }}</th><!-- 이상해~ 확인 예정 -->
-				</tr>
-			</tbody>
-		</table>
 		
+	<el-table :data="questionList" @row-click="rowClick">
+   		<el-table-column prop="questionNo" label="No" ></el-table-column>
+	    <el-table-column prop="questionTitle" label="제목" ></el-table-column>
+	    <el-table-column prop="customerId" label="작성자" ></el-table-column>
+  </el-table>
+		<!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
 </c:set>
 
 <c:set var="script">
@@ -38,6 +32,10 @@
 	data() {
 		return {			
 			questionList: JSON.parse('${ questionList }'),
+			pageNum: ${page.pageNum},
+			rowPerPage: ${page.rowPerPage },
+			totalCount: ${page.totalCount},
+			totalPage: ${page.totalPage },
 		}
 	},
 	
@@ -48,6 +46,16 @@
 		questionOne(no){
 			location.href = '${ctp}/question/questionOne?questionNo=' + no;
 		},
+		
+		loadPage(pageNum) {
+      	const param = new URLSearchParams();
+      	param.set('pageNum', this.pageNum);
+      	param.set('rowPerPage', this.rowPerPage);
+      	
+		location.href = '/question/list?' + param.toString();
+      },
+      
+      
 	},
  
 </c:set>

@@ -1,15 +1,12 @@
 package com.example.gym.service;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerDetail;
@@ -32,22 +29,17 @@ public class CustomerService {
 	}
 	
 	// 회원가입
-	public int insertCustomer(CustomerForm cf, String path) {
+	public int insertCustomer(CustomerForm cf) {
 		int result = 0; // 최종 반환값 세팅
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		boolean insertCustomer = false;
+		boolean insertCustomerDetail = false;
+		boolean insertCustomerImg = false;
 
 		// customer 매개값 세팅
 		Customer paramCustomer = new Customer();
 		paramCustomer.setCustomerId(cf.getCustomerId());
 		paramCustomer.setCustomerPw(cf.getCustomerPw());
-
-		row = customerMapper.insertCustomer(paramCustomer);
-
-		if (row != 1) {
-			throw new RuntimeException();
-		}
+		insertCustomer = customerMapper.insertCustomer(paramCustomer) == 1;
 
 		CustomerDetail paramDetail = new CustomerDetail();
 		paramDetail.setCustomerNo(paramCustomer.getCustomerNo());
@@ -58,51 +50,16 @@ public class CustomerService {
 		paramDetail.setCustomerPhone(cf.getCustomerPhone());
 		paramDetail.setCustomerAddress(cf.getCustomerAddress());
 		paramDetail.setCustomerEmail(cf.getCustomerEmail());
-		row2 = customerMapper.insertCustomerDetail(paramDetail);
+		insertCustomerDetail = customerMapper.insertCustomerDetail(paramDetail) == 1;
 
-		if (row2 != 1) {
-			throw new RuntimeException();
-		}
+		CustomerImg paramCustomerImg = new CustomerImg();
+		paramCustomerImg.setCustomerNo(paramCustomer.getCustomerNo());
+		paramCustomerImg.setCustomerImgOriginName(cf.getCustomerImg());
+		insertCustomerImg = customerMapper.insertCustomerImg(paramCustomerImg) == 1;
 
-		MultipartFile mf = cf.getCustomerImg();
-		System.out.println(mf.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
-		if (mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
-			CustomerImg cImg = new CustomerImg();
-			// fileName 이외 모든 값 세팅
-			cImg.setCustomerNo(paramDetail.getCustomerNo());
-			cImg.setCustomerImgOriginName(mf.getOriginalFilename());
-			cImg.setCustomerImgSize(mf.getSize());
-			cImg.setCustomerImgType(mf.getContentType());
-
-			// fileName 값 세팅
-			String fileName = UUID.randomUUID().toString();
-
-			String oName = mf.getOriginalFilename();
-
-			String fileName2 = oName.substring(oName.lastIndexOf("."));
-
-			cImg.setCustomerImgFileName(fileName + fileName2);
-
-			// 변수값 세팅 완 + 삽입
-			row3 = customerMapper.insertCustomerImg(cImg);
-
-			if (row3 != 1) {
-				throw new RuntimeException();
-			}
-			
-		// path 저장
-		File file = new File(path +"/"+ fileName + fileName2);
-		try {
-			mf.transferTo(file);			
-		} catch (IllegalStateException | IOException e) {
-			throw new RuntimeException();
-		} 
-	}		
-			
-	if (row > 0 && row2 > 0) { // Image 정보 없어도 가입가능
+	if (insertCustomer && insertCustomerDetail) { // Image 정보 없어도 가입가능
 		result = 1;
 	}
-
 	return result;
 }
 
@@ -112,26 +69,22 @@ public class CustomerService {
 	// 탈퇴
 	public int deleteCustomer(Customer paramCustomer) {
 		int result = 0;
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+		boolean updateActive = false;
+		boolean deleteDetail = false;
+		boolean deleteImg = false;
 		Customer check = customerMapper.loginCustomer(paramCustomer);
 
 		if (check != null) {
 			log.info("PW 정상확인");
 
-			row = customerMapper.updateCustomerActive(paramCustomer);
-			System.out.println(row + " <-- row");
+			updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
 
-			row2 = customerMapper.deleteCustomerDetail(paramCustomer);
-			System.out.println(row2 + " <-- row2");
+			deleteDetail = customerMapper.deleteCustomerDetail(paramCustomer) == 1;
 
-			row3 = customerMapper.deleteCustomerImg(paramCustomer);
-			System.out.println(row3 + " <-- row3");
+			deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
 		}
 
-		if (row > 0 && row2 > 0) {
-			log.info("정상 탈퇴");
+		if (updateActive && deleteDetail && deleteImg) {
 			result = 1;
 		}
 		return result;
@@ -145,7 +98,11 @@ public class CustomerService {
 	
 	// 정보수정
 	// 마이페이지 수정 + Image 수정
-	public void updateCustomerOne(String path, CustomerForm paramCustomerForm, int customerNo) {
+	public int updateCustomerOne(CustomerForm paramCustomerForm, int customerNo) {
+		int result = 0;
+		boolean updateCustomerDetail = false;
+		boolean updateCustomerImg = false;
+		
 		// customerDetail 수정
 		CustomerDetail customerDetail = new CustomerDetail();
 		customerDetail.setCustomerNo(customerNo);
@@ -156,53 +113,18 @@ public class CustomerService {
 		customerDetail.setCustomerPhone(paramCustomerForm.getCustomerPhone());
 		customerDetail.setCustomerAddress(paramCustomerForm.getCustomerAddress());
 		customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
-		int row = customerMapper.updateCustomerOne(customerDetail);
-
-		if (row != 1) {
-			throw new RuntimeException();
+		updateCustomerDetail = customerMapper.updateCustomerOne(customerDetail) == 1;
+		
+		CustomerImg customerImg = new CustomerImg();
+		customerImg.setCustomerNo(customerNo);
+		customerImg.setCustomerImgOriginName(paramCustomerForm.getCustomerImg());
+		updateCustomerImg = customerMapper.updateCustomerImg(customerImg) == 1;
+		
+		if (updateCustomerDetail && updateCustomerImg) {
+			result = 1;
 		}
 
-		MultipartFile mf = paramCustomerForm.getCustomerImg();
-
-		if (mf.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
-			CustomerImg customerImg = new CustomerImg();
-			customerImg.setCustomerNo(customerNo);
-			customerImg.setCustomerImgOriginName(mf.getOriginalFilename());
-			customerImg.setCustomerImgSize(mf.getSize());
-			customerImg.setCustomerImgType(mf.getContentType());
-
-			String fileName = UUID.randomUUID().toString();
-
-			String oName = mf.getOriginalFilename();
-			String fileName2 = oName.substring(oName.lastIndexOf("."));
-			customerImg.setCustomerImgFileName(fileName + fileName2); // CustomerImg 매개값 세팅
-
-			// 변수 삽입 전 customerImg정보가 있는지 확인
-			Customer checkImgCustomer = new Customer();
-			checkImgCustomer.setCustomerNo(customerNo);
-			CustomerImg check = customerMapper.checkCustomerImg(checkImgCustomer);
-
-			// 확인 후 조건에 따른 분기
-			int row2 = 0;
-			if (check == null) { // 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
-				row2 = customerMapper.insertCustomerImg(customerImg);
-			} else { // 원래 등록된 Image 정보가 있다면
-				row2 = customerMapper.updateCustomerImg(customerImg);
-			}
-
-			if (row2 != 1) {
-				throw new RuntimeException();
-			}
-
-		 		// path 저장
-				File file = new File(path +"/"+ fileName + fileName2);
-				try {
-					mf.transferTo(file);
-				} catch (IllegalStateException | IOException e) {
-					throw new RuntimeException();
-				} 
-
-		} 
+			return result;
 	}
 	 
 	

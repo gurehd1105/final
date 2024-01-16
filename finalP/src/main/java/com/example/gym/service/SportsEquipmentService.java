@@ -30,19 +30,20 @@ public class SportsEquipmentService {
 //----------------------------------------- SportsEquipment -------------------------------------
 	
 	//sportsEquipment 추가
-	public void insertSportsEquipmentService(HttpSession session,
-												String path,
-												String itemName, 
-												int itemPrice, 
-												MultipartFile[] sportsEquipmentImgList) {
+	public void insert(HttpSession session,
+					   String path,
+					   String itemName, 
+					   int itemPrice, 
+					   MultipartFile[] sportsEquipmentImgList) {
 		
 		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
 		log.warn( "employee session 구현 후 수정 완료");
 		
-		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		//Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
 		
 		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
+		//int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
+		int branchLevel = 1;
 		
 		log.info( branchLevel + " <-- 1:본사 0:지점");
 		if(branchLevel != 1) {	
@@ -57,10 +58,10 @@ public class SportsEquipmentService {
 		sportsEquipment.setItemPrice(itemPrice);
 			
 		//mapper 호출
-		int row1 = sportsEquipmentMapper.insertSportsEquipment(sportsEquipment);
+		boolean success = sportsEquipmentMapper.insert(sportsEquipment) != 1;
 		
 		//sportsEquipment 정보 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-		if(row1 != 1) {
+		if(success) {
 			throw new RuntimeException("예외발생 : sportsEquipment 정보 추가 실패");
 		}
 		
@@ -70,7 +71,7 @@ public class SportsEquipmentService {
 		
 		//sportsEquipmentImg 추가
 		for (MultipartFile equipmentImg : sportsEquipmentImgList) {
-			SportsEquipmentImg sportsEquipmentImg = new SportsEquipmentImg();
+			SportsEquipmentImg img = new SportsEquipmentImg();
 			
 			//portsEquipmentImgFileName
 			String fileName = UUID.randomUUID().toString();
@@ -78,16 +79,16 @@ public class SportsEquipmentService {
 			String originName = equipmentImg.getOriginalFilename();
 			String extensionName = originName.substring(originName.lastIndexOf("."));
 			
-			sportsEquipmentImg.setSportsEquipmentNo(sportsEquipment.getSportsEquipmentNo());
-			sportsEquipmentImg.setSportsEquipmentImgSize((int)equipmentImg.getSize());
-			sportsEquipmentImg.setSportsEquipmentImgType(equipmentImg.getContentType());
-			sportsEquipmentImg.setSportsEquipmentImgOriginName(originName);
-			sportsEquipmentImg.setSportsEquipmentImgFileName(fileName+extensionName);
+			img.setSportsEquipmentNo(sportsEquipment.getSportsEquipmentNo());
+			img.setSportsEquipmentImgSize((int)equipmentImg.getSize());
+			img.setSportsEquipmentImgType(equipmentImg.getContentType());
+			img.setSportsEquipmentImgOriginName(originName);
+			img.setSportsEquipmentImgFileName(fileName+extensionName);
 		
 			//mapper 호출
-			int row2 = sportsEquipmentMapper.insertSportsEquipmentImg(sportsEquipmentImg);
+			boolean success2 = sportsEquipmentMapper.insertImg(img) != 1;
 			//sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-			if(row2 != 1) {
+			if(success2) {
 				throw new RuntimeException("예외발생 : sportsEquipmentImg 추가 실패");
 			}
 			File file = new File(path+"/"+fileName+extensionName);
@@ -104,10 +105,10 @@ public class SportsEquipmentService {
 	}
 
 	//sportsEquipmentList 출력
-	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
-																	int currentPage,
-																	String equipmentActive,
-																	String searchWord) {
+	public Map<String,Object> list(HttpSession session,
+								   int currentPage,
+								   String equipmentActive,
+								   String searchWord) {
 		//디버깅
 		log.info(searchWord);
 		log.info("Current page: {}", currentPage);
@@ -123,7 +124,7 @@ public class SportsEquipmentService {
 		paramMap1.put("equipmentActive", equipmentActive);
 		
 		//mapper 호출 
-		int sportsEquipmentCnt = sportsEquipmentMapper.selectSportsEquipmentCnt(paramMap1);
+		int sportsEquipmentCnt = sportsEquipmentMapper.sportsEquipmentCnt(paramMap1);
 		int lastPage = sportsEquipmentCnt/rowPerPage;
 		
 		if(sportsEquipmentCnt%rowPerPage != 0) {
@@ -142,7 +143,7 @@ public class SportsEquipmentService {
 		paramMap2.put("rowPerPage", rowPerPage);
 		
 		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentList = sportsEquipmentMapper.selectSportsEquipmentByPage(paramMap2);
+		List<Map<String,Object>> list = sportsEquipmentMapper.list(paramMap2);
 		
 		//controller에 보내줄 resultMap 생성
 		Map<String,Object> resultMap = new HashMap<>();
@@ -150,47 +151,47 @@ public class SportsEquipmentService {
 		resultMap.put("searchWord", searchWord);
 		resultMap.put("equipmentActive", equipmentActive);
 		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentList", sportsEquipmentList);
+		resultMap.put("list", list);
 		
 		return resultMap;
 	}
 	
 	//sportsEquipment 수정 폼
-	public Map<String,Object> sportsEquipmentOneService(HttpSession session,
-																int sportsEquipmentNo) {
+	public Map<String,Object> one(HttpSession session,
+								  int sportsEquipmentNo) {
 		//디버깅
 		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
 
 		
 		//mapper 호출
-		Map<String,Object> resultMap  = sportsEquipmentMapper.selectSportsEquipmentOne(sportsEquipmentNo);
-		List<SportsEquipmentImg> sportsEquipmentImgList = sportsEquipmentMapper.selectSportsEquipmentImgList(sportsEquipmentNo);
+		Map<String,Object> resultMap  = sportsEquipmentMapper.sportsEquipmentOne(sportsEquipmentNo);
+		List<SportsEquipmentImg> imgList = sportsEquipmentMapper.imgList(sportsEquipmentNo);
 		
 		log.warn("employee session 구현 후 수정 " );
 		int branchLevel = 0;
 		int branchNo = 2;
-		if(branchLevel != 1) {
+		if(branchLevel !=1) {
 			Map<String,Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
 			paramMap.put("branchNo", branchNo);
 			
 			//mapper 호출
-			Map<String,Object> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryOneByBranch(paramMap);
-			resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+			Map<String,Object> inventory = sportsEquipmentMapper.inventoryOneByBranch(paramMap);
+			resultMap.put("inventory", inventory);
 			
 		}
 		
-		resultMap.put("sportsEquipmentImgList", sportsEquipmentImgList);
+		resultMap.put("imgList", imgList);
 		
 		return resultMap;
 	}
 	
 	//sportsEquipment 수정 액션
-	public int updateSportsEquipmentService(HttpSession session,
-																int sportsEquipmentNo,
-																String itemName,
-																int itemPrice,
-																String equipmentActive) {
+	public int update(HttpSession session,
+					  int sportsEquipmentNo,
+					  String itemName,
+					  int itemPrice,
+					  String equipmentActive) {
 		//디버깅
 		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
 		log.info("itemName : {}", itemName);
@@ -216,22 +217,22 @@ public class SportsEquipmentService {
 		sportsEquipment.setEmployeeNo(1);
 		
 		//mapper 호출
-		int row = sportsEquipmentMapper.updateSportsEquipment(sportsEquipment);
+		boolean success = sportsEquipmentMapper.update(sportsEquipment) != 1;
 		
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipment 수정실패 : row - {}", row);
+		if (success) {
+		    log.info("sportsEquipment 수정실패 : success - {}", success);
 		} else {
-		    log.info("sportsEquipment 수정성공: row - {}", row);
+		    log.info("sportsEquipment 수정성공: success - {}", success);
 		}
 		return sportsEquipmentNo;
 	}
 	
 	//sportsEquipmentImg 개별 삭제 액션
-	public int deleteOneSportsEquipmentImgService(HttpSession session,
-																int sportsEquipmentNo,
-																int sportsEquipmentImgNo,
-																String sportsEquipmentImgFileName) {
+	public int deleteImg(HttpSession session,
+						 int sportsEquipmentNo,
+						 int sportsEquipmentImgNo,
+						 String sportsEquipmentImgFileName) {
 		//디버깅
 		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
 		log.info("sportsEquipmentImgNo : {}", sportsEquipmentImgNo);
@@ -265,23 +266,23 @@ public class SportsEquipmentService {
 		
 	    //데이터베이스 삭제
 		//mapper 호출
-		int row = sportsEquipmentMapper.deleteOneSportsEquipmentImg(sportsEquipmentImgNo);
+	    boolean success = sportsEquipmentMapper.deleteImg(sportsEquipmentImgNo) != 1;
 		
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : row - {}", row);
+		if (success) {
+		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : success - {}", success);
 		    throw new RuntimeException("데이터베이스 삭제 실패");
 		} else {
-		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제성공: row - {}", row);
+		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제성공: success - {}", success);
 		}
 		return sportsEquipmentNo;
 	}
 	
 	//sportsEquipment 개별 Img 추가
-	public int insertOneSportsEquipmentImgService(HttpSession session,
-												String path,
-												int sportsEquipmentNo,
-												MultipartFile[] sportsEquipmentImgList) {
+	public int insertImg(HttpSession session,
+						 String path,
+						 int sportsEquipmentNo,
+						 MultipartFile[] imgList) {
 		
 		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
 		log.warn("employee session 구현 후 수정 " );
@@ -293,8 +294,8 @@ public class SportsEquipmentService {
 		}
 		
 		//sportsEquipmentImg 추가
-		for (MultipartFile equipmentImg : sportsEquipmentImgList) {
-			SportsEquipmentImg sportsEquipmentImg = new SportsEquipmentImg();
+		for (MultipartFile equipmentImg : imgList) {
+			SportsEquipmentImg img = new SportsEquipmentImg();
 			
 			//portsEquipmentImgFileName
 			String fileName = UUID.randomUUID().toString();
@@ -302,16 +303,16 @@ public class SportsEquipmentService {
 			String originName = equipmentImg.getOriginalFilename();
 			String extensionName = originName.substring(originName.lastIndexOf("."));
 			
-			sportsEquipmentImg.setSportsEquipmentNo(sportsEquipmentNo);
-			sportsEquipmentImg.setSportsEquipmentImgSize((int)equipmentImg.getSize());
-			sportsEquipmentImg.setSportsEquipmentImgType(equipmentImg.getContentType());
-			sportsEquipmentImg.setSportsEquipmentImgOriginName(originName);
-			sportsEquipmentImg.setSportsEquipmentImgFileName(fileName+extensionName);
+			img.setSportsEquipmentNo(sportsEquipmentNo);
+			img.setSportsEquipmentImgSize((int)equipmentImg.getSize());
+			img.setSportsEquipmentImgType(equipmentImg.getContentType());
+			img.setSportsEquipmentImgOriginName(originName);
+			img.setSportsEquipmentImgFileName(fileName+extensionName);
 		
 			//mapper 호출
-			int row = sportsEquipmentMapper.insertSportsEquipmentImg(sportsEquipmentImg);
+			boolean success = sportsEquipmentMapper.insertImg(img) != 1;
 			//sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-			if(row != 1) {
+			if(success) {
 				throw new RuntimeException("예외발생 : sportsEquipmentImg 추가 실패");
 			}
 			File file = new File(path+"/"+fileName+extensionName);
@@ -331,10 +332,10 @@ public class SportsEquipmentService {
 //----------------------------------------- SportsEquipmentOrder -------------------------------------
 	
 	//sportsEquipmentOrder 추가
-	public void insertSportsEquipmentOrderService(HttpSession session,
-													int sportsEquipmentNo,
-													int quantity,
-													int itemPrice) {
+	public void insertOrder(HttpSession session,
+							int sportsEquipmentNo,
+							int quantity,
+							int itemPrice) {
 		
 		//sportsEquipment 추가를 시도하는 employeeNo가 지점 소속인지 확인
 		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
@@ -358,24 +359,24 @@ public class SportsEquipmentService {
 			sportsEquipmentOrder.setTotalPrice(0);
 		}
 		//mapper 호출
-		int row = sportsEquipmentMapper.insertSportsEquipmentOrder(sportsEquipmentOrder);
+		boolean success = sportsEquipmentMapper.insertOrder(sportsEquipmentOrder) != 1;
 		
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 추가 실패 : row - {}", row);
+		if (success) {
+		    log.info("sportsEquipmentOrder 추가 실패 : success - {}", success);
 		} else {
-		    log.info("sportsEquipmentOrder 추가 성공 : row - {}", row);
+		    log.info("sportsEquipmentOrder 추가 성공 : success - {}", success);
 		}
 		
 	}
 	
 	//sportsEquipmentOrderList 출력(본사)
-	public Map<String,Object> selectSportsEquipmentOrderByHeadService(HttpSession session,
-																	int currentPage,
-																	String searchBranch,
-																	String searchItem,
-																	String beginDate,
-																	String endDate) {
+	public Map<String,Object> orderByHead(HttpSession session,
+										  int currentPage,
+										  String searchBranch,
+										  String searchItem,
+										  String beginDate,
+										  String endDate) {
 		//디버깅
 		log.info("currentPage: {}", currentPage);
 		log.info("searchBranch: {}", searchBranch);
@@ -401,16 +402,16 @@ public class SportsEquipmentService {
 		paramMap.put("loginBranchLevel", loginBranchLevel);
 		
 		//mapper 호출 
-		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
-		int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		int orderCnt = sportsEquipmentMapper.orderHeadCnt(paramMap);
+		int lastPage = orderCnt/rowPerPage;
 		
-		if(sportsEquipmentOrderCnt%rowPerPage != 0) {
+		if(orderCnt%rowPerPage != 0) {
 			lastPage = lastPage + 1;
 		}
 		
 		//디버깅
 		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		log.info("orderCnt : {}", orderCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -420,7 +421,7 @@ public class SportsEquipmentService {
 		System.out.println(paramMap);
 		
 		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentOrderList = sportsEquipmentMapper.selectSportsEquipmentOrderByHead(paramMap);
+		List<Map<String,Object>> orderList = sportsEquipmentMapper.orderByHead(paramMap);
 				
 		//controller에 보내줄 resultMap 생성
 		Map<String,Object> resultMap = new HashMap<>();
@@ -431,17 +432,17 @@ public class SportsEquipmentService {
 		resultMap.put("searchItem", searchItem);
 		resultMap.put("searchBranch", searchBranch);
 		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentOrderList", sportsEquipmentOrderList);
+		resultMap.put("orderList", orderList);
 		
 		return resultMap;
 	}
 
 	//sportsEquipmentOrderList 출력(지사)
-	public Map<String,Object> selectSportsEquipmentOrderByBranchService(HttpSession session,
-																	int currentPage,
-																	String searchItem,
-																	String beginDate,
-																	String endDate) {
+	public Map<String,Object> orderByBranch(HttpSession session,
+											int currentPage,
+											String searchItem,
+											String beginDate,
+											String endDate) {
 		//디버깅
 		log.info("currentPage: {}", currentPage);
 		log.info("searchItem: {}", searchItem);
@@ -468,16 +469,16 @@ public class SportsEquipmentService {
 		paramMap.put("loginBranchLevel", loginBranchLevel);
 		
 		//mapper 호출 
-		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderBranchCnt(paramMap);
-		int lastPage = sportsEquipmentOrderCnt/rowPerPage;
+		int orderCnt = sportsEquipmentMapper.orderBranchCnt(paramMap);
+		int lastPage = orderCnt/rowPerPage;
 		
-		if(sportsEquipmentOrderCnt%rowPerPage != 0) {
+		if(orderCnt%rowPerPage != 0) {
 			lastPage = lastPage + 1;
 		}
 		
 		//디버깅
 		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
+		log.info("orderCnt : {}", orderCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -487,7 +488,7 @@ public class SportsEquipmentService {
 		System.out.println(paramMap);
 		
 		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentOrderList = sportsEquipmentMapper.selectSportsEquipmentOrderByBranch(paramMap);
+		List<Map<String,Object>> orderList = sportsEquipmentMapper.orderByBranch(paramMap);
 		
 		
 		//controller에 보내줄 resultMap 생성
@@ -498,15 +499,15 @@ public class SportsEquipmentService {
 		resultMap.put("beginDate", beginDate);
 		resultMap.put("searchItem", searchItem);
 		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentOrderList", sportsEquipmentOrderList);
+		resultMap.put("orderList", orderList);
 		
 		return resultMap;
 	}
 
 	//sportsEquipmentOrder 수정 액션
-	public void updateSportsEquipmentOrderService(HttpSession session,
-														int orderNo,
-														String orderStatus) {
+	public void updateOrder(HttpSession session,
+							int orderNo,
+							String orderStatus) {
 		//디버깅
 		log.info("orderNo : {}", orderNo);
 		log.info("orderStatus : {}", orderStatus);
@@ -521,25 +522,25 @@ public class SportsEquipmentService {
 		}
 		
 		//mapper에 보내줄 sportsEquipmentOrder 객체 세팅
-		SportsEquipmentOrder sportsEquipmentOrder = new SportsEquipmentOrder();
-		sportsEquipmentOrder.setOrderNo(orderNo);
-		sportsEquipmentOrder.setOrderStatus(orderStatus);
+		SportsEquipmentOrder order = new SportsEquipmentOrder();
+		order.setOrderNo(orderNo);
+		order.setOrderStatus(orderStatus);
 
 		//mapper 호출
-		int row = sportsEquipmentMapper.updateSportsEquipmentOrder(sportsEquipmentOrder);
+		boolean success = sportsEquipmentMapper.updateOrder(order) != 1;
 		
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 수정실패 : row - {}", row);
+		if (success) {
+		    log.info("sportsEquipmentOrder 수정실패 : success - {}", success);
 		} else {
-		    log.info("sportsEquipmentOrder 수정성공: row - {}", row);
+		    log.info("sportsEquipmentOrder 수정성공: success - {}", success);
 		}
 	}
 
 	//sportsEquipmentOrder 삭제 액션
-	public void deleteSportsEquipmentOrderService(HttpSession session,
-														int orderNo,
-														String orderStatus) {
+	public void deleteOrder(HttpSession session,
+							int orderNo,
+							String orderStatus) {
 		//디버깅
 		log.info("orderNo : {}", orderNo);
 		log.info("orderStatus : {}", orderStatus);
@@ -555,28 +556,28 @@ public class SportsEquipmentService {
 		//}
 		
 		//mapper에 보내줄 sportsEquipmentOrder 객체 세팅
-		SportsEquipmentOrder sportsEquipmentOrder = new SportsEquipmentOrder();
-		sportsEquipmentOrder.setOrderNo(orderNo);
-		sportsEquipmentOrder.setOrderStatus(orderStatus);
+		SportsEquipmentOrder order = new SportsEquipmentOrder();
+		order.setOrderNo(orderNo);
+		order.setOrderStatus(orderStatus);
 
 		//mapper 호출
-		int row = sportsEquipmentMapper.deleteSportsEquipmentOrder(sportsEquipmentOrder);
+		boolean success = sportsEquipmentMapper.deleteOrder(order) != 1;
 		
 		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 삭제실패 : row - {}", row);
+		if (success) {
+		    log.info("sportsEquipmentOrder 삭제실패 : success - {}", success);
 		} else {
-		    log.info("sportsEquipmentOrder 삭제성공: row - {}", row);
+		    log.info("sportsEquipmentOrder 삭제성공: success - {}", success);
 		}
 	}
 	
 //----------------------------------------- SportsEquipmentOrder -------------------------------------	
 	
 	//sportsEquipmentInventory 출력(본사)
-	public Map<String,Object> selectSportsEquipmentInventoryHeadService(HttpSession session,
-																	int currentPage,
-																	String searchBranch,
-																	String searchItem) {
+	public Map<String,Object> inventoryHead(HttpSession session,
+											int currentPage,
+											String searchBranch,
+											String searchItem) {
 		//디버깅
 		log.info("currentPage: {}", currentPage);
 		log.info("searchBranch: {}", searchBranch);
@@ -598,16 +599,16 @@ public class SportsEquipmentService {
 		paramMap.put("loginBranchLevel", loginBranchLevel);
 		
 		//mapper 호출 
-		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByHeadCnt(paramMap);
-		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
+		int inventoryCnt = sportsEquipmentMapper.inventoryByHeadCnt(paramMap);
+		int lastPage = inventoryCnt/rowPerPage;
 		
-		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
+		if(inventoryCnt%rowPerPage != 0) {
 			lastPage = lastPage + 1;
 		}
 		
 		//디버깅
 		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
+		log.info("inventoryCnt : {}", inventoryCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -617,7 +618,7 @@ public class SportsEquipmentService {
 		System.out.println(paramMap);
 		
 		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByHead(paramMap);
+		List<Map<String,Object>> inventoryList = sportsEquipmentMapper.inventoryByHead(paramMap);
 				
 		//controller에 보내줄 resultMap 생성
 		Map<String,Object> resultMap = new HashMap<>();
@@ -626,15 +627,15 @@ public class SportsEquipmentService {
 		resultMap.put("searchItem", searchItem);
 		resultMap.put("searchBranch", searchBranch);
 		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+		resultMap.put("inventoryList", inventoryList);
 		
 		return resultMap;
 	}
 	
 	//sportsEquipmentInventory 출력(지점)
-	public Map<String,Object> selectSportsEquipmentInventoryBranchService(HttpSession session,
-																	int currentPage,
-																	String searchItem) {
+	public Map<String,Object> inventoryBranch(HttpSession session,
+											  int currentPage,
+											  String searchItem) {
 		//디버깅
 		log.info("currentPage: {}", currentPage);
 		log.info("searchItem: {}", searchItem);
@@ -665,16 +666,16 @@ public class SportsEquipmentService {
 		
 		
 		//mapper 호출 
-		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranchCnt(paramMap);
-		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
+		int inventoryCnt = sportsEquipmentMapper.inventoryByBranchCnt(paramMap);
+		int lastPage = inventoryCnt/rowPerPage;
 		
-		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
+		if(inventoryCnt%rowPerPage != 0) {
 			lastPage = lastPage + 1;
 		}
 		
 		//디버깅
 		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
+		log.info("inventoryCnt : {}", inventoryCnt);
 		
 		//페이징 변수 Map에 put
 		paramMap.put("beginRow", beginRow);
@@ -684,7 +685,7 @@ public class SportsEquipmentService {
 		System.out.println(paramMap);
 		
 		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranch(paramMap);
+		List<Map<String,Object>> inventoryList = sportsEquipmentMapper.inventoryByBranch(paramMap);
 				
 		//controller에 보내줄 resultMap 생성
 		Map<String,Object> resultMap = new HashMap<>();
@@ -692,7 +693,7 @@ public class SportsEquipmentService {
 
 		resultMap.put("searchItem", searchItem);
 		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
+		resultMap.put("inventoryList", inventoryList);
 		
 		return resultMap;
 	}

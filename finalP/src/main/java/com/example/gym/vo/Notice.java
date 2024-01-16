@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Notice {
 	private int noticeNo;
 	private int employeeNo;
+	private	String employeeName;
 	private String noticeTitle;
 	private String noticeContent;
 	private String createdate;

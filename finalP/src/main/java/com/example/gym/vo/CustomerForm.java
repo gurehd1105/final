@@ -1,6 +1,5 @@
 package com.example.gym.vo;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 
@@ -15,6 +14,5 @@ public class CustomerForm {
 	private String customerPhone;
 	private String customerAddress;
 	private String customerEmail;
-	
-	private MultipartFile customerImg;
+	private String customerImg;
 }

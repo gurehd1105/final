@@ -1,6 +1,7 @@
 package com.example.gym.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,15 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
 import com.example.gym.vo.Customer;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Review;
 import com.example.gym.vo.ReviewReply;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
@@ -24,39 +27,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("review")
-public class ReviewController {
-	ObjectMapper mapper = new ObjectMapper();
+public class ReviewController extends DefaultController {
 	@Autowired
 	private ReviewService reviewService;
 	@Autowired
 	private CustomerService customerService;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model, @RequestParam(defaultValue = "1") int currentPage, 
-											@RequestParam(defaultValue = "") String branchName) throws JsonProcessingException {		
-		
-		int rowPerPage = 10;
-		int beginRow = (currentPage - 1) * rowPerPage;
+	public String reviewList(Model model, Page page,
+								@RequestParam(defaultValue = "") String programName) {		
+		page.setTotalCount(reviewService.totalCount());
+		page.setRowPerPage(10);
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("branchName", branchName);
+		paramMap.put("beginRow", page.getBeginRow());
+		paramMap.put("rowPerPage", page.getRowPerPage());
+		paramMap.put("programName", programName);
+		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);
+		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
+		model.addAttribute("reviewList", toJson(reviewList));
+		model.addAttribute("page", page);
 		
-		Map<String, Object> resultMap = reviewService.selectReviewList(paramMap);
-		Object reviewList = resultMap.get("reviewList");
-		model.addAttribute("reviewList", mapper.writeValueAsString(reviewList));
-		
-		
-		// 페이징
-		int totalRow = (int) resultMap.get("totalRow");
-		int lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("lastPage", lastPage);
-		model.addAttribute("totalRow", totalRow);
-		model.addAttribute("rowPerPage", rowPerPage);
 		return "review/list";
 	}
 	
@@ -76,27 +66,10 @@ public class ReviewController {
 	}
 	*/
 	
-	
-	@PostMapping("/delete")
-	public String delete(Review review, Customer customer) { 
-		Customer checkCustomer = customerService.loginCustomer(customer);
-		if(checkCustomer != null) {	// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
-			ReviewReply reviewReply = new ReviewReply();
-			reviewReply.setReviewNo(review.getReviewNo());
-			reviewService.deleteReviewReply(reviewReply);
-			reviewService.deleteReview(review);
-		} else {
-			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " --Pw 불일치");
-		}		
-		return "redirect:list";
-	}
-	
-	
 	@GetMapping("/update")
 	public String update(Review review, Model model) { 
 		Map<String, Object> resultMap = reviewService.selectReviewOne(review);
-		model.addAttribute("resultMap", resultMap);
-		
+		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
 		return "review/update";
 	}
 	
@@ -104,8 +77,46 @@ public class ReviewController {
 	@PostMapping("/update")
 	public String update(Review review) { 
 		reviewService.updateReview(review);		
-		return "redirect:review/reviewOne?" + review.getReviewNo();
-	}
+		return "redirect:reviewOne?reviewNo=" + review.getReviewNo();
+	}	
+	
+	@PostMapping("/delete")
+	@ResponseBody
+	public int delete(@RequestBody Map<String, Object> paramMap, HttpSession session) { // customer, review정보 axios 방식으로 둘 다 받을 수 없어 Map 사용
+		
+		int result = 0;
+		System.out.println(paramMap);
+		if(session.getAttribute("loginCustomer")!=null && session.getAttribute("loginEmployee")==null) {	// 고객 본인 리뷰 삭제
+		boolean checked = false;
+		Customer checkCustomer = new Customer();
+		checkCustomer.setCustomerId((String) paramMap.get("customerId"));
+		checkCustomer.setCustomerPw((String) paramMap.get("customerPw"));
+		
+		checked = customerService.loginCustomer(checkCustomer) != null;
+		if(checked) {											// 입력한 계정PW 일치 -> 해당 리뷰에 작성된 리플부터 삭제 -> 리뷰 삭제
+			ReviewReply reviewReply = new ReviewReply();
+			reviewReply.setReviewNo(Integer.parseInt((String)paramMap.get("reviewNo")));
+			reviewService.deleteReviewReply(reviewReply);
+			
+			Review review = new Review();
+			review.setReviewNo(Integer.parseInt((String)paramMap.get("reviewNo")));
+			result = reviewService.deleteReview(review);
+			
+			
+		} 
+		}	else if(session.getAttribute("loginCustomer")==null && session.getAttribute("loginEmployee")!=null) {	// 관리자 즉시삭제
+			ReviewReply reviewReply = new ReviewReply();
+			reviewReply.setReviewNo((int)paramMap.get("reviewNo"));
+			reviewService.deleteReviewReply(reviewReply);
+			
+			Review review = new Review();
+			review.setReviewNo((int)paramMap.get("reviewNo"));
+			result = reviewService.deleteReview(review);			
+		
+	}	
+		log.info("result : " + result);
+		return result;
+	}	
 		
 	@GetMapping("/reviewOne")
 	public String reviewOne(Review review, Model model) { 
@@ -116,34 +127,30 @@ public class ReviewController {
 		return "review/reviewOne";
 	}
 	
-							/*		review 끝 reply 시작	*/
-	@PostMapping("/deleteReply")
-	public String deleteReply(ReviewReply reply) {
-		reviewService.deleteReviewReply(reply);	
-		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
-	}
-	
-	/** 리플 수정보류 -  비동기 확인
-	@GetMapping
-	public String updateReply(ReviewReply reply, Model model) {
-		reviewService.deleteReviewReply(reply);	
-		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
-	}
-	
-	@PostMapping
-	public String updateReply(ReviewReply reply) {
-		reviewService.deleteReviewReply(reply);	
-		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
-	}
-	*/
-	
+// review reply
+
+	// insertReply
 	@PostMapping("/insertReply")
-	public String insertReply(ReviewReply reply) {
-		reviewService.insertReviewReply(reply);
+	public String insertReply(ReviewReply reply) {		
 		
-		return "redirect:review/reviewOne?" + reply.getReviewNo();
+		reviewService.insertReviewReply(reply);
+		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
+	}
+	
+	// updateReply
+	@PostMapping("/deleteReply")
+	@ResponseBody
+	public int deleteReply(@RequestBody ReviewReply reply) {
+		int result = reviewService.deleteReviewReply(reply);			
+		return result;
+	}
+	
+	// deleteReply
+	@PostMapping("/updateReply")
+	@ResponseBody
+	public int updateReply(@RequestBody ReviewReply reply) {
+		int result = reviewService.updateReviewReply(reply);
+		
+		return result;
 	}
 }

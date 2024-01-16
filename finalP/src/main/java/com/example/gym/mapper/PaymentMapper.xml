@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.PaymentMapper">
+	<insert id="insert" parameterType="com.example.gym.vo.Payment">
+		INSERT INTO payment(
+			customer_no,
+			membership_no,
+			payment_date
+		) VALUES(
+			#{customerNo},
+			#{membershipNo},
+			NOW()
+		)	
+	</insert>
+	
+	<delete id="delete" parameterType="com.example.gym.vo.Payment">
+		DELETE FROM payment
+			WHERE payment_no = #{paymentNo}
+	</delete>
+	
+	<select id="select" parameterType="java.util.Map"
+							resultType="java.util.Map"><!-- 전 고객 결제정보 및 특정고객 결제정보 -->
+		SELECT
+			p.payment_no AS paymentNo,
+			p.payment_date AS paymentDate,
+			
+			c.customer_id AS customerId,
+			
+			cd.customer_name AS customerName,
+			
+			m.membership_name AS membershipName,
+			m.membership_month AS membershipMonth,
+			m.membership_price AS membershipPrice
+		FROM payment p
+		INNER JOIN customer c
+		ON p.customer_no = c.customer_no
+		INNER JOIN customer_detail cd
+		ON c.customer_no = cd.customer_no
+		INNER JOIN membership m
+		ON m.membership_no = p.membership_no
+		<if test="customerName != ''">
+			
+			WHERE cd.customer_name LIKE CONCAT('%',#{customerName},'%')
+			
+		</if>
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<select id="countOfPayment" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM payment
+	</select>
+</mapper>

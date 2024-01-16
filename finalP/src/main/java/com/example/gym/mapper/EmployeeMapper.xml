@@ -109,8 +109,8 @@
 		e.branch_no AS branchNo,
 		e.employee_id AS employeeId,
 		e.employee_active AS employeeActive,
-		
 		b.branch_name AS branchName ,
+		DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
 		
 		ed.employee_name AS employeeName,
 		ed.employee_gender AS employeeGender,
@@ -130,31 +130,30 @@
 	</select>
 	
 	<!-- 상세정보/이미지 -> 마이페이지  -->
-	<select id="employeeOne" parameterType="com.example.gym.vo.Employee"
+	<select id="getEmployee" parameterType="com.example.gym.vo.Employee"
 										resultType="java.util.Map">
 		SELECT
-		e.employee_no AS employeeNo,
-		e.employee_id AS employeeId,
-		e.employee_active AS employeeActive,
-		
-		b.branch_name AS branchName ,
-		
-		ed.employee_name AS employeeName,
-		ed.employee_gender AS employeeGender,
-		ed.employee_phone AS employeePhone,
-		ed.employee_email AS employeeEmail,
-
-		ei.employee_img_no AS employeeImgNo,
-		ei.employee_img_origin_name AS employeeImgOriginName
-		FROM
-		employee e 
-		INNER JOIN employee_detail ed
-		ON e.employee_no = ed.employee_no
-		INNER JOIN branch b
-		ON e.branch_no = b.branch_no
-		LEFT OUTER JOIN employee_img ei
-		ON e.employee_no = ei_employee_no
-		s
+			e.employee_no AS employeeNo,
+			e.employee_id AS employeeId,
+			e.employee_active AS employeeActive,
+			DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
+			
+			b.branch_name AS branchName ,
+			
+			ed.employee_name AS employeeName,
+			ed.employee_gender AS employeeGender,
+			ed.employee_phone AS employeePhone,
+			ed.employee_email AS employeeEmail,
+	
+			ei.employee_img_no AS employeeImgNo,
+			ei.employee_img_origin_name AS employeeImgSrc
+		FROM employee e 
+			INNER JOIN branch b
+				ON e.branch_no = b.branch_no
+			LEFT OUTER JOIN employee_detail ed
+				ON e.employee_no = ed.employee_no
+			LEFT OUTER JOIN employee_img ei
+				ON e.employee_no = ei.employee_no
 		WHERE e.employee_no = #{employeeNo}
 	</select>
 	
@@ -171,12 +170,10 @@
 	</update>
 		<!-- 이미지 변경 -->
 	<update id="updateEmployeeImg" parameterType="com.example.gym.vo.EmployeeImg">
-		<if test="employeeImg != null">
 		UPDATE employee_img SET
-			employee_img_origin_name = #{employeeImgOriginName}
+			employee_img_origin_name = #{employeeImgOriginName} ,
 			updatedate = NOW()
-		WHERE employee_no = #{employeeNo}		
-		</if>
+		WHERE employee_no = #{employeeNo}
 	</update>
 		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkEmployeeImg" parameterType="com.example.gym.vo.Employee"
