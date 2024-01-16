@@ -20,7 +20,7 @@
             <tr>
                 <th>{{a+1}}</th>
                 <th>{{attendance.programReservationNo}}</th>        
-                <th>{{new Date(attendance.customerAttendanceEnterTime).toLocaleDateString() + ", " + new Date(attendance.customerAttendanceEnterTime).toLocaleTimeString()}}</th>
+                <th>{{new Date(attendance.customerAttendanceEnterTime).toLocaleDateString() + " "+ new Date(attendance.customerAttendanceEnterTime).toLocaleTimeString()}}</th>
  
                 
             </tr>            
