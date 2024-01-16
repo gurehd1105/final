@@ -87,23 +87,24 @@ public class ProgramController extends DefaultController{
 	
 	//program 추가 폼 (본사 직원 접근 가능)
 	@GetMapping("/insert")
-	public String insertProgram(HttpSession session){
+	public String insert(HttpSession session){
 		
 		//service 호출
-		programService.insertProgramService(session);
+		programService.insert(session);
 		
 		return "program/insert";
 	}
 	
 	//program 추가 액션 (본사 직원 접근 가능)
 	@PostMapping("/insert")
-	public String selectProgramList(HttpSession session,
-									@RequestParam String programName,
-									@RequestParam int maxCustomer,
-									@RequestParam String programActive){
+	public String insert(HttpSession session,
+						 @RequestParam String programName,
+						 @RequestParam String programContent,
+						 @RequestParam int maxCustomer,
+						 @RequestParam String programActive){
 		
 		//service 호출
-		programService.insertProgramService(session, programName, maxCustomer, programActive);
+		programService.insert(session, programContent, programName, maxCustomer, programActive);
 		
 		return "redirect:/program/list";
 	}

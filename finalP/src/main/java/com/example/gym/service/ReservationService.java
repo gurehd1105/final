@@ -34,12 +34,7 @@ public class ReservationService {
 		return reservationMapper.insertReservation(reservation);
 	
 	}
-
-	// 프로그램 목록조회
-	public List<Map<String, Object>> selectProgram(ProgramDate programDate) {
-		List<Map<String, Object>> resultMap = reservationMapper.selectProgram(programDate);
-		return resultMap;
-	}
+	
 	
 	// 프로그램 예약 가능 정보 조회
 	public List<ProgramDate> selectProgramDates(int program_no) {
@@ -53,9 +48,10 @@ public class ReservationService {
 	}
 	
 	
-	
-	
-	
+	// 해당날짜에 진행 예정 프로그램 추가
+	public int insertProgramDate(ProgramDate programDate) {
+		return reservationMapper.insertProgramDate(programDate);
+	}
 	
 	
 	

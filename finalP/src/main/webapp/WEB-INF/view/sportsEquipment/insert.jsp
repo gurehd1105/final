@@ -28,15 +28,17 @@
 		<el-form-item label="가격">
 			<el-input type="number" v-model="model.itemPrice" name="itemPrice" :min="0" placeholder="가격을 입력하세요." />			
 		</el-form-item> 
-	
+
 		<el-form-item label="이미지">
 			<el-input type="file" v-model="model.sportsEquipmentImg" name="sportsEquipmentImg" multiple  />			
 		</el-form-item> 
-	
+
 		<el-form-item>
 			<el-button type="primary" @click="onSubmit(form)">입력</el-button>
 		</el-form-item> 
+
 	</el-form>
+	
 	
 	<br>
 	<!-- 검색창 -->
@@ -96,7 +98,6 @@
 <c:set var="script">
 	data() {
 		return {
-			 showErrorAlert: false,
 			model: {
 			    searchWord: '${searchWord}', 
 			   	equipmentActive: '${equipmentActive}',
@@ -146,10 +147,12 @@
     			this.currentPage = page;
     			console.log('Current Page:', this.currentPage); 
     			location.href = '${ctp}/sportsEquipment/insert?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
-  			}
+  			},
+  			
 	
 	}
 </c:set>
+
 
 
 <%@ include file="/inc/admin_layout.jsp"%>

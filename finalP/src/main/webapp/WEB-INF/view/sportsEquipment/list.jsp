@@ -19,13 +19,13 @@
 			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
 	>
 	   	<el-form-item label="상태">
-			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
+			<el-radio-group v-model="model.active" name="active" class="ml-4" >
 				<el-radio label="Y">주문가능</el-radio>
 				<el-radio label="N">품절</el-radio>
 			</el-radio-group>
 	   	</el-form-item>
 		<el-form-item label="검색">
-				<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+			<el-input v-model="model.query" name="query" placeholder="검색어를 입력하세요"/>
 	   	</el-form-item>
 	   	<el-form-item>
 				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
@@ -62,14 +62,15 @@
 </c:set>
 <c:set var="script">
 	data() {
+		const model = JSON.parse('${result}');
 	  	return {
 		    model: {
-			    searchWord: '${searchWord}', 
-			    equipmentActive: '${equipmentActive}',
-			    currentPage: 1, 
+			    query: model.param.query ?? '', 
+			    active: model.param.active ?? '',
+			    currentPage: model.param.pageNum,
 		    },
-		    list: JSON.parse('${list}'), 
-		    lastPage: ${lastPage} 
+		    list: model.list, 
+		    lastPage: model.param.totalPage,
 	  	};
 	},
 	methods: {

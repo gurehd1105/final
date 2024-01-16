@@ -3,15 +3,17 @@
 <mapper namespace="com.example.gym.mapper.ProgramMapper">
 	
 	<!-- program 추가 -->
-	<insert id="insertProgram" parameterType="com.example.gym.vo.Program">
+	<insert id="insert" parameterType="com.example.gym.vo.Program">
 		INSERT INTO program (
 			employee_no,
 			program_name,
+			program_content,
 			program_max_customer,
 			active
 		) VALUES (
 			#{employeeNo},
 			#{programName},
+			#{programContent},
 			#{programMaxCustomer},
 			#{active}
 		)		

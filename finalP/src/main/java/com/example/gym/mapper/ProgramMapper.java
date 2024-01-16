@@ -10,7 +10,7 @@ import com.example.gym.vo.Program;
 public interface ProgramMapper {
 	
 	//program 추가
-	int insertProgram(Program program);
+	int insert(Program program);
 	
 	//program 리스트 출력
 	List<Map<String, Object>> selectProgramList(Map<String, Object> paramMap);

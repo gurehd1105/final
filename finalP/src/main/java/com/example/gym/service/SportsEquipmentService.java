@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.mapper.SportsEquipmentMapper;
-import com.example.gym.vo.Employee;
+import com.example.gym.vo.SearchResult;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
 import com.example.gym.vo.SportsEquipmentOrder;
+import com.example.gym.vo.SportsEquipmentSearchParam;
+import com.example.gym.vo.SportsEquipmentSearchResult;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class SportsEquipmentService {
 	@Autowired private SportsEquipmentMapper sportsEquipmentMapper;
+	@Autowired private SportsEquipmentSearchResult result;
 	
 //----------------------------------------- SportsEquipment -------------------------------------
 	
@@ -105,55 +108,17 @@ public class SportsEquipmentService {
 	}
 
 	//sportsEquipmentList 출력
-	public Map<String,Object> list(HttpSession session,
-								   int currentPage,
-								   String equipmentActive,
-								   String searchWord) {
-		//디버깅
-		log.info(searchWord);
-		log.info("Current page: {}", currentPage);
-		log.info("equipmentActive : {}", equipmentActive);
+	public SearchResult list(SportsEquipmentSearchParam param) {
+		int total = sportsEquipmentMapper.totalCnt(param);
+		param.setTotalCount(total);
 		
-		//페이징
-		int rowPerPage = 6; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
+		var list = sportsEquipmentMapper.list(param);
 		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap1 = new HashMap<>();
-		paramMap1.put("searchWord", searchWord);
-		paramMap1.put("equipmentActive", equipmentActive);
+		return SearchResult.builder()
+				.list(list)
+				.param(param)
+				.build();
 		
-		//mapper 호출 
-		int sportsEquipmentCnt = sportsEquipmentMapper.sportsEquipmentCnt(paramMap1);
-		int lastPage = sportsEquipmentCnt/rowPerPage;
-		
-		if(sportsEquipmentCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentCnt : {}", sportsEquipmentCnt);
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap2 = new HashMap<>();
-		paramMap2.put("searchWord", searchWord);
-		paramMap2.put("equipmentActive", equipmentActive);
-		paramMap2.put("beginRow", beginRow);
-		paramMap2.put("rowPerPage", rowPerPage);
-		
-		//mapper 호출
-		List<Map<String,Object>> list = sportsEquipmentMapper.list(paramMap2);
-		
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
-		resultMap.put("searchWord", searchWord);
-		resultMap.put("equipmentActive", equipmentActive);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("list", list);
-		
-		return resultMap;
 	}
 	
 	//sportsEquipment 수정 폼

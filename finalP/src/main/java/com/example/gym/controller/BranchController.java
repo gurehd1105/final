@@ -78,23 +78,23 @@ public class BranchController  extends DefaultController {
 		}
 	}
 	
-	// 공지사항 수정 폼
+	// 지점 수정 폼
 	@GetMapping("/update/{branchNo}")
 	public String update(Model model, @PathVariable int branchNo) {
 		// 매개변수 디버깅
 		log.debug("update", "branchNo", branchNo);
 		// 공지사항 기존 내용 가져오기
 		Map<String, Object> branch = branchService.getBranchOne(branchNo);
-
 		model.addAttribute("branch", branch);
 
 		return "branch/update";
 	}
 
-	// 공지사항 수정 액션
+	// 지점 수정 액션
 	@PostMapping("/update")
-	public String updateNotice(Branch branch, HttpSession session) {
-
+	public String updateBranch(Branch branch, HttpSession session ,
+			String address1, String address2, String address3) {
+		branch.setBranchAddress(address1 + " " + address2 + address3);
 		// 매개변수 디버깅
 		log.info(branch.toString());
 		// 서비스 호출
@@ -103,12 +103,13 @@ public class BranchController  extends DefaultController {
 		return "redirect:/branch/list";
 	}
 
-	// 공지사항 삭제 액션
+	// 지점 삭제 액션
 	@GetMapping("/delete/{branchNo}")
-	public String delete(@PathVariable int branchNo, HttpSession session) {
+	public String delete(@PathVariable int branchNo, HttpSession session , String address1, String address2, String address3) {
 		if (session.getAttribute("loginEmployee") == null) {
 			return "redirect:/home";
 		}
+		
 		// 매개변수 디버깅
 		log.debug("delete", "branchNo", branchNo);
 		// 서비스 호출

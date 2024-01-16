@@ -16,6 +16,8 @@ import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeDetail;
 import com.example.gym.vo.EmployeeForm;
 import com.example.gym.vo.EmployeeImg;
+import com.example.gym.vo.Notice;
+import com.example.gym.vo.Page;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -108,14 +110,18 @@ public class EmployeeService {
 		employeeDetail.setEmployeePhone(form.getEmployeePhone());
 		employeeDetail.setEmployeeEmail(form.getEmployeeEmail());
 		employeeDetailSuccess = employeeMapper.updateEmployeeOne(employeeDetail) ==1;
+		if(!employeeDetailSuccess){
+			employeeImgSuccess = employeeMapper.insertEmployeeDetail(employeeDetail) == 1;
+	      } 
 
 		EmployeeImg employeeImg = new EmployeeImg();
 		// fileName 이외 모든 값 세팅
 		employeeImg.setEmployeeNo(form.getEmployeeNo());
 		employeeImg.setEmployeeImgOriginName(form.getEmployeeImg());
-		
 		employeeImgSuccess = employeeMapper.updateEmployeeImg(employeeImg) == 1;
-		
+		if(employeeImgSuccess == false) {
+			employeeImgSuccess = employeeMapper.insertEmployeeImg(employeeImg) == 1;
+	      }
 		return employeeDetailSuccess && employeeImgSuccess;
 	}
 
@@ -132,11 +138,14 @@ public class EmployeeService {
 		return result;
 	}
 
-	// 직원 목록
-	public Map<String, Object> selectAllEmployee() {
-		Map<String, Object> resultMap =employeeMapper.selectAllEmployee();
-		return resultMap;
-	}
+	// 직원 조회 (목록)
+		public List<Employee> list(Page page) {
+			return employeeMapper.list(page);
+		}
+	// 전체 직원수 체크	
+		public int getEmployeeTotal() {
+			return employeeMapper.selectEmployeeTotal();
+		}
 
 	// 직원 상세목록
 	public Map<String, Object> getEmployee(Employee employee) {
