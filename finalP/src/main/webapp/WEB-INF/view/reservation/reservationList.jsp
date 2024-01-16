@@ -14,6 +14,7 @@
             <th>NO</th>
             <th>결제일</th>        
             <th>지점명</th> 
+            <th>프로그램</th>
             <th>예약번호</th> 
             <th>삭제</th>        
         </tr>
@@ -23,6 +24,7 @@
                 <th>{{r+1}}</th>
                 <th>{{new Date(reservation.paymentDate).toLocaleDateString()}}</th>        
                 <th>{{reservation.branchName}}</th>
+                <th>{{reservation.programName}}</th>
                 <th>{{reservation.programReservationNo}}</th>    
                 <th><el-button type="danger" @click="deleteReservation(reservation.programReservationNo,targetYear,targetMonth,targetDay)">삭제</el-button></th>  
             </tr>            
@@ -34,7 +36,8 @@
 
 <c:set var="script">
     data() {
-        return {           
+        return {        
+        	programList: JSON.parse('${programList}'),   
             reservationList: JSON.parse('${reservationList}'),   
             targetYear:'${targetYear}', 
             targetMonth:'${targetMonth}', 
