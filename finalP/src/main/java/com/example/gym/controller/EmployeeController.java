@@ -198,7 +198,7 @@ public class EmployeeController extends DefaultController {
 	// 마이페이지
 	@GetMapping("/mypage")
 	public String mypage(HttpSession session, Model model) {
-		// id 유효성검사
+		// 로그인 emp 값 받아오기
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 
 		Map<String, Object> resultMap = employeeService.getEmployee(loginEmployee);

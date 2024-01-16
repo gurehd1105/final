@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.AttendanceMapper">
+	<!-- 출석체크 -->
+	<insert id="insertAttendance" parameterType="java.util.Map">
+		INSERT INTO customer_attendance (
+					program_reservation_no,
+					customer_attendance_enter_time
+		   )VALUES (
+					 #{programReservationNo},
+					 #{customerAttendanceEnterTime}
+					)
+	</insert>
+	<!--출석정보 조회 -->
+	<select id="selectCustomerAttendance" parameterType="java.util.Map" 
+	        resultType="java.util.Map">
+        SELECT program_reservation_no programReservationNo,
+        	   customer_attendance_enter_time customerAttendanceEnterTime
+          FROM customer_attendance 
+    </select>
+
+</mapper>

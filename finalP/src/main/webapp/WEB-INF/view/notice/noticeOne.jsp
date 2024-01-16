@@ -30,4 +30,16 @@
 </c:set>
 
 
-<%@ include file="/inc/admin_layout.jsp" %>
+<%-- Check if loginEmployee session attribute exists --%>
+<%
+    Object loginEmployee = session.getAttribute("loginEmployee");
+    if (loginEmployee != null) {
+%>
+    <%@ include file="/inc/admin_layout.jsp" %>
+<%
+    } else {
+%>
+    <%@ include file="/inc/user_layout.jsp" %>
+<%
+    }
+%>
