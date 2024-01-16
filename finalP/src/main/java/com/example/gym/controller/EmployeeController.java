@@ -141,18 +141,18 @@ public class EmployeeController extends DefaultController {
 
 			// Email 값 표기
 			String employeeEmail = (String) resultMap.get("employeeEmail");
-			String employeeEmailId = employeeEmail.substring(0, employeeEmail.lastIndexOf("@"));
-			String employeeEmailJuso = employeeEmail.substring(employeeEmail.lastIndexOf("@") + 1);
+			String employeeEmailId = employeeEmail != null ? employeeEmail.substring(0, employeeEmail.lastIndexOf("@")) : "";
+			String employeeEmailJuso = employeeEmail != null ? employeeEmail.substring(employeeEmail.lastIndexOf("@") + 1) : "";
 			resultMap.put("emailId", employeeEmailId);
 			resultMap.put("emailJuso", employeeEmailJuso);
 
 			// 성별 option 값 표기
 			String employeeGender = (String) resultMap.get("employeeGender");
 			String employeeOtherGender = null;
-			if (employeeGender.equals("남")) {
-				employeeOtherGender = "여";
+			if (employeeGender != null) {
+			    employeeOtherGender = employeeGender.equals("남") ? "여" : "남";
 			} else {
-				employeeOtherGender = "남";
+			    employeeOtherGender = "";
 			}
 			resultMap.put("employeeOtherGender", employeeOtherGender);
 
