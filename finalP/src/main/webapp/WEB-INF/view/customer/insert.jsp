@@ -26,7 +26,7 @@
 		  
 	    <el-form-item label="아이디">
 	        <el-input v-model="customer.id" id="checkId" placeholder="ID"><template #append>
-        <el-button @click="duplication()">중복확인</el-button>
+        <el-button @click="idCheck()">중복확인</el-button>
       </template></el-input>
 	    </el-form-item>   
 	    
@@ -130,8 +130,7 @@
 	    		height: 170,
 	    		weight: 70,
 	    		address: {
-	    			postCode: '',
-	    			
+	    			postCode: '',	    			
 	    		},
 	    		customerEmailId: '',
 	    		customerEmailJuso: '',
@@ -239,28 +238,26 @@
 			}		
 		},
 		
-		duplication(){<!-- 중복확인 -->
+		idCheck(){	<!-- 중복확인 -->
 			if(this.customer.id.length < 4){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
-				document.getElementById('customerId').value = '';
 			} else{
 				const self = this;
 				const customer = {
 					customerId: this.customer.id,
 				};
-				axios.post('${ctp}/customer/idCheck', customer)
+				axios.post('${ctp}/customer/checkId', customer.customerId)
 				.then((res) => {
 					if(res.data == 0){
-						alert('사용가능한 ID입니다.');
-						document.getElementById('customerId').value = '';
-						document.getElementById('customerId').value = this.customer.id;
+						document.getElementById('customerId').value = customer;
+						alert('사용가능');
 					} else {
-						alert('중복 ID입니다.');
-						document.getElementById('customerId').value = '';
+						console.log(res.data);
+			 			alert('중복ㅋㅋ');
 					}
 				}).catch((res) => {
 					alert('error');
-				})	
+				})				
 			}		
 		},
 		

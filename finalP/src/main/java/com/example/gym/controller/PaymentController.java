@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.PaymentService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
 import com.example.gym.vo.Payment;
@@ -59,6 +60,6 @@ public class PaymentController extends DefaultController{
 		log.info((paymentList.size() == 0 || paymentList == null) ? "리스트 결과값 없음" : "출력 성공");
 		model.addAttribute("paymentList", toJson(paymentList));
 		model.addAttribute("page", page);
-		return "payment/list";
+		return ViewRoutes.결제정보_조회;
 	}
 }

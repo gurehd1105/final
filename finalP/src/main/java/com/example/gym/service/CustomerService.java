@@ -1,12 +1,13 @@
 package com.example.gym.service;
 
 
+import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerDetail;
@@ -28,8 +29,8 @@ public class CustomerService {
 		return loginCustomer;
 	}
 	// ID 중복확인 / 회원가입
-	public Customer checkId(Customer customer) {
-		Customer check = customerMapper.checkId(customer);
+	public List<Customer> checkId(Customer customer) {
+		List<Customer> check = customerMapper.checkId(customer);
 		
 		return check;
 	}

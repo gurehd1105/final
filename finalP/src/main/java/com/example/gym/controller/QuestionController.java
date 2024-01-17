@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.QuestionService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.Page;
@@ -39,19 +40,19 @@ public class QuestionController extends DefaultController{
 		log.info((list.size() == 0 || list == null) ? "리스트 결과값 없음" : "출력 성공");
 		model.addAttribute("questionList", toJson(list));
 		model.addAttribute("page", page);	// 페이징 위해 함께 전달		
-		return "question/list";
+		return ViewRoutes.문의사항_목록;
 	}
 		
 	// insertForm
 	@GetMapping("/insert")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
-		return "question/insert";
+		return ViewRoutes.문의사항_추가;
 	}	
 	// insertAct
 	@PostMapping("/insert")
 	public String insertQuestion(Question question) {
 		questionService.insertQuestion(question);
-		return "redirect:list";
+		return Redirect(ViewRoutes.문의사항_목록);
 	}
 	
 	// updateForm
@@ -60,10 +61,10 @@ public class QuestionController extends DefaultController{
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		
 		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
-			return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
+			return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + question.getQuestionNo());
 		} else {
 			model.addAttribute("questionMap", resultMap.get("questionMap"));
-			return "question/update";
+			return ViewRoutes.문의사항_수정;
 		}
 		
 	}	
@@ -71,7 +72,7 @@ public class QuestionController extends DefaultController{
 	@PostMapping("/update")
 	public String updateQuestion(Question question) {
 		questionService.updateQuestion(question);
-		return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
+		return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + question.getQuestionNo());
 	}	
 	
 	// delete
@@ -109,7 +110,7 @@ public class QuestionController extends DefaultController{
 		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
 		
 
-		return "question/questionOne";
+		return ViewRoutes.문의사항_상세보기;
 	}
 	
 	
@@ -121,7 +122,7 @@ public class QuestionController extends DefaultController{
 	public String insertReply(QuestionReply questionReply) {
 
 		questionService.insertQuestionReply(questionReply);
-		return "redirect:/question/questionOne?questionNo=" + questionReply.getQuestionNo();
+		return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + questionReply.getQuestionNo());
 	}	
 	
 	// updateReply
