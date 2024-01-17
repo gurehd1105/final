@@ -84,7 +84,7 @@ public class NoticeController extends DefaultController {
 
 		int insertRow = noticeService.insertNotice(paramMap);
 		if (insertRow == 1) {
-			return "redirect:/notice/list";
+			return  Redirect(ViewRoutes.공지사항_목록);
 		} else {
 			return ViewRoutes.공지사항_추가;
 		}
@@ -112,7 +112,7 @@ public class NoticeController extends DefaultController {
 		// 서비스 호출
 		int updateRow = noticeService.updateNotice(notice);
 
-		return "redirect:/notice/list";
+		return Redirect(ViewRoutes.공지사항_목록);
 	}
 
 	// 공지사항 삭제 액션
@@ -127,6 +127,6 @@ public class NoticeController extends DefaultController {
 		int deleteRow = noticeService.deleteNotice(noticeNo);
 		// 삭제 확인 디버깅
 		log.debug("deleteNotice", "deleteRow", deleteRow);
-		return "redirect:/notice/list";
+		return Redirect(ViewRoutes.공지사항_목록);
 	}
 }

@@ -65,7 +65,7 @@ public class BranchController extends DefaultController {
 		log.info(fullAddress);
 		int insertRow = branchService.insertBranch(map);
 		if (insertRow == 1) {
-			return "redirect:/branch/list"; // "Redirect:"에서 오타 수정
+			return Redirect(ViewRoutes.지점_목록); 
 		} else {
 			return ViewRoutes.지점_추가;
 		}
@@ -92,7 +92,7 @@ public class BranchController extends DefaultController {
 		// 서비스 호출
 		int updateRow = branchService.update(branch);
 
-		return "redirect:/branch/list";
+		return Redirect(ViewRoutes.지점_목록);
 	}
 
 	// 지점 삭제 액션
@@ -100,7 +100,7 @@ public class BranchController extends DefaultController {
 	public String delete(@PathVariable int branchNo, HttpSession session, String address1, String address2,
 			String address3) {
 		if (session.getAttribute("loginEmployee") == null) {
-			return "redirect:/home";
+			return Redirect(ViewRoutes.홈);
 		}
 
 		// 매개변수 디버깅
@@ -109,7 +109,7 @@ public class BranchController extends DefaultController {
 		int deleteRow = branchService.delete(branchNo);
 		// 삭제 확인 디버깅
 		log.debug("delete", "deleteRow", deleteRow);
-		return "redirect:/branch/list";
+		return Redirect(ViewRoutes.지점_목록);
 	}
 
 }

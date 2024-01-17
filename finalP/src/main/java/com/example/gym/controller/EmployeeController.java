@@ -61,7 +61,7 @@ public class EmployeeController extends DefaultController {
 	@GetMapping("logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/employee/login";
+		return Redirect(ViewRoutes.직원_로그인);
 	}
 
 	// 직원 입력 폼
@@ -196,7 +196,7 @@ public class EmployeeController extends DefaultController {
 		int result = employeeService.updateEmployeePw(loginEmployee, employeeNewPw);
 		if (result > 0) { // PW 수정 완 --> 재로그인
 			session.invalidate();
-			return "redirect:/employee/login";
+			return Redirect(ViewRoutes.직원_로그인);
 		} else { // 수정 실패 현재 페이지로 return
 			return ViewRoutes.직원_암호_변경;
 
