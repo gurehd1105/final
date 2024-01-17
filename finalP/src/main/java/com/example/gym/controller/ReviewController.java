@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
+import com.example.gym.service.ProgramService;
 import com.example.gym.service.ReviewService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
 import com.example.gym.vo.Review;
 import com.example.gym.vo.ReviewReply;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -32,19 +33,27 @@ public class ReviewController extends DefaultController {
 	private ReviewService reviewService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private ProgramMapper programMapper;
 	
 	@GetMapping("/list")
 	public String reviewList(Model model, Page page,
 								@RequestParam(defaultValue = "") String programName) {		
 		page.setTotalCount(reviewService.totalCount());
 		page.setRowPerPage(10);
-		Map<String, Object> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = new HashMap<>();		
+		paramMap.put("programName", programName);
+		/*
+		 * List<Map<String, Object>> programList =
+		 * programMapper.selectProgramList(paramMap); // 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전
+		 * 도출
+		 */		
 		paramMap.put("beginRow", page.getBeginRow());
 		paramMap.put("rowPerPage", page.getRowPerPage());
-		paramMap.put("programName", programName);
-		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);
+		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);	// 페이징 변수 삽입 후 도출
 		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
 		model.addAttribute("reviewList", toJson(reviewList));
+		/* model.addAttribute("programList", toJson(programList)); */
 		model.addAttribute("page", page);
 		
 		return "review/list";

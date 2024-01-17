@@ -119,6 +119,10 @@ public class CustomerService {
 		customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
 		updateCustomerDetail = customerMapper.updateCustomerOne(customerDetail) == 1;
 		
+		if(!updateCustomerDetail) {	// 탈퇴 -> 원복 고객 있을 시 디테일정보 없을 수 있음
+			updateCustomerDetail = customerMapper.insertCustomerDetail(customerDetail) == 1;
+		}
+		
 		CustomerImg customerImg = new CustomerImg();
 		customerImg.setCustomerNo(customerNo);
 		customerImg.setCustomerImgOriginName(paramCustomerForm.getCustomerImg());
@@ -128,7 +132,7 @@ public class CustomerService {
 		
 		if(!updateCustomerImg) {
 			updateCustomerImg = customerMapper.insertCustomerImg(customerImg) == 1;
-		}		
+		}
 		
 		if (updateCustomerDetail && updateCustomerImg) {
 			result = 1;

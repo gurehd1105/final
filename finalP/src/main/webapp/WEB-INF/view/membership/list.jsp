@@ -11,17 +11,19 @@
 		<el-table-column prop="membershipNo" label="No"></el-table-column>
 		<el-table-column prop="membershipName" label="상품명"></el-table-column>
 		<el-table-column prop="membershipPrice" label="가격"></el-table-column>
-		<c:if test="${ loginCustomer == null && loginEmployee != null }">
-			<el-table-column label="수정/삭제"> <template #default="scope"><el-button
-				type="primary" @click="update(scope.row)">수정</el-button> <el-button
-				type="primary" @click="remove(scope.row)">삭제</el-button></template> </el-table-column>
-		</c:if>
-		<c:if test="${ loginCustomer != null && loginEmployee == null }">
-			<el-table-column label="결제"> <template #default="scope">
-			<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
-				</template></el-table-column>
-
-		</c:if>
+	 	<c:if test="${ loginCustomer == null && loginEmployee != null }"> 
+			<el-table-column label="수정/삭제"> <template #default="scope">
+				<el-button type="primary" @click="update(scope.row)">수정</el-button> 
+				<el-button type="primary" @click="remove(scope.row)">삭제</el-button></template> 
+			</el-table-column>
+	 	</c:if> 
+	 	<c:if test="${ loginCustomer != null && loginEmployee == null }">
+			<el-table-column label="결제"> 
+				<template #default="scope">
+					<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
+				</template>
+			</el-table-column>
+		</c:if> 
 	
 	</el-table>
 
@@ -50,10 +52,21 @@
 				.then((res) => {
 					if(res.data == 1){
 						alert('삭제가 완료되었습니다.');
+						
 						location.reload();
+					} else {
+						self.$notify({
+						  title: '삭제 실패',
+						  message: '멤버십 이용자 수가 많아 삭제가 불가합니다.',
+						  type: 'error',
+						})
 					}
 				}).catch((res) => {	<!-- 외래키 제약조건에 의해 삭제 안될 수 있음 / result = 0 도출이 아닌 DB 측 오류로 조회되기에 catch란에 메시지 작성 -->
-					alert('기존 이용자 수가 많아 삭제할 수 없습니다. 담당자에게 문의하세요.');
+					self.$notify({
+						  title: '삭제 실패',
+						  message: '멤버십 이용자 수가 많아 삭제가 불가합니다.',
+						  type: 'error',
+					})
 				})
 			}
 		},
@@ -68,7 +81,11 @@
 				axios.post('${ctp}/payment/insert', payment)
 				.then((res) => {
 					if(res.data == 1){
-						alert('결제가 완료되었습니다 !');
+						self.$notify({
+						  title: '결제 완료',
+						  message: '결제가 완료되었습니다.',
+						  type: 'success',
+					})
 					} 
 				}).catch((res) => {	
 					alert('error');
@@ -77,4 +94,10 @@
 		},
 	},
 </c:set>
+<c:if test="${ loginEmployee != null }">
 <%@ include file="/inc/user_layout.jsp" %>
+</c:if>
+
+<c:if test="${ loginEmployee == null }">
+<%@ include file="/inc/admin_layout.jsp" %>
+</c:if>
