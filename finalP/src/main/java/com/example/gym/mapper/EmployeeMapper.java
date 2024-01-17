@@ -1,5 +1,6 @@
 package com.example.gym.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -7,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeDetail;
 import com.example.gym.vo.EmployeeImg;
+import com.example.gym.vo.Notice;
+import com.example.gym.vo.Page;
 
 @Mapper
 public interface EmployeeMapper {
@@ -37,6 +40,7 @@ public interface EmployeeMapper {
 
 
 	// 전체 직원 조회
-	Map<String, Object> selectAllEmployee();
-
+	List<Employee> list(Page page);
+	// 페이징 위한 전체 직원 수 조회
+	int selectEmployeeTotal();
 }

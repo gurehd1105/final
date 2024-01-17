@@ -30,7 +30,7 @@ public interface CustomerMapper {
 	Map<String, Object> customerOne(int customerNo);
 	
 	// 정보수정
-		// 상세정보 변경
+	// 상세정보 변경
 	int updateCustomerOne(CustomerDetail customerDetail);
 	int updateCustomerImg(CustomerImg customerImg);
 		// Img 변경위한 정보조회

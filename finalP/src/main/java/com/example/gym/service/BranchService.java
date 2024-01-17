@@ -32,7 +32,7 @@ public class BranchService {
 		return branchMapper.branch();
 	}
 	
-	// 공지사항 상세보기
+	// 지점 상세보기
 	public Map<String, Object> getBranchOne(int branchNo) {
 		return branchMapper.selectBranchOne(branchNo);
 	}

@@ -34,11 +34,11 @@ public class QuestionController extends DefaultController{
 	@GetMapping("/list")
 	public String questionList(HttpSession session, Page page, Model model) {
 		page.setTotalCount(questionService.totalCount());
-		page.setRowPerPage(10);
+		page.setRowPerPage(10);	// 페이지당 조회량
 		List<Map<String, Object>> list = questionService.selectQuestionList(page);
+		log.info((list.size() == 0 || list == null) ? "리스트 결과값 없음" : "출력 성공");
 		model.addAttribute("questionList", toJson(list));
-		model.addAttribute("page", page);	// 페이징 위해 함께 전달
-		
+		model.addAttribute("page", page);	// 페이징 위해 함께 전달		
 		return "question/list";
 	}
 		
@@ -46,8 +46,7 @@ public class QuestionController extends DefaultController{
 	@GetMapping("/insert")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
 		return "question/insert";
-	}
-	
+	}	
 	// insertAct
 	@PostMapping("/insert")
 	public String insertQuestion(Question question) {
@@ -62,13 +61,12 @@ public class QuestionController extends DefaultController{
 		
 		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
 			return "redirect:/question/questionOne?questionNo=" + question.getQuestionNo();
-		}else {
+		} else {
 			model.addAttribute("questionMap", resultMap.get("questionMap"));
 			return "question/update";
 		}
 		
-	}
-	
+	}	
 	// updateAct
 	@PostMapping("/update")
 	public String updateQuestion(Question question) {

@@ -29,7 +29,7 @@
 		</el-form-item>
 		
 		<el-form-item>
-			<el-button type="primary" @click="submit()">완료</el-button>
+			<el-button type="primary" @click="validateAndSubmit()">완료</el-button>
 		</el-form-item>
 		
 </el-form>
@@ -47,8 +47,12 @@
 		}
 	},
 	methods: {
-		submit(){
-			document.getElementById('pwUpdate').submit();
+		validateAndSubmit(){
+			if (this.newPw !== this.newPwCk) {
+				alert("입력한 새로운 암호와 암호 확인이 일치하지 않습니다. 다시 확인해주세요.");
+			} else {
+				document.getElementById('pwUpdate').submit();
+			}
 		},
 	},
 </c:set>

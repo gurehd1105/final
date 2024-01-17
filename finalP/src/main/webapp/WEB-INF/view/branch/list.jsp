@@ -36,7 +36,7 @@
 		  <template #default="scope">
 		    <el-button plain size="small" @click="move(scope.row, 'read')">보기</el-button>
 		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
-		    <el-button plain type="danger" v-if="isEmployee" @click="move(scope.row, 'delete')" size="small">삭제</el-button>
+		    <el-button plain type="danger" v-if="isEmployee" @click="remove(scope.row,'delete')" size="small">삭제</el-button>
 		  </template>
 		</el-table-column>
 	</el-table>
@@ -54,39 +54,49 @@
 </c:set>
 
 <c:set var="script">
-    data() {
-      return {
-        branchs: JSON.parse('${branchList}'),
-        options: [
-        	{ value: 3, label: '3개씩 보기' },
-        	{ value: 5, label: '5개씩 보기' },
-        	{ value: 10, label: '10개씩 보기' },
-        	{ value: 20, label: '20개씩 보기' },
-        ],
-        pageNum: ${page.pageNum},
-        rowPerPage: ${page.rowPerPage },
-        totalCount: ${page.totalCount},
-        totalPage: ${page.totalPage },
-        isEmployee: <%= session.getAttribute("loginEmployee") != null %>,
-      };
-    },
-    methods: {
-      loadPage(pageNum) {
-      	const param = new URLSearchParams();
-      	param.set('pageNum', this.pageNum);
-      	param.set('rowPerPage', this.rowPerPage);
-      	
-		location.href = '/branch/list?' + param.toString();
-      },
-      rowClick(row) {
-      	console.log('rowClick >>> ', row);
-      },
-      move(row, path) {
-		if (row.branchNo != null) {
-		   	location.href = ['/branch', path, row.branchNo].join('/');
-		}
+	data() {
+	  return {
+	    branchs: JSON.parse('${branchList}'),
+	    options: [
+	      { value: 3, label: '3개씩 보기' },
+	      { value: 5, label: '5개씩 보기' },
+	      { value: 10, label: '10개씩 보기' },
+	      { value: 20, label: '20개씩 보기' }
+	    ],
+	    pageNum: ${page.pageNum},
+	    rowPerPage: ${page.rowPerPage},
+	    totalCount: ${page.totalCount},
+	    totalPage: ${page.totalPage},
+	    isEmployee: <%= session.getAttribute("loginEmployee") != null %>
+	  };
+	},
+	methods: {
+	  loadPage() {
+	    const param = new URLSearchParams();
+	    param.set('pageNum', this.pageNum);
+	    param.set('rowPerPage', this.rowPerPage);
+	
+	    location.href = '/branch/list?' + param.toString();
+	  },
+	  remove(row,path) {
+	    if (confirm("정말 삭제하시겠습니까?")) {
+	      // 사용자가 "예"를 누르면 삭제 작업을 진행
+	 	  	location.href = ['/branch', path, row.branchNo].join('/');
+	    } else {
+	      // 사용자가 "아니요"를 누르면 삭제 작업 취소
+	      console.log("삭제가 취소되었습니다.");
+	    }
+	  },
+	  rowClick(row) {
+	    console.log('rowClick >>> ', row);
+	  },
+	  move(row, path) {
+	    if (row.branchNo != null) {
+	      location.href = ['/branch', path, row.branchNo].join('/');
+	    }
 	  }
-    }
+	}
+
 </c:set>
 
 <%-- Check if loginEmployee session attribute exists --%>
