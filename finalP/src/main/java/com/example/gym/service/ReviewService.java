@@ -23,8 +23,8 @@ public class ReviewService {
 		List<Map<String,Object>> reviewList = reviewMapper.selectReviewList(paramMap);	
 		return reviewList;
 	}
-	public int totalCount() {
-		int totalRow = reviewMapper.selectCountOfReview();
+	public int totalCount(String programName) {		
+		int totalRow = reviewMapper.selectCountOfReview(programName);
 		return totalRow;		
 	}
 	

@@ -35,8 +35,32 @@
 	},
 	methods: {
 			submit(){
-				document.getElementById('loginForm').submit();
+				const self = this;
+				const customer = {
+					customerId: this.id,
+					customerPw: this.pw,
+				};
+				axios.post('${ctp}/customer/login', customer)
+				.then((res) => {
+					if(res.data ==1 ){
+						location.href = '${ctp}/home';
+					} else {
+						self.$notify({
+						  title: 'PW 오류',
+						  message: '아이디, 비밀번호가 일치하지 않습니다.',
+						  type: 'error',
+						})
+					}
+				}).catch((res) => {
+					self.$notify({
+					  title: '페이지 오류',
+					  message: '잠시 후 시도해주세요.',
+					  type: 'error',
+					})	
+				})
+				
 			},
+			
 			insertCustomer(){
 				location.href='${ctp}/customer/insert';
 			},

@@ -17,11 +17,11 @@
 		</el-form-item>
 		
 		<el-form-item label="현재PW">
-			<el-input type="password" name="customerPw" v-model="pw" placeholder="PASSWORD"/>
+			<el-input type="password" v-model="pw" placeholder="PASSWORD"/>
 		</el-form-item>
 		
 		<el-form-item label="변경PW">
-			<el-input type="password" name="customerNewPw" v-model="newPw" placeholder="NEW PASSWORD"/>
+			<el-input type="password" name="customerPw" v-model="newPw" placeholder="NEW PASSWORD"/>
 		</el-form-item>
 		
 		<el-form-item label="변경PW 확인">
@@ -50,10 +50,41 @@
 			newPw: '',
 			newPwCk: '',			
 		}
-	},
+	},		
 	methods: {
-		submit(){
-			document.getElementById('updatePw').submit();
+		submit(){			
+			const self = this;
+			const customer = {
+				customerNo: this.no,
+				customerId: this.id,
+				customerPw: this.pw,
+			};
+			axios.post('${ctp}/customer/pwCheck', customer)
+			.then((res) => {
+				if(res.data == 1){
+					if(this.newPw != this.newPwCk){
+						self.$notify({
+						  title: '새 PW 오류',
+						  message: 'PW 확인이 일치하지 않습니다.',
+						  type: 'error',
+						})
+					} else{
+						document.getElementById('updatePw').submit();
+					}
+				} else {
+					self.$notify({
+					  title: 'PW 오류',
+					  message: '비밀번호가 일치하지 않습니다.',
+					  type: 'error',
+					})
+				}
+			}).catch((res) => {
+				self.$notify({
+				  title: '페이지 오류',
+				  message: '잠시 후 시도해주세요.',
+				  type: 'error',
+				})	
+			})
 		},
 	},
 </c:set>

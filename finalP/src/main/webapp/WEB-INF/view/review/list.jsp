@@ -13,16 +13,10 @@
 
 		<el-button type="primary" @click="insert()">리뷰작성</el-button>
 		
-		<el-select class="m-2" placeholder="Select" style="width: 240px">
-			<el-option v-for="item in programList" :key="item.value" id="programName" @click="selectProgram">
-				{{ item.programName }}
-			</el-option> 
+		<el-select class="m-2" placeholder="Select" style="width: 240px" id="programName" v-model="value">
+			<el-option v-for="(item,i) in programList" :key="i" :value="item.programName" :label="item.programName" @click="selectProgram()"/>
 		</el-select>	
-	
-	
-
-
-
+		
 	<el-table :data="reviewList" class="w-fit" @row-click="rowClick"
 		class-name="cursor-pointer"> 
 		<el-table-column prop="reviewNo" label="No"></el-table-column> 
@@ -50,16 +44,17 @@
 	data() {
 		return {
 			reviewList: JSON.parse('${reviewList}'),	<!-- 리뷰목록 -->
-			<%-- programList: JSON.parse('${programList}'),	<!-- 프로그램 목록 /검색기능 --> --%>
+			programList: JSON.parse('${programList}'),	<!-- 프로그램 목록 /검색기능 --> 
 			pageNum: ${page.pageNum},					<!-- 페이징 -->
 			rowPerPage: ${page.rowPerPage },
 			totalCount: ${page.totalCount},
 			totalPage: ${page.totalPage },
-			
+			value:'',
+			programName: '${ programName }',
 		}
 	},
 	
-	methods: {
+	methods: {	
 		insert() {<!-- 리뷰 작성 -->
 			location.href='${ctp}/review/insert';
 		},
@@ -67,8 +62,8 @@
 		loadPage(pageNum) {	<!-- 페이징함수 -->
 	      	const param = new URLSearchParams();
 	      	param.set('pageNum', this.pageNum);
-	      	param.set('rowPerPage', this.rowPerPage);      	
-			location.href = '/review/list?' + param.toString();
+	      	param.set('rowPerPage', this.rowPerPage);
+			location.href = '/review/list?' + param.toString()+ '&programName=' + this.programName;
       	},
       rowClick(row, column){	<!-- 페이징 -->
       	console.log('Row.data:',row, column);
@@ -77,7 +72,7 @@
       	}
       },
       selectProgram(){
-      	<!-- 프로그램 검색 -->
+      	location.href = '${ctp}/review/list?programName=' + this.value;
       },
       
 	  remove(row) {

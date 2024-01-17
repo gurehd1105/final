@@ -44,7 +44,39 @@
 	},
 	methods: {
 		submit(){
-			document.getElementById('delete').submit();
+			const self = this;
+			const customer = {
+				customerId: this.id,
+				customerPw: this.pw,
+			};
+			axios.post('${ctp}/customer/pwCheck', customer)
+			.then((res) => {
+				if(res.data == 1){
+					if(this.pw != this.pwCk){
+						self.$notify({
+						  title: 'PW 오류',
+						  message: 'PW 확인이 일치하지 않습니다.',
+						  type: 'error',
+						})
+					} else {
+						document.getElementById('delete').submit();
+					}
+					
+				} else {
+					self.$notify({
+					  title: 'PW 오류',
+					  message: '비밀번호가 일치하지 않습니다.',
+					  type: 'error',
+					})
+				}
+			}).catch((res) => {
+				self.$notify({
+				  title: '페이지 오류',
+				  message: '잠시 후 시도해주세요.',
+				  type: 'error',
+				})	
+			})	
+			
 		},
 	}
 

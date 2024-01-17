@@ -50,7 +50,9 @@
 				몸무게: '${resultMap.customerWeight}',
 				전화번호: '${resultMap.customerPhone}',
 				주소: '${resultMap.customerAddress}',
-				이메일: '${resultMap.customerEmail}',		
+				이메일: '${resultMap.customerEmail}',	
+				결제상품: '${loginCustomer.membershipName}',
+				만료여부: '${loginCustomer.paymentActive}',
 			},
 				url: '${ctp}${resultMap.customerImgOriginName}',
 		}

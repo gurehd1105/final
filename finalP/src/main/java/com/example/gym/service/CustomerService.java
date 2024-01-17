@@ -75,17 +75,13 @@ public class CustomerService {
 		boolean updateActive = false;
 		boolean deleteDetail = false;
 		boolean deleteImg = false;
-		boolean check = customerMapper.loginCustomer(paramCustomer) != null;
-
-		if (check) {
-			log.info("PW 정상확인");
 
 			updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
 
 			deleteDetail = customerMapper.deleteCustomerDetail(paramCustomer) == 1;
 
 			deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
-		}
+
 
 		if (updateActive && deleteDetail && deleteImg) {
 			result = 1;
@@ -143,15 +139,9 @@ public class CustomerService {
 	 
 	
 	// 비밀번호 수정
-	public int updateCustomerPw(Customer checkCustomer, String customerNewPw) {
+	public int updateCustomerPw(Customer checkCustomer) {
 		int result = 0;
-		boolean check = customerMapper.loginCustomer(checkCustomer) != null;
-		if (check) {
-			Customer updatePw = new Customer();
-			updatePw.setCustomerNo(checkCustomer.getCustomerNo());
-			updatePw.setCustomerPw(customerNewPw);
-			result = customerMapper.updateCustomerPw(updatePw);
-		}
+		result = customerMapper.updateCustomerPw(checkCustomer);		
 		return result;
 	}
 	

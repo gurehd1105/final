@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
-import com.example.gym.service.ProgramService;
 import com.example.gym.service.ReviewService;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
@@ -37,24 +36,41 @@ public class ReviewController extends DefaultController {
 	private ProgramMapper programMapper;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model, Page page,
+	public String reviewList(Model model,Page page,
 								@RequestParam(defaultValue = "") String programName) {		
-		page.setTotalCount(reviewService.totalCount());
-		page.setRowPerPage(10);
-		Map<String, Object> paramMap = new HashMap<>();		
+		Page page2 = new Page();
+		page2.setRowPerPage(Integer.MAX_VALUE);
+		
+		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("programName", programName);
-		/*
-		 * List<Map<String, Object>> programList =
-		 * programMapper.selectProgramList(paramMap); // 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전
-		 * 도출
-		 */		
-		paramMap.put("beginRow", page.getBeginRow());
+		paramMap.put("rowPerPage", page2.getRowPerPage());
+		paramMap.put("beginRow", page2.getBeginRow());
+		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap); 
+		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출
+		
+		
+		
+		
+		paramMap.clear();			// 맵 초기화
+		
+		
+		page.setRowPerPage(10);	
+		
+		paramMap.put("programName", programName);
 		paramMap.put("rowPerPage", page.getRowPerPage());
+		paramMap.put("beginRow", page.getBeginRow());
+		
 		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);	// 페이징 변수 삽입 후 도출
-		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
+		
 		model.addAttribute("reviewList", toJson(reviewList));
+		
+		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
+		
 		/* model.addAttribute("programList", toJson(programList)); */
+		page.setTotalCount(reviewService.totalCount(programName));
 		model.addAttribute("page", page);
+		
+		model.addAttribute("programName", programName);
 		
 		return "review/list";
 	}

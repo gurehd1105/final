@@ -11,7 +11,11 @@
 		   c.customer_active AS customerActive,
 		   c.createdate, c.updatedate,
 		   n.paymentNo,
-			n.payment_active AS paymentActive
+		   n.payment_active AS paymentActive,
+		   case when n.membershipName IS not NULL 
+				then n.membershipName 
+				ELSE '구매내역 없음' END
+				AS membershipName
 		FROM customer c
 		LEFT OUTER JOIN 
 		(SELECT 
@@ -20,6 +24,7 @@
 		      p.membership_no AS membershipNo,
 		      p.payment_date AS paymentDate,
 		      p.createdate, p.updatedate,
+		      m.membership_name AS membershipName,
 		      case 
 				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) <![CDATA[ >= ]]> m.membership_month
 				then '기한만료' ELSE '사용중' END  AS payment_active			<!-- 세션 내 가장 최근 결제정보 활성화 상태 저장 / '사용중' or '기한만료'  -->
@@ -29,13 +34,13 @@
 		   
 		   INNER JOIN membership m
 		   ON p.membership_no = m.membership_no
-		WHERE c.customer_id= #{customerId}
+		WHERE c.customer_id = #{customerId}
 		ORDER BY createdate DESC
 		LIMIT 0,1) n
 		ON c.customer_no = n.customerNo
-		WHERE customer_id = #{customerId}
-		AND customer_pw = PASSWORD(#{customerPw})
-		AND customer_active = 'Y'
+		WHERE c.customer_id = #{customerId}
+		AND c.customer_pw = PASSWORD(#{customerPw})
+		AND c.customer_active = 'Y'
 	</select>
 	
 	<!-- 가입 프로세스 시작 -->
