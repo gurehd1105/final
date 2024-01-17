@@ -13,7 +13,7 @@ public interface ReviewMapper {
 	
 	//review
 	List<Map<String, Object>> selectReviewList(Map<String, Object> paramMap);
-	Integer selectCountOfReview();
+	Integer selectCountOfReview(String programName);
 	
 	int insertReview(Review review);
 	
