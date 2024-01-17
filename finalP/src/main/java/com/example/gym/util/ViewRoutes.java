@@ -21,6 +21,7 @@ public class ViewRoutes {
 	public static final String 직원_로그인 = "employee/login";
 	public static final String 직원_추가 = "employee/insert";
 	public static final String 직원_삭제 = "employee/delete";
+	public static final String 직원_목록 = "employee/list";
 	public static final String 직원_정보_확인 = "employee/customerOne";
 	public static final String 직원__정보_수정 = "employee/updateOne";
 	public static final String 직원_암호_확인 = "employee/updateOneForPw";

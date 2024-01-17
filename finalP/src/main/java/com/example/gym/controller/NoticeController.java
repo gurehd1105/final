@@ -11,44 +11,42 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.NoticeService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.Notice;
 import com.example.gym.vo.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequestMapping("notice")
-public class NoticeController extends DefaultController{
+public class NoticeController extends DefaultController {
 	@Autowired
 	NoticeService noticeService;
 
 	// 공지사항 조회(목록)
 	@GetMapping("/list")
-	public String NoticeList(Model model, Page page) 
-			throws JsonProcessingException {
+	public String NoticeList(Model model, Page page) throws JsonProcessingException {
 		// 페이징 변수들
 		int totalCount = noticeService.getNoticeTotal(); // 게시글 총 갯수
 		page.setTotalCount(totalCount);
 
 		// 서비스 호출
 		List<Notice> noticeList = noticeService.getNoticeList(page);
-		model.addAttribute("noticeList", mapper.writeValueAsString(noticeList));
-		
+		model.addAttribute("noticeList", toJson(noticeList));
+
 		// 결과물 디버깅
 		log.info(noticeList.toString());
 
 		// 모델객체에 담아서 뷰에 전달
 		model.addAttribute("page", page);
-		
-		return "notice/list";
+
+		return ViewRoutes.공지사항_목록;
 	}
 
 	// 공지사항 상세보기
@@ -63,33 +61,33 @@ public class NoticeController extends DefaultController{
 
 		model.addAttribute("noticeOne", noticeOne);
 
-		return "notice/noticeOne";
+		return ViewRoutes.공지사항_상세보기;
 	}
 
 	// 공지사항 추가 폼
 	@GetMapping("/insert")
 	public String insertNotice() {
-		return "notice/insert";
+		return ViewRoutes.공지사항_추가;
 	}
 
 	// 공지사항 추가 액션
 	@PostMapping("/insert")
 	public String insertNotice(Notice notice, HttpSession session) {
-	    Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
+		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 
-	    int employeeNo = loginEmployee.getEmployeeNo();
+		int employeeNo = loginEmployee.getEmployeeNo();
 
-	    Map<String, Object> paramMap = new HashMap<>();
-	    paramMap.put("noticeTitle", notice.getNoticeTitle());
-	    paramMap.put("noticeContent", notice.getNoticeContent());
-	    paramMap.put("employeeNo", employeeNo);
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("noticeTitle", notice.getNoticeTitle());
+		paramMap.put("noticeContent", notice.getNoticeContent());
+		paramMap.put("employeeNo", employeeNo);
 
-	    int insertRow = noticeService.insertNotice(paramMap);
-	    if(insertRow == 1) {
-	    return "redirect:/notice/list";
-	    } else {
-	    	return "notice/insert";
-	    }
+		int insertRow = noticeService.insertNotice(paramMap);
+		if (insertRow == 1) {
+			return "redirect:/notice/list";
+		} else {
+			return ViewRoutes.공지사항_추가;
+		}
 	}
 
 	// 공지사항 수정 폼
@@ -102,7 +100,7 @@ public class NoticeController extends DefaultController{
 
 		model.addAttribute("notice", notice);
 
-		return "notice/update";
+		return ViewRoutes.공지사항_수정;
 	}
 
 	// 공지사항 수정 액션
@@ -113,7 +111,7 @@ public class NoticeController extends DefaultController{
 		log.info(notice.toString());
 		// 서비스 호출
 		int updateRow = noticeService.updateNotice(notice);
-		
+
 		return "redirect:/notice/list";
 	}
 
@@ -121,7 +119,7 @@ public class NoticeController extends DefaultController{
 	@GetMapping("/delete/{noticeNo}")
 	public String deleteNotice(@PathVariable int noticeNo, HttpSession session) {
 		if (session.getAttribute("loginEmployee") == null) {
-			return "redirect:/home";
+			return ViewRoutes.홈;
 		}
 		// 매개변수 디버깅
 		log.debug("deleteNotice", "noticeNo", noticeNo);
