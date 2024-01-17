@@ -28,19 +28,13 @@
    	
 	<el-table :data="employees" border class="w-fit" @row-click="rowClick">
 	    <el-table-column prop="employeeNo" label="사번"></el-table-column>
+	    <el-table-column prop="employeeId" label="ID"></el-table-column>
 	    <el-table-column prop="employeeName" label="이름" width="180"></el-table-column>
-	    <el-table-column prop="createdate" label="입사일" width="180"></el-table-column>
-	    <el-table-column prop="branchName" label="소속지점" width="180"></el-table-column>
-	    <el-table-column prop="employeeGender" label="성별" width="180"></el-table-column>
 	    <el-table-column prop="employeePhone" label="연락처" width="180"></el-table-column>
+	    <el-table-column prop="employeeGender" label="성별" width="180"></el-table-column>
 	    <el-table-column prop="employeeEmail" label="이메일" width="180"></el-table-column>
-		<el-table-column fixed="right" label="관리" width="220">
-		  <template #default="scope">
-		    <el-button plain size="small" @click="move(scope.row, 'read')">보기</el-button>
-		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
-		    <el-button plain type="danger" v-if="isEmployee" @click="move(scope.row, 'delete')" size="small">삭제</el-button>
-		  </template>
-		</el-table-column>
+	    <el-table-column prop="branchName" label="소속지점" width="180"></el-table-column>
+	    <el-table-column prop="createdate" label="입사일" width="180"></el-table-column>
 	</el-table>
     
 	
@@ -73,21 +67,7 @@
       };
     },
     methods: {
-      loadPage(pageNum) {
-      	const param = new URLSearchParams();
-      	param.set('pageNum', this.pageNum);
-      	param.set('rowPerPage', this.rowPerPage);
-      	
-		location.href = '/employee/list?' + param.toString();
-      },
-      rowClick(row) {
-      	console.log('rowClick >>> ', row);
-      },
-      move(row, path) {
-		if (row.employeeNo != null) {
-		   	location.href = ['/employee', path, row.employeeNo].join('/');
-		}
-	  }
+
     }
 </c:set>
 

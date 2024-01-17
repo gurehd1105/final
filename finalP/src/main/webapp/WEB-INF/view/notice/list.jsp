@@ -30,7 +30,7 @@
 	    <el-table-column prop="noticeTitle" label="제목"></el-table-column>
 	    <el-table-column prop="employeeName" label="작성자" width="180"></el-table-column>
 	    <el-table-column prop="createdate" label="작성일" width="180"></el-table-column>
-		<el-table-column fixed="right" label="관리" width="220">
+		<el-table-column fixed="right" label="메뉴" width="220">
 		  <template #default="scope">
 		    <el-button plain size="small" @click="move(scope.row, 'read')">보기</el-button>
 		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
