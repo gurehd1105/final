@@ -13,6 +13,9 @@ import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -234,27 +237,25 @@ public class ReservationController extends DefaultController {
             targetDay
         );
     }
+    //관리자 프로그램 예약 가능 정보 조회
+    @GetMapping("/programDateList")
+    public String programDateList(ProgramDate programDate, Model model) throws JsonProcessingException {
+        List<Map<String, Object>> programDateList = reservationService.programDateList(programDate);
+        model.addAttribute("programDateList",mapper.writeValueAsString(programDateList));
+        System.out.println(programDateList + "<--programDateList");
+        return "reservation/programDateList";
+    }
+    
 
-    // 프로그램 진행날짜 추가
+    // 관리자용 프로그램 진행일 추가
     @GetMapping("/insertProgramDate")
-    public String insertProgramDate(
-        ProgramDate programDate,
-        HttpSession session,
-        Model model,
-        @RequestParam(defaultValue = "1") int currentPage,
-        @RequestParam(defaultValue = "Y") String programActive,
-        @RequestParam(defaultValue = "") String searchWord
-    ) throws JsonProcessingException {
-        Map<String, Object> programList = programService.selectProgramListService(
-            session,
-            currentPage,
-            programActive,
-            searchWord
-        );
-        model.addAttribute(
-            "programList",
-            mapper.writeValueAsString(programList)
-        );
+    public String insertProgramDate(ProgramDate programDate, HttpSession session, Model model,
+							        @RequestParam(defaultValue = "1") int currentPage,
+							        @RequestParam(defaultValue = "Y") String programActive,
+							        @RequestParam(defaultValue = "") String searchWord
+    								) throws JsonProcessingException {
+        Map<String, Object> programList = programService.selectProgramListService(session, currentPage, programActive,searchWord);
+        model.addAttribute("programList",mapper.writeValueAsString(programList));
         System.out.println(programList + "<--programList");
         return "reservation/insertProgramDate";
     }
@@ -264,12 +265,31 @@ public class ReservationController extends DefaultController {
     public int insertProgramDate2(@RequestBody Map<String, Object> paramMap) {
         System.out.println(paramMap + "<-- paramMap");
         ProgramDate programDate = new ProgramDate();
-        programDate.setProgramNo(
-            Integer.parseInt((String) paramMap.get("programNo"))
-        );
-        programDate.setProgramDate((String) paramMap.get("programDate"));
+        programDate.setProgramNo((Integer) paramMap.get("programNo"));
+        String dateString = (String) paramMap.get("programDate");
+        LocalDateTime dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
+        programDate.setProgramDate(dateTime.toString());
 
         int result = reservationService.insertProgramDate(programDate);
         return result;
     }
+    // 관리자용 프로그램 진행일 수정
+    @GetMapping("/updateProgramDate")
+    public String updateProgramDate(ProgramDate programDate, Model model){
+
+    	List<Map<String, Object>> programDateList = reservationService.programDateList(programDate);
+    	Map<String, Object> resultMap = programDateList.get(0);
+    	model.addAttribute("resultMap", toJson(resultMap));
+    	System.out.println(resultMap + "<--resultMap");
+		return "reservation/updateProgramDate";
+	}
+    
+    @PostMapping("/updateProgramDate")
+    public String updateProgramDate(ProgramDate programDate ) {
+    	reservationService.updateProgramDate(programDate);
+		return "redirect:/reservation/updateProgramDate?programNo="+programDate.getProgramNo();
+    	
+    }
+    
+    
 }
