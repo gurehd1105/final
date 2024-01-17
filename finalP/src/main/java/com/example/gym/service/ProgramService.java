@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.vo.Program;
@@ -96,6 +97,7 @@ public class ProgramService {
 	public void updateProgramOneService(HttpSession session,
 												int programNo,
 												int maxCustomer,
+												String programContent,
 												String programActive) {
 		//디버깅
 		log.info("programNo : {}", programNo);
@@ -116,6 +118,7 @@ public class ProgramService {
 		
 		paramMap.put("programNo", programNo);
 		paramMap.put("programActive", programActive);
+		paramMap.put("programContent", programContent);
 		paramMap.put("maxCustomer", maxCustomer);
 	
 		

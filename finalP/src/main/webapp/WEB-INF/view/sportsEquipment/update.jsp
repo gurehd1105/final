@@ -10,7 +10,7 @@
 
 	<!-- 장비정보 수정 폼 -->
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-			 action="${ctp}/sportsEquipment/updateSportsEquipment" enctype="multipart/form-data" method="post" id="updateSportsEquipmentForm">
+			 action="${ctp}/sportsEquipment/updateSportsEquipment" enctype="multipart/form-data" method="post" id="updateForm">
 		<el-form-item label="이름">
 			<el-input type="text" v-model="model.itemName" name="itemName"/>			
 		</el-form-item> 
@@ -52,7 +52,7 @@
 	      </div>
 	      <el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 	               action="${ctp}/sportsEquipment/deleteOneSportsEquipmentImg" 
-	               enctype="multipart/form-data" method="post" :id="'deleteEquipmentImgForm'+ i">
+	               enctype="multipart/form-data" method="post" :id="'deleteImg'+ i">
   				<input type="hidden" name="sportsEquipmentNo" :value="model.sportsEquipmentNo">
 	          	<input type="hidden" name="sportsEquipmentImgFileName" v-model="img.sportsEquipmentImgFileName" >
 	          	<input type="hidden" name="sportsEquipmentImgNo" v-model="img.sportsEquipmentImgNo">
@@ -67,7 +67,7 @@
 	<br>
 	<!-- 장비이미지 추가 폼 -->
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
-	         action="${ctp}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="insertOneSportsEquipmentImg">
+	         action="${ctp}/sportsEquipment/insertOneSportsEquipmentImg" enctype="multipart/form-data" method="post" id="insertImg">
 	
 	 	<el-form-item label="이미지">
 			<el-input type="file" v-model="img" name="img" multiple  />			
@@ -121,11 +121,11 @@
       			alert('파일을 선택해주세요');
      		 return;
     		}
-			document.getElementById('insertOneSportsEquipmentImg').submit();
+			document.getElementById('insertImg').submit();
 		},
 		
 		deleteSubmit(i){
-			const form = document.getElementById('deleteEquipmentImgForm'+i);
+			const form = document.getElementById('deleteImg'+i);
 			console.log('i:', i);
         	console.log('deleteSubmit Parameters:', form);
         
@@ -142,7 +142,7 @@
             if (this.checkChanges()) {
             	console.log('변경 사항 있음');
             	this.compareModels();
-                document.getElementById('updateSportsEquipmentForm').submit();
+                document.getElementById('updateForm').submit();
             } else {
                 alert('변경된 내용이 없습니다.');
             }
@@ -164,7 +164,7 @@
  		 compareModels() {
 
     		for (const key in this.updateModel) {
-      			if (this.updateModel[key] !== this.model[key]) {
+      			if (this.updateModel[key] == this.model[key]) {
        				 console.log(`${key}: `, this.updateModel[key], `->`, this.model[key]);
       			}
     		}

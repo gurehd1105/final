@@ -26,6 +26,7 @@
 			p.program_no programNo,
 			p.program_name programName,
 			p.program_max_customer maxCustomer,
+			p.program_content programContent,
 			p.createdate createdate,
 			p.updatedate updatedate,
 			p.active programActive
@@ -66,6 +67,7 @@
 			p.program_no programNo,
 			e.employee_id employeeId,
 			p.program_name programName,
+			p.program_content programContent,
 			p.program_max_customer maxCustomer,
 			p.active programActive,
 			p.createdate createdate,
@@ -81,6 +83,7 @@
 		UPDATE program SET
 			active = #{programActive},
 			program_max_customer = #{maxCustomer},
+			program_content = #{programContent},
 			updatedate = NOW()
 		WHERE program_no = #{programNo}
 	</update>

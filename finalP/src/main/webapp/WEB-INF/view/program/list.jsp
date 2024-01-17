@@ -42,6 +42,7 @@
 		        <th>번호</th>
 		        <th>관리자</th>
 		        <th>이름</th>
+		        <th>내용</th>
 		        <th>최대인원</th>
 		        <th>활성화</th>
 		        <th>생성일</th>
@@ -54,6 +55,7 @@
 	        	<td>{{ list.programNo }}</td>
 			    <td>{{ list.employeeId }}</td>
 			    <td>{{ list.programName }}</td>
+			    <td>{{ list.programContent }}</td>
 			    <td>{{ list.maxCustomer }}</td>
 			    <td>{{ list.programActive === 'Y' ? '활성화' : '비활성화' }}</td>
 			    <td>{{ new Date(list.createdate).toLocaleString() }}</td>
