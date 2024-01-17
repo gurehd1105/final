@@ -39,7 +39,7 @@
   8) 지점별 본인 소속지점 운동장비 재고확인 기능
 
 
-## 개발환경 및 라이브러리
+## 기술 스택
 - 백엔드 : Java, Spring Boot , JSP
 - 프론트 : HTML5, CSS, JS, jQuery, Vue3, axios,element-plus
 - DB : Maria db, Mybatis
