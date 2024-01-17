@@ -1,6 +1,5 @@
 package com.example.gym.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,25 +51,12 @@ public class CustomerController extends DefaultController{
 	
 	// insert (회원가입) Form
 	@GetMapping("/insert")
-	public String insertCustomer(HttpSession session) {	
+	public String insertCustomer() {	
 		return ViewRoutes.사용자_추가;
-	}
-	// ID 중복체크
-	@PostMapping("/checkId")
-	@ResponseBody
-	public int idCheck(@RequestBody Customer customer) {
-		System.out.println(customer);
-		int result = 0;
-		List<Customer> check = customerService.checkId(customer);
-		if(check.size() != 0) { // id 중복
-			log.info(customer.getCustomerId() + " / 중복 ID");
-			result = 1;
-		}
-		return result;
 	}
 	// insert (회원가입) Act
 	@PostMapping("/insert")
-	public String insertCustomer(HttpSession session, CustomerForm customerForm) {
+	public String insertCustomer(CustomerForm customerForm) {
 		int result = customerService.insertCustomer(customerForm); 
 		
 		if (result == 1) {// 가입 완 		  
@@ -83,7 +69,7 @@ public class CustomerController extends DefaultController{
 	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg ,
 	// customerDetail)
 	@GetMapping("/delete")
-	public String deleteCustomer(HttpSession session, Model model) {
+	public String deleteCustomer(Model model) {
 		return ViewRoutes.사용자_삭제;
 	}
 
@@ -105,7 +91,6 @@ public class CustomerController extends DefaultController{
 	// 마이페이지
 	@GetMapping("/customerOne")
 	public String customerOne(HttpSession session, Model model) {
-		// id 유효성검사
 		Map<String,Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
 
 		Map<String, Object> resultMap = customerService.customerOne((int) loginCustomer.get("customerNo"));
@@ -117,7 +102,7 @@ public class CustomerController extends DefaultController{
 	// 내정보 수정 Form
 	// 접속 전 PW 확인
 	@GetMapping("/updateOneForPw")
-	public String customerOneForCheckPw(HttpSession session) {
+	public String customerOneForCheckPw() {
 		return ViewRoutes.사용자_암호_확인;
 	}
 	// PW확인 후 Form 접속
@@ -153,7 +138,7 @@ public class CustomerController extends DefaultController{
 
 	// PW 수정 Form
 	@GetMapping("/updatePw")
-	public String updateCustomerPw(HttpSession session, Model model) { // ID값 표기 위한 세션 세팅
+	public String updateCustomerPw(Model model) { // ID값 표기 위한 세션 세팅
 		return "customer/updatePw";
 	}
 	// PW 수정 Act
@@ -173,7 +158,9 @@ public class CustomerController extends DefaultController{
 	// logout -> login.jsp로 이동
 	@GetMapping("/logout")
 	public String logoutCustomer(HttpSession session) {
-		session.invalidate();
+		if(session.getAttribute("loginCustomer") != null) {
+			session.invalidate();
+		}
 		return  ViewRoutes.사용자_로그인;
 	}
 	
@@ -185,6 +172,19 @@ public class CustomerController extends DefaultController{
 		if(check) {	// PW 일치
 			result = 1;
 		}		
+		return result;
+	}
+	
+	// ID 중복체크
+	@PostMapping("/idCheck")
+	@ResponseBody
+	public int idCheck(@RequestBody Customer customer) {
+		int result = 0;
+		boolean check = customerService.checkId(customer).isEmpty();
+		if(!check) { // id 중복
+			log.info(customer.getCustomerId() + " / 중복 ID");
+			result = 1;
+		}
 		return result;
 	}
 }

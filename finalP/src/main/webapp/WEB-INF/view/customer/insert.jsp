@@ -146,9 +146,7 @@
 	    	]
 	    }
 	},
-	watch: {
-		
-	},
+
 	methods: {
 		validCheck() {
 			return true;
@@ -215,7 +213,7 @@
 			}).open();
 		},
 		
-		onSubmit() {	<!-- submit 및 계정정보 유효성검사 -->
+		onSubmit() {	
 		const finalId = document.getElementById('customerId').value;
 		const address = document.getElementById('address').value;
 		const detailAddr = document.getElementById('detailAddr').value;
@@ -238,27 +236,28 @@
 			}		
 		},
 		
-		idCheck(){	<!-- 중복확인 -->
+		idCheck(){	
 			if(this.customer.id.length < 4){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
-			} else{
+			} else {
 				const self = this;
 				const customer = {
 					customerId: this.customer.id,
 				};
-				axios.post('${ctp}/customer/checkId', customer.customerId)
+				axios.post('${ctp}/customer/idCheck', customer)				
 				.then((res) => {
-					if(res.data == 0){
-						document.getElementById('customerId').value = customer;
-						alert('사용가능');
+					if(res.data == 0) {
+						console.log(res)
+						alert('if');
 					} else {
-						console.log(res.data);
-			 			alert('중복ㅋㅋ');
-					}
+						console.log(res)
+						alert('else');
+					}						
 				}).catch((res) => {
 					alert('error');
-				})				
-			}		
+				})	
+			}
+			
 		},
 		
 	}

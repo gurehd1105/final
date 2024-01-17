@@ -57,13 +57,13 @@ prefix="c" %>
                     <span>내정보</span>
                 </template>
             </el-menu-item>
-            <el-menu-item index="10" v-if="!loginCustomer">
+            <el-menu-item index="2" v-if="!loginCustomer">
                 <template #title>
                 	<el-icon v-html="svg.login"></el-icon>
                     <span>로그인</span>
                 </template>
             </el-menu-item>
-            <el-menu-item index="111" v-else>
+            <el-menu-item index="10" v-else>
                 <template #title>
 					<el-icon v-html="svg.logout"></el-icon>
                     <span>로그아웃</span>
