@@ -24,18 +24,20 @@ public class CustomerLoginFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         
+        // 로그인 정보체크
         boolean isLogin = request.getSession().getAttribute("loginCustomer") != null;
         boolean isLoginPath = request.getServletPath().equals("/customer/login");
-        boolean isInsertPath = request.getServletContext().equals("/customer/insert");
-        // 세션에서 로그인 정보를 체크하는 로직
-        if (!isLogin && !isLoginPath && isInsertPath) {
-            // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리
-            response.sendRedirect("/customer/login"); // 로그인 페이지로 리다이렉트하는 예시
+        boolean isInsertPath = request.getServletPath().equals("/customer/insert");
+       
+        if (!isLogin && !(isLoginPath || isInsertPath)) {	 // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리           
+            response.sendRedirect("/customer/login"); 
             return;
-        }
-
-        // 로그인이 되어 있으면 다음 필터로 진행하거나 요청 처리
-        filterChain.doFilter(request, response);
+        } else if(isLogin && (isLoginPath || isInsertPath)){	// 로그인 상태 & 회원가입 / 로그인페이지 접속 시 
+        	response.sendRedirect("/home");		
+        	return;
+        }											 // 로그인이 되어 있으면 다음 필터로 진행하거나 요청 처리
+        	filterChain.doFilter(request, response);      	
+       
     }
 
     @Override

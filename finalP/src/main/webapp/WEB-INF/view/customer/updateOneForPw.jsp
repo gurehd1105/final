@@ -39,10 +39,13 @@
 			pw: '',
 		}
 	},
+	
+	
 	methods: {
 		submit(){
 			document.getElementById('updateForm').submit();
 		},
 	},
+
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

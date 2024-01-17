@@ -8,13 +8,16 @@
 
 <c:set var="body">
 
-
+<p style="text-align: center;">문의내용</p>
 	<el-button type="primary" @click="insert()">문의하기</el-button>
 
-	<el-table :data="questionList" @row-click="rowClick"> <el-table-column
-		prop="questionNo" label="No"></el-table-column> <el-table-column
-		prop="questionTitle" label="제목"></el-table-column> <el-table-column
-		prop="customerId" label="작성자"></el-table-column> </el-table>
+	<el-table :data="questionList" @row-click="rowClick"> 
+		<el-table-column prop="questionNo" label="No"></el-table-column> 
+		<el-table-column prop="questionTitle" label="제목"></el-table-column> 
+		<el-table-column prop="customerId" label="작성자"></el-table-column>
+	</el-table>
+	
+	
 	<!-- 페이징 네비게이션 -->
 	<div class="flex justify-center">
 		<el-pagination layout="prev, pager, next" :page-size="rowPerPage"

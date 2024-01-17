@@ -8,7 +8,7 @@
 
 <c:set var="body">
 
-	<el-button type="primary" @click="list()">목록으로</el-button>
+	
 	<!-- 문의 작성자 / 제목 정보 등 표기  -->
 	<el-descriptions title="문의 상세" :column="1" border> <el-descriptions-item
 		v-for="key of Object.keys(question)" :label="key">{{
@@ -36,7 +36,7 @@
 	<!-- 문의내용 표기  -->
 	<strong>Content</strong>
 	<br>
-	<textarea readonly rows="20" cols="170" style="resize: none;">{{ questionContent }}</textarea>
+	<textarea readonly rows="20" cols="200" style="resize: none;">{{ questionContent }}</textarea>
 
 	<br>
 
@@ -202,11 +202,6 @@
 			})
 		}
 	},
-	
-		list(){	<!-- 리스트로 이동(뒤로가기) -->
-			location.href = '${ctp}/question/list';
-		},
-	
 },
 	
 </c:set>

@@ -32,9 +32,7 @@ public class CustomerController {
 	// login (로그인) Form
 	@GetMapping("/login")
 	public String loginCustomer(HttpSession session) {
-		if (session.getAttribute("loginCustomer") != null) {	// 로그인 상태
-			return "home";										// 홈으로
-		}
+	
 		return "customer/login";
 	}
 	// login 후 Act -> session 세팅 후 home.jsp로 이동
@@ -43,6 +41,7 @@ public class CustomerController {
 		Map<String,Object> loginCustomer = customerService.loginCustomer(customer);
 		if (loginCustomer != null) { // 등록된 ID가 있을 시
 			session.setAttribute("loginCustomer", loginCustomer);
+			log.info("login");
 			return "home";
 
 		} else { // 정보 없을 시
@@ -56,9 +55,7 @@ public class CustomerController {
 	public String insertCustomer(HttpSession session) {
 		// id 유효성검사
 		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer != null) {
-			return "home";
-		}
+		
 		return "customer/insert";
 	}
 	// ID 중복체크
@@ -91,6 +88,7 @@ public class CustomerController {
 	public String deleteCustomer(HttpSession session, Model model) {
 		return "customer/delete";
 	}
+
 	// delete (탈퇴) Act
 	@PostMapping("/delete")
 	public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {

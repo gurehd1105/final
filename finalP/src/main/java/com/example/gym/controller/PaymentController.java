@@ -30,8 +30,8 @@ public class PaymentController extends DefaultController{
 	@PostMapping("/insert")
 	@ResponseBody
 	public int insert(@RequestBody Payment payment, HttpSession session) {
-		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
-		payment.setCustomerNo(loginCustomer.getCustomerNo());
+		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
+		payment.setCustomerNo((int) loginCustomer.get("customerNo"));
 		
 		int result = 0;
 		result = paymentService.insert(payment);		
