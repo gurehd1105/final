@@ -1,6 +1,7 @@
 package com.example.gym.controller;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -92,7 +93,12 @@ public class SportsEquipmentController extends DefaultController {
 
 		// service 호출
 		Map<String, Object> map = sportsEquipmentService.one(session, sportsEquipmentNo);
-
+		
+	    // map이 null이면 예외 던지기
+		  if (map == null || map.get("one") == null ) {
+		        throw new NoSuchElementException("해당 장비를 찾을 수 없습니다.");
+		    }
+		  
 		// jsp에서 출력할 model
 		model.addAttribute("one", map.get("one"));
 		model.addAttribute("imgList", toJson(map.get("imgList")));
@@ -171,7 +177,11 @@ public class SportsEquipmentController extends DefaultController {
 		// jsp에서 출력할 model
 		model.addAttribute("one", map.get("one"));
 		model.addAttribute("imgList", toJson(map.get("imgList")));
-
+		
+	    // map이 null이면 예외 던지기
+		  if (map == null || map.get("one") == null ) {
+		        throw new NoSuchElementException("해당 장비를 찾을 수 없습니다.");
+		    }
 		return ViewRoutes.소모품_상세보기;
 	}
 
