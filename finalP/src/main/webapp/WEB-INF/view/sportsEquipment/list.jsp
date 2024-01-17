@@ -79,12 +79,6 @@
 	  	};
 	},
 	
-	computed: {
-  		lastPage() {
-    		return this.model.totalPage; 
-  		}
-	},
-	
 	methods: {
 		searchSubmit() {
 			document.getElementById('searchForm').submit();
@@ -107,7 +101,7 @@
       		param.set('query', this.query);
 
 			location.href = '/sportsEquipment/list?' + param.toString();
-      },
+      	},
 	}
 </c:set>
 
