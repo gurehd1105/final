@@ -93,27 +93,12 @@
 			</if>
 	    </where>
 	    <if test="order != null">
-		    ORDER BY se.createdate DESC,
 	    	<foreach collection="order" item="item" separator="AND">
                 ${item.key} ${item.value}
             </foreach>
 	    </if>
+		ORDER BY se.createdate DESC
 	    LIMIT #{beginRow}, #{rowPerPage}
-	</select>
-	
-	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
-	<select id="sportsEquipmentCnt" parameterType="java.util.Map" resultType="int">
-	    SELECT 
-	        COUNT(sports_equipment_no)
-	    FROM sports_equipment
-	    <where>
-	        <if test="searchWord != ''">
-	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
-	        </if>
-			<if test="equipmentActive != ''">
-    			AND equipment_active = #{equipmentActive}
-			</if>
-	    </where>
 	</select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
@@ -122,12 +107,6 @@
 	        COUNT(sports_equipment_no)
 	    FROM sports_equipment
 	    <where>
-	        <if test="where != null">
-		        <foreach collection="where" item="item" separator="AND">
-	                ${item.key} ${item.operator} #{item.value}
-	            </foreach>
-	        </if>
-	        
 	        <if test="query != ''">
 	            AND item_name LIKE CONCAT('%',#{query},'%')
 	        </if>
@@ -136,7 +115,7 @@
 			</if>
 	    </where>
 	</select>
-	
+		
 	<!--sportsEquipment 상세보기(정보)-->
 	<select id="sportsEquipmentOne" parameterType="int" resultType="java.util.Map">
 		SELECT 

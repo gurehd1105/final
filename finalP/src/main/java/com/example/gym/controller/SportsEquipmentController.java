@@ -95,7 +95,7 @@ public class SportsEquipmentController extends DefaultController {
 	@GetMapping("/list")
 	public String list(HttpSession session, Model model,
 			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
-		param.setRowPerPage(5);
+		param.setRowPerPage(2);
 		var result = sportsEquipmentService.list(param);
 
 		model.addAttribute("result", toJson(result));

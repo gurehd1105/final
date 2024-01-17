@@ -109,8 +109,11 @@ public class SportsEquipmentService {
 
 	//sportsEquipmentList 출력
 	public SearchResult list(SportsEquipmentSearchParam param) {
+		log.info("param : {}", param);
 		int total = sportsEquipmentMapper.totalCnt(param);
 		param.setTotalCount(total);
+		log.info("total : {}", total);
+		log.info("totalPage : {}", param.getTotalPage());
 		
 		var list = sportsEquipmentMapper.list(param);
 		

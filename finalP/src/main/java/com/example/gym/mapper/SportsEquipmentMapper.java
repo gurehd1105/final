@@ -23,7 +23,6 @@ public interface SportsEquipmentMapper {
 	List<SportsEquipment> list(SportsEquipmentSearchParam param);
 	
 	//lastPage 구하기 위한 sportsEquipment 수
-	int sportsEquipmentCnt(Map<String,Object> paramMap);
 	int totalCnt(SportsEquipmentSearchParam param);
 	
 	//sportsEquipment 상세보기

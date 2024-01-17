@@ -50,14 +50,15 @@
     		<br>
   		</el-col>
 	</el-row>
-
-
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button :type="model.currentPage == p ? 'primary' : 'info'"v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+	
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>	
 	
 </c:set>
 <c:set var="script">
@@ -67,12 +68,23 @@
 		    model: {
 			    query: model.param.query ?? '', 
 			    active: model.param.active ?? '',
-			    currentPage: model.param.pageNum,
 		    },
+		    
 		    list: model.list, 
-		    lastPage: model.param.totalPage,
+		    rowPerPage: model.param.rowPerPage,
+		    totalCount: model.param.totalCount,
+			pageNum: model.param.pageNum,
+			query: model.param.query,
+			active: model.param.active,
 	  	};
 	},
+	
+	computed: {
+  		lastPage() {
+    		return this.model.totalPage; 
+  		}
+	},
+	
 	methods: {
 		searchSubmit() {
 			document.getElementById('searchForm').submit();
@@ -87,11 +99,15 @@
 			location.href = '${ctp}/sportsEquipment/sportsEquipmentOne?sportsEquipmentNo='+sportsEquipmentNo;
 		},
 		
-  		changePage(page) {
-    		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/list?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
-  		}
+  		
+  	    loadPage(pageNum) {
+      		const param = new URLSearchParams();
+      		param.set('pageNum', pageNum);
+      		param.set('active', this.active);
+      		param.set('query', this.query);
+
+			location.href = '/sportsEquipment/list?' + param.toString();
+      },
 	}
 </c:set>
 
