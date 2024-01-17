@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
+import com.example.gym.vo.SportsEquipmentInventory;
 import com.example.gym.vo.SportsEquipmentOrder;
 import com.example.gym.vo.SportsEquipmentSearchParam;
 
@@ -21,19 +22,12 @@ public interface SportsEquipmentMapper {
 	
 	//sportsEquipment 목록 + 검색 + 페이징
 	List<SportsEquipment> list(SportsEquipmentSearchParam param);
-	
 	//lastPage 구하기 위한 sportsEquipment 수
-	int sportsEquipmentCnt(Map<String,Object> paramMap);
 	int totalCnt(SportsEquipmentSearchParam param);
 	
 	//sportsEquipment 상세보기
-	Map<String,Object> sportsEquipmentOne(int sportsEquipmentNo);
+	SportsEquipment one(int sportsEquipmentNo);
 	List<SportsEquipmentImg> imgList(int sportsEquipmentNo);
-	
-	//sportsEquipment CRUD를 위해 본사소속 확인하기
-	int selectSearchEmployeeLevel(int employeeNo); 
-	//지점 확인하기
-	int selectSearchEmployeeBranch(int employeeNo); 
 	
 	//sportsEquipment 수정
 	int update(SportsEquipment sportsEuipment);
@@ -45,16 +39,14 @@ public interface SportsEquipmentMapper {
 	int insertOrder(SportsEquipmentOrder sportsEuipmentOrder);
 	
 	//sportsEquipmentOrder 리스트 + 검색 + 페이징 (본사)
-	List<Map<String,Object>> orderByHead(Map<String,Object> paramMap);
-	
+	List<SportsEquipmentOrder> orderByHead(SportsEquipmentSearchParam param);
 	//lastPage 구하기 위한 sportsEquipmentOrder 수 (본사)
-	int orderHeadCnt(Map<String,Object> paramMap);
+	int orderHeadCnt(SportsEquipmentSearchParam param);
 	
 	//sportsEquipmentOrder 리스트 + 검색 + 페이징 (지점)
-	List<Map<String,Object>> orderByBranch(Map<String,Object> paramMap);
-	
+	List<SportsEquipmentOrder> orderByBranch(SportsEquipmentSearchParam param);
 	//lastPage 구하기 위한 sportsEquipmentOrder 수 (지점)
-	int orderBranchCnt(Map<String,Object> paramMap);
+	int orderBranchCnt(SportsEquipmentSearchParam param);
 	
 	//sportsEquipmentOrder 상태 수정 (본사)
 	int updateOrder(SportsEquipmentOrder sportsEuipmentOrder);
@@ -63,16 +55,16 @@ public interface SportsEquipmentMapper {
 	int deleteOrder(SportsEquipmentOrder sportsEuipmentOrder);
 	
 	//sportsEquipmentInventory 출력 (본사)
-	List<Map<String,Object>> inventoryByHead(Map<String,Object> paramMap);
+	List<SportsEquipmentInventory> inventoryByHead(SportsEquipmentSearchParam param);
 	
 	//sportsEquipmentInventory 출력 (지점)
-	List<Map<String,Object>> inventoryByBranch(Map<String,Object> paramMap);
+	List<SportsEquipmentInventory> inventoryByBranch(SportsEquipmentSearchParam param);
 	
 	//lastPage 구하기 위한 sportsEquipmentInventory 수 (본사)
-	int inventoryByHeadCnt(Map<String,Object> paramMap);
+	int inventoryByHeadCnt(SportsEquipmentSearchParam param);
 	
 	//lastPage 구하기 위한 sportsEquipmentInventory 수 (지점)
-	int inventoryByBranchCnt(Map<String,Object> paramMap);
+	int inventoryByBranchCnt(SportsEquipmentSearchParam param);
 	
 	//장비 상세보기 창에서 지점 재고확인 (지점)
 	Map<String,Object> inventoryOneByBranch(Map<String,Object> paramMap);

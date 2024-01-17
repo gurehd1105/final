@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.service.SportsEquipmentService;
-import com.example.gym.vo.SearchParam;
+import com.example.gym.util.ViewRoutes;
+import com.example.gym.vo.SearchResult;
 import com.example.gym.vo.SportsEquipmentSearchParam;
-import com.example.gym.vo.SportsEquipmentSearchResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,7 +30,7 @@ public class SportsEquipmentController extends DefaultController {
 	@Autowired
 	SportsEquipmentService sportsEquipmentService;
 	@Autowired
-	SportsEquipmentSearchResult result;
+	SearchResult result;
 
 	@ModelAttribute("searchParam")
 	public SportsEquipmentSearchParam defaultSearchParam() {
@@ -41,35 +41,22 @@ public class SportsEquipmentController extends DefaultController {
 
 	// SportsEquipment 추가 폼 & 장비,소모품 리스트 (본사직원만 접근 가능)
 	@GetMapping("/insert")
-	public String insert(HttpSession session, Model model, @RequestParam(defaultValue = "1") int currentPage,
-			@RequestParam(defaultValue = "") String equipmentActive, @RequestParam(defaultValue = "") String searchWord)
+	public String insert(HttpSession session, Model model, 
+						@ModelAttribute("searchParam") SportsEquipmentSearchParam param)
 			throws JsonProcessingException {
 
-//		//본사직원 확인
-//		Employee loginSession = (Employee) session.getAttribute("loginEmployee");
-//		int branchLevel = loginSession.getBranchLevel();
-//		if(branchLevel != 1) {
-//			//지점 장비 리스트로 리턴
-//			return "redirect:/sportsEquipment/SportsEquipmentList";
-//		}
-//		
-		// service 호출
-		result = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		param.setRowPerPage(6);
+		var result = sportsEquipmentService.list(param);
 
-		// jsp에서 출력할 model
-		model.addAttribute("list", toJson(result.getList()));
-		model.addAttribute("lastPage", result.getLastPage());
-		model.addAttribute("searchWord", result.getSearchWord());
-		model.addAttribute("equipmentActive", result.getEquipmentActive());
+		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/insert";
+		return ViewRoutes.소모품_추가;
 	}
 
 	// SportsEquipment 추가 액션 (본사직원만 접근 가능)
 	@PostMapping("/insert")
 	public String insert(HttpSession session, Model model, @RequestParam String itemName, @RequestParam int itemPrice,
-			@RequestParam(defaultValue = "1") int currentPage, @RequestParam(defaultValue = "") String searchWord,
-			@RequestParam(defaultValue = "") String equipmentActive,
+			@ModelAttribute("searchParam") SportsEquipmentSearchParam param,
 			@RequestParam("sportsEquipmentImg") MultipartFile[] sportsEquipmentImgList) throws JsonProcessingException {
 
 		// 파일업로드 경로 설정
@@ -78,29 +65,24 @@ public class SportsEquipmentController extends DefaultController {
 		// service 호출
 		sportsEquipmentService.insert(session, path, itemName, itemPrice, sportsEquipmentImgList);
 
-		result = sportsEquipmentService.list(session, currentPage, equipmentActive, searchWord);
+		param.setRowPerPage(6);
+		var result = sportsEquipmentService.list(param);
 
-		System.out.println(result + "<--result");
+		model.addAttribute("result", toJson(result));
 
-		// jsp에서 출력할 model
-		model.addAttribute("list", toJson(result.getList()));
-		model.addAttribute("lastPage", result.getLastPage());
-		model.addAttribute("searchWord", result.getSearchWord());
-		model.addAttribute("equipmentActive", result.getEquipmentActive());
-
-		return "sportsEquipment/insert";
+		return ViewRoutes.소모품_추가;
 	}
 
 	// SportsEquipment 장비,소모품 리스트 (직원)
 	@GetMapping("/list")
 	public String list(HttpSession session, Model model,
 			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
-		param.setRowPerPage(5);
+		param.setRowPerPage(6);
 		var result = sportsEquipmentService.list(param);
 
 		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/list";
+		return ViewRoutes.소모품_목록;
 	}
 
 	// SportsEquipment 수정 폼 (본사직원만 접근 가능)
@@ -112,16 +94,10 @@ public class SportsEquipmentController extends DefaultController {
 		Map<String, Object> map = sportsEquipmentService.one(session, sportsEquipmentNo);
 
 		// jsp에서 출력할 model
-		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
-		model.addAttribute("employeeId", map.get("employeeId"));
-		model.addAttribute("itemName", map.get("itemName"));
-		model.addAttribute("itemPrice", map.get("itemPrice"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
-		model.addAttribute("equipmentCreatedate", map.get("equipmentCreatedate"));
-		model.addAttribute("equipmentUpdatedate", map.get("equipmentUpdatedate"));
+		model.addAttribute("one", map.get("one"));
 		model.addAttribute("imgList", toJson(map.get("imgList")));
 
-		return "sportsEquipment/update";
+		return ViewRoutes.소모품_수정;
 	}
 
 	// SportsEquipment 수정 액션 (본사직원만 접근 가능)
@@ -136,7 +112,7 @@ public class SportsEquipmentController extends DefaultController {
 		// 디버깅
 		log.info("redirect:sportsEquipmentNo : {}", sportsEquipmentNo);
 
-		return "redirect:/sportsEquipment/update?sportsEquipmentNo=" + sportsEquipmentNo;
+		return String.format("redirect:%s?sportsEquipmentNo=%s", ViewRoutes.소모품_수정, sportsEquipmentNo);
 	}
 
 	// SportsEquipmentImg 개별 삭제 액션 (본사직원만 접근 가능)
@@ -153,7 +129,7 @@ public class SportsEquipmentController extends DefaultController {
 		// 디버깅
 		log.info("redirect:sportsEquipmentNo : {}", sportsEquipmentNo);
 
-		return "redirect:/sportsEquipment/update?sportsEquipmentNo=" + sportsEquipmentNo;
+		return String.format("redirect:%s?sportsEquipmentNo=%s", ViewRoutes.소모품_수정, sportsEquipmentNo);
 	}
 
 	// SportsEquipmentImg 개별 추가 액션 (본사직원만 접근 가능)
@@ -173,8 +149,9 @@ public class SportsEquipmentController extends DefaultController {
 		// 디버깅
 		log.info("redirect:sportsEquipmentNo : {}", sportsEquipmentNo);
 
-		return "redirect:/sportsEquipment/update?sportsEquipmentNo=" + sportsEquipmentNo;
+		return String.format("redirect:%s?sportsEquipmentNo=%s", ViewRoutes.소모품_수정, sportsEquipmentNo);
 	}
+	
 
 	// SportsEquipment 상세보기 및 발주 폼
 	@GetMapping("/sportsEquipmentOne")
@@ -183,7 +160,7 @@ public class SportsEquipmentController extends DefaultController {
 
 		// service 호출
 		Map<String, Object> map = sportsEquipmentService.one(session, sportsEquipmentNo);
-
+		
 		// jsp에서 출력할 model
 		int branchLevel = 0;
 		// 지점직원이라면 직원이 속해 있는 지점의 재고 출력
@@ -191,16 +168,11 @@ public class SportsEquipmentController extends DefaultController {
 			model.addAttribute("inventory", toJson(map.get("inventory")));
 
 		}
-		model.addAttribute("sportsEquipmentNo", map.get("sportsEquipmentNo"));
-		model.addAttribute("employeeId", map.get("employeeId"));
-		model.addAttribute("itemName", map.get("itemName"));
-		model.addAttribute("itemPrice", map.get("itemPrice"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
-		model.addAttribute("equipmentCreatedate", map.get("equipmentCreatedate"));
-		model.addAttribute("equipmentUpdatedate", map.get("equipmentUpdatedate"));
-		model.addAttribute("imgList", toJson(map.get("sportsEquipmentImgList")));
+		// jsp에서 출력할 model
+		model.addAttribute("one", map.get("one"));
+		model.addAttribute("imgList", toJson(map.get("imgList")));
 
-		return "sportsEquipment/sportsEquipmentOne";
+		return ViewRoutes.소모품_상세보기;
 	}
 
 //----------------------------------------- SportsEquipmentOrder -------------------------------------
@@ -215,53 +187,34 @@ public class SportsEquipmentController extends DefaultController {
 
 		// service 호출
 		sportsEquipmentService.insertOrder(session, sportsEquipmentNo, quantity, itemPrice);
-
-		return "redirect:/sportsEquipment/orderByBranch";
+		
+		return Redirect(ViewRoutes.소모품_발주_지점);
 	}
 
 	// SportsEquipmentOrderByHead 리스트 (본사직원만 접근 가능)
 	@GetMapping("/orderByHead")
-	public String orderByHead(HttpSession session, Model model, @RequestParam(defaultValue = "1") int currentPage,
-			@RequestParam(defaultValue = "") String searchBranch, @RequestParam(defaultValue = "") String searchItem,
-			@RequestParam(defaultValue = "") String beginDate, @RequestParam(defaultValue = "") String endDate)
-			throws JsonProcessingException {
-
+	public String orderByHead(HttpSession session, Model model, 
+			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
+		param.setRowPerPage(10);
 		// service 호출
-		Map<String, Object> map = sportsEquipmentService.orderByHead(session, currentPage, searchBranch, searchItem,
-				beginDate, endDate);
+		var result = sportsEquipmentService.orderByHead(param);
 
-		// jsp에서 출력할 model
-		model.addAttribute("orderList", toJson(map.get("orderList")));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("searchBranch", map.get("searchBranch"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
-		model.addAttribute("searchItem", map.get("searchItem"));
-		model.addAttribute("beginDate", map.get("beginDate"));
-		model.addAttribute("endDate", map.get("endDate"));
+		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/orderByHead";
+		return ViewRoutes.소모품_발주_본점;
 	}
 
 	// SportsEquipmentOrderByBranch 리스트 (지점직원만 접근 가능)
 	@GetMapping("/orderByBranch")
-	public String orderByBranch(HttpSession session, Model model, @RequestParam(defaultValue = "1") int currentPage,
-			@RequestParam(defaultValue = "") String searchItem, @RequestParam(defaultValue = "") String beginDate,
-			@RequestParam(defaultValue = "") String endDate) throws JsonProcessingException {
-
+	public String orderByBranch(HttpSession session, Model model, 
+			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
+		param.setRowPerPage(10);
 		// service 호출
-		Map<String, Object> map = sportsEquipmentService.orderByBranch(session, currentPage, searchItem, beginDate,
-				endDate);
+		var result = sportsEquipmentService.orderByBranch(param);
 
-		// jsp에서 출력할 model
-		model.addAttribute("orderList", toJson(map.get("orderList")));
-		model.addAttribute("searchBranch", map.get("searchBranch"));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("equipmentActive", map.get("equipmentActive"));
-		model.addAttribute("searchItem", map.get("searchItem"));
-		model.addAttribute("beginDate", map.get("beginDate"));
-		model.addAttribute("endDate", map.get("endDate"));
+		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/orderByBranch";
+		return ViewRoutes.소모품_발주_지점;
 	}
 
 	// SportsEquipmentOrder 수정 액션 (본사직원만 접근 가능)
@@ -275,7 +228,7 @@ public class SportsEquipmentController extends DefaultController {
 		// service 호출
 		sportsEquipmentService.updateOrder(session, orderNo, orderStatus);
 
-		return "redirect:/sportsEquipment/orderByHead";
+		return Redirect(ViewRoutes.소모품_발주_본점);
 	}
 
 	// SportsEquipmentOrder 삭제 액션 (지점직원만 접근 가능)
@@ -288,42 +241,39 @@ public class SportsEquipmentController extends DefaultController {
 		// service 호출
 		sportsEquipmentService.deleteOrder(session, orderNo, orderStatus);
 
-		return "redirect:/sportsEquipment/orderByBranch";
+		return Redirect(ViewRoutes.소모품_발주_지점);
 	}
 
 //----------------------------------------- SportsEquipmentInventory -------------------------------------
 
+
 	// SportsEquipmentInventoryByHead 리스트 (본사직원만 접근 가능)
 	@GetMapping("/inventoryByHead")
-	public String inventoryByHead(HttpSession session, Model model, @RequestParam(defaultValue = "1") int currentPage,
-			@RequestParam(defaultValue = "") String searchBranch, @RequestParam(defaultValue = "") String searchItem)
-			throws JsonProcessingException {
-
+	public String inventoryByHead(HttpSession session, Model model, 
+			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
+		
+		param.setRowPerPage(10);
 		// service 호출
-		Map<String, Object> map = sportsEquipmentService.inventoryHead(session, currentPage, searchBranch, searchItem);
+		var result = sportsEquipmentService.inventoryHead(param);
 
-		// jsp에서 출력할 model
-		model.addAttribute("inventoryList", toJson(map.get("inventoryList")));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("searchItem", map.get("searchItem"));
-		model.addAttribute("searchBranch", map.get("searchBranch"));
+		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/inventoryByHead";
+		return ViewRoutes.소모품_조회_본점;
+
 	}
 
 	// SportsEquipmentInventoryByBranch 리스트 (지점직원만 접근 가능)
 	@GetMapping("/inventoryByBranch")
-	public String inventoryByHead(HttpSession session, Model model, @RequestParam(defaultValue = "1") int currentPage,
-			@RequestParam(defaultValue = "") String searchItem) throws JsonProcessingException {
-
+	public String inventoryByBranch(HttpSession session, Model model, 
+			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
+		
+		param.setRowPerPage(10);
 		// service 호출
-		Map<String, Object> map = sportsEquipmentService.inventoryBranch(session, currentPage, searchItem);
+		var result = sportsEquipmentService.inventoryBranch(param);
 
-		// jsp에서 출력할 model
-		model.addAttribute("inventoryList", toJson(map.get("inventoryList")));
-		model.addAttribute("lastPage", map.get("lastPage"));
-		model.addAttribute("searchItem", map.get("searchItem"));
+		model.addAttribute("result", toJson(result));
 
-		return "sportsEquipment/inventoryByBranch";
+		return ViewRoutes.소모품_조회_지점;
+
 	}
 }
