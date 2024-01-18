@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gym.mapper.ReservationMapper;
+import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerAttendance;
 import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 @Transactional
@@ -46,7 +49,13 @@ public class ReservationService {
 	}
 
 	
-	
+	//check
+	public List<Map<String, Object>> check(int customerNo){
+		List<Map<String, Object>> check = reservationMapper.check(customerNo);
+
+		return check;
+		
+	}
 	
 	
 	

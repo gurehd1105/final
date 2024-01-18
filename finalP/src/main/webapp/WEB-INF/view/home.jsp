@@ -145,7 +145,7 @@ prefix="c"%>
     reservationInfos: [], selectDate: new Date(), notices:
     JSON.parse('${noticeList}'), isEmployee: Boolean('${loginEmployee}'), } },
     watch: { selectProgram: function(now, before) { const self = this; if (now)
-    { axios.get('${ctp}/program/' + now + '/reservationInfo') .then((res) =>
+    { axios.get('${ctp}/reservation/program/' + now + '/reservationInfo') .then((res) =>
     self.reservationInfos = res.data); } }, }, methods: { validCheck() { let
     message = ''; const day = moment(this.selectDate).format('yyyy-MM-DD'); if
     (!this.getInfo(day)) { message = '예약 가능한 일자를 선택해 주세요.'; } if
