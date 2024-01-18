@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.mapper.AttendanceMapper;
 import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
@@ -35,6 +36,8 @@ public class ReviewController extends DefaultController {
 	private CustomerService customerService;
 	@Autowired
 	private ProgramMapper programMapper;
+	@Autowired
+	private AttendanceMapper attendanceMapper;
 	
 	@GetMapping("/list")
 	public String reviewList(Model model,Page page,
@@ -47,13 +50,9 @@ public class ReviewController extends DefaultController {
 		paramMap.put("rowPerPage", page2.getRowPerPage());
 		paramMap.put("beginRow", page2.getBeginRow());
 		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap); 
-		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출
-		
-		
-		
+		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출	
 		
 		paramMap.clear();			// 맵 초기화
-		
 		
 		page.setRowPerPage(10);	
 		
@@ -75,18 +74,22 @@ public class ReviewController extends DefaultController {
 		
 		return ViewRoutes.후기_목록;
 	}
-	
+	/**
 	@GetMapping("/insert")
-	public String insert(HttpSession session, Model model) {		
+	public String insert(HttpSession session, Model model) {
+		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
+		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
+		model.addAttribute("attendanceList", attendanceList);
 		return ViewRoutes.후기_추가;
 	}
-	
-	/*
-	@PostMapping("insert")
-	public String insert() { // customer_attendance_no 생성까지 보류
-		return "redirect:list";
-	}
 	*/
+	
+	@PostMapping("insert")
+	public String insert(Review review) {
+		reviewService.insertReview(review);		
+		return Redirect(ViewRoutes.후기_목록);
+	}
+	
 	
 	@GetMapping("/update")
 	public String update(Review review, Model model) { 

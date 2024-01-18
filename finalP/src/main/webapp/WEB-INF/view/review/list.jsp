@@ -9,7 +9,7 @@
 
 
 	<!-- 	programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
-	<p style="text-align: center;">리뷰 목록</p>
+	<p style="text-align: center; font-size: 30px;">리뷰목록</p>
 
 		<el-button type="primary" @click="insert()">리뷰작성</el-button>
 		
@@ -60,6 +60,7 @@
 				location.href='${ctp}/review/insert';
 			} else {
 				alert('로그인 후 이용해주세요.');
+				location.href ='${ctp}/customer/login';
 			}
 			
 		},

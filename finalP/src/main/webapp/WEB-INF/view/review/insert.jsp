@@ -39,7 +39,7 @@
 			customerId: '${ loginCustomer.customerId }',
 			reviewTitle: '',
 			reviewContent: '',
-			customerAttendanceNo: '',
+			//<%-- customerAttendance: '${ attendanceList }', --%>
 		}
 	},
 	

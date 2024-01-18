@@ -8,7 +8,7 @@
 
 <c:set var="body">
 
-<p style="text-align: center;">문의내용</p>
+<p style="text-align: center; font-size: 30px;">문의내용</p>
 	<el-button type="primary" @click="insert()">문의하기</el-button>
 
 	<el-table :data="questionList" @row-click="rowClick"> 
@@ -43,6 +43,7 @@
 				location.href = '${ctp}/question/insert';
 			} else {
 				alert('로그인 후 이용해주세요.');
+				location.href ='${ctp}/customer/login';
 			}
 			
 		},
