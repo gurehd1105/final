@@ -18,5 +18,18 @@
         	   customer_attendance_enter_time customerAttendanceEnterTime
           FROM customer_attendance 
     </select>
+    
+    <select id="selectAttendance" parameterType="Integer"
+                              resultType="java.util.Map">		
+	    SELECT ca.customer_attendance_no AS customerAttendanceNo,
+			   ca.customer_attendance_enter_time AS customerAttendanceEnterTime,
+			   pro.program_name AS programName   
+		  FROM customer_attendance ca INNER JOIN program_reservation pr
+		    ON ca.program_reservation_no = pr.program_reservation_no INNER JOIN payment p
+			ON p.payment_no = pr.payment_no INNER JOIN program_date pd
+		    ON pr.program_date_no = pd.program_date_no INNER JOIN program pro
+		    ON pro.program_no = pd.program_no		
+		WHERE p.customer_no = #{customerNo}
+	</select>
 
 </mapper>

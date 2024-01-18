@@ -49,9 +49,14 @@
     },
     
     methods: {
-        reservation() {      
-     
-            location.href = '${ctp}/reservation/insert?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
+        reservation() {    
+        	if(${ loginCustomer.paymentActive != '사용중' }){
+              alert('멤버십 이용권 구매 후 이용해주세요.');
+
+           }else {
+               location.href = '${ctp}/reservation/insert?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
+           }     
+          
         },
         
         deleteReservation(no,targetYear,targetMonth,targetDay ) {

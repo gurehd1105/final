@@ -33,15 +33,21 @@
 		FROM program p INNER JOIN employee e
 		ON p.employee_no = e.employee_no
 	    <where>
-	        <if test="searchWord != '' and serachWord != null">
+	        <if test="searchWord != '' ">
 	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
 	        </if>
-			<if test="programActive != '' and programActive != null">
+			<if test="programActive != ''">
     			AND p.active = #{programActive}
 			</if>
 	    </where>
 	    ORDER BY p.createdate DESC
-	    LIMIT #{beginRow}, #{rowPerPage}
+   <if test="beginRow != null and rowPerPage != null">
+        <choose>
+            <when test="beginRow != null and rowPerPage != null">
+                LIMIT #{beginRow}, #{rowPerPage}
+            </when>
+        </choose>
+    </if>
 	</select>
 	
 	<!-- 총 program 수 -->
