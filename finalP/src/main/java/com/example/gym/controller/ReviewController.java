@@ -40,7 +40,7 @@ public class ReviewController extends DefaultController {
 	private AttendanceMapper attendanceMapper;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model,Page page,
+	public String reviewList(Model model,Page page, HttpSession session,
 								@RequestParam(defaultValue = "") String programName) {		
 		Page page2 = new Page();
 		page2.setRowPerPage(Integer.MAX_VALUE);
@@ -66,23 +66,29 @@ public class ReviewController extends DefaultController {
 		
 		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
 		
-		/* model.addAttribute("programList", toJson(programList)); */
+		// model.addAttribute("programList", toJson(programList));
 		page.setTotalCount(reviewService.totalCount(programName));
 		model.addAttribute("page", page);
 		
 		model.addAttribute("programName", programName);
 		
+		// 리스트 -> 리뷰작성 이동 시 attendance 정보 확인위한 전달
+		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
+		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
+		boolean checkAttendance = attendanceList.size() > 0;
+		model.addAttribute("checkAttendance", checkAttendance);
 		return ViewRoutes.후기_목록;
 	}
-	/**
+	
 	@GetMapping("/insert")
 	public String insert(HttpSession session, Model model) {
 		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
 		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
-		model.addAttribute("attendanceList", attendanceList);
+		model.addAttribute("attendanceList", toJson(attendanceList));
+		log.info(attendanceList.toString());
 		return ViewRoutes.후기_추가;
 	}
-	*/
+	
 	
 	@PostMapping("insert")
 	public String insert(Review review) {

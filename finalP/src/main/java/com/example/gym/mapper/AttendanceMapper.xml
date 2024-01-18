@@ -23,12 +23,14 @@
                               resultType="java.util.Map">		
 	    SELECT ca.customer_attendance_no AS customerAttendanceNo,
 			   ca.customer_attendance_enter_time AS customerAttendanceEnterTime,
-			   pro.program_name AS programName   
+			   pro.program_name AS programName,
+			   b.branch_name AS branchName
 		  FROM customer_attendance ca INNER JOIN program_reservation pr
 		    ON ca.program_reservation_no = pr.program_reservation_no INNER JOIN payment p
 			ON p.payment_no = pr.payment_no INNER JOIN program_date pd
 		    ON pr.program_date_no = pd.program_date_no INNER JOIN program pro
-		    ON pro.program_no = pd.program_no		
+		    ON pro.program_no = pd.program_no INNER JOIN branch b
+		    ON b.branch_no = pr.branch_no
 		WHERE p.customer_no = #{customerNo}
 	</select>
 

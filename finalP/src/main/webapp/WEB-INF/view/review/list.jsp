@@ -56,8 +56,10 @@
 	
 	methods: {	
 		insert() {	// 작성
-			if(${ loginCustomer != null }){
+			if(${ loginCustomer != null && checkAttendance}){
 				location.href='${ctp}/review/insert';
+			} else if(${ loginCustomer != null && !checkAttendance}){
+				alert('방문/출석정보가 없어 리뷰를 작성할 수 없습니다.');
 			} else {
 				alert('로그인 후 이용해주세요.');
 				location.href ='${ctp}/customer/login';
