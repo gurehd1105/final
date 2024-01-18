@@ -34,25 +34,17 @@ public class ReservationService {
 		return reservationMapper.insertReservation(reservation);
 	
 	}
+	// 예약 삭제
+    public int deleteReservation(ProgramReservation reservation) {
+    	int row = reservationMapper.deleteReservation(reservation);
+		return row;
+		}
 	
-	
-	// 프로그램 예약 가능 정보 조회
+	// 고객용 프로그램 예약 가능 정보 조회
 	public List<ProgramDate> selectProgramDates(int program_no) {
 		return reservationMapper.selectProgramDates(program_no);
 	}
 
-	// 예약 삭제
-	public int deleteReservation(ProgramReservation reservation) {
-		int row = reservationMapper.deleteReservation(reservation);
-		return row;
-	}
-	
-	
-	// 해당날짜에 진행 예정 프로그램 추가
-	public int insertProgramDate(ProgramDate programDate) {
-		return reservationMapper.insertProgramDate(programDate);
-	}
-	
 	
 	
 	

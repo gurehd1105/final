@@ -69,18 +69,6 @@
 	</delete>
 	
 	
-	<insert id="insertProgramDate"
-		parameterType="com.example.gym.vo.ProgramDate">
-		INSERT INTO program_reservation (
-			program_no,
-			program_date,
-		) VALUES (
-			#{programNo},
-			#{programDate}
-		)
-	</insert>
-	
-	
 	
 
 </mapper>

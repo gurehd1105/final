@@ -13,6 +13,9 @@ import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -234,42 +237,7 @@ public class ReservationController extends DefaultController {
             targetDay
         );
     }
-
-    // 프로그램 진행날짜 추가
-    @GetMapping("/insertProgramDate")
-    public String insertProgramDate(
-        ProgramDate programDate,
-        HttpSession session,
-        Model model,
-        @RequestParam(defaultValue = "1") int currentPage,
-        @RequestParam(defaultValue = "Y") String programActive,
-        @RequestParam(defaultValue = "") String searchWord
-    ) throws JsonProcessingException {
-        Map<String, Object> programList = programService.selectProgramListService(
-            session,
-            currentPage,
-            programActive,
-            searchWord
-        );
-        model.addAttribute(
-            "programList",
-            mapper.writeValueAsString(programList)
-        );
-        System.out.println(programList + "<--programList");
-        return "reservation/insertProgramDate";
-    }
-
-    @PostMapping("/insertProgramDate")
-    @ResponseBody
-    public int insertProgramDate2(@RequestBody Map<String, Object> paramMap) {
-        System.out.println(paramMap + "<-- paramMap");
-        ProgramDate programDate = new ProgramDate();
-        programDate.setProgramNo(
-            Integer.parseInt((String) paramMap.get("programNo"))
-        );
-        programDate.setProgramDate((String) paramMap.get("programDate"));
-
-        int result = reservationService.insertProgramDate(programDate);
-        return result;
-    }
+    
+    
+    
 }
