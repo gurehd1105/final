@@ -51,7 +51,7 @@
 			INNER JOIN program p
 		ON p.program_no = pd.program_no
 		<if test="programName != ''">
-		WHERE p.program_name = '스쿼시'
+		WHERE p.program_name = #{programName}
 		</if>
 	</select>
 	

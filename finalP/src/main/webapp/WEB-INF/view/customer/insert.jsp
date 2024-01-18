@@ -25,8 +25,8 @@
 				 </el-form-item>
 		  
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" id="checkId" placeholder="ID"><template #append>
-        <el-button @click="duplication()">중복확인</el-button>
+	        <el-input v-model="customer.id" placeholder="ID"><template #append>
+        <el-button @click="idCheck()">중복확인</el-button>
       </template></el-input>
 	    </el-form-item>   
 	    
@@ -84,11 +84,11 @@
 	    </el-form-item>
 	    	    
 	    <el-form-item label="이메일">
-	    	<el-col :span="14">
-		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
+	    	<el-col :span="12">
+		        <el-input v-model="customer.customerEmailId" placeholder="EMAIL ID"/>
 	        </el-col>
 	        <el-col :span="2" class="text-center">@</el-col>
-	        <el-col :span="8">
+	        <el-col :span="10">
 	        	<el-autocomplete
 			        v-model="customer.customerEmailJuso"
 			        :fetch-suggestions="getSuggestion"
@@ -112,7 +112,7 @@
 	    </el-input>	    
 	    
 	    <el-form-item>
-			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="address"/>
+			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="customerAddress"/>
 	    </el-form-item>
 	</el-form>
 </c:set>
@@ -130,8 +130,7 @@
 	    		height: 170,
 	    		weight: 70,
 	    		address: {
-	    			postCode: '',
-	    			
+	    			postCode: '',	    			
 	    		},
 	    		customerEmailId: '',
 	    		customerEmailJuso: '',
@@ -147,9 +146,7 @@
 	    	]
 	    }
 	},
-	watch: {
-		
-	},
+
 	methods: {
 		validCheck() {
 			return true;
@@ -216,14 +213,14 @@
 			}).open();
 		},
 		
-		onSubmit() {	<!-- submit 및 계정정보 유효성검사 -->
+		onSubmit() {	
 		const finalId = document.getElementById('customerId').value;
 		const address = document.getElementById('address').value;
 		const detailAddr = document.getElementById('detailAddr').value;
 		const postCode = document.getElementById('postCode').value;
-			if(finalId.length < 1){
-				alert('ID 중복을 확인해주세요.');
-			} else if(this.customer.pw.length < 4 || this.customer.phone.length < 4
+			//if(finalId.length < 1){
+				//alert('ID 중복을 확인해주세요.');
+		  if(this.customer.pw.length < 4 || this.customer.phone.length < 4
 			 || this.customer.customerEmailId.length < 4 || this.customer.customerEmailJuso.length < 4 ){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
 			} else if(this.customer.name.length < 2) {
@@ -239,29 +236,27 @@
 			}		
 		},
 		
-		duplication(){<!-- 중복확인 -->
+		idCheck(){	
 			if(this.customer.id.length < 4){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
-				document.getElementById('customerId').value = '';
-			} else{
+			} else {
 				const self = this;
 				const customer = {
 					customerId: this.customer.id,
 				};
 				axios.post('${ctp}/customer/idCheck', customer)
 				.then((res) => {
-					if(res.data == 0){
-						alert('사용가능한 ID입니다.');
-						document.getElementById('customerId').value = '';
+					console.log(res.data);
+					if(res.data){
+						alert('사용가능한 아이디입니다.')
 						document.getElementById('customerId').value = this.customer.id;
 					} else {
-						alert('중복 ID입니다.');
-						document.getElementById('customerId').value = '';
+						alert('중복 아이디입니다.')
 					}
 				}).catch((res) => {
 					alert('error');
-				})	
-			}		
+				})
+			}			
 		},
 		
 	}

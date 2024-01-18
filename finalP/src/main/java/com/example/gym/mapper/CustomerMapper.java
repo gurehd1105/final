@@ -1,5 +1,6 @@
 package com.example.gym.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,7 +16,7 @@ public interface CustomerMapper {
 	
 	// insert (가입)
 		// ID 중복체크
-	Customer checkId(Customer customer);
+	List<Customer> checkId(Customer customer);
 	int insertCustomer(Customer customer);
 	int insertCustomerDetail(CustomerDetail customerDetail);
 	// 선택정보 (Image)

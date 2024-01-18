@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
 import com.example.gym.vo.Review;
@@ -72,12 +73,12 @@ public class ReviewController extends DefaultController {
 		
 		model.addAttribute("programName", programName);
 		
-		return "review/list";
+		return ViewRoutes.후기_목록;
 	}
 	
 	@GetMapping("/insert")
 	public String insert(HttpSession session, Model model) {		
-		return "review/insert";
+		return ViewRoutes.후기_추가;
 	}
 	
 	/*
@@ -91,12 +92,12 @@ public class ReviewController extends DefaultController {
 	public String update(Review review, Model model) { 
 		Map<String, Object> resultMap = reviewService.selectReviewOne(review);
 		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
-		return "review/update";
+		return ViewRoutes.후기_수정;
 	}
 	@PostMapping("/update")
 	public String update(Review review) { 
 		reviewService.updateReview(review);		
-		return "redirect:reviewOne?reviewNo=" + review.getReviewNo();
+		return Redirect(ViewRoutes.후기_상세보기) +"?reviewNo=" + review.getReviewNo();
 	}	
 	
 	@PostMapping("/delete")
@@ -143,7 +144,7 @@ public class ReviewController extends DefaultController {
 		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
 		model.addAttribute("replyMap", resultMap.get("replyMap"));
 		
-		return "review/reviewOne";
+		return ViewRoutes.후기_상세보기;
 	}
 	
 // review reply
@@ -153,7 +154,7 @@ public class ReviewController extends DefaultController {
 	public String insertReply(ReviewReply reply) {		
 		
 		reviewService.insertReviewReply(reply);
-		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
+		return Redirect(ViewRoutes.후기_상세보기) +"?reviewNo=" + reply.getReviewNo(); 
 	}
 	
 	// updateReply

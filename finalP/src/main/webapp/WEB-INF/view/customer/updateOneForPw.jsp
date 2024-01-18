@@ -51,7 +51,7 @@
 			};
 			axios.post('${ctp}/customer/pwCheck', customer)
 			.then((res) => {
-				if(res.data == 1){
+				if(res.data){
 					document.getElementById('updateForm').submit();
 				} else {
 					self.$notify({
