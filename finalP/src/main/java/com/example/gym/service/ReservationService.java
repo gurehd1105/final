@@ -45,20 +45,7 @@ public class ReservationService {
 		return reservationMapper.selectProgramDates(program_no);
 	}
 
-	//관리자용 프로그램림 예약 가능 정보 조회
-	public List<Map<String, Object>> programDateList(ProgramDate programDate){
-		return reservationMapper.programDateList(programDate);
-	}
 	
-	// 관리자용 프로개림 예약 가능 정보 추가
-	public int insertProgramDate(ProgramDate programDate) {
-		return reservationMapper.insertProgramDate(programDate);
-	}
-	
-	// 관리자용 프로개림 예약 가능 정보 수정
-	public int updateProgramDate(ProgramDate programDate) {
-		return reservationMapper.updateProgramDate(programDate);
-	}
 	
 	
 	

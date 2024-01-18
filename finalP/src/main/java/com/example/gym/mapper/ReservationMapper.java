@@ -31,14 +31,7 @@ public interface ReservationMapper {
    // 고객용 프로그램 예약 가능 정보 조회
    List<ProgramDate> selectProgramDates(int program_no);
    
-   // 관리자 프로그램 예약 가능 정보 조회
-   List<Map<String, Object>> programDateList(ProgramDate programDate);
-   
-   // 관리자 프로그램 예약 날짜 입력
-   int insertProgramDate(ProgramDate programDate);
-   
-   // 관리자 프로그램 예약 날짜 수정
-   int updateProgramDate(ProgramDate programDate);
+  
    
    
   

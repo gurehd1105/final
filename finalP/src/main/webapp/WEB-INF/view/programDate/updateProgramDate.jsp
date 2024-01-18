@@ -28,11 +28,11 @@
         </el-form-item>
 
         <el-form-item label="등록일">
-            <el-input type="text" v-model="programDateList.createdate" name="createdate" readonly="readonly" />
+            <el-input type="text" v-model="formattedCreateDate" name="createdate" readonly="readonly"></el-input>
         </el-form-item>
 
         <el-form-item label="수정일">
-            {{ new Date(programDateList.updatedate).toLocaleString()}}
+            <el-input type="text" v-model="formattedUpdateDate" name="updatedate" readonly="readonly"></el-input>
         </el-form-item>
 
         <input type="hidden" name="programNo" :value="programDateList.programNo">
@@ -44,16 +44,27 @@
 
 <c:set var="script">
    data() {
-        return {        
-        
+        return {
             programDateList: JSON.parse('${resultMap}'),  
-          
         }
     },
-    
-   methods() {
-    
-},
+   computed: {
+        formattedCreateDate() {
+            return this.formatDate(this.programDateList.createdate);
+        },
+        formattedUpdateDate() {
+            return this.formatDate(this.programDateList.updatedate);
+        },
+    },
+   methods: {
+        formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString(); // 원하는 형식으로 조정하세요
+        },
+        updateSubmit() {
+            // 수정 제출 로직 작성
+        }
+    }
 </c:set>
 
 <%@ include file="/inc/admin_layout.jsp" %>
