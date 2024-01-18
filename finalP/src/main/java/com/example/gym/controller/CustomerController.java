@@ -178,13 +178,8 @@ public class CustomerController extends DefaultController{
 	// ID 중복체크
 	@PostMapping("/idCheck")
 	@ResponseBody
-	public int idCheck(@RequestBody Customer customer) {
-		int result = 0;
-		boolean check = customerService.checkId(customer).isEmpty();
-		if(!check) { // id 중복
-			log.info(customer.getCustomerId() + " / 중복 ID");
-			result = 1;
-		}
-		return result;
+	public boolean idCheck(@RequestBody Customer customer) {
+		boolean exist = customerService.checkId(customer).isEmpty();
+		return exist;
 	}
 }
