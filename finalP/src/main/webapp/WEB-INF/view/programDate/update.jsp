@@ -8,15 +8,15 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
-    <!-- 프로그램 수정 폼 -->
+
     <el-form label-position="right" 
              ref="form" 
              label-width="150px" 
              status-icon 
              class="max-w-lg"
-             action="${ctp}/updateProgramDate"
+             action="${ctp}/programDate/update"
              method="post" 
-             id="updateProgramDateForm">
+             id="updateForm">
              
        
         <el-form-item label="프로그램">
@@ -66,7 +66,7 @@
             return date.toLocaleString(); // 원하는 형식으로 조정하세요
         },
         updateSubmit() {
-        	document.getElementById('updateProgramDateForm').submit();
+        	document.getElementById('updateForm').submit();
         	}
         
     }

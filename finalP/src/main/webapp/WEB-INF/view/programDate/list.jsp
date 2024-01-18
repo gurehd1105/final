@@ -19,12 +19,12 @@
       
       <el-table-column label="수정/삭제">
           <template #default="scope">
-             <el-button type="primary" @click="update(scope.row)">수정</el-button>      		
+             <el-button type="success" @click="update(scope.row)">수정</el-button>      		
              <el-button type="danger" @click="remove(scope.row)">삭제</el-button>
-          </template> 
+          </template>          
    	 </el-table-column>
-   	 
    </el-table>
+   	 <el-button type="primary" @click="insert()">추가</el-button>
 </c:set>
 
 <c:set var="script">
@@ -36,12 +36,12 @@
     
     methods: {
     	update(row) {
-           location.href = '${ctp}/updateProgramDate?programDateNo=' + row.programDateNo;
+           location.href = '${ctp}/programDate/update?programDateNo=' + row.programDateNo;
        },
        remove(row){
            const self = this;
            const programDate={programDateNo: row.programDateNo}
-           axios.post('${ctp}/deleteProgramDate', programDate)
+           axios.post('${ctp}/programDate/delete', programDate)
             .then((res) => {
                console.log(res.data);
                if(res.data == 1){
@@ -54,8 +54,8 @@
                alert('error');
             })
        },       
-        insertDate(){
-        	location.href = '${ctp}/insertProgramDate';
+        insert(){
+        	location.href = '${ctp}/programDate/insert';
        },
         formatDate(row, column, cellValue) {
        		// 진행일 열은 시간을 표시하지 않고 날짜만 표시

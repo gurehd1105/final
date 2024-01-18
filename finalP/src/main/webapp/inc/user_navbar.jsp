@@ -44,7 +44,13 @@ prefix="c" %>
             </el-menu-item>
 
             <div class="flex-grow"></div>
-
+             
+             <el-menu-item index="11" v-if="loginCustomer">
+                <template #title>
+                	<el-icon v-html="svg.login"></el-icon>
+                    <span>출석</span>
+                </template>
+            </el-menu-item>
             <el-menu-item index="8" v-if="loginCustomer">
             	<template #title>
 					<el-icon v-html="svg.reservation"></el-icon>
@@ -86,9 +92,10 @@ prefix="c" %>
                     "${ctp}/question/list",
                     "${ctp}/review/list",
                     "${ctp}/notice/list",
-                    "${ctp}/calendar",
+                    "${ctp}/reservation/calendar",
                     "${ctp}/customer/customerOne",
                     "${ctp}/customer/logout",
+                    "${ctp}/attendance/insert",
                 ],
 
                 svg: {

@@ -75,4 +75,4 @@
     }
 </c:set>
 
-<%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>

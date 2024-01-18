@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.AttendanceService;
 import com.example.gym.service.ReservationService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.CustomerAttendance;
 import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,22 +31,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder.Default;
 
 @Controller
+@RequestMapping("attendance")
 public class AttendanceController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired AttendanceService attendanceService;
 	@Autowired ReservationService reservationService;
-
-	@GetMapping("/attendanceList")
+	
+	// 출석 조회
+	@GetMapping("/list")
 	public String attendanceList(CustomerAttendance attendance, Model model) throws JsonProcessingException {
    
 	   List<Map<String, Object>> attendanceList = attendanceService.selectCustomerAttendance(attendance);
 	   model.addAttribute("attendanceList", mapper.writeValueAsString(attendanceList));
 	   System.out.println(attendanceList + "<--attendanceList");
-	   return "attendance/attendanceList";
+	   return ViewRoutes.출석_조회;
 	   
 	   
 	}
-	@GetMapping("/insertAttendance")
+	//출석 체크
+	@GetMapping("/insert")
 	public String insertAttendance(Model model, CustomerAttendance attendance ) {
 		Map<String, Object> paramMap = new HashMap<>();
 		
@@ -52,10 +57,10 @@ public class AttendanceController {
 	    model.addAttribute("reservationList", resultMap.get("reservationList")); 
 	    System.out.println(resultMap + "<--resultMap");
 
-	    return "attendance/insertAttendance";
+	    return ViewRoutes.출석_추가;
 	}
 	
-	  @PostMapping("/insertAttendance")
+	  @PostMapping("/insert")
 	    @ResponseBody
 	    public int insertAttendance(@RequestBody Map<String, Object> paramMap ) {
 		  System.out.println(paramMap + "<-- paramMap");
