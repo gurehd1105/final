@@ -63,16 +63,8 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="customer.address.address" name="address1" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    
-	    <el-form-item label="상세주소">
-			<el-input v-model="customer.address.detailAddr" name="address2" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    
-	    <el-form-item label="참고주소">
-			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
-	    </el-form-item>
+			<el-input v-model="customer.address.address" name="customerAddress" placeholder="ADDRESS"/>
+	    </el-form-item>	    
 	   
 	    <el-form-item label="이메일">
 	    	<el-col :span="14">
@@ -110,9 +102,10 @@
 	    		height: '${ resultMap.customerHeight }',
 	    		weight: '${ resultMap.customerWeight }',
 	    		address: {
-	    			postCode: '',	    			
+	    			postCode: '',
+	    			address:'${ resultMap.customerAddress }',
 	    		},
-	    		customerAddress: '${ resultMap.customerAddress }',
+	    		
 	    		customerEmailId: '${ resultMap.emailId }',
 	    		customerEmailJuso: '${ resultMap.emailJuso }',
 	    		customerImg: '${ resultMap.customerImgOriginName }',
@@ -163,34 +156,11 @@
 					} else { // 사용자가 지번 주소를 선택했을 경우(J)
 						addr = data.jibunAddress;
 					}
-
-					// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-					if (data.userSelectedType === 'R') {
-						// 법정동명이 있을 경우 추가한다. (법정리는 제외)
-						// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-						if (data.bname !== ''
-								&& /[동|로|가]$/g.test(data.bname)) {
-							extraAddr += data.bname;
-						}
-						// 건물명이 있고, 공동주택일 경우 추가한다.
-						if (data.buildingName !== ''
-								&& data.apartment === 'Y') {
-							extraAddr += (extraAddr !== '' ? ', '
-									+ data.buildingName : data.buildingName);
-						}
-						// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-						if (extraAddr !== '') {
-							extraAddr = ' (' + extraAddr + ')';
-						}
-
-					}
-					
+		
 					// 데이터 바인딩
 					self.customer.address = {
 						postCode: data.zonecode,
-						address: addr,
-						detailAddress: '',
-						extraAddr: extraAddr,
+						address: addr,						
 					}
 				}
 			}).open();
