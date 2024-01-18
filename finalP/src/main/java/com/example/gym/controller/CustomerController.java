@@ -166,13 +166,9 @@ public class CustomerController extends DefaultController{
 	
 	@PostMapping("/pwCheck")
 	@ResponseBody	// PW 체크로직
-	public int pwCheck(@RequestBody Customer customer) {
-		int result = 0;
-		boolean check = customerService.loginCustomer(customer) != null;
-		if(check) {	// PW 일치
-			result = 1;
-		}		
-		return result;
+	public boolean pwCheck(@RequestBody Customer customer) {
+		boolean exist = customerService.loginCustomer(customer) != null;				
+		return exist;
 	}
 	
 	// ID 중복체크

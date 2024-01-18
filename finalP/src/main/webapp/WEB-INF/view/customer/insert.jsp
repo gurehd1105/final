@@ -246,16 +246,15 @@
 				};
 				axios.post('${ctp}/customer/idCheck', customer)
 				.then((res) => {
+					console.log(res.data);
 					if(res.data){
 						alert('사용가능한 아이디입니다.')
-						console.log(res, res.data);
 						document.getElementById('customerId').value = this.customer.id;
 					} else {
-					console.log(res, res.data);
 						alert('중복 아이디입니다.')
 					}
 				}).catch((res) => {
-					alet('error');
+					alert('error');
 				})
 			}			
 		},

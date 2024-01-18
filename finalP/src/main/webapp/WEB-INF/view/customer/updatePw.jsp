@@ -61,7 +61,7 @@
 			};
 			axios.post('${ctp}/customer/pwCheck', customer)
 			.then((res) => {
-				if(res.data == 1){
+				if(res.data){
 					if(this.newPw != this.newPwCk){
 						self.$notify({
 						  title: '새 PW 오류',
