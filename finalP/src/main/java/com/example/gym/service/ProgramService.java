@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.mapper.ProgramMapper;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Program;
 
 import jakarta.servlet.http.HttpSession;
@@ -72,6 +72,54 @@ public class ProgramService {
 		
 		return resultMap;
 	}
+	
+	 //sportsEquipmentList 출력
+	 public Map<String,Object> list(HttpSession session, 
+	                                                 Page page,
+	                                                 int pageNum,
+	                                                 String programActive,
+	                                                 String searchWord) {
+	    //디버깅
+	    log.info(searchWord);
+	    log.info("pageNum: {}", pageNum);
+	    log.info("programActive : {}", programActive);
+	    
+	    //페이징
+	    page.setRowPerPage(5);
+	    page.setPageNum(pageNum);
+	    
+	    //mapper의 매개변수로 들어갈 paramMap 생성
+	    Map<String,Object> paramMap1 = new HashMap<>();
+	    paramMap1.put("searchWord", searchWord);
+	    paramMap1.put("programActive", programActive);
+	    
+	    //mapper 호출 
+	    int programCnt = programMapper.programCnt(paramMap1);
+	    page.setTotalCount(programCnt);
+	    
+	    paramMap1.put("page", page);
+	    log.info("page: {}", page);
+
+	    //mapper의 매개변수로 들어갈 paramMap 생성
+	    Map<String,Object> paramMap2 = new HashMap<>();
+	    paramMap2.put("searchWord", searchWord);
+	    paramMap2.put("programActive", programActive);
+	    paramMap2.put("rowPerPage", page.getRowPerPage());
+	    paramMap2.put("beginRow", page.getBeginRow());
+
+	    //mapper 호출
+	    List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap2);
+	    
+	    //controller에 보내줄 resultMap 생성
+	    Map<String,Object> resultMap = new HashMap<>();
+	    
+	    resultMap.put("page", page);
+	    resultMap.put("searchWord", searchWord);
+	    resultMap.put("programActive", programActive);
+	    resultMap.put("programList", programList);
+	    
+	    return resultMap;
+	 }
 	
 	//program 수정 폼
 	public Map<String,Object> selectProgramOneService(HttpSession session,

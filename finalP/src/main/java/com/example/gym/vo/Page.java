@@ -15,7 +15,7 @@ public class Page {
 	private int pageNum = 1;
 	
 	@Default
-	private int rowPerPage = 3;
+	private int rowPerPage = Integer.MAX_VALUE;
 	private int totalCount;
 	
 	private int beginRow;
