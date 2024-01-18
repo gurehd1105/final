@@ -73,33 +73,34 @@
 	      	param.set('rowPerPage', this.rowPerPage);
 			location.href = '/review/list?' + param.toString()+ '&programName=' + this.programName;
       	},
-      rowClick(row, column){	// 상세보기
-      	console.log('Row.data:',row, column);
-      	if (column.property) {
-      	  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
-      	}
+		rowClick(row, column){	// 상세보기
+			console.log('Row.data:',row, column);
+			if (column.property) {
+			  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
+		}
       },
-      selectProgram(){	// 프로그램 옵션선택
-      	location.href = '${ctp}/review/list?programName=' + this.value;
-      },
-      
-	  remove(row) {	// 삭제
-	  	console.log('row -> ', row.reviewNo)
-         if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
-         	const self = this;
-            const reviewNo = {reviewNo : row.reviewNo,};  
-            axios.post('${ctp}/review/delete', reviewNo)
-            .then((res) => {
-               if(res.data == 1){
-                  alert('삭제가 완료되었습니다.');
-                  location.reload();
-               }
-            }).catch((error) => {
-               alert('삭제 중 에러가 발생했습니다.');
-               console.error(error);
-            })
-         }
-      },  
+		selectProgram(){	// 프로그램 옵션선택
+			location.href = '${ctp}/review/list?programName=' + this.value;
+		},
+     
+		remove(row) {	// 삭제
+			console.log('row -> ', row.reviewNo)
+			if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
+				const self = this;
+				const reviewNo = {reviewNo : row.reviewNo,};  
+				
+			axios.post('${ctp}/review/delete', reviewNo)
+				.then((res) => {
+					if(res.data == 1){
+					alert('삭제가 완료되었습니다.');
+					location.reload();
+				}
+			}).catch((error) => {
+				alert('삭제 중 에러가 발생했습니다.');
+				console.error(error);
+				})
+			}
+		},  
    },
 </c:set>
 <%@ include file="/inc/user_layout.jsp"%>

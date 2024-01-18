@@ -3,6 +3,7 @@ package com.example.gym.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,10 +47,13 @@ public class ReviewController extends DefaultController {
 		page2.setRowPerPage(Integer.MAX_VALUE);
 		
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("programName", programName);
+		paramMap.put("searchWord", "");
 		paramMap.put("rowPerPage", page2.getRowPerPage());
 		paramMap.put("beginRow", page2.getBeginRow());
-		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap); 
+		paramMap.put("programActive", "");
+		log.info(paramMap.toString());
+		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap);
+		log.info(programList.toString());
 		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출	
 		
 		paramMap.clear();			// 맵 초기화
@@ -73,10 +77,12 @@ public class ReviewController extends DefaultController {
 		model.addAttribute("programName", programName);
 		
 		// 리스트 -> 리뷰작성 이동 시 attendance 정보 확인위한 전달
+		if(session.getAttribute("loginCustomer") != null) {
 		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
 		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
 		boolean checkAttendance = attendanceList.size() > 0;
 		model.addAttribute("checkAttendance", checkAttendance);
+		}
 		return ViewRoutes.후기_목록;
 	}
 	
