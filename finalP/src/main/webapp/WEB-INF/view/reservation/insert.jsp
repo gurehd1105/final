@@ -90,7 +90,8 @@
         	}
         	if (!this.selectBranch) {
         		message = "지점을 선택해 주세요.";
-        	}
+        	}        
+        	
         	return message;
     	},
         insert() {
