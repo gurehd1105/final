@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.gym.service.ProgramService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,12 +29,13 @@ public class ProgramController extends DefaultController{
 	@GetMapping("/list")
 	public String selectProgramList(HttpSession session,
 								Model model,
-								@RequestParam(defaultValue = "1") int currentPage,
+								Page page,
+								@RequestParam(defaultValue = "1") int pageNum,
 								@RequestParam(defaultValue = "") String programActive,
 								@RequestParam(defaultValue = "") String searchWord) throws JsonProcessingException {
 		
 		//service 호출
-		Map<String,Object> map = programService.selectProgramListService(session, currentPage, programActive, searchWord);
+		Map<String,Object> map = programService.list(session, page, pageNum, programActive, searchWord);
 		
 		//직원레벨 확인
 		Employee employee = (Employee)session.getAttribute("loginEmployee");
@@ -43,10 +46,10 @@ public class ProgramController extends DefaultController{
 		model.addAttribute("branchLevel",branchLevel);
 		model.addAttribute("searchWord",searchWord);
 		model.addAttribute("programActive",programActive);
-		model.addAttribute("lastPage",map.get("lastPage"));
+		model.addAttribute("page",map.get("page"));
 		model.addAttribute("programList",toJson(map.get("programList")));
 		
-		return "program/list";
+		return ViewRoutes.프로그램_목록;
 	}
 	
 	//program 수정 폼 (본사 직원 접근 가능)
@@ -69,7 +72,7 @@ public class ProgramController extends DefaultController{
 		model.addAttribute("createdate",map.get("createdate"));
 		model.addAttribute("updatedate",map.get("updatedate"));
 		
-		return "program/update";
+		return ViewRoutes.프로그램_수정;
 	}	
 	
 	//program 수정 액션 (본사 직원 접근 가능)
@@ -85,7 +88,7 @@ public class ProgramController extends DefaultController{
 		//service 호출
 		programService.updateProgramOneService(session, programNo, maxCustomer, programContent, programActive);
 		
-		return "redirect:/program/update?programNo="+programNo;
+		return String.format("redirect:%s?programNo=%s", ViewRoutes.프로그램_수정, programNo);
 	}
 	
 	//program 추가 폼 (본사 직원 접근 가능)
@@ -95,7 +98,7 @@ public class ProgramController extends DefaultController{
 		//service 호출
 		programService.insert(session);
 		
-		return "program/insert";
+		return ViewRoutes.프로그램_추가;
 	}
 	
 	//program 추가 액션 (본사 직원 접근 가능)
@@ -109,6 +112,6 @@ public class ProgramController extends DefaultController{
 		//service 호출
 		programService.insert(session, programContent, programName, maxCustomer, programActive);
 		
-		return "redirect:/program/list";
+		return Redirect(ViewRoutes.프로그램_목록);
 	}
 }
