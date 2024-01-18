@@ -5,35 +5,33 @@
 <c:set var="keywords" value="프로그램" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-
-	<h2>검색창</h2>
-	<!-- 검색창 -->
-	<el-form label-position="right" 
-			 ref="form" 
-			 label-width="150px" 
-			 status-icon class="max-w-lg" 
-			 action="${ctp}/program/list" 
-			 method="get" 
-			 id="searchProgramForm"
-			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
-	> 
-	   	<el-form-item label="상태">
-			<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
-				<el-radio label="Y">활성화</el-radio>
-				<el-radio label="N">비활성화</el-radio>
-			</el-radio-group>
-			
-	   	</el-form-item>
-		<el-form-item label="검색">
-				<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
-	   	</el-form-item>
-	   	
-	   	<el-form-item>
-				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
-				<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
-	   	</el-form-item>
-	   	
-	</el-form>
+	<div class="flex justify-center">
+		<!-- 검색창 -->
+		<el-form label-position="right" 
+				 ref="form" 
+				 label-width="150px" 
+				 status-icon class="max-w-lg" 
+				 action="${ctp}/program/list" 
+				 method="get" 
+				 id="searchProgramForm"
+		> 
+		   	<el-form-item label="상태">
+				<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
+					<el-radio label="Y">활성화</el-radio>
+					<el-radio label="N">비활성화</el-radio>
+				</el-radio-group>
+				
+		   	</el-form-item>
+			<el-form-item label="검색">
+					<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+		   	</el-form-item>
+		   	
+		   	<el-form-item>
+					<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+					<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+		   	</el-form-item>
+		</el-form>
+	</div>	
 	<br>
 	<!-- 프로그램 리스트 -->
     <table class="custom-table">
@@ -47,7 +45,9 @@
 		        <th>활성화</th>
 		        <th>생성일</th>
 		        <th>수정일</th>
-		        <th v-if="branchLevel === 1">수정</th>
+		        <th v-if="<%= session.getAttribute("loginEmployee") != null %> && branchLevel === 1">
+		        	수정
+		        </th>
         	</tr>
       	</thead>
 	    <tbody>
@@ -60,7 +60,7 @@
 			    <td>{{ list.programActive === 'Y' ? '활성화' : '비활성화' }}</td>
 			    <td>{{ new Date(list.createdate).toLocaleString() }}</td>
 			    <td>{{ new Date(list.updatedate).toLocaleString() }}</td>
-			    <td v-if="branchLevel === 1">
+			    <td v-if="<%= session.getAttribute("loginEmployee") != null %> && branchLevel === 1">
        			 <button @click="updateProgram(list)">수정</button>
        			</td>
 	     	</tr>
@@ -68,12 +68,14 @@
     </table>
     <br>
 
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
 	
 </c:set>
 <c:set var="script">
@@ -81,11 +83,13 @@
 	  	return {
 		    model: {
 			    searchWord: '${searchWord}', 
-			    programActive: '${programActive}',
-			    currentPage: 1, 
+			    programActive: '${programActive}', 
 		    },
 		    programList: JSON.parse('${programList}'),
-		    lastPage: ${lastPage},
+		    pageNum: ${page.pageNum},
+       		rowPerPage: ${page.rowPerPage },
+        	totalCount: ${page.totalCount},
+        	totalPage: ${page.totalPage },
 		    branchLevel : ${branchLevel}
 	  	};
 	},
@@ -102,11 +106,14 @@
         	location.href = '${ctp}/program/update?programNo=' + list.programNo;
         },
         
-  		changePage(page) {
-    		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/program/list?searchWord=${searchWord}&programActive=${programActive}&currentPage='+page;
-  		}
+      	loadPage(pageNum) {
+      		const param = new URLSearchParams();
+      		param.set('pageNum', this.pageNum);
+      		param.set('searchWord', this.model.searchWord);
+      		param.set('programActive', this.model.programActive);
+      	
+			location.href = '/program/list?' + param.toString();
+      },
 	}
 </c:set>
 
@@ -137,4 +144,17 @@
     text-align: center; 
  }
 </style>
-<%@ include file="/inc/admin_layout.jsp"%>
+
+<%-- Check if loginEmployee session attribute exists --%>
+<%
+    Object loginEmployee = session.getAttribute("loginEmployee");
+    if (loginEmployee != null) {
+%>
+    <%@ include file="/inc/admin_layout.jsp" %>
+<%
+    } else {
+%>
+    <%@ include file="/inc/user_layout.jsp" %>
+<%
+    }
+%>
