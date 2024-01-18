@@ -57,7 +57,7 @@ public class PaymentController extends DefaultController{
 		paramMap.put("customerName", customerName);
 		List<Map<String, Object>> paymentList = paymentService.select(paramMap);
 		log.info("customerName: " + customerName);
-		log.info((paymentList.size() == 0 || paymentList == null) ? "리스트 결과값 없음" : "출력 성공");
+		log.info((paymentList.size() == 0 || paymentList == null) ? "출력값 없음" : "출력 성공");
 		model.addAttribute("paymentList", toJson(paymentList));
 		model.addAttribute("page", page);
 		return ViewRoutes.결제정보_조회;

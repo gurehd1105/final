@@ -29,8 +29,8 @@
 	
 	data() {
 		return {			
-			questionList: JSON.parse('${ questionList }'),
-			pageNum: ${page.pageNum},
+			questionList: JSON.parse('${ questionList }'),	// 리스트
+			pageNum: ${page.pageNum},						// 페이징
 			rowPerPage: ${page.rowPerPage },
 			totalCount: ${page.totalCount},
 			totalPage: ${page.totalPage },
@@ -38,28 +38,29 @@
 	},
 	
 	methods: {
-		insert(){
-			location.href = '${ctp}/question/insert';
+		insert(){	// 추가
+			if(${ loginCustomer != null }){
+				location.href = '${ctp}/question/insert';
+			} else {
+				alert('로그인 후 이용해주세요.');
+			}
+			
 		},
-		questionOne(no){
-			location.href = '${ctp}/question/questionOne?questionNo=' + no;
-		},
-		rowClick(row, column){
+		
+		rowClick(row, column){	// 상세보기
 	      	console.log('Row.data:',row, column);
 	      	if (column.property) {
 	      	  location.href='${ctp}/question/questionOne?questionNo=' + row.questionNo;
 	      	}
 	      },
 		
-		loadPage(pageNum) {
+		loadPage(pageNum) {	// 페이징
       	const param = new URLSearchParams();
       	param.set('pageNum', this.pageNum);
       	param.set('rowPerPage', this.rowPerPage);
       	
 		location.href = '/question/list?' + param.toString();
-      },
-      
-      
+      },     
 	},
  
 </c:set>

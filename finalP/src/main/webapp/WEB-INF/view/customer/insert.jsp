@@ -72,17 +72,9 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="customer.address.address" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.address" name="customerAddress" id="address" placeholder="ADDRESS"/>
 	    </el-form-item>
-	    
-	    <el-form-item label="상세주소">
-			<el-input v-model="customer.address.detailAddr" id="detailAddr" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    
-	    <el-form-item label="참고주소">
-			<el-input v-model="customer.address.extraAddr" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    	    
+	
 	    <el-form-item label="이메일">
 	    	<el-col :span="12">
 		        <el-input v-model="customer.customerEmailId" placeholder="EMAIL ID"/>
@@ -110,10 +102,7 @@
 	     <el-form-item>
 	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
 	    </el-input>	    
-	    
-	    <el-form-item>
-			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="customerAddress"/>
-	    </el-form-item>
+	  
 	</el-form>
 </c:set>
 
@@ -130,7 +119,8 @@
 	    		height: 170,
 	    		weight: 70,
 	    		address: {
-	    			postCode: '',	    			
+	    			postCode: '',
+	    			address: '',	
 	    		},
 	    		customerEmailId: '',
 	    		customerEmailJuso: '',
@@ -206,8 +196,6 @@
 					self.customer.address = {
 						postCode: data.zonecode,
 						address: addr,
-						detailAddress: '',
-						extraAddr: extraAddr,
 					}
 				}
 			}).open();
@@ -216,7 +204,6 @@
 		onSubmit() {	
 		const finalId = document.getElementById('customerId').value;
 		const address = document.getElementById('address').value;
-		const detailAddr = document.getElementById('detailAddr').value;
 		const postCode = document.getElementById('postCode').value;
 			//if(finalId.length < 1){
 				//alert('ID 중복을 확인해주세요.');
@@ -229,16 +216,18 @@
 				alert('성별을 선택해주세요.');
 			} else if(this.customer.pw != this.customer.pwChk) {
 				alert('비밀번호 확인 란이 정확하지 않습니다.');
-			} else if(detailAddr.length < 1 || postCode.length < 1) {
-				alert('우편번호 및 상세주소를 입력해주세요.');
+			} else if(postCode.length < 1 || address.length < 1) {
+				console.log(postCode , ' , ' , address);
+				alert('우편번호 및 주소를 입력해주세요.');
 			} else {
 				document.getElementById('insertForm').submit();
 			}		
 		},
-		
+				
 		idCheck(){	
 			if(this.customer.id.length < 4){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+				document.getElementById('customerId').value = '';
 			} else {
 				const self = this;
 				const customer = {
