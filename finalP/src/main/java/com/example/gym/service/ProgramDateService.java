@@ -18,18 +18,24 @@ public class ProgramDateService {
 	private ProgramDateMapper programDateMapper;
 	
 	
-		//관리자용 프로그램 예약 가능 정보 조회
-		public List<Map<String, Object>> programDateList(ProgramDate programDate){
-			return programDateMapper.programDateList(programDate);
-		}
+	// 프로그램 진행 날짜 조회
+	public List<Map<String, Object>> programDateList(ProgramDate programDate){
+		return programDateMapper.programDateList(programDate);
+	}
 			
-		// 관리자용 프로개림 예약 가능 정보 추가
-		public int insertProgramDate(ProgramDate programDate) {
-			return programDateMapper.insertProgramDate(programDate);
-			}
+	// 프로그램 진행 날짜 추가
+	public int insertProgramDate(ProgramDate programDate) {
+		return programDateMapper.insertProgramDate(programDate);
+		}
 		
-		// 관리자용 프로개림 예약 가능 정보 수정
-		public int updateProgramDate(ProgramDate programDate) {
-			return programDateMapper.updateProgramDate(programDate);
-			}
+	// 프로그램 진행 날짜 수정
+	public int updateProgramDate(ProgramDate programDate) {
+		return programDateMapper.updateProgramDate(programDate);
+		}
+	
+	// 프로그램 진행 날짜	 삭제
+	public int deleteProgramDate(ProgramDate programDate) {
+		return programDateMapper.deleteProgramDate(programDate);
+	}
+		
 }

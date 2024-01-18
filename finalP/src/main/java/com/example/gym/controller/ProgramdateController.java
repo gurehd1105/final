@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,14 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class ProgramdateController extends DefaultController{
 	@Autowired
-	ProgramDateService programdateService;
+	ProgramDateService programDateService;
 	@Autowired
     ProgramService programService;
 	
 	 //관리자 프로그램 예약 가능 정보 조회
     @GetMapping("/programDateList")
     public String programDateList(ProgramDate programDate, Model model){
-        List<Map<String, Object>> programDateList = programdateService.programDateList(programDate);
+        List<Map<String, Object>> programDateList = programDateService.programDateList(programDate);
         model.addAttribute("programDateList",toJson(programDateList));
         System.out.println(programDateList + "<--programDateList");
         return "programDate/programDateList";
@@ -60,7 +61,7 @@ public class ProgramdateController extends DefaultController{
         LocalDateTime dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
         programDate.setProgramDate(dateTime.toString());
 
-        int result = programdateService.insertProgramDate(programDate);
+        int result = programDateService.insertProgramDate(programDate);
         return result;
         
     }
@@ -68,7 +69,7 @@ public class ProgramdateController extends DefaultController{
     @GetMapping("/updateProgramDate")
     public String updateProgramDate(ProgramDate programDate, Model model){
 
-    	List<Map<String, Object>> programDateList = programdateService.programDateList(programDate);
+    	List<Map<String, Object>> programDateList = programDateService.programDateList(programDate);
     	Map<String, Object> resultMap = programDateList.get(0);
     	model.addAttribute("resultMap", toJson(resultMap));
     	System.out.println(resultMap + "<--resultMap");
@@ -77,12 +78,20 @@ public class ProgramdateController extends DefaultController{
     
     @PostMapping("/updateProgramDate")
     public String updateProgramDate(ProgramDate programDate ) {
-    	programdateService.updateProgramDate(programDate);
-		return "redirect:/programDate/updateProgramDate?programNo="+programDate.getProgramNo();
+    	programDateService.updateProgramDate(programDate);
+    	
+		return "redirect:/programDateList";
     	
     }
     
-    
+    @PostMapping("/deleteProgramDate")
+    @ResponseBody
+    public int deleteProgramDate(@RequestBody ProgramDate programDate ) {    	
+    	
+    	int result = programDateService.deleteProgramDate(programDate);
+		return result;
+    	
+    }
     
 	
 }

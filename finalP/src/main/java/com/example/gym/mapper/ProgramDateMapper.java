@@ -9,12 +9,15 @@ import com.example.gym.vo.ProgramDate;
 
 @Mapper
 public interface ProgramDateMapper {
-	// 관리자 프로그램 예약 가능 정보 조회
+	// 프로그램 진행 날짜 조회
 	List<Map<String, Object>> programDateList(ProgramDate programDate);
 	   
-	// 관리자 프로그램 예약 날짜 입력
+	// 프로그램 진행 날짜 입력
 	int insertProgramDate(ProgramDate programDate);
 	   
-	// 관리자 프로그램 예약 날짜 수정
+	//  프로그램 진행 날짜 수정
 	int updateProgramDate(ProgramDate programDate);
+	
+	//  프로그램 진행 날짜 삭제
+	int deleteProgramDate(ProgramDate programDate);
 }

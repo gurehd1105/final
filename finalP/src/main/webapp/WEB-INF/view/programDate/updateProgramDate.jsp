@@ -17,6 +17,7 @@
              action="${ctp}/updateProgramDate"
              method="post" 
              id="updateProgramDateForm">
+             
        
         <el-form-item label="프로그램">
             <el-input type="text" v-model="programDateList.programName" name="programName" readonly="readonly" />
@@ -34,8 +35,11 @@
         <el-form-item label="수정일">
             <el-input type="text" v-model="formattedUpdateDate" name="updatedate" readonly="readonly"></el-input>
         </el-form-item>
-
-        <input type="hidden" name="programNo" :value="programDateList.programNo">
+        
+        <el-form-item>
+        	<input type="hidden" name="programDateNo" :value="programDateList.programDateNo">
+        </el-form-item>
+        
         <el-form-item>
             <el-button type="primary" @click="updateSubmit">수정</el-button>
         </el-form-item> 
@@ -62,8 +66,9 @@
             return date.toLocaleString(); // 원하는 형식으로 조정하세요
         },
         updateSubmit() {
-            // 수정 제출 로직 작성
-        }
+        	document.getElementById('updateProgramDateForm').submit();
+        	}
+        
     }
 </c:set>
 

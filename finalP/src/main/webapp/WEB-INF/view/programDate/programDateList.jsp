@@ -8,32 +8,23 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
-    <table>
-        <tr>
-            <th>번호</th>
-            <th style="display: none;">프로그램 번호</th>
-            <th>프로그램</th>        
-            <th>진행일</th> 
-            <th>등록일</th>
-            <th>수정일</th>
-            <th>수정</th>
-            
-        </tr>
-        
-        <tbody v-for="(programDate, pd) in programDateList" :key="pd" id="programDateList">
-            <tr>
-                <th>{{pd+1}}</th>  
-                <th style="display: none;">{{programDate.programDateNo}}</th>     
-                <th>{{programDate.programName}}</th>
-                <th>{{new Date(programDate.programDate).toLocaleDateString()}}</th> 
-                <th>{{new Date(programDate.createdate).toLocaleString()}}</th> 
-                <th>{{new Date(programDate.updatedate).toLocaleString()}}</th>
-                
-                <th><el-button type="primary" @click="update(programDate)">수정</el-button></th>
-            </tr>            
-        </tbody>   
-        <el-button type="primary" @click="insertDate()">일정 추가</el-button>         
-    </table>
+    <el-table :data="programDateList" class="w-fit" @row-click="rowClick"
+      class-name="cursor-pointer"> 
+      <el-table-column label="번호" type="index" width="60"></el-table-column>
+      <el-table-column prop="programDateNo" label="programDateNo" v-if="shouldShowProgramDateNo"></el-table-column>
+      <el-table-column prop="programName" label="프로그램명" width="120"></el-table-column> 
+      <el-table-column prop="programDate" label="진행일" :formatter="formatDate" width="150"></el-table-column> 
+      <el-table-column prop="createdate" label="등록일" :formatter="formatDate" ></el-table-column> 
+      <el-table-column prop="updatedate" label="수정일" :formatter="formatDate" ></el-table-column>       
+      
+      <el-table-column label="수정/삭제">
+          <template #default="scope">
+             <el-button type="primary" @click="update(scope.row)">수정</el-button>      		
+             <el-button type="danger" @click="remove(scope.row)">삭제</el-button>
+          </template> 
+   	 </el-table-column>
+   	 
+   </el-table>
 </c:set>
 
 <c:set var="script">
@@ -44,12 +35,37 @@
     },
     
     methods: {
-    	update(programDate) {
-           location.href = '${ctp}/updateProgramDate?programDateNo=' + programDate.programDateNo;
+    	update(row) {
+           location.href = '${ctp}/updateProgramDate?programDateNo=' + row.programDateNo;
        },
+       remove(row){
+           const self = this;
+           const programDate={programDateNo: row.programDateNo}
+           axios.post('${ctp}/deleteProgramDate', programDate)
+            .then((res) => {
+               console.log(res.data);
+               if(res.data == 1){
+                  alert('삭제 성공.')
+                  location.reload();
+               } else {
+                  alert('삭제 실패.')
+               }
+            }).catch((res) => {
+               alert('error');
+            })
+       },       
         insertDate(){
         	location.href = '${ctp}/insertProgramDate';
-       }
+       },
+        formatDate(row, column, cellValue) {
+       		// 진행일 열은 시간을 표시하지 않고 날짜만 표시
+            if (column.property === 'programDate') {
+                return new Date(cellValue).toLocaleDateString();
+            }
+            return new Date(cellValue).toLocaleString();
+        },
+       
+       
     },
 </c:set>
 
