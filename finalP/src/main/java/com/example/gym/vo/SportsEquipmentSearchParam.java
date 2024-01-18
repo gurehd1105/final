@@ -17,4 +17,15 @@ public class SportsEquipmentSearchParam extends SearchParam {
 	private String active = "";
 	@Default
 	private String query = "";
+	@Default
+	private String searchBranch = "";
+	@Default
+	private String beginDate = "";
+	@Default
+	private String endDate = "";
+	@Default
+	private String loginBranchNo = "";
+	@Default
+	private String loginBranchLevel = "";
+
 }

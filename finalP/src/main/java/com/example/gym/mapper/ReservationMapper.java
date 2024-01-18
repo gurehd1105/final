@@ -18,21 +18,22 @@ public interface ReservationMapper {
    
    // 예약목록 출력 
    List<Map<String,Object>>selectReservationList(Map<String, Object> paramMap);
- 
-   // 프로그램 이름
-   List<Map<String, Object>>selectProgram(ProgramDate programDate); 
-   
-   // 프로그램 예약 가능 정보
-   List<ProgramDate> selectProgramDates(int program_no);
-   
-   // 해당날짜에 진행 예정 프로그램 추가
-   int insertProgramDate(ProgramDate programDate);
    
    // 예약 추가
    int insertReservation(ProgramReservation reservation);
    
    // 예약삭제
    int deleteReservation(ProgramReservation reservation);
+ 
+   // 프로그램 이름
+   List<Map<String, Object>>selectProgram(ProgramDate programDate); 
+   
+   // 고객용 프로그램 예약 가능 정보 조회
+   List<ProgramDate> selectProgramDates(int program_no);
+   
+  
+   
+   
   
 }
    

@@ -10,14 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class SportsEquipment {
-	private int sportsEquipmentNo;
-	private int employeeNo;
-	private String employeeId;
+public class SportsEquipmentInventory {
+	private String branchName;
 	private String itemName;
-	private String createdate;
-	private String updatedate;
-	private String equipmentActive;
-	private String sportsEquipmentImgFileName;
+	private int discartdQuantity;
 	private int itemPrice;
+	private int inventoryQuantity;
+	private int totalQuantity;
+	private String sportsEquipmentImgFileName;
+	private int sportsEquipmentNo;
 }

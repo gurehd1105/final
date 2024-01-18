@@ -21,7 +21,7 @@
 	          		관리자
 	        	</div>
 	      	</template>
-	      	{{employeeId}}
+	      	{{model.employeeId}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -30,7 +30,7 @@
 	          		장비
 	        	</div>
 	      	</template>
-	      	{{itemName}}
+	      	{{model.itemName}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -39,7 +39,7 @@
 	          		가격
 	        	</div>
 	      	</template>
-	      	{{itemPrice}}원
+	      	{{model.itemPrice}}원
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -48,7 +48,7 @@
 	          		상태
 	        	</div>
 	      	</template>
-	      	{{equipmentActive === 'Y' ? '주문가능' : '품절' }}
+	      	{{model.equipmentActive === 'Y' ? '주문가능' : '품절' }}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -57,7 +57,7 @@
 	          		등록일
 	        	</div>
 	      	</template>
-	      	{{equipmentCreatedate}}
+	      	{{model.equipmentCreatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -66,7 +66,7 @@
 	          		수정일
 	        	</div>
 	      	</template>
-	      	{{equipmentUpdatedate}}
+	      	{{model.equipmentUpdatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item :column="1">
@@ -140,30 +140,32 @@
 
 </c:set>
 <c:set var="script">
+
 	data() {
 	  	return {
 	  			model: {
-	    			quantity: '',
+	    	    	quantity: '',
 	    			totalPrice:'',
-	    		},
-	    	
-	    			sportsEquipmentNo: '${sportsEquipmentNo}', 
-				    itemPrice: '${itemPrice}',
-				    employeeId: '${employeeId}',
-				    itemName: '${itemName}',
-				    equipmentActive: '${equipmentActive}',
-				    equipmentCreatedate: '${equipmentCreatedate}',
-				    equipmentUpdatedate: '${equipmentUpdatedate}',
-				    imgList: JSON.parse('${imgList}'),		     
-				    inventory: JSON.parse('${inventory}'),
-	  	};
-	},
+	    			sportsEquipmentNo: '${one.sportsEquipmentNo}', 
+				    itemPrice: '${one.itemPrice}',
+				    employeeId: '${one.employeeId}',
+				    itemName: '${one.itemName}',
+				    equipmentActive: '${one.equipmentActive}',
+				    equipmentCreatedate: '${one.createdate}',
+				    equipmentUpdatedate: '${one.updatedate}',
+	  			},
+	  				inventory: JSON.parse('${inventory}'),
+				    imgList: JSON.parse('${imgList}'),
+				    img: [],	  
+	  				updateModel : {},
+			};
+		},
 	
 	methods: {
 	
 		handleChange() {
 		
-    		this.model.totalPrice = this.model.quantity * this.itemPrice;
+    		this.model.totalPrice = this.model.quantity * this.model.itemPrice;
     		console.log('Total Price:', this.model.totalPrice);
 		
 		},

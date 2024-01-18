@@ -55,13 +55,13 @@
 			 >
 			 
 	   	<el-form-item label="상태">
-			<el-radio-group v-model="model.equipmentActive" name="equipmentActive" class="ml-4" >
+			<el-radio-group v-model="model.active" name="active" class="ml-4" >
 				<el-radio label="Y">주문가능</el-radio>
 				<el-radio label="N">품절</el-radio>
 			</el-radio-group>
 	   	</el-form-item>
 		<el-form-item label="검색">
-				<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+				<el-input v-model="model.query" name="query" placeholder="검색어를 입력하세요"/>
 	   	</el-form-item>
 	   	<el-form-item>
 				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
@@ -87,31 +87,34 @@
   		</el-col>
 	</el-row>
    	
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>	
 
 </c:set>
 <c:set var="script">
 	data() {
-		return {
-			model: {
-			    searchWord: '${searchWord}', 
-			   	equipmentActive: '${equipmentActive}',
-			    currentPage: 1, 
-		    	itemName: '',
-		    	itemPrice: '',
-		    	sportsEquipmentImg: '',
-		    	
+		const model = JSON.parse('${result}');
+	  	return {
+		    model: {
+			    query: model.param.query ?? '', 
+			    active: model.param.active ?? '',
 		    },
 		    
-		    list: JSON.parse('${list}'), 
-		    lastPage: ${lastPage},
+		    list: model.list, 
+		    rowPerPage: model.param.rowPerPage,
+		    totalCount: model.param.totalCount,
+			pageNum: model.param.pageNum,
+			query: model.param.query,
+			active: model.param.active,
 	  	};
 	},
+	
 	methods: {
 			searchSubmit() {
 				document.getElementById('searchForm').submit();
@@ -143,11 +146,14 @@
 				location.href = '${ctp}/sportsEquipment/update?sportsEquipmentNo='+sportsEquipmentNo;
 			},
 					
-			changePage(page) {
-    			this.currentPage = page;
-    			console.log('Current Page:', this.currentPage); 
-    			location.href = '${ctp}/sportsEquipment/insert?searchWord=${searchWord}&equipmentActive=${equipmentActive}&currentPage='+page;
-  			},
+  	    	loadPage(pageNum) {
+      			const param = new URLSearchParams();
+      			param.set('pageNum', pageNum);
+      			param.set('active', this.active);
+      			param.set('query', this.query);
+
+				location.href = '/sportsEquipment/insert?' + param.toString();
+      		},
   			
 	
 	}

@@ -20,7 +20,7 @@
 	>
 	
 		<el-form-item label="아이템검색">
-				<el-input v-model="model.searchItem" name="searchItem" placeholder="아이템을 입력하세요"/>
+				<el-input v-model="model.query" name="query" placeholder="아이템을 입력하세요"/>
 	   	</el-form-item>
 		<el-form-item label="시작일">
 				<el-input type="date" v-model="model.beginDate" name="beginDate"/>
@@ -54,7 +54,7 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(order, i) in model.orderList" :key="i">
+	    	<tr v-for="(order, i) in list" :key="i">
 	        	<td>
 	          		<span v-if="order.quantity > 0" style="color: blue;">발주</span>
 	          		<span v-else-if="order.quantity < 0" style="color: red;">폐기</span>
@@ -99,26 +99,34 @@
 
 
    		<br>
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
 
 </c:set>
 <c:set var="script">
 	data() {
+		const model = JSON.parse('${result}');
 	  	return {
 		    model: {
-			    searchItem: '${searchItem}', 
-			    searchItem: '${beginDate}', 
-			    searchItem: '${endDate}', 
-			    currentPage: 1, 
-			  	orderList: JSON.parse('${orderList}'),
+			    query: model.param.query ?? '', 
+			    active: model.param.active ?? '',
+			    beginDate: model.param.beginDate ?? '',
+			    endDate: model.param.endDate ?? '',
 		    },
-			
-		    lastPage: ${lastPage} 
+		    
+		    list: model.list, 
+		    rowPerPage: model.param.rowPerPage,
+		    totalCount: model.param.totalCount,
+			pageNum: model.param.pageNum,
+			query: model.param.query,
+			beginDate: model.param.beginDate,
+			endDate: model.param.endDate,
 	  	};
 	},
 	
@@ -136,11 +144,15 @@
 			document.getElementById('deleteOrder').submit();
 		},
         	
-  		changePage(page) {
-    		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/orderByBranch?searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
-  		},
+  	    loadPage(pageNum) {
+      		const param = new URLSearchParams();
+      		param.set('pageNum', pageNum);
+      		param.set('query', this.query);
+      		param.set('beginDate', this.beginDate);
+      		param.set('endDate', this.endDate);
+
+			location.href = '/sportsEquipment/orderByBranch?' + param.toString();
+      	},
   		
 	}
 </c:set>
