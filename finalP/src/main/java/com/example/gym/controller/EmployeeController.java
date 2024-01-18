@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.gym.service.BranchService;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.EmployeeService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Employee;
 import com.example.gym.vo.EmployeeForm;
-import com.example.gym.vo.Notice;
 import com.example.gym.vo.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -43,9 +42,9 @@ public class EmployeeController extends DefaultController {
 		// 로그인 되어 있을 경우 home으로
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee != null) {
-			return "home";
+			return ViewRoutes.홈;
 		}
-		return "employee/login";
+		return ViewRoutes.직원_로그인;
 	}
 
 	// 로그인 엑션
@@ -62,7 +61,7 @@ public class EmployeeController extends DefaultController {
 	@GetMapping("logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/employee/login";
+		return Redirect(ViewRoutes.직원_로그인);
 	}
 
 	// 직원 입력 폼
@@ -70,7 +69,7 @@ public class EmployeeController extends DefaultController {
 	public String insertEmployee(HttpSession session, Model model) {
 		List<Branch> branches = branchService.branch();
 		model.addAttribute("branches", toJson(branches));
-		return "employee/insert";
+		return ViewRoutes.직원_추가;
 	}
 
 	// 직원 입력 엑션
@@ -88,12 +87,12 @@ public class EmployeeController extends DefaultController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/login";
+			return ViewRoutes.직원_로그인;
 		}
 		Integer employeeNo = (Integer) session.getAttribute("employeeNo");
 		model.addAttribute("employeeNo", employeeNo);
 		model.addAttribute("loginEmployee", loginEmployee);
-		return "employee/delete";
+		return ViewRoutes.직원_삭제;
 	}
 
 	// 직원 비활성화 액션
@@ -107,9 +106,9 @@ public class EmployeeController extends DefaultController {
 
 		if (result == 1) { // 탈퇴 완 --> login 창으로 이동
 			session.invalidate();
-			return "employee/login";
+			return ViewRoutes.직원_로그인;
 		} else { // 예외발생
-			return "employee/delete";
+			return ViewRoutes.직원_삭제;
 		}
 
 	}
@@ -120,10 +119,10 @@ public class EmployeeController extends DefaultController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/login";
+			return ViewRoutes.직원_로그인;
 		}
 
-		return "employee/updateOneForPw";
+		return ViewRoutes.직원_암호_확인;
 	}
 
 	@PostMapping("updateOneForPw")
@@ -133,7 +132,7 @@ public class EmployeeController extends DefaultController {
 		Employee checkEmployee = employeeService.loginEmployee(loginEmployee);
 		if (checkEmployee == null) { // PW 확인 불일치 --> PW 확인 페이지로 return
 			log.info("PW 불일치, 접속실패");
-			return "employee/updateOneForPw";
+			return ViewRoutes.직원_암호_확인;
 		} else {
 			log.info("PW 일치, 접속성공");
 
@@ -141,8 +140,11 @@ public class EmployeeController extends DefaultController {
 
 			// Email 값 표기
 			String employeeEmail = (String) resultMap.get("employeeEmail");
-			String employeeEmailId = employeeEmail != null ? employeeEmail.substring(0, employeeEmail.lastIndexOf("@")) : "";
-			String employeeEmailJuso = employeeEmail != null ? employeeEmail.substring(employeeEmail.lastIndexOf("@") + 1) : "";
+			String employeeEmailId = employeeEmail != null ? employeeEmail.substring(0, employeeEmail.lastIndexOf("@"))
+					: "";
+			String employeeEmailJuso = employeeEmail != null
+					? employeeEmail.substring(employeeEmail.lastIndexOf("@") + 1)
+					: "";
 			resultMap.put("emailId", employeeEmailId);
 			resultMap.put("emailJuso", employeeEmailJuso);
 
@@ -150,22 +152,23 @@ public class EmployeeController extends DefaultController {
 			String employeeGender = (String) resultMap.get("employeeGender");
 			String employeeOtherGender = null;
 			if (employeeGender != null) {
-			    employeeOtherGender = employeeGender.equals("남") ? "여" : "남";
+				employeeOtherGender = employeeGender.equals("남") ? "여" : "남";
 			} else {
-			    employeeOtherGender = "";
+				employeeOtherGender = "";
 			}
 			resultMap.put("employeeOtherGender", employeeOtherGender);
 
 			model.addAttribute("resultMap", resultMap);
 
-			return "employee/updateOne";
+			return ViewRoutes.직원__정보_수정;
 		}
 	}
-	
+
 	// 직원 수정 엑션
 	@PostMapping("updateOne")
 	@ResponseBody
-	public ResponseEntity<?> updateEmployeeOne(HttpSession session, @RequestBody EmployeeForm employeeForm, Model model) {
+	public ResponseEntity<?> updateEmployeeOne(HttpSession session, @RequestBody EmployeeForm employeeForm,
+			Model model) {
 		boolean result = employeeService.updateEmployee(employeeForm);
 		return result ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
 	}
@@ -177,11 +180,11 @@ public class EmployeeController extends DefaultController {
 		// id 유효성검사
 		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
 		if (loginEmployee == null) {
-			return "employee/login";
+			return ViewRoutes.직원_로그인;
 		}
 
 		model.addAttribute("loginEmployee", loginEmployee);
-		return "employee/pwUpdate";
+		return ViewRoutes.직원_암호_변경;
 	}
 
 	// PW 수정 Act
@@ -193,9 +196,10 @@ public class EmployeeController extends DefaultController {
 		int result = employeeService.updateEmployeePw(loginEmployee, employeeNewPw);
 		if (result > 0) { // PW 수정 완 --> 재로그인
 			session.invalidate();
-			return "redirect:/employee/login";
+			return Redirect(ViewRoutes.직원_로그인);
 		} else { // 수정 실패 현재 페이지로 return
-			return "/employee/pwUpdate";
+			return ViewRoutes.직원_암호_변경;
+
 		}
 	}
 
@@ -208,27 +212,26 @@ public class EmployeeController extends DefaultController {
 		Map<String, Object> resultMap = employeeService.getEmployee(loginEmployee);
 		model.addAttribute("resultMap", resultMap);
 
-		return "employee/employeeOne";
+		return ViewRoutes.직원_정보_확인;
 	}
 
 	// 직원 조회(목록)
 	@GetMapping("/list")
-	public String EmployeeList(Model model, Page page) 
-		throws JsonProcessingException {
+	public String EmployeeList(Model model, Page page) throws JsonProcessingException {
 		// 페이징 변수들
 		int totalCount = employeeService.getEmployeeTotal(); // 게시글 총 갯수
 		page.setTotalCount(totalCount);
 
 		// 서비스 호출
 		List<Employee> employeeList = employeeService.list(page);
-		model.addAttribute("employeeList", mapper.writeValueAsString(employeeList));
-		
+		model.addAttribute("employeeList", toJson(employeeList));
+
 		// 결과물 디버깅
 		log.info(employeeList.toString());
 
 		// 모델객체에 담아서 뷰에 전달
 		model.addAttribute("page", page);
-		
-		return "employee/list";
+
+		return ViewRoutes.직원_목록;
 	}
 }

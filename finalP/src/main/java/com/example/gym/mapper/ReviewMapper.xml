@@ -34,10 +34,25 @@
 		ORDER BY r.updatedate DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
-	<select id="selectCountOfReview" resultType="Integer">
-		SELECT 
+	<select id="selectCountOfReview" parameterType="String" resultType="Integer">
+		SELECT
 			COUNT(*)
-		FROM review
+		FROM review r
+		
+			INNER JOIN customer_attendance c
+		ON r.customer_attendance_no = c.customer_attendance_no
+		
+			INNER JOIN program_reservation pr 
+		ON pr.program_reservation_no = c.program_reservation_no
+		
+			INNER JOIN program_date pd
+		ON pd.program_date_no = pr.program_date_no
+		
+			INNER JOIN program p
+		ON p.program_no = pd.program_no
+		<if test="programName != ''">
+		WHERE p.program_name = #{programName}
+		</if>
 	</select>
 	
 	<insert id="insertReview" parameterType="com.example.gym.vo.Review">

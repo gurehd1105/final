@@ -23,7 +23,7 @@
 				<el-input v-model="model.searchBranch" name="searchBranch" placeholder="지점을 입력하세요"/>
 	   	</el-form-item>
 		<el-form-item label="아이템검색">
-				<el-input v-model="model.searchItem" name="searchItem" placeholder="아이템을 입력하세요"/>
+				<el-input v-model="model.query" name="query" placeholder="아이템을 입력하세요"/>
 	   	</el-form-item>
 		<el-form-item label="시작일">
 				<el-input type="date" v-model="model.beginDate" name="beginDate"/>
@@ -57,27 +57,27 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(equipmentOrder, i) in model.orderList" :key="i">
+	    	<tr v-for="(order, i) in list" :key="i">
 	        	<td>
-	          		<span v-if="equipmentOrder.quantity > 0" style="color: blue;">발주</span>
-	          		<span v-else-if="equipmentOrder.quantity < 0" style="color: red;">폐기</span>
+	          		<span v-if="order.quantity > 0" style="color: blue;">발주</span>
+	          		<span v-else-if="order.quantity < 0" style="color: red;">폐기</span>
 	        	</td>
-	        	<td>{{ equipmentOrder.branchName }}</td>
+	        	<td>{{ order.branchName }}</td>
 	        	<td>
-	          		<img :src="'/upload/sportsEquipment/' + equipmentOrder.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
+	          		<img :src="'/upload/sportsEquipment/' + order.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
 	        	</td>
-	        	<td>{{ equipmentOrder.itemName }}</td>
-			    <td>{{ equipmentOrder.itemPrice }}</td>
-			    <td>{{ equipmentOrder.quantity }}</td>
-			    <td>{{ equipmentOrder.totalPrice }}</td>
-				<td>{{ new Date(equipmentOrder.createdate).toLocaleString() }}</td>
+	        	<td>{{ order.itemName }}</td>
+			    <td>{{ order.itemPrice }}</td>
+			    <td>{{ order.quantity }}</td>
+			    <td>{{ order.totalPrice }}</td>
+				<td>{{ new Date(order.createdate).toLocaleString() }}</td>
 	        	<td>
-	          		<span v-if="equipmentOrder.updatedate == equipmentOrder.createdate">대기중</span>
-	          		<span v-else>{{ new Date(equipmentOrder.updatedate).toLocaleString() }}</span>
+	          		<span v-if="order.updatedate == order.createdate">대기중</span>
+	          		<span v-else>{{ new Date(order.updatedate).toLocaleString() }}</span>
 	        	</td>
-	        	<td :style="{ backgroundColor: equipmentOrder.orderStatus === '승인' ? 'blue' : 'red', color: 'white' }">{{ equipmentOrder.orderStatus }}</td>
+	        	<td :style="{ backgroundColor: order.orderStatus === '승인' ? 'blue' : 'red', color: 'white' }">{{ order.orderStatus }}</td>
 	        	<td>
-					<span v-if="equipmentOrder.orderStatus === '대기'">
+					<span v-if="order.orderStatus === '대기'">
   						<el-form label-position="right" 
   								 ref="form" 
   								 label-width="150px" 
@@ -90,12 +90,12 @@
 	   						<el-form-item>
 								<el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
 	   						</el-form-item>
-	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
+	   					<input type="hidden" name="orderNo" :value="order.orderNo">
 	   					<input type="hidden" name="orderStatus" value="승인">
 						</el-form>
 					</span>
 					
-					<span v-if="equipmentOrder.orderStatus === '대기'">
+					<span v-if="order.orderStatus === '대기'">
   						<el-form label-position="right" 
   								 ref="form" 
   								 label-width="150px" 
@@ -107,39 +107,48 @@
 	   						<el-form-item>
 								<el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
 	   						</el-form-item>
-	   					<input type="hidden" name="orderNo" :value="equipmentOrder.orderNo">
+	   					<input type="hidden" name="orderNo" :value="order.orderNo">
 	   					<input type="hidden" name="orderStatus" value="거부">
 						</el-form>
 					</span>
 					
-	          		<span v-else style="color: blue; font-weight: bold;" >{{ equipmentOrder.orderStatus }} 완료</span>
+	          		<span v-else style="color: blue; font-weight: bold;" >{{ order.orderStatus }} 완료</span>
 	        	</td>
 	     	</tr>
 	    </tbody>
     </table>	
  	<br>
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+ 	
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
    	
 
 </c:set>
 <c:set var="script">
 	data() {
+		const model = JSON.parse('${result}');
 	  	return {
 		    model: {
-			    searchItem: '${searchItem}', 
-			    searchItem: '${searchBranch}', 
-			    searchItem: '${beginDate}', 
-			    searchItem: '${endDate}', 
-			    currentPage: 1, 
-			  	orderList: JSON.parse('${orderList}'),
+			    query: model.param.query ?? '', 
+			    searchBranch: model.param.searchBranch ?? '',
+			    beginDate: model.param.beginDate ?? '',
+			    endDate: model.param.endDate ?? '',
 		    },
-			
-		    lastPage: ${lastPage} 
+		    
+		    list: model.list, 
+		    rowPerPage: model.param.rowPerPage,
+		    totalCount: model.param.totalCount,
+			pageNum: model.param.pageNum,
+			query: model.param.query,
+			searchBranch: model.param.searchBranch,
+			beginDate: model.param.beginDate,
+			endDate: model.param.endDate,
 	  	};
 	},
 	
@@ -161,11 +170,16 @@
 			document.getElementById('updateOrder2').submit();
 		},
         	
-  		changePage(page) {
-    		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/orderByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&beginDate=${beginDate}&endDate=${endDate}&currentPage='+page;
-  		}
+  	    loadPage(pageNum) {
+      		const param = new URLSearchParams();
+      		param.set('pageNum', pageNum);
+      		param.set('query', this.query);
+      		param.set('searchBranch', this.searchBranch);
+      		param.set('beginDate', this.beginDate);
+      		param.set('endDate', this.endDate);
+
+			location.href = '/sportsEquipment/orderByHead?' + param.toString();
+      	},
 	}
 </c:set>
 <style>

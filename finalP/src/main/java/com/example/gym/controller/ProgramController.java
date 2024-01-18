@@ -63,6 +63,7 @@ public class ProgramController extends DefaultController{
 		model.addAttribute("programNo",map.get("programNo"));
 		model.addAttribute("employeeId",map.get("employeeId"));
 		model.addAttribute("programName",map.get("programName"));
+		model.addAttribute("programContent",map.get("programContent"));
 		model.addAttribute("maxCustomer",map.get("maxCustomer"));
 		model.addAttribute("programActive",map.get("programActive"));
 		model.addAttribute("createdate",map.get("createdate"));
@@ -77,10 +78,12 @@ public class ProgramController extends DefaultController{
 									Model model,
 									@RequestParam int programNo,
 									@RequestParam int maxCustomer,
+									@RequestParam String programContent,
 									@RequestParam String programActive){
 		
+		
 		//service 호출
-		programService.updateProgramOneService(session, programNo, maxCustomer, programActive);
+		programService.updateProgramOneService(session, programNo, maxCustomer, programContent, programActive);
 		
 		return "redirect:/program/update?programNo="+programNo;
 	}

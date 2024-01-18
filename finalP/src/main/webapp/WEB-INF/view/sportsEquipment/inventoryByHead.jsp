@@ -23,7 +23,7 @@
 				<el-input v-model="model.searchBranch" name="searchBranch" placeholder="지점을 입력하세요"/>
 	   	</el-form-item>
 		<el-form-item label="아이템검색">
-				<el-input v-model="model.searchItem" name="searchItem" placeholder="아이템을 입력하세요"/>
+				<el-input v-model="model.query" name="query" placeholder="아이템을 입력하세요"/>
 	   	</el-form-item>
 	   	<el-form-item>
 				<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
@@ -44,7 +44,7 @@
         	</tr>
       	</thead>
 	    <tbody>
-	    	<tr v-for="(inventory, i) in inventoryList" :key="i">
+	    	<tr v-for="(inventory, i) in list" :key="i">
 	        	<td>{{ inventory.branchName }}</td>
 	        	<td>
 	          		<img :src="'/upload/sportsEquipment/' + inventory.sportsEquipmentImgFileName" class="image" style="width: 100px; height: 100px;" />
@@ -58,28 +58,35 @@
     </table>
     <br>
 			
-	<!-- 페이징 -->
-	<el-row class="mb-8">
-    	<el-button type="info" @click="changePage(1)" plain>처음</el-button>
-    	<el-button type="info" v-for="p in lastPage" :key="p" @click="changePage(p)" plain>{{ p }}</el-button>
-    	<el-button type="info" @click="changePage(lastPage)" plain>마지막</el-button>
-  	</el-row>
+    <!-- 페이징 네비게이션 -->
+    <div class="flex justify-center">
+      <el-pagination layout="prev, pager, next" 
+      	:page-size="rowPerPage" 
+		v-model:current-page="pageNum" 
+		:total="totalCount"
+		@change="loadPage" />
+    </div>
   	
 </c:set>
 <c:set var="script">
 	data() {
+		const model = JSON.parse('${result}');
 	  	return {
 		    model: {
-			    searchItem: '${searchItem}', 
-			    searchBranch: '${searchBranch}', 
-			    currentPage: 1, 		
+			    query: model.param.query ?? '', 
+			    searchBranch: model.param.searchBranch ?? '',
+
 		    },
 		    
-			inventoryList: JSON.parse('${inventoryList}'),
-		    lastPage: ${lastPage} 
+		    list: model.list, 
+		    rowPerPage: model.param.rowPerPage,
+		    totalCount: model.param.totalCount,
+			pageNum: model.param.pageNum,
+			query: model.param.query,
+			searchBranch: model.param.searchBranch,
 	  	};
 	},
-	
+
 	methods: {
 		searchSubmit() {
 			document.getElementById('searchForm').submit();
@@ -89,11 +96,14 @@
 			location.href = `${ctp}/sportsEquipment/inventoryByHead`;
         },
             	
-  		changePage(page) {
-    		this.currentPage = page;
-    		console.log('Current Page:', this.currentPage); 
-    		location.href = '${ctp}/sportsEquipment/inventoryByHead?searchBranch=${searchBranch}&searchItem=${searchItem}&currentPage='+page;
-  		}
+  	    loadPage(pageNum) {
+      		const param = new URLSearchParams();
+      		param.set('pageNum', pageNum);
+      		param.set('query', this.query);
+      		param.set('searchBranch', this.searchBranch);
+
+			location.href = '/sportsEquipment/inventoryByHead?' + param.toString();
+      	},
 	}
 </c:set>
 <style>

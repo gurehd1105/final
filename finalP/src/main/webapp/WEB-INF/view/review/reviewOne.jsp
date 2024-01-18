@@ -7,7 +7,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 <c:set var="body">
 
-	<el-button type="primary" @click="list()">목록으로</el-button>
+
 	<el-descriptions title="" :column="2" border> <el-descriptions-item
 		v-for="key of Object.keys(review)" :label="key">{{
 	review[key] }}</el-descriptions-item> </el-descriptions>
@@ -32,7 +32,7 @@
 
 	<strong> Content </strong>
 	<br>
-	<textarea readonly rows="10" cols="160" style="resize: none;"> {{ reviewContent }}</textarea>
+	<textarea readonly rows="20" cols="200" style="resize: none;"> {{ reviewContent }}</textarea>
 
 	<c:if test="${ replyMap != null }">
 		<!-- 답변 있을 시 답변표시 -->
@@ -53,8 +53,9 @@
 	</c:if>
 	<br>
 	<br>
-	<c:if test="${ replyMap == null }">
-		<!-- 답변 없을 시 답변표시 -->
+	
+	<!-- 답변 없을 시 답변표시 -->
+	<c:if test="${ replyMap == null }">		
 		<p>답변이 등록되지 않았습니다. 조금만 기다려주세요.</p>
 	</c:if>
 
@@ -87,7 +88,7 @@
 				지점번호 : '${ reviewMap.branchNo }',
 				지점명 : '${ reviewMap.branchName }',				
 				작성일 : '${ reviewMap.createdate }',
-				수정일: '${ reviewMap.updatedate }',			
+				수정일: '${ reviewMap.updatedate }',
 			},
 			
 		<!-- reply 관련 데이터 -->							
@@ -183,10 +184,6 @@
 					alert('error');
 				})
 			}			
-		},
-		
-		list(){	<!-- 리스트로 이동(뒤로가기) -->
-			location.href = '${ctp}/review/list';
 		},
 },
 	

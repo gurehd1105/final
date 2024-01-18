@@ -14,9 +14,9 @@
 			 class="max-w-lg"
 			 action="${ctp}/program/update"  
 			 method="post" 
-			 id="updateProgramForm"
+			 id="updateForm"
 	>
-		<p>상태와 최대인원만 수정이 가능합니다.</p>
+		<p>상태,최대인원,내용만 수정이 가능합니다.</p>
 		<br>
 			 
 		<el-form-item label="이름">
@@ -26,6 +26,11 @@
 		<el-form-item label="최대인원">
 			<el-input type="number" v-model="model.maxCustomer" name="maxCustomer" :min="0" />			
 		</el-form-item> 
+		
+		<el-form-item label="내용">
+    		<el-input type="textarea" v-model="model.programContent" name="programContent" :rows="5">
+    		</el-input>
+		</el-form-item>
 		
 		<el-form-item label="상태">
 			<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
@@ -59,7 +64,7 @@
 	  	return {
 		    model: {
 	    			programNo: '${programNo}', 
-	    			programNo: '${programNo}', 
+	    			programContent: '${programContent}', 
 				    employeeId: '${employeeId}',
 				    programName: '${programName}',
 				    maxCustomer: '${maxCustomer}',
@@ -67,17 +72,58 @@
 				    createdate: '${createdate}',
 				    updatedate: '${updatedate}',
 		    },
+		   		updateModel : {},
 	  	};
 	},
+	
+	created() {
+  			this.updateModel = {
+    				programNo: this.model.programNo,
+    				programContent: this.model.programContent,
+    				employeeId: this.model.employeeId,
+    				programName: this.model.programName,
+    				maxCustomer: this.model.maxCustomer,
+    				programActive: this.model.programActive,
+    				createdate: this.model.createdate,
+    				updatedate: this.model.updatedate,
+  				};
+		},
 	methods: {
 	
 		updateSubmit() {
-			document.getElementById('updateProgramForm').submit();
+            if (this.checkChanges()) {
+            	console.log('변경 사항 있음');
+            	this.compareModels();
+               // document.getElementById('updateForm').submit();
+            } else {
+                alert('변경된 내용이 없습니다.');
+            }
+			
 		},
 		
 		showList() {
 			location.href = `${ctp}/program/list`;
 		},
+		
+	    checkChanges() {
+            for (const key in this.model) {
+                if (this.model[key] !== this.updateModel[key]) {
+                   	console.log('true');
+                    return true;
+                }
+            }
+            console.log('false');
+            return false;
+        },
+		
+		compareModels() {
+			console.log('compareModels호출');
+    		for (const key in this.updateModel) {
+      			if (this.updateModel[key] == this.model[key]) {
+       				 console.log(`${key}: `, this.updateModel[key], `->`, this.model[key]);
+      			}
+    		}
+ 		 },
 		
 	}
 </c:set>

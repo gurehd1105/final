@@ -7,28 +7,31 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 <c:set var="body">
 
-	<p>리뷰 목록</p>
-	<span></span>
-	<!-- 			programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
-	<input />&nbsp;
-				<el-button type="primary" @click="select(customerName)">검색</el-button>
 
-	<el-button type="primary" @click="insert()">리뷰작성</el-button>
+	<!-- 	programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
+	<p style="text-align: center;">리뷰 목록</p>
+
+		<el-button type="primary" @click="insert()">리뷰작성</el-button>
+		
+		<el-select class="m-2" placeholder="Select" style="width: 240px" id="programName" v-model="value">
+			<el-option v-for="(item,i) in programList" :key="i" :value="item.programName" :label="item.programName" @click="selectProgram()"/>
+		</el-select>	
+		
 	<el-table :data="reviewList" class="w-fit" @row-click="rowClick"
-		class-name="cursor-pointer"> <el-table-column
-		prop="reviewNo" label="No"></el-table-column> <el-table-column
-		prop="branchName" label="지점명"></el-table-column> <el-table-column
-		prop="programName" label="프로그램명"></el-table-column> <el-table-column
-		prop="reviewTitle" label="제목"></el-table-column> <el-table-column
-		prop="customerId" label="작성자"></el-table-column> <c:if
-		test="${ loginEmployee != null }">
-
-		<el-table-column label="삭제">
-		<template #default="scope">
-			<el-button type="primary" @click="remove(scope.row)">삭제</el-button>
-		</template>
-		</el-table-column>
-	</c:if> </el-table>
+		class-name="cursor-pointer"> 
+		<el-table-column prop="reviewNo" label="No"></el-table-column> 
+		<el-table-column prop="branchName" label="지점명"></el-table-column> 
+		<el-table-column prop="programName" label="프로그램명"></el-table-column> 
+		<el-table-column prop="reviewTitle" label="제목"></el-table-column> 
+		<el-table-column prop="customerId" label="작성자"></el-table-column> 		
+		<c:if test="${ loginEmployee != null }">
+			<el-table-column label="삭제">
+				<template #default="scope">
+					<el-button type="primary" @click="remove(scope.row)">삭제</el-button>
+				</template>
+			</el-table-column>
+		</c:if> 
+	</el-table>
 
 	<!-- 페이징 네비게이션 -->
 	<div class="flex justify-center">
@@ -40,36 +43,43 @@
 <c:set var="script">
 	data() {
 		return {
-			reviewList: JSON.parse('${reviewList}'),
-			pageNum: ${page.pageNum},
+			reviewList: JSON.parse('${reviewList}'),	<!-- 리뷰목록 -->
+			programList: JSON.parse('${programList}'),	<!-- 프로그램 목록 /검색기능 --> 
+			pageNum: ${page.pageNum},					<!-- 페이징 -->
 			rowPerPage: ${page.rowPerPage },
 			totalCount: ${page.totalCount},
 			totalPage: ${page.totalPage },
+			value:'',
+			programName: '${ programName }',
 		}
 	},
 	
-	methods: {
-		insert() {
+	methods: {	
+		insert() {<!-- 리뷰 작성 -->
 			location.href='${ctp}/review/insert';
 		},
 				
 		loadPage(pageNum) {	<!-- 페이징함수 -->
 	      	const param = new URLSearchParams();
 	      	param.set('pageNum', this.pageNum);
-	      	param.set('rowPerPage', this.rowPerPage);      	
-			location.href = '/review/list?' + param.toString();
+	      	param.set('rowPerPage', this.rowPerPage);
+			location.href = '/review/list?' + param.toString()+ '&programName=' + this.programName;
       	},
-      rowClick(row, column){
+      rowClick(row, column){	<!-- 페이징 -->
       	console.log('Row.data:',row, column);
       	if (column.property) {
       	  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
       	}
       },
+      selectProgram(){
+      	location.href = '${ctp}/review/list?programName=' + this.value;
+      },
+      
 	  remove(row) {
 	  	console.log('row -> ', row.reviewNo)
          if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
          	const self = this;
-            const reviewNo = {reviewNo : row.reviewNo,};  <!-- 여기서 reviewNo를 추출합니다 -->
+            const reviewNo = {reviewNo : row.reviewNo,};  <!-- reviewNo 추출 -->
             axios.post('${ctp}/review/delete', reviewNo)
             .then((res) => {
                if(res.data == 1){

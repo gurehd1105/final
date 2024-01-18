@@ -16,7 +16,11 @@ public class SportsEquipmentOrder {
 	private int sportsEquipmentNo;
 	private int quantity;
 	private int totalPrice;
+	private int itemPrice;
 	private String createdate;
 	private String updatedate;
+	private String sportsEquipmentImgFileName;
 	private String orderStatus;
+	private String branchName;
+	private String itemName;	
 }

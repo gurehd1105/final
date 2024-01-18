@@ -1,12 +1,13 @@
 package com.example.gym.service;
 
 
+import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerDetail;
@@ -28,8 +29,8 @@ public class CustomerService {
 		return loginCustomer;
 	}
 	// ID 중복확인 / 회원가입
-	public Customer checkId(Customer customer) {
-		Customer check = customerMapper.checkId(customer);
+	public List<Customer> checkId(Customer customer) {
+		List<Customer> check = customerMapper.checkId(customer);
 		
 		return check;
 	}
@@ -75,17 +76,13 @@ public class CustomerService {
 		boolean updateActive = false;
 		boolean deleteDetail = false;
 		boolean deleteImg = false;
-		boolean check = customerMapper.loginCustomer(paramCustomer) != null;
-
-		if (check) {
-			log.info("PW 정상확인");
 
 			updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
 
 			deleteDetail = customerMapper.deleteCustomerDetail(paramCustomer) == 1;
 
 			deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
-		}
+
 
 		if (updateActive && deleteDetail && deleteImg) {
 			result = 1;
@@ -119,6 +116,10 @@ public class CustomerService {
 		customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
 		updateCustomerDetail = customerMapper.updateCustomerOne(customerDetail) == 1;
 		
+		if(!updateCustomerDetail) {	// 탈퇴 -> 원복 고객 있을 시 디테일정보 없을 수 있음
+			updateCustomerDetail = customerMapper.insertCustomerDetail(customerDetail) == 1;
+		}
+		
 		CustomerImg customerImg = new CustomerImg();
 		customerImg.setCustomerNo(customerNo);
 		customerImg.setCustomerImgOriginName(paramCustomerForm.getCustomerImg());
@@ -128,7 +129,7 @@ public class CustomerService {
 		
 		if(!updateCustomerImg) {
 			updateCustomerImg = customerMapper.insertCustomerImg(customerImg) == 1;
-		}		
+		}
 		
 		if (updateCustomerDetail && updateCustomerImg) {
 			result = 1;
@@ -139,15 +140,9 @@ public class CustomerService {
 	 
 	
 	// 비밀번호 수정
-	public int updateCustomerPw(Customer checkCustomer, String customerNewPw) {
+	public int updateCustomerPw(Customer checkCustomer) {
 		int result = 0;
-		boolean check = customerMapper.loginCustomer(checkCustomer) != null;
-		if (check) {
-			Customer updatePw = new Customer();
-			updatePw.setCustomerNo(checkCustomer.getCustomerNo());
-			updatePw.setCustomerPw(customerNewPw);
-			result = customerMapper.updateCustomerPw(updatePw);
-		}
+		result = customerMapper.updateCustomerPw(checkCustomer);		
 		return result;
 	}
 	

@@ -35,7 +35,7 @@ pageEncoding="UTF-8"%>
                 <div class="flex flex-col space-y-8">
                     <el-text size="large" tag="b">몰라</el-text>
                     <div class="flex flex-col space-y-4">
-                        <el-text v-for="url of github_links">
+                        <el-text v-for="url of blog_links">
                             <el-link
                                 v-bind:href="url"
                                 target="_blank"
@@ -53,8 +53,8 @@ pageEncoding="UTF-8"%>
     const footer = Vue.createApp({
         data() {
             return {
-                contributors: ["박겨레", "주가희", "김지산", "권도헌"],
-                github_links: ["알아서", "각자의", "링크를", "넣기"],
+                contributors: ["박겨레", "주가희", "권도헌", "김지산"],
+                github_links: ["https://github.com/Park8374", "https://github.com/joogahee", "https://github.com/gurehd1105", "https://github.com/jssjssj"],
                 blog_links: ["알아서", "각자의", "링크를", "넣기"],
             };
         },

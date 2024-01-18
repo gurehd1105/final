@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
 import com.example.gym.vo.Review;
 import com.example.gym.vo.ReviewReply;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -32,27 +33,52 @@ public class ReviewController extends DefaultController {
 	private ReviewService reviewService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private ProgramMapper programMapper;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model, Page page,
+	public String reviewList(Model model,Page page,
 								@RequestParam(defaultValue = "") String programName) {		
-		page.setTotalCount(reviewService.totalCount());
-		page.setRowPerPage(10);
+		Page page2 = new Page();
+		page2.setRowPerPage(Integer.MAX_VALUE);
+		
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("beginRow", page.getBeginRow());
-		paramMap.put("rowPerPage", page.getRowPerPage());
 		paramMap.put("programName", programName);
-		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);
-		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
+		paramMap.put("rowPerPage", page2.getRowPerPage());
+		paramMap.put("beginRow", page2.getBeginRow());
+		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap); 
+		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출
+		
+		
+		
+		
+		paramMap.clear();			// 맵 초기화
+		
+		
+		page.setRowPerPage(10);	
+		
+		paramMap.put("programName", programName);
+		paramMap.put("rowPerPage", page.getRowPerPage());
+		paramMap.put("beginRow", page.getBeginRow());
+		
+		List<Map<String, Object>> reviewList = reviewService.selectReviewList(paramMap);	// 페이징 변수 삽입 후 도출
+		
 		model.addAttribute("reviewList", toJson(reviewList));
+		
+		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
+		
+		/* model.addAttribute("programList", toJson(programList)); */
+		page.setTotalCount(reviewService.totalCount(programName));
 		model.addAttribute("page", page);
 		
-		return "review/list";
+		model.addAttribute("programName", programName);
+		
+		return ViewRoutes.후기_목록;
 	}
 	
 	@GetMapping("/insert")
 	public String insert(HttpSession session, Model model) {		
-		return "review/insert";
+		return ViewRoutes.후기_추가;
 	}
 	
 	/*
@@ -66,12 +92,12 @@ public class ReviewController extends DefaultController {
 	public String update(Review review, Model model) { 
 		Map<String, Object> resultMap = reviewService.selectReviewOne(review);
 		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
-		return "review/update";
+		return ViewRoutes.후기_수정;
 	}
 	@PostMapping("/update")
 	public String update(Review review) { 
 		reviewService.updateReview(review);		
-		return "redirect:reviewOne?reviewNo=" + review.getReviewNo();
+		return Redirect(ViewRoutes.후기_상세보기) +"?reviewNo=" + review.getReviewNo();
 	}	
 	
 	@PostMapping("/delete")
@@ -118,7 +144,7 @@ public class ReviewController extends DefaultController {
 		model.addAttribute("reviewMap", resultMap.get("reviewMap"));
 		model.addAttribute("replyMap", resultMap.get("replyMap"));
 		
-		return "review/reviewOne";
+		return ViewRoutes.후기_상세보기;
 	}
 	
 // review reply
@@ -128,7 +154,7 @@ public class ReviewController extends DefaultController {
 	public String insertReply(ReviewReply reply) {		
 		
 		reviewService.insertReviewReply(reply);
-		return "redirect:reviewOne?reviewNo=" + reply.getReviewNo();
+		return Redirect(ViewRoutes.후기_상세보기) +"?reviewNo=" + reply.getReviewNo(); 
 	}
 	
 	// updateReply
