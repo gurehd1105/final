@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html class="bg-gray-100">
     <head>
         <jsp:include page="/inc/user_header.jsp" />
     </head>
-    <body class="m-0 min-h-[100vh] mx-auto container shadow-xl">
+    <body class="m-0 min-h-[100vh] mx-auto container shadow-xl bg-white">
         <jsp:include page="/inc/user_navbar.jsp" />
         <div class="flex flex-col divide-y">
             <div id="app" class="w-full" v-cloak>

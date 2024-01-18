@@ -74,8 +74,6 @@ public class BranchController extends DefaultController {
 	// 지점 수정 폼
 	@GetMapping("/update/{branchNo}")
 	public String update(Model model, @PathVariable int branchNo) {
-		// 매개변수 디버깅
-		log.debug("update", "branchNo", branchNo);
 		// 공지사항 기존 내용 가져오기
 		Map<String, Object> branch = branchService.getBranchOne(branchNo);
 		model.addAttribute("branch", branch);

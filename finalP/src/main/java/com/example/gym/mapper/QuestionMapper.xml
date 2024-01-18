@@ -68,6 +68,20 @@
 		DELETE FROM question 
 			WHERE question_no = #{questionNo}
 	</delete>	
+    
+	<select id="countNotYet" resultType="Integer">
+		SELECT COUNT(1)
+        FROM 
+            question AS q
+            LEFT OUTER JOIN (
+                SELECT question_no, COUNT(1) AS 'cnt'
+                FROM question_reply 
+                GROUP BY question_no
+            ) AS repl
+                ON q.question_no = repl.question_no
+        WHERE repl.cnt IS NULL
+
+	</select>
 		<!-- question  종료 -->
 	
 	
