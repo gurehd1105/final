@@ -43,9 +43,9 @@
 <c:set var="script">
 	data() {
 		return {
-			reviewList: JSON.parse('${reviewList}'),	<!-- 리뷰목록 -->
-			programList: JSON.parse('${programList}'),	<!-- 프로그램 목록 /검색기능 --> 
-			pageNum: ${page.pageNum},					<!-- 페이징 -->
+			reviewList: JSON.parse('${reviewList}'),	// 리뷰목록
+			programList: JSON.parse('${programList}'),	// 프로그램 목록 /검색기능 
+			pageNum: ${page.pageNum},					// 페이징
 			rowPerPage: ${page.rowPerPage },
 			totalCount: ${page.totalCount},
 			totalPage: ${page.totalPage },
@@ -55,31 +55,36 @@
 	},
 	
 	methods: {	
-		insert() {<!-- 리뷰 작성 -->
-			location.href='${ctp}/review/insert';
+		insert() {	// 작성
+			if(${ loginCustomer != null }){
+				location.href='${ctp}/review/insert';
+			} else {
+				alert('로그인 후 이용해주세요.');
+			}
+			
 		},
 				
-		loadPage(pageNum) {	<!-- 페이징함수 -->
+		loadPage(pageNum) {	// 페이징
 	      	const param = new URLSearchParams();
 	      	param.set('pageNum', this.pageNum);
 	      	param.set('rowPerPage', this.rowPerPage);
 			location.href = '/review/list?' + param.toString()+ '&programName=' + this.programName;
       	},
-      rowClick(row, column){	<!-- 페이징 -->
+      rowClick(row, column){	// 상세보기
       	console.log('Row.data:',row, column);
       	if (column.property) {
       	  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
       	}
       },
-      selectProgram(){
+      selectProgram(){	// 프로그램 옵션선택
       	location.href = '${ctp}/review/list?programName=' + this.value;
       },
       
-	  remove(row) {
+	  remove(row) {	// 삭제
 	  	console.log('row -> ', row.reviewNo)
          if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
          	const self = this;
-            const reviewNo = {reviewNo : row.reviewNo,};  <!-- reviewNo 추출 -->
+            const reviewNo = {reviewNo : row.reviewNo,};  
             axios.post('${ctp}/review/delete', reviewNo)
             .then((res) => {
                if(res.data == 1){

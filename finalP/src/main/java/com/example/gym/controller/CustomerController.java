@@ -125,10 +125,7 @@ public class CustomerController extends DefaultController{
 	}
 	// 내정보 수정 Act
 	@PostMapping("/updateOne")
-	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
-									String address1, String address2, String address3) {
-
-		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
+	public String updateCustomerOne(HttpSession session, CustomerForm customerForm) {
 
 		Map<String,Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
 		customerService.updateCustomerOne(customerForm, (int) loginCustomer.get("customerNo"));
