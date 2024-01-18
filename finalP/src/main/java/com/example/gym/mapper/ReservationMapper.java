@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.gym.vo.Branch;
+import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerAttendance;
 import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
@@ -30,10 +31,9 @@ public interface ReservationMapper {
    
    // 고객용 프로그램 예약 가능 정보 조회
    List<ProgramDate> selectProgramDates(int program_no);
-   
-  
-   
-   
+   // check
+   List<Map<String, Object>> check(int customerNo);
+
   
 }
    

@@ -68,7 +68,16 @@
 		DELETE FROM program_reservation
 		WHERE program_reservation_no = #{programReservationNo}
 	</delete>
-	
+	<select id="check" parameterType="int"
+			resultType="java.util.Map">
+	SELECT
+		customer_no customerNo,
+		program_date_no programDateNo
+		FROM program_reservation pr
+		INNER JOIN payment p
+		WHERE p.customer_no = #{customerNo}	
+		LIMIT 0,1
+	</select>
 	
 	
 

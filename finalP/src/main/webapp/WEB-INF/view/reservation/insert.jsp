@@ -67,6 +67,7 @@
             selectProgram: null,
             reservationInfos: [],
             selectDate: new Date(),
+            check: '${check}',
         }
     },
     watch: { 
@@ -90,7 +91,7 @@
         	}
         	if (!this.selectBranch) {
         		message = "지점을 선택해 주세요.";
-        	}        
+        	} 
         	
         	return message;
     	},
@@ -123,6 +124,7 @@
                 body: JSON.stringify(reservationData),
             })
             .then(data => {
+            	console.log(this.getInfo(day));
                 self.$notify({
                 	title: '예약 성공',
                 	message: '예약이 정상적으로 완료되었습니다.',

@@ -28,4 +28,10 @@ public class AttendanceService {
 		return attendanceMapper.insertAttendance(attendance);
 		 
 	 }
+	//출석확인
+	 public List<Map<String, Object>> selectAttendance(int customerNo){
+		 List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance(customerNo);
+		 return attendanceList;
+		}
+	 
 }

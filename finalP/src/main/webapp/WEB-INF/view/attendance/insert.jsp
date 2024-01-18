@@ -8,7 +8,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 
 <c:set var="body">
-    <el-form id="attendanceForm" action="${ctp}/insertAttendance" method="post" class="max-w-lg">
+    <el-form id="attendanceForm" action="${ctp}/attendance/insert" method="post" class="max-w-lg">
         <el-form-item>
             <el-text size="large" tag="b">출석하기</el-text>
         </el-form-item>
@@ -48,13 +48,13 @@
     	};
     	
         // 출석 정보를 서버로 전송하는 비동기 요청
-        axios.post(`${ctp}/insertAttendance`, paramMap)
+        axios.post(`${ctp}/attendance/insert`, paramMap)
             .then((res) => {
                 if (res.data == 1) {
                     // 출석 성공
                     alert('출석이 완료되었습니다.');
                     // 페이지 리디렉션
-                    location.href = `${ctp}/attendanceList`;
+                    location.href = `${ctp}/attendance/list`;
                 } else {
                     // 출석 실패
                     alert('출석에 실패했습니다.');

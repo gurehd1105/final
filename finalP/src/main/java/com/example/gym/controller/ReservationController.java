@@ -141,14 +141,22 @@ public class ReservationController extends DefaultController {
 		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
         System.out.println(loginCustomer + "<--loginCustomer");
-
+        Map<String, Object> check = null;
+        List<Map<String, Object>> list = reservationService.check((int) loginCustomer.get("customerNo"));
+        if(!list.isEmpty()) {
+        	 check = list.get(0);
+        }      
         page.setRowPerPage(-1);
         List<Branch> branchList = branchService.getBranchList(page);
         Map<String, Object> programList = programService.selectProgramListService(
 											session, currentPage, programActive, searchWord);
 		model.addAttribute("programList", toJson(programList));
         model.addAttribute("branchList", toJson(branchList));
-
+        if(check != null) {
+        	model.addAttribute("check", check);
+        }        
+        System.out.println(check +"<--check");
+        System.out.println(loginCustomer +"<-- loginCustomer");
         System.out.println(branchList + "<--branchList");
         System.out.println(programList + "<--programList");
 
