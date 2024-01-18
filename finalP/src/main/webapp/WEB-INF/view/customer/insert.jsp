@@ -246,7 +246,7 @@
 				};
 				axios.post('${ctp}/customer/idCheck', customer)
 				.then((res) => {
-					if(res.data == 1){
+					if(res.data){
 						alert('사용가능한 아이디입니다.')
 						console.log(res, res.data);
 						document.getElementById('customerId').value = this.customer.id;
