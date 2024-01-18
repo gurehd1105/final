@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.ProgramDateService;
 import com.example.gym.service.ProgramService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.ProgramDate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
+@RequestMapping("/programDate")
 public class ProgramdateController extends DefaultController{
 	@Autowired
 	ProgramDateService programDateService;
@@ -31,16 +33,16 @@ public class ProgramdateController extends DefaultController{
     ProgramService programService;
 	
 	 //관리자 프로그램 예약 가능 정보 조회
-    @GetMapping("/programDateList")
+    @GetMapping("/list")
     public String programDateList(ProgramDate programDate, Model model){
         List<Map<String, Object>> programDateList = programDateService.programDateList(programDate);
         model.addAttribute("programDateList",toJson(programDateList));
-        System.out.println(programDateList + "<--programDateList");
-        return "programDate/programDateList";
+        System.out.println (programDateList + "<--programDateList");
+        return ViewRoutes.예약_프로그램_조회;
     }
  
     // 관리자용 프로그램 진행일 추가
-    @GetMapping("/insertProgramDate")
+    @GetMapping("/insert")
     public String insertProgramDate(ProgramDate programDate, HttpSession session, Model model,
 							        @RequestParam(defaultValue = "1") int currentPage,
 							        @RequestParam(defaultValue = "Y") String programActive,
@@ -48,10 +50,10 @@ public class ProgramdateController extends DefaultController{
         Map<String, Object> programList = programService.selectProgramListService(session, currentPage, programActive,searchWord);
         model.addAttribute("programList",toJson(programList));
         System.out.println(programList + "<--programList");
-        return "programDate/insertProgramDate";
+        return ViewRoutes.예약_프로그램_추가;
     }
 
-    @PostMapping("/insertProgramDate")
+    @PostMapping("/insert")
     @ResponseBody
     public int insertProgramDate2(@RequestBody Map<String, Object> paramMap) {
         System.out.println(paramMap + "<-- paramMap");
@@ -66,25 +68,25 @@ public class ProgramdateController extends DefaultController{
         
     }
     // 관리자용 프로그램 진행일 수정
-    @GetMapping("/updateProgramDate")
+    @GetMapping("/update")
     public String updateProgramDate(ProgramDate programDate, Model model){
 
     	List<Map<String, Object>> programDateList = programDateService.programDateList(programDate);
     	Map<String, Object> resultMap = programDateList.get(0);
     	model.addAttribute("resultMap", toJson(resultMap));
     	System.out.println(resultMap + "<--resultMap");
-		return "programDate/updateProgramDate";
+		return ViewRoutes.예약_프로그램_수정;
 	}
     
-    @PostMapping("/updateProgramDate")
+    @PostMapping("/update")
     public String updateProgramDate(ProgramDate programDate ) {
     	programDateService.updateProgramDate(programDate);
     	
-		return "redirect:/programDateList";
+		return Redirect(ViewRoutes.예약_프로그램_조회);
     	
     }
     
-    @PostMapping("/deleteProgramDate")
+    @PostMapping("/delete")
     @ResponseBody
     public int deleteProgramDate(@RequestBody ProgramDate programDate ) {    	
     	

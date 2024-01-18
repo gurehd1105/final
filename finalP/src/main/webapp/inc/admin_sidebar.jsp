@@ -81,7 +81,12 @@ pageEncoding="UTF-8"%>
                             <el-menu-item index="1-4-2">
                                 프로그램 목록 조회
                             </el-menu-item>
-                        </a> 
+                        </a>
+                        <a href="${ctp}/programDate/list">
+                            <el-menu-item index="1-4-2">
+                                프로그램 진행일 조회 및 추가
+                            </el-menu-item>
+                        </a>                        
                     </el-sub-menu>
                 </el-sub-menu>
                 <el-sub-menu index="2">

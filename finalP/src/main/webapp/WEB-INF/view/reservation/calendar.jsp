@@ -43,7 +43,7 @@
             }
         },
        openPage(targetYear, targetMonth, targetDay) {
-          location.href = "${ctp}/reservationList?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
+          location.href = "${ctp}/reservation/list?targetYear=" + targetYear + "&targetMonth=" + targetMonth + "&targetDay=" + targetDay;
           
         }
     }
