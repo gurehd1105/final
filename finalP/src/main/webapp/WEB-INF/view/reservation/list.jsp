@@ -16,6 +16,7 @@
             <th>지점명</th> 
             <th>프로그램</th>
             <th>예약번호</th> 
+            <th>예약일자</th>
             <th>삭제</th>        
         </tr>
         
@@ -25,7 +26,8 @@
                 <th>{{new Date(reservation.paymentDate).toLocaleDateString()}}</th>        
                 <th>{{reservation.branchName}}</th>
                 <th>{{reservation.programName}}</th>
-                <th>{{reservation.programReservationNo}}</th>    
+                <th>{{reservation.programReservationNo}}</th>  
+                <th>{{new Date(reservation.programDate).toLocaleDateString()}}</th>  
                 <th><el-button type="danger" @click="deleteReservation(reservation.programReservationNo,targetYear,targetMonth,targetDay)">삭제</el-button></th>  
             </tr>            
         </tbody>            
@@ -48,12 +50,13 @@
     
     methods: {
         reservation() {      
-            location.href = '${ctp}/insertReservation?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
+     
+            location.href = '${ctp}/reservation/insert?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDay=${targetDay}';
         },
         
         deleteReservation(no,targetYear,targetMonth,targetDay ) {
                 if (confirm("이 예약을 삭제하시겠습니까?")) {
-				location.href = '${ctp}/deleteReservationList?programReservationNo=' + no + '&targetYear=' + ${targetYear} + '&targetMonth=' + ${targetMonth} + '&targetDay=' + ${targetDay};
+				location.href = '${ctp}/reservation/delete?programReservationNo=' + no + '&targetYear=' + ${targetYear} + '&targetMonth=' + ${targetMonth} + '&targetDay=' + ${targetDay};
             }
         }
     },

@@ -15,8 +15,8 @@ public class ViewRoutes {
 	public static final String 지점_추가 = "/branch/insert";
 	public static final String 지점_정보_수정 = "/branch/update";
 	// Attendance 관련 path
-	public static final String 출석_조회 = "/attendance/attendanceList";
-	public static final String 출석_추가 = "/attendance/insertAttendance";
+	public static final String 출석_조회 = "/attendance/list";
+	public static final String 출석_추가 = "/attendance/insert";
 	// Employee 관련 path
 	public static final String 직원_로그인 = "/employee/login";
 	public static final String 직원_추가 = "/employee/insert";
@@ -49,10 +49,12 @@ public class ViewRoutes {
 	public static final String 문의사항_답변_수정 = "/question/updateReply";
 	// Reservation 관련 path
 	public static final String 예약_달력 = "/reservation/calendar";
-	public static final String 예약_프로그램_추가 = "/reservation/insertProgramDate";
-	public static final String 예약_추가 = "/reservation/insertReservation";
-	public static final String 예약_프로그램_조회 = "/reservation/programList";
-	public static final String 예약_조회 = "/reservation/reservationList";
+	public static final String 예약_프로그램_추가 = "/programDate/insert";
+	public static final String 예약_추가 = "/reservation/insert";
+	public static final String 예약_프로그램_조회 = "/programDate/list";
+	public static final String 예약_조회 = "/reservation/list";
+	public static final String 예약_프로그램_수정 = "/programDate/update";
+
 	// Review 관련 path
 	public static final String 후기_추가 = "/review/insert";
 	public static final String 후기_목록 = "/review/list";

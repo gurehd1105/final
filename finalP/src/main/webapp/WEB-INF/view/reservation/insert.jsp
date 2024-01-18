@@ -7,7 +7,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 
 <c:set var="body">
-    <el-form id="reservationForm" action="${ctp}/insertReservation" method="post" class="">
+    <el-form id="reservationForm" action="${ctp}/reservation/insertReservation" method="post" class="">
     	<el-form-item>
 		    <el-text size="large" tag="b">예약하기</el-text>
     	</el-form-item>
@@ -73,7 +73,7 @@
     	selectProgram: function(now, before) {
     		const self = this;
     		if (now) {
-    			axios.get('${ctp}/program/' + now + '/reservationInfo')
+    			axios.get('${ctp}/reservation/program/' + now + '/reservationInfo')
     				.then((res) => self.reservationInfos = res.data);
     		}
     	},
@@ -114,7 +114,7 @@
             };
 
             // 실제로는 Ajax 또는 fetch를 사용하여 서버로 데이터를 전송합니다.
-            fetch('${ctp}/insertReservation', {
+            fetch('${ctp}/reservation/insert', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

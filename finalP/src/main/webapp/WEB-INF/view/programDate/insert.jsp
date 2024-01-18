@@ -6,7 +6,7 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 <c:set var="body">
-    <el-form id="reservationForm" action="${ctp}/insertProgramDate" method="post" class="">
+
         <el-text size="large" tag="b">프로그램 진행일자 추가</el-text>        
         <el-form-item label="프로그램 진행일">
             <el-date-picker v-model="programDate" type="date" placeholder="날짜 선택"></el-date-picker>
@@ -26,7 +26,7 @@
         <el-form-item>
             <el-button type="primary" @click="insertProgramDate">추가하기</el-button>
         </el-form-item>
-    </el-form>
+
 </c:set>
 <c:set var="script">
     data() {
@@ -56,7 +56,7 @@
             };
 
             // 실제로는 Ajax 또는 fetch를 사용하여 서버로 데이터를 전송합니다.
-            axios.post('${ctp}/insertProgramDate', programDateData)
+            axios.post('${ctp}/programDate/insert', programDateData)
                 .then(response => {
                     this.$notify({
                         title: '추가 성공',

@@ -16,7 +16,8 @@
 		SELECT pr.program_reservation_no programReservationNo,
 			   p.payment_date paymentDate,
 			   b.branch_name branchName,
-			   p2.program_name programName
+			   p2.program_name programName,
+			   pd.program_date programDate
 		  FROM program_reservation pr INNER JOIN payment p
 			ON pr.payment_no = p.payment_no INNER JOIN program_date pd
 			ON pr.program_date_no = pd.program_date_no LEFT JOIN program p2
