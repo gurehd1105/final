@@ -25,7 +25,7 @@
 				 </el-form-item>
 		  
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" id="checkId" placeholder="ID"><template #append>
+	        <el-input v-model="customer.id" placeholder="ID"><template #append>
         <el-button @click="idCheck()">중복확인</el-button>
       </template></el-input>
 	    </el-form-item>   
@@ -84,11 +84,11 @@
 	    </el-form-item>
 	    	    
 	    <el-form-item label="이메일">
-	    	<el-col :span="14">
-		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
+	    	<el-col :span="12">
+		        <el-input v-model="customer.customerEmailId" placeholder="EMAIL ID"/>
 	        </el-col>
 	        <el-col :span="2" class="text-center">@</el-col>
-	        <el-col :span="8">
+	        <el-col :span="10">
 	        	<el-autocomplete
 			        v-model="customer.customerEmailJuso"
 			        :fetch-suggestions="getSuggestion"
@@ -112,7 +112,7 @@
 	    </el-input>	    
 	    
 	    <el-form-item>
-			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="address"/>
+			<el-input type="hidden" id="address" :value="customer.address.address + ' ' + customer.address.detailAddr + customer.address.extraAddr" name="customerAddress"/>
 	    </el-form-item>
 	</el-form>
 </c:set>
@@ -218,9 +218,9 @@
 		const address = document.getElementById('address').value;
 		const detailAddr = document.getElementById('detailAddr').value;
 		const postCode = document.getElementById('postCode').value;
-			if(finalId.length < 1){
-				alert('ID 중복을 확인해주세요.');
-			} else if(this.customer.pw.length < 4 || this.customer.phone.length < 4
+			//if(finalId.length < 1){
+				//alert('ID 중복을 확인해주세요.');
+		  if(this.customer.pw.length < 4 || this.customer.phone.length < 4
 			 || this.customer.customerEmailId.length < 4 || this.customer.customerEmailJuso.length < 4 ){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
 			} else if(this.customer.name.length < 2) {
@@ -244,20 +244,20 @@
 				const customer = {
 					customerId: this.customer.id,
 				};
-				axios.post('${ctp}/customer/idCheck', customer)				
+				axios.post('${ctp}/customer/idCheck', customer)
 				.then((res) => {
-					if(res.data == 0) {
-						console.log(res)
-						alert('if');
+					if(res.data == 1){
+						alert('사용가능한 아이디입니다.')
+						console.log(res, res.data);
+						document.getElementById('customerId').value = this.customer.id;
 					} else {
-						console.log(res)
-						alert('else');
-					}						
+					console.log(res, res.data);
+						alert('중복 아이디입니다.')
+					}
 				}).catch((res) => {
-					alert('error');
-				})	
-			}
-			
+					alet('error');
+				})
+			}			
 		},
 		
 	}
