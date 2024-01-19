@@ -9,7 +9,7 @@
 
 
 	<!-- 	programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
-	<p style="text-align: center;">리뷰 목록</p>
+	<p style="text-align: center; font-size: 30px;">리뷰목록</p>
 
 		<el-button type="primary" @click="insert()">리뷰작성</el-button>
 		
@@ -56,10 +56,13 @@
 	
 	methods: {	
 		insert() {	// 작성
-			if(${ loginCustomer != null }){
+			if(${ loginCustomer != null && checkAttendance}){
 				location.href='${ctp}/review/insert';
+			} else if(${ loginCustomer != null && !checkAttendance}){
+				alert('방문/출석정보가 없어 리뷰를 작성할 수 없습니다.');
 			} else {
 				alert('로그인 후 이용해주세요.');
+				location.href ='${ctp}/customer/login';
 			}
 			
 		},
@@ -70,33 +73,34 @@
 	      	param.set('rowPerPage', this.rowPerPage);
 			location.href = '/review/list?' + param.toString()+ '&programName=' + this.programName;
       	},
-      rowClick(row, column){	// 상세보기
-      	console.log('Row.data:',row, column);
-      	if (column.property) {
-      	  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
-      	}
+		rowClick(row, column){	// 상세보기
+			console.log('Row.data:',row, column);
+			if (column.property) {
+			  location.href='${ctp}/review/reviewOne?reviewNo=' + row.reviewNo;
+		}
       },
-      selectProgram(){	// 프로그램 옵션선택
-      	location.href = '${ctp}/review/list?programName=' + this.value;
-      },
-      
-	  remove(row) {	// 삭제
-	  	console.log('row -> ', row.reviewNo)
-         if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
-         	const self = this;
-            const reviewNo = {reviewNo : row.reviewNo,};  
-            axios.post('${ctp}/review/delete', reviewNo)
-            .then((res) => {
-               if(res.data == 1){
-                  alert('삭제가 완료되었습니다.');
-                  location.reload();
-               }
-            }).catch((error) => {
-               alert('삭제 중 에러가 발생했습니다.');
-               console.error(error);
-            })
-         }
-      },  
+		selectProgram(){	// 프로그램 옵션선택
+			location.href = '${ctp}/review/list?programName=' + this.value;
+		},
+     
+		remove(row) {	// 삭제
+			console.log('row -> ', row.reviewNo)
+			if(confirm('해당 게시글을 강제 삭제하시겠습니까?')){
+				const self = this;
+				const reviewNo = {reviewNo : row.reviewNo,};  
+				
+			axios.post('${ctp}/review/delete', reviewNo)
+				.then((res) => {
+					if(res.data == 1){
+					alert('삭제가 완료되었습니다.');
+					location.reload();
+				}
+			}).catch((error) => {
+				alert('삭제 중 에러가 발생했습니다.');
+				console.error(error);
+				})
+			}
+		},  
    },
 </c:set>
 <%@ include file="/inc/user_layout.jsp"%>

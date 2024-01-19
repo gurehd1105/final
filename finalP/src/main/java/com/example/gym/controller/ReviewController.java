@@ -3,6 +3,7 @@ package com.example.gym.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.mapper.AttendanceMapper;
 import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReviewService;
@@ -35,25 +37,26 @@ public class ReviewController extends DefaultController {
 	private CustomerService customerService;
 	@Autowired
 	private ProgramMapper programMapper;
+	@Autowired
+	private AttendanceMapper attendanceMapper;
 	
 	@GetMapping("/list")
-	public String reviewList(Model model,Page page,
+	public String reviewList(Model model,Page page, HttpSession session,
 								@RequestParam(defaultValue = "") String programName) {		
 		Page page2 = new Page();
 		page2.setRowPerPage(Integer.MAX_VALUE);
 		
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("programName", programName);
+		paramMap.put("searchWord", "");
 		paramMap.put("rowPerPage", page2.getRowPerPage());
 		paramMap.put("beginRow", page2.getBeginRow());
-		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap); 
-		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출
-		
-		
-		
+		paramMap.put("programActive", "");
+		log.info(paramMap.toString());
+		List<Map<String, Object>> programList = programMapper.selectProgramList(paramMap);
+		log.info(programList.toString());
+		model.addAttribute("programList", toJson(programList));		// 검색기능 위해 전체기능 필요 -> 페이징 변수 삽입 전 도출	
 		
 		paramMap.clear();			// 맵 초기화
-		
 		
 		page.setRowPerPage(10);	
 		
@@ -67,26 +70,38 @@ public class ReviewController extends DefaultController {
 		
 		log.info((reviewList.size() == 0 || reviewList == null) ? "리스트 결과값 없음" : "출력 성공");
 		
-		/* model.addAttribute("programList", toJson(programList)); */
+		// model.addAttribute("programList", toJson(programList));
 		page.setTotalCount(reviewService.totalCount(programName));
 		model.addAttribute("page", page);
 		
 		model.addAttribute("programName", programName);
 		
+		// 리스트 -> 리뷰작성 이동 시 attendance 정보 확인위한 전달
+		if(session.getAttribute("loginCustomer") != null) {
+		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
+		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
+		boolean checkAttendance = attendanceList.size() > 0;
+		model.addAttribute("checkAttendance", checkAttendance);
+		}
 		return ViewRoutes.후기_목록;
 	}
 	
 	@GetMapping("/insert")
-	public String insert(HttpSession session, Model model) {		
+	public String insert(HttpSession session, Model model) {
+		Map<String, Object> loginCustomer = (Map)session.getAttribute("loginCustomer");
+		List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance((int)loginCustomer.get("customerNo"));
+		model.addAttribute("attendanceList", toJson(attendanceList));
+		log.info(attendanceList.toString());
 		return ViewRoutes.후기_추가;
 	}
 	
-	/*
+	
 	@PostMapping("insert")
-	public String insert() { // customer_attendance_no 생성까지 보류
-		return "redirect:list";
+	public String insert(Review review) {
+		reviewService.insertReview(review);		
+		return Redirect(ViewRoutes.후기_목록);
 	}
-	*/
+	
 	
 	@GetMapping("/update")
 	public String update(Review review, Model model) { 

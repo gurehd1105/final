@@ -79,26 +79,26 @@
 
 	data() {
 		return {
-		<!-- review 관련 데이터 -->
+		// review 관련 데이터
 			review: {
 				고객번호 : '${ reviewMap.customerNo }',
 				아이디 : '${ reviewMap.customerId }',
 				제목 : '${ reviewMap.reviewTitle }',
-				방문일자 : '${ reviewMap.customerAttendanceDate }',
+				출석일자 : '${ reviewMap.customerAttendanceEnterTime }',
 				지점번호 : '${ reviewMap.branchNo }',
 				지점명 : '${ reviewMap.branchName }',				
 				작성일 : '${ reviewMap.createdate }',
 				수정일: '${ reviewMap.updatedate }',
 			},
 			
-		<!-- reply 관련 데이터 -->							
+		// reply 관련 데이터
 			reply: {
 				소속지점 : '${ replyMap.branchName }',
 				답변자 : '${ replyMap.employeeId }',
 				작성일 : '${ replyMap.createdate }',
 				수정일 : '${ replyMap.updatedate }',
 			},			
-		<!-- 표로 작성하지 않을 부분 / 따로 바인딩 -->	
+		// 표로 작성하지 않을 부분 / 따로 바인딩
 			reviewNo: '${ reviewMap.reviewNo }',
 			reviewContent : '${ reviewMap.reviewContent }',
 			replyContent : '${ replyMap.reviewReplyContent }',
@@ -109,7 +109,7 @@
 	},
 	
 	methods: {
-		updateForm(){	<!-- 리뷰 수정Form으로 이동 -->
+		updateForm(){	// 리뷰 수정Form으로 이동
 			if(this.reviewReplyNo == ''){
 				location.href = '${ctp}/review/update?reviewNo=${ reviewMap.reviewNo }';
 			} else {
@@ -117,11 +117,11 @@
 			}			
 		},
 		
-		deleteForm(){	<!-- 리뷰 삭제위한 PW 입력창 조회 -->
+		deleteForm(){	// 리뷰 삭제위한 PW 입력창 조회
 			document.getElementById('deleteForm').style.display = "flex";
 			document.getElementById('deleteBtn').style.display = "none";
 		},		
-		deleteAct(){	<!-- 리뷰 삭제기능 -->
+		deleteAct(){	// 리뷰 삭제기능
 			if(confirm('삭제 후에는 복구할 수 없습니다. 정말로 삭제하시겠습니까?')){
 				const self = this;
 				const review = {
@@ -143,11 +143,11 @@
 			}
 		},
 		
-		insertReply(){	<!-- 리뷰답글 입력 -->
+		insertReply(){	// 리뷰답글 입력
 			document.getElementById('insertReplyAct').submit();
 		},
 		
-		updateReply(){	<!-- 리뷰답글 수정기능 -->
+		updateReply(){	// 리뷰답글 수정기능 
 			document.getElementById('replyBtn').style.display = "none";
 			document.getElementById('updateReplyBtn').style.display = "flex";
 			document.getElementById('reviewReplyContent').readOnly = false;			
@@ -170,7 +170,7 @@
 			})
 		},
 		
-		deleteReply(){	<!-- 리뷰답글 삭제 -->
+		deleteReply(){	// 리뷰답글 삭제
 			if(confirm('답변을 삭제하시겠습니까?')){
 				const self = this;
 				const reply = {

@@ -5,6 +5,7 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
+
     <div class="flex justify-between">
         <el-text size="large" tag="b">멤버쉽 구매</el-text>
 		<el-button type="primary" @click="insert()" v-if="isEmployee">상품추가</el-button>
@@ -14,20 +15,19 @@
 		<el-table-column prop="membershipNo" label="No"></el-table-column>
 		<el-table-column prop="membershipName" label="상품명"></el-table-column>
 		<el-table-column prop="membershipPrice" label="가격"></el-table-column>
-	 	<c:if test="${ loginCustomer == null && loginEmployee != null }"> 
-			<el-table-column label="수정/삭제"> <template #default="scope">
-				<el-button type="primary" @click="update(scope.row)">수정</el-button> 
-				<el-button type="primary" @click="remove(scope.row)">삭제</el-button></template> 
-			</el-table-column>
-	 	</c:if> 
-	 	<c:if test="${ loginCustomer != null && loginEmployee == null }">
-			<el-table-column label="결제"> 
-				<template #default="scope">
-					<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
-				</template>
-			</el-table-column>
-		</c:if> 
-	
+	 		<c:if test="${ loginCustomer == null && loginEmployee != null }"> 
+				<el-table-column label="수정/삭제"> <template #default="scope">
+					<el-button type="primary" @click="update(scope.row)">수정</el-button> 
+					<el-button type="primary" @click="remove(scope.row)">삭제</el-button></template> 
+				</el-table-column>
+	 		</c:if> 
+		 	<c:if test="${ loginEmployee == null }">
+				<el-table-column label="결제"> 
+					<template #default="scope">
+						<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
+					</template>
+				</el-table-column>
+			</c:if>	
 	</el-table>
 
 </c:set>
@@ -76,32 +76,37 @@
 		},
 		
 		insertPayment(membership){
-			if(confirm(membership.membershipName + ' 상품을 결제하시겠습니까?')){
-				const self = this;
-				const payment = {
-					membershipNo : membership.membershipNo,
-				};
-				
-				axios.post('${ctp}/payment/insert', payment)
-				.then((res) => {
-					if(res.data == 1){
-						self.$notify({
-						  title: '결제 완료',
-						  message: '결제가 완료되었습니다.',
-						  type: 'success',
+			if(${ loginCustomer == null }){
+				alert('로그인 후 이용해주세요.');
+				location.href = '${ctp}/customer/login';
+			} else {
+				if(confirm(membership.membershipName + ' 상품을 결제하시겠습니까?')){
+					const self = this;
+					const payment = {
+						membershipNo : membership.membershipNo,
+					};
+					
+					axios.post('${ctp}/payment/insert', payment)
+					.then((res) => {
+						if(res.data == 1){
+							self.$notify({
+							  title: '결제 완료',
+							  message: '결제가 완료되었습니다.',
+							  type: 'success',
+						})
+						} 
+					}).catch((res) => {	
+						alert('error');
 					})
-					} 
-				}).catch((res) => {	
-					alert('error');
-				})
+				}
 			}
 		},
 	},
 </c:set>
 <c:if test="${ loginEmployee != null }">
-    <%@ include file="/inc/admin_layout.jsp" %>
+<%@ include file="/inc/admin_layout.jsp" %>
 </c:if>
 
 <c:if test="${ loginEmployee == null }">
-    <%@ include file="/inc/user_layout.jsp" %>
+<%@ include file="/inc/user_layout.jsp" %>
 </c:if>
