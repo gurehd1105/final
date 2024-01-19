@@ -9,12 +9,14 @@
 		<el-descriptions title="직원 정보" :column="1" border>
 		    <el-descriptions-item v-for="key of Object.keys(employee)" :label="key">
 		    	<div v-html="employee[key]"></div>
-		    </el-descriptions>
-		</eldescriptions>
+		    </el-descriptions-item>
+		</el-descriptions>
 		
-		<el-button type="primary" @click="move('pwCheck')">정보수정</el-button>
-		
-		<el-button type="primary" @click="move('pwUpdate')">PW변경</el-button>
+        <div class="pt-10 flex flex-row space-x-6">
+            <el-button type="primary" @click="move('pwCheck')">정보수정</el-button>
+            
+            <el-button type="primary" @click="move('pwUpdate')">PW변경</el-button>
+        </div>
 </c:set>
 
 <c:set var="script">

@@ -49,7 +49,7 @@
 				작성일 : '${ reviewMap.createdate }',
 				수정일: '${ reviewMap.updatedate }',			
 			},				
-				<!-- 표로 작성하지 않을 부분 / 따로 바인딩 -->	
+				// 표로 작성하지 않을 부분 / 따로 바인딩
 			reviewNo: '${ reviewMap.reviewNo }',				
 			reviewContent : '${ reviewMap.reviewContent }',	
 		}

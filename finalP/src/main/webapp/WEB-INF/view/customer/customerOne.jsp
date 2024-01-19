@@ -9,34 +9,36 @@
 <c:set var="body">
 
 	
-				<c:if test="${resultMap.customerImgOriginName != null}">
-		  <div>
-  <div class="demo-image__preview">
-  <strong style="margin-bottom: 40%">회원 상세</strong>
-    <el-image
-      style="width: 300px; height: 200px; margin-left: 40%;"
-      :src="url"
-      :zoom-rate="1.2"
-      :max-scale="7"
-      :min-scale="0.2"
-      :preview-src-list="srcList"
-      :initial-index="4"
-      fit="cover"
-    />
-  </div>
-  </div>
-				</c:if>	
+    <c:if test="${resultMap.customerImgOriginName != null}">
+        <div>
+            <div class="demo-image__preview">
+            <strong style="margin-bottom: 40%">회원 상세</strong>
+                <el-image
+                style="width: 300px; height: 200px; margin-left: 40%;"
+                :src="url"
+                :zoom-rate="1.2"
+                :max-scale="7"
+                :min-scale="0.2"
+                :preview-src-list="srcList"
+                :initial-index="4"
+                fit="cover"
+                />
+            </div>
+        </div>
+    </c:if>	
 		
 		
-		<el-descriptions :column="1" border>
-		    <el-descriptions-item v-for="key of Object.keys(customer)" :label="key">{{ customer[key] }}</el-descriptions>
-		</eldescriptions>
-		
-		<el-button type="primary" @click="updateOne()">정보수정</el-button>
-		
-		<el-button type="primary" @click="updatePw()">PW변경</el-button>
-		
-		<el-button type="primary" @click="remove()">계정탈퇴</el-button>
+    <el-descriptions :column="1" border>
+        <el-descriptions-item v-for="key of Object.keys(customer)" :label="key">{{ customer[key] }}</el-descriptions>
+    </eldescriptions>
+    
+    <div class="pt-10 flex flex-row space-x-6">
+        <el-button type="primary" @click="updateOne()">정보수정</el-button>
+        
+        <el-button type="primary" @click="updatePw()">PW변경</el-button>
+        
+        <el-button type="primary" @click="remove()">계정탈퇴</el-button>
+    </div>
 </c:set>
 
 <c:set var="script">
