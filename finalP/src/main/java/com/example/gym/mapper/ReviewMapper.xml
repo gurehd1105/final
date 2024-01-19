@@ -3,7 +3,7 @@
 <mapper namespace="com.example.gym.mapper.ReviewMapper">
 			
 	<select id="selectReviewList" parameterType="java.util.Map"
-						resultType="com.example.gym.vo.Review">
+						resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
 			r.review_title AS reviewTitle,	
