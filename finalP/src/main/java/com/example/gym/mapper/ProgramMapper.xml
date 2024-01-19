@@ -13,7 +13,7 @@
 		) VALUES (
 			#{employeeNo},
 			#{programName},
-			#{programContent},
+			REPLACE(#{programContent}, '\r\n', '\\r\\n'),
 			#{programMaxCustomer},
 			#{active}
 		)		
