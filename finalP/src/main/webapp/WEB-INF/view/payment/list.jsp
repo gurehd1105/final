@@ -20,7 +20,7 @@
 		    <el-table-column prop="membershipName" label="이용권 이름" ></el-table-column>
 		     <el-table-column prop="membershipMonth" label="이용권 기간(개월)" ></el-table-column>
 		     <el-table-column prop="membershipPrice" label="결제 가격" ></el-table-column>
-		     <el-table-column label="내역삭제(결제취소)" >
+		     <el-table-column v-if="isEmployee" label="내역삭제(결제취소)" >
 		     	 <template #default="scope">
 		     	 	<el-button type="danger" @click="remove(scope.row)">취소</el-button>
 		     	 </template>
@@ -42,11 +42,12 @@
 	data(){
 		return{
 			paymentList: JSON.parse('${ paymentList }'),
-			customerName: '',
 			pageNum: ${page.pageNum},
 			rowPerPage: ${page.rowPerPage },
 			totalCount: ${page.totalCount},
 			totalPage: ${page.totalPage},
+			isEmployee: '${loginEmployee}',
+			customerName: '${customerName}',
 		}
 	},
 	methods: {
@@ -75,9 +76,10 @@
 		loadPage(pageNum) {	<!-- 페이징함수 -->
 	      	const param = new URLSearchParams();
 	      	param.set('pageNum', this.pageNum);
-	      	param.set('rowPerPage', this.rowPerPage);      	
-			location.href = '/payment/list?' + param.toString();
+	      	param.set('rowPerPage', this.rowPerPage);    
+	      	param.set('customerName', this.customerName)
+			location.href = '${ctp}/payment/list?'+param.toString();
       	},
 	},
 </c:set>
-<%@ include file="/inc/user_layout.jsp" %>
+<%@ include file="/inc/admin_layout.jsp" %>

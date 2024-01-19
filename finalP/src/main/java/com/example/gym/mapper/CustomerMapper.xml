@@ -172,8 +172,7 @@
 		WHERE customer_no = #{customerNo}
 	</update>
 		<!-- 이미지 변경 -->
-	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
-		
+	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">		
 		UPDATE customer_img SET
 			customer_img_origin_name = #{customerImgOriginName},
 			updatedate = NOW()
