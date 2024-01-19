@@ -82,40 +82,9 @@
         <el-table-column label="승인/거부">
             <template #default="scope">
                 <span v-if="scope.row.orderStatus === '대기'">
-                    <el-form label-position="right" 
-                        ref="form" 
-                        label-width="150px" 
-                        status-icon class="max-w-lg" 
-                        action="${ctp}/sportsEquipment/updateOrder"
-                        method="post" 
-                        id="updateOrder1"
-                    >
-                     
-                        <el-form-item>
-                            <el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
-                        </el-form-item>
-                        <input type="hidden" name="orderNo" :value="scope.row.orderNo">
-                        <input type="hidden" name="orderStatus" value="승인">
-                    </el-form>
-              </span>
-              
-              <span v-if="scope.row.orderStatus === '대기'">
-                    <el-form label-position="right" 
-                        ref="form" 
-                        label-width="150px" 
-                        status-icon class="max-w-lg" 
-                        action="${ctp}/sportsEquipment/updateOrder" 
-                        method="post" 
-                        id="updateOrder2"
-                    >
-                        <el-form-item>
-                            <el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
-                        </el-form-item>
-                        <input type="hidden" name="orderNo" :value="scope.row.orderNo">
-                        <input type="hidden" name="orderStatus" value="거부">
-                    </el-form>
-                </span>
-              
+					<el-button type="success" plain round @click="approveOrder(scope.row.orderNo)">승인</el-button>
+            		<el-button type="danger" plain round @click="rejectOrder(scope.row.orderNo)">거부</el-button>
+              	</span>     
                 <el-button type="primary" plain round v-else >{{ scope.row.orderStatus }} 완료</el-button>
             </template>
         </el-table-column>
@@ -146,6 +115,7 @@
 			beginDate: model.param.beginDate,
 			endDate: model.param.endDate,
             loading: false,
+	  		renderTrigger: 0,
 	  	};
 	},
 	mounted() {
@@ -161,13 +131,51 @@
 
         },
         
-        onSubmit1() {
-			document.getElementById('updateOrder1').submit();
-		},
-		
-        onSubmit2() {
-			document.getElementById('updateOrder2').submit();
-		},
+	    approveOrder(orderNo) {
+	   		const formData = new FormData();
+  			formData.append('orderNo', orderNo);
+  			formData.append('orderStatus', '승인');
+	   		
+ 		  axios.post(`${ctp}/sportsEquipment/updateOrder`, formData)
+	      .then(response => {
+	        this.$notify({
+	          title: '발주 승인 성공',
+	          message: '발주가 성공적으로 승인되었습니다.',
+	          type: 'success',
+	        });
+	        	location.href = `${ctp}/sportsEquipment/orderByHead`;
+	      })
+	      .catch(error => {
+	        this.$notify({
+	          title: '발주 승인 실패',
+	          message: error.message,
+	          type: 'error',
+	        });
+	      });
+	    },
+	
+	    rejectOrder(orderNo) {
+	    	const formData = new FormData();
+  			formData.append('orderNo', orderNo);
+  			formData.append('orderStatus', '거부');
+	   		
+ 		  axios.post(`${ctp}/sportsEquipment/updateOrder`, formData)
+	      .then(response => {
+	        this.$notify({
+	          title: '발주 거부 성공',
+	          message: '발주가 성공적으로 거부되었습니다.',
+	          type: 'success',
+	        });
+	        location.href = `${ctp}/sportsEquipment/orderByHead`;
+	      })
+	      .catch(error => {
+	        this.$notify({
+	          title: '발주 거부 실패',
+	          message: error.message,
+	          type: 'error',
+	        });
+	      });
+	    },
         	
   	    loadPage(pageNum) {
       		const param = new URLSearchParams();
