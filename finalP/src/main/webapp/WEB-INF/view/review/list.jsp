@@ -11,11 +11,10 @@
 	<!-- 	programMapper.select 절에서 프로그램 목록 조회 후 select, option 태그로 가져와 검색 기능 구현 예정		 -->
 	<p style="text-align: center; font-size: 30px;">리뷰목록</p>
 
-		<el-button type="primary" @click="insert()">리뷰작성</el-button>
-		
-		<el-select class="m-2" placeholder="Select" style="width: 240px" id="programName" v-model="value">
-			<el-option v-for="(item,i) in programList" :key="i" :value="item.programName" :label="item.programName" @click="selectProgram()"/>
-		</el-select>	
+	<el-button type="primary" @click="insert()">리뷰작성</el-button>
+	<el-select class="m-2" placeholder="Select" style="width: 240px" id="programName" v-model="value">
+		<el-option v-for="(item,i) in programList" :key="i" :value="item.programName" :label="item.programName" @click="selectProgram()"/>
+	</el-select>	
 		
 	<el-table :data="reviewList" class="w-fit" @row-click="rowClick"
 		class-name="cursor-pointer"> 
