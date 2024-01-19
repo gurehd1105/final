@@ -68,6 +68,9 @@
 		DELETE FROM program_reservation
 		WHERE program_reservation_no = #{programReservationNo}
 	</delete>
+	
+	
+	<!-- 예약 중복체크 -->
 	<select id="check" parameterType="int"
 			resultType="java.util.Map">
 	SELECT
@@ -78,6 +81,7 @@
 		WHERE p.customer_no = #{customerNo}	
 		LIMIT 0,1
 	</select>
+
 	
 	
 

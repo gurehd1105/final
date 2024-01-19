@@ -177,8 +177,7 @@ public class ReservationController extends DefaultController {
 		log.info(reservation.toString());
 		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
-        
-        
+
         reservationService.insertReservation(reservation);
         return ResponseEntity.ok("예약이 정상적으로 완료되었습니다.");
     }

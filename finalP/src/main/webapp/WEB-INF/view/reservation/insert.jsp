@@ -7,7 +7,7 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 
 <c:set var="body">
-    <el-form id="reservationForm" action="${ctp}/reservation/insertReservation" method="post" class="">
+    <el-form id="reservationForm" action="${ctp}/reservation/insert" method="post" class="">
     	<el-form-item>
 		    <el-text size="large" tag="b">예약하기</el-text>
     	</el-form-item>
@@ -94,18 +94,18 @@
         	} 
         	
         	return message;
-    	},
+		},
         insert() {
-        	const self = this;
-        	const message = this.validCheck();
-        	if (message) {
-        		this.$notify({
-        			title: '예약 불가',
-        			message,
-        			type: 'error',
-        		})
-        		return;
-        	}
+		    const self = this;
+		    const message = this.validCheck();
+		    if (message) {
+		        this.$notify({
+		            title: '예약 불가',
+		            message,
+		            type: 'error',
+		        })
+		        return;
+		    }
         	
         	const day = moment(this.selectDate).format('yyyy-MM-DD');
             // 예약 정보를 서버로 전송하는 코드
