@@ -15,6 +15,7 @@
 	question[key] }}</el-descriptions>
 	</eldescriptions>
 
+	<br>
 
 	<c:if test="${ loginCustomer.customerNo == questionMap.customerNo }">
 		<!-- 로그인된 본인 글에만 표시 -->
@@ -33,33 +34,30 @@
 	</c:if>
 	<br>
 
-	<!-- 문의내용 표기  -->
+
 	<strong>Content</strong>
 	<br>
 	<textarea readonly rows="20" cols="200" style="resize: none;">{{ questionContent }}</textarea>
-
-	<br>
-
-	<!-- 답변 내용 -->
+	
 	<c:if test="${ replyMap != null }">
-		<el-descriptions title="문의 답변" :column="1" border> <el-descriptions-item
-			v-for="key of Object.keys(reply)" :label="key">{{
-		reply[key] }}</el-descriptions>
-		<br>
-		</eldescriptions>
-		<span id="replyBtn"> <el-button type="primary"
-				@click="updateReply()">수정</el-button>
-			<!-- 클릭 시 수정 Form 조회 / 입력 후 즉시수정 가능 --> <el-button type="primary"
-				@click="deleteReply()">삭제</el-button>
-			<!-- alert 창 컨펌 후 삭제 가능 -->
+		<!-- 답변 -->
+		<el-descriptions title="문의 답변" :column="1" border> 
+			<el-descriptions-item
+				v-for="key of Object.keys(reply)" :label="key">
+				{{ reply[key] }}
+			</el-descriptions-item>
+		</el-descriptions>
+	<br>
+		<span id="replyBtn"> 
+			<el-button type="primary" @click="updateReply()">수정</el-button>			
+			<el-button type="primary" @click="deleteReply()">삭제</el-button>			
 		</span>
 		<span id="updateReplyBtn" style="display: none;">
-			<!-- 즉시 수정 후 완료버튼 / 최초 로드 시에는 안보이도록 구성 --> <el-button type="primary"
-				@click="updateReplyAct()">완료</el-button>
+			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
 			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
 		</span>
-		<br>
-		<br>
+	<br>
+	<br>
 
 		<strong>Reply</strong>
 		<textarea id="questionReply" rows="20" cols="170"
@@ -74,18 +72,27 @@
 	</c:if>
 
 	<!-- 답변 없을 시 + 관리자에게만 표시 -->
-	<c:if test="${ replyMap == null && loginEmployee != null }">
+	<c:if test="${ replyMap == null && loginEmployee != null}">
 		<el-form label-position="right" ref="form" label-width="150px"
 			status-icon class="max-w-lg" action="${ctp}/question/insertReply"
-			method="post" id="insertReplyAct"> <el-form-item
-			label="답변자"> <el-input v-model="employee.employeeId"
-			readonly /> </el-form-item> <el-form-item> <el-input type="hidden"
-			name="employeeNo" v-model="employee.employeeNo" /> </el-form-item> <el-form-item>
-		<el-input type="hidden" name="questionNo"
-			v-model="employee.questionNo" /> </el-form-item> <el-form-item label="답변내용">
-		<textarea rows="10" cols="50" style="resize: none;"
-			name="questionReplyContent" v-model="employee.replyContent"></textarea>
-		</el-form-item> <el-button type="primary" @click="insertReply()">등록</el-button>
+			method="post" id="insertReplyAct"> 
+			<el-form-item label="답변자" column="2"> 
+				<el-input v-model="employee.employeeId" readonly /> 
+			</el-form-item> 
+			
+			<el-form-item> 
+				<el-input type="hidden" name="employeeNo" v-model="employee.employeeNo" /> 
+			</el-form-item> 
+			
+			<el-form-item>
+				<el-input type="hidden" name="questionNo" v-model="employee.questionNo" /> 
+			</el-form-item> 
+			
+			<el-form-item label="답변내용">
+				<textarea rows="10" cols="50" style="resize: none;" name="questionReplyContent" v-model="employee.replyContent"></textarea>
+			</el-form-item> 
+			
+			<el-button type="primary" @click="insertReply()">등록</el-button>
 	</c:if>
 
 	<br>

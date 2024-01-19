@@ -51,6 +51,7 @@ public class QuestionController extends DefaultController{
 	// insertAct
 	@PostMapping("/insert")
 	public String insertQuestion(Question question) {
+		log.info("접속 성공" + question.toString());
 		questionService.insertQuestion(question);
 		return Redirect(ViewRoutes.문의사항_목록);
 	}

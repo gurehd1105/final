@@ -9,7 +9,7 @@
 
 <c:set var="body">
 
-	<el-form action="${ctp}/customer/updateOneForm" ref="form" id="updateForm"
+	<el-form action="${ctp}/customer/updateOneForm" ref="form" id="update"
 		label-position="right" label-width="150px" status-icon method="post"> 
 		
 	<el-form-item label="아이디">
@@ -52,7 +52,7 @@
 			axios.post('${ctp}/customer/pwCheck', customer)
 			.then((res) => {
 				if(res.data){
-					document.getElementById('updateForm').submit();
+					document.getElementById('update').submit();
 				} else {
 					self.$notify({
 					  title: 'PW 오류',
@@ -70,8 +70,5 @@
 		},
 	},
 	
-	
-	
-
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

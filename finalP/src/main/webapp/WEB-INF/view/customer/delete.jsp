@@ -51,7 +51,7 @@
 			};
 			axios.post('${ctp}/customer/pwCheck', customer)
 			.then((res) => {
-				if(res.data == 1){
+				if(res.data){
 					if(this.pw != this.pwCk){
 						self.$notify({
 						  title: 'PW 오류',
@@ -59,7 +59,10 @@
 						  type: 'error',
 						})
 					} else {
+						if(confirm('정말로 탈퇴하시겠습니까?')){
+						alert('탈퇴가 완료되었습니다.');
 						document.getElementById('delete').submit();
+						}
 					}
 					
 				} else {
