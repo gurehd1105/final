@@ -52,7 +52,7 @@
     	</el-form-item>
     	
     	<el-form-item>
-	        <el-button type="primary" @click="insert">예약하기</el-button>
+	        <el-button type="primary" class="w-full !h-10 m-5" @click="insert">예약하기</el-button>
     	</el-form-item>
     </el-form>
     

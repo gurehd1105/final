@@ -463,4 +463,11 @@
 		AND se.sports_equipment_no = #{sportsEquipmentNo}
 		GROUP BY se.item_name
 	</select>
+
+
+    <select id="countNotYetOrder" resultType="Integer">
+        SELECT COUNT(1)
+        FROM sports_equipment_order 
+        WHERE order_status = '대기'
+    </select>
 </mapper>

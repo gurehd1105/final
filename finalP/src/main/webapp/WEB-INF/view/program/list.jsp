@@ -5,30 +5,31 @@
 <c:set var="keywords" value="프로그램" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-	<div class="flex justify-center">
+	<div class="flex justify-start" class="w-auto">
 		<!-- 검색창 -->
 		<el-form label-position="right" 
-				 ref="form" 
-				 label-width="150px" 
-				 status-icon class="max-w-lg" 
-				 action="${ctp}/program/list" 
-				 method="get" 
-				 id="searchProgramForm"
+            ref="form" 
+            label-width="150px" 
+            status-icon 
+            class="w-96" 
+            action="${ctp}/program/list" 
+            method="get" 
+            id="searchProgramForm"
 		> 
 		   	<el-form-item label="상태">
 				<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
 					<el-radio label="Y">활성화</el-radio>
 					<el-radio label="N">비활성화</el-radio>
 				</el-radio-group>
-				
 		   	</el-form-item>
+
 			<el-form-item label="검색">
-					<el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+                <el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
 		   	</el-form-item>
 		   	
 		   	<el-form-item>
-					<el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
-					<el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+                <el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+                <el-button type="primary" @click="searchSubmit(form)">검색</el-button>
 		   	</el-form-item>
 		</el-form>
 	</div>	
