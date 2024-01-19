@@ -19,7 +19,7 @@ pageEncoding="UTF-8"%>
                 </div>
 
                 <div class="flex flex-col space-y-8">
-                    <el-text size="large" tag="b">깃허브</el-text>
+                    <el-text size="large" tag="b">GitHub</el-text>
                     <div class="flex flex-col space-y-4">
                         <el-text v-for="url of github_links">
                             <el-link
@@ -54,7 +54,12 @@ pageEncoding="UTF-8"%>
         data() {
             return {
                 contributors: ["박겨레", "주가희", "권도헌", "김지산"],
-                github_links: ["https://github.com/Park8374", "https://github.com/joogahee", "https://github.com/gurehd1105", "https://github.com/jssjssj"],
+                github_links: [
+                    "https://github.com/Park8374",
+                    "https://github.com/joogahee",
+                    "https://github.com/gurehd1105",
+                    "https://github.com/jssjssj",
+                ],
                 blog_links: ["알아서", "각자의", "링크를", "넣기"],
             };
         },

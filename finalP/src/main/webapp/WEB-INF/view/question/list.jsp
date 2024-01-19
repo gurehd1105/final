@@ -7,9 +7,10 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 
 <c:set var="body">
-
-<p style="text-align: center;">문의내용</p>
-	<el-button type="primary" @click="insert()">문의하기</el-button>
+    <div class="flex justify-between">
+        <el-text size="large" tag="b">문의내용</el-text>
+        <el-button type="primary" @click="insert()">문의하기</el-button>
+    </div>
 
 	<el-table :data="questionList" @row-click="rowClick"> 
 		<el-table-column prop="questionNo" label="No"></el-table-column> 

@@ -5,8 +5,11 @@
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
+    <div class="flex justify-between">
+        <el-text size="large" tag="b">멤버쉽 구매</el-text>
+		<el-button type="primary" @click="insert()" v-if="isEmployee">상품추가</el-button>
+    </div>
 
-		<el-button type="primary" @click="insert()">상품추가</el-button>
 	<el-table :data="membershipList" style="width: 100%">	
 		<el-table-column prop="membershipNo" label="No"></el-table-column>
 		<el-table-column prop="membershipName" label="상품명"></el-table-column>
@@ -32,6 +35,7 @@
 	data() {
 		return {
 			membershipList : JSON.parse('${ membershipList }'),
+            isEmployee: Boolean('${ loginEmployee }'),
 		}
 	},
 	methods: {
@@ -95,9 +99,9 @@
 	},
 </c:set>
 <c:if test="${ loginEmployee != null }">
-<%@ include file="/inc/user_layout.jsp" %>
+    <%@ include file="/inc/admin_layout.jsp" %>
 </c:if>
 
 <c:if test="${ loginEmployee == null }">
-<%@ include file="/inc/admin_layout.jsp" %>
+    <%@ include file="/inc/user_layout.jsp" %>
 </c:if>

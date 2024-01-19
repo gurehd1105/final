@@ -199,4 +199,12 @@
 		WHERE employee_no = #{employeeNo}
 	</update>
 	<!-- 수정 프로세스 종료 -->
+
+    <select id="selectAllEmployeeImage" resultType="String">
+        SELECT img.employee_img_origin_name
+        FROM employee_img img
+            INNER JOIN employee ON img.employee_no = employee.employee_no
+        WHERE employee.employee_active = 'Y'
+            AND img.employee_img_origin_name IS NOT NULL
+    </select>
 </mapper>

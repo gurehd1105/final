@@ -238,4 +238,11 @@
 		
 	</select>
 	
+    <select id="selectAllCustomerImage" resultType="String">
+        SELECT img.customer_img_origin_name
+        FROM customer_img img
+            INNER JOIN customer ON img.customer_no = customer.customer_no
+        WHERE customer.customer_active = 'Y'
+            AND img.customer_img_origin_name IS NOT NULL
+    </select>
 </mapper>

@@ -1,7 +1,7 @@
 package com.example.gym.filter;
 
-import java.io.IOException;
-
+import com.example.gym.service.QuestionService;
+import com.example.gym.service.SportsEquipmentService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -10,10 +10,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
 
-
-@Slf4j
 public class EmployeeLoginFilter implements Filter {
 
     @Override
@@ -22,13 +20,19 @@ public class EmployeeLoginFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
+    public void doFilter(
+        ServletRequest servletRequest,
+        ServletResponse servletResponse,
+        FilterChain filterChain
+    ) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        
-        boolean isLogin = request.getSession().getAttribute("loginEmployee") != null;
-        boolean isLoginPath = request.getServletPath().equals("/employee/login");
+
+        boolean isLogin =
+            request.getSession().getAttribute("loginEmployee") != null;
+        boolean isLoginPath = request
+            .getServletPath()
+            .equals("/employee/login");
         // 세션에서 로그인 정보를 체크하는 로직
         if (!isLogin && !isLoginPath) {
             // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리
