@@ -81,6 +81,11 @@
 	        <artifactId>aspectjrt</artifactId>
 	        <version>1.9.7</version> <!-- 최신 버전으로 업데이트 가능 -->
 	    </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -13,11 +13,15 @@
 		label-position="right" label-width="150px" status-icon method="post"> 
 		
 	<el-form-item label="아이디">
-		<el-input readonly v-model="id" /> 
+		<el-input readonly name = "customerId" v-model="id" /> 
 	</el-form-item> 
 	
 	<el-form-item label="비밀번호">
 		<el-input type="password" name="customerPw" v-model="pw" placeholder="PASSWORD"/> 
+	</el-form-item> 
+	
+	<el-form-item>
+		<el-input type="hidden" name="customerNo" v-model="no"/> 
 	</el-form-item> 
 	
 	<el-form-item>
@@ -30,14 +34,44 @@
 <c:set var="script">
 	data() {
 		return {
+			no: '${loginCustomer.customerNo}',
 			id: '${loginCustomer.customerId}',
 			pw: '',
 		}
 	},
+	
+	
 	methods: {
 		submit(){
-			document.getElementById('updateForm').submit();
+			const self = this;
+			const customer = {
+				customerNo: this.no,
+				customerId: this.id,
+				customerPw: this.pw,
+			};
+			axios.post('${ctp}/customer/pwCheck', customer)
+			.then((res) => {
+				if(res.data){
+					document.getElementById('updateForm').submit();
+				} else {
+					self.$notify({
+					  title: 'PW 오류',
+					  message: '비밀번호가 일치하지 않습니다.',
+					  type: 'error',
+					})
+				}
+			}).catch((res) => {
+				self.$notify({
+				  title: '페이지 오류',
+				  message: '잠시 후 시도해주세요.',
+				  type: 'error',
+				})	
+			})	
 		},
 	},
+	
+	
+	
+
 </c:set>
 <%@ include file="/inc/user_layout.jsp" %>

@@ -1,229 +1,167 @@
 package com.example.gym.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.gym.mapper.CustomerMapper;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerDetail;
 import com.example.gym.vo.CustomerForm;
 import com.example.gym.vo.CustomerImg;
-
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @Transactional
 public class CustomerService {
-	@Autowired
-	private CustomerMapper customerMapper;
 
-	// 로그인
-	public Customer loginCustomer(Customer paramCustomer) {
-		Customer loginCustomer = customerMapper.loginCustomer(paramCustomer);
-		return loginCustomer;
-	}
-	
-	// 회원가입
-	public int insertCustomer(CustomerForm cf, String path) {
-		int result = 0; // 최종 반환값 세팅
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
+    @Autowired
+    private CustomerMapper customerMapper;
 
-		// customer 매개값 세팅
-		Customer paramCustomer = new Customer();
-		paramCustomer.setCustomerId(cf.getCustomerId());
-		paramCustomer.setCustomerPw(cf.getCustomerPw());
+    // 로그인
+    public Map<String, Object> loginCustomer(Customer paramCustomer) {
+        Map<String, Object> loginCustomer = customerMapper.loginCustomer(
+            paramCustomer
+        );
+        return loginCustomer;
+    }
 
-		row = customerMapper.insertCustomer(paramCustomer);
+    // ID 중복확인 / 회원가입
+    public List<Customer> checkId(Customer customer) {
+        List<Customer> check = customerMapper.checkId(customer);
 
-		if (row != 1) {
-			throw new RuntimeException();
-		}
+        return check;
+    }
 
-		CustomerDetail paramDetail = new CustomerDetail();
-		paramDetail.setCustomerNo(paramCustomer.getCustomerNo());
-		paramDetail.setCustomerName(cf.getCustomerName());
-		paramDetail.setCustomerGender(cf.getCustomerGender());
-		paramDetail.setCustomerHeight(cf.getCustomerHeight());
-		paramDetail.setCustomerWeight(cf.getCustomerWeight());
-		paramDetail.setCustomerPhone(cf.getCustomerPhone());
-		paramDetail.setCustomerAddress(cf.getCustomerAddress());
-		paramDetail.setCustomerEmail(cf.getCustomerEmail());
-		row2 = customerMapper.insertCustomerDetail(paramDetail);
+    // 회원가입
+    public int insertCustomer(CustomerForm cf) {
+        int result = 0; // 최종 반환값 세팅
+        boolean insertCustomer = false;
+        boolean insertCustomerDetail = false;
+        boolean insertCustomerImg = false;
 
-		if (row2 != 1) {
-			throw new RuntimeException();
-		}
+        // customer 매개값 세팅
+        Customer paramCustomer = new Customer();
+        paramCustomer.setCustomerId(cf.getCustomerId());
+        paramCustomer.setCustomerPw(cf.getCustomerPw());
+        insertCustomer = customerMapper.insertCustomer(paramCustomer) == 1;
 
-		MultipartFile mf = cf.getCustomerImg();
-		System.out.println(mf.getSize() + " <-- mf.getSize(), 0일 시 Image 미선택");
-		if (mf.getSize() != 0) { // 회원가입 시 선택된 사진이 있다면
-			CustomerImg cImg = new CustomerImg();
-			// fileName 이외 모든 값 세팅
-			cImg.setCustomerNo(paramDetail.getCustomerNo());
-			cImg.setCustomerImgOriginName(mf.getOriginalFilename());
-			cImg.setCustomerImgSize(mf.getSize());
-			cImg.setCustomerImgType(mf.getContentType());
+        CustomerDetail paramDetail = new CustomerDetail();
+        paramDetail.setCustomerNo(paramCustomer.getCustomerNo());
+        paramDetail.setCustomerName(cf.getCustomerName());
+        paramDetail.setCustomerGender(cf.getCustomerGender());
+        paramDetail.setCustomerHeight(cf.getCustomerHeight());
+        paramDetail.setCustomerWeight(cf.getCustomerWeight());
+        paramDetail.setCustomerPhone(cf.getCustomerPhone());
+        paramDetail.setCustomerAddress(cf.getCustomerAddress());
+        paramDetail.setCustomerEmail(cf.getCustomerEmail());
+        insertCustomerDetail =
+            customerMapper.insertCustomerDetail(paramDetail) == 1;
 
-			// fileName 값 세팅
-			String fileName = UUID.randomUUID().toString();
+        CustomerImg paramCustomerImg = new CustomerImg();
+        paramCustomerImg.setCustomerNo(paramCustomer.getCustomerNo());
+        paramCustomerImg.setCustomerImgOriginName(cf.getCustomerImg());
+        insertCustomerImg =
+            customerMapper.insertCustomerImg(paramCustomerImg) == 1;
 
-			String oName = mf.getOriginalFilename();
+        if (insertCustomer && insertCustomerDetail) { // Image 정보 없어도 가입가능
+            result = 1;
+        }
+        return result;
+    }
 
-			String fileName2 = oName.substring(oName.lastIndexOf("."));
+    // 탈퇴
+    public int deleteCustomer(Customer paramCustomer) {
+        int result = 0;
+        boolean updateActive = false;
+        boolean deleteDetail = false;
+        boolean deleteImg = false;
 
-			cImg.setCustomerImgFileName(fileName + fileName2);
+        updateActive = customerMapper.updateCustomerActive(paramCustomer) == 1;
 
-			// 변수값 세팅 완 + 삽입
-			row3 = customerMapper.insertCustomerImg(cImg);
+        deleteDetail = customerMapper.deleteCustomerDetail(paramCustomer) == 1;
 
-			if (row3 != 1) {
-				throw new RuntimeException();
-			}
-			
-		// path 저장
-		File file = new File(path +"/"+ fileName + fileName2);
-		try {
-			mf.transferTo(file);			
-		} catch (IllegalStateException | IOException e) {
-			throw new RuntimeException();
-		} 
-	}		
-			
-	if (row > 0 && row2 > 0) { // Image 정보 없어도 가입가능
-		result = 1;
-	}
+        deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
 
-	return result;
-}
+        if (updateActive && deleteDetail && deleteImg) {
+            result = 1;
+        }
+        return result;
+    }
 
-	
-	
-	
-	// 탈퇴
-	public int deleteCustomer(Customer paramCustomer) {
-		int result = 0;
-		int row = 0;
-		int row2 = 0;
-		int row3 = 0;
-		Customer check = customerMapper.loginCustomer(paramCustomer);
+    // 상세보기
+    public Map<String, Object> customerOne(int customerNo) {
+        Map<String, Object> resultMap = customerMapper.customerOne(customerNo);
+        return resultMap;
+    }
 
-		if (check != null) {
-			log.info("PW 정상확인");
+    // 정보수정
+    // 마이페이지 수정 + Image 수정
+    public int updateCustomerOne(
+        CustomerForm paramCustomerForm,
+        int customerNo
+    ) {
+        int result = 0;
+        boolean updateCustomerDetail = false;
+        boolean updateCustomerImg = false;
 
-			row = customerMapper.updateCustomerActive(paramCustomer);
-			System.out.println(row + " <-- row");
+        // customerDetail 수정
+        CustomerDetail customerDetail = new CustomerDetail();
+        customerDetail.setCustomerNo(customerNo);
+        customerDetail.setCustomerName(paramCustomerForm.getCustomerName());
+        customerDetail.setCustomerGender(paramCustomerForm.getCustomerGender());
+        customerDetail.setCustomerHeight(paramCustomerForm.getCustomerHeight());
+        customerDetail.setCustomerWeight(paramCustomerForm.getCustomerWeight());
+        customerDetail.setCustomerPhone(paramCustomerForm.getCustomerPhone());
+        customerDetail.setCustomerAddress(
+            paramCustomerForm.getCustomerAddress()
+        );
+        customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
+        updateCustomerDetail =
+            customerMapper.updateCustomerOne(customerDetail) == 1;
 
-			row2 = customerMapper.deleteCustomerDetail(paramCustomer);
-			System.out.println(row2 + " <-- row2");
+        if (!updateCustomerDetail) { // 탈퇴 -> 원복 고객 있을 시 디테일정보 없을 수 있음
+            updateCustomerDetail =
+                customerMapper.insertCustomerDetail(customerDetail) == 1;
+        }
 
-			row3 = customerMapper.deleteCustomerImg(paramCustomer);
-			System.out.println(row3 + " <-- row3");
-		}
+        CustomerImg customerImg = new CustomerImg();
+        customerImg.setCustomerNo(customerNo);
+        customerImg.setCustomerImgOriginName(
+            paramCustomerForm.getCustomerImg()
+        );
 
-		if (row > 0 && row2 > 0) {
-			log.info("정상 탈퇴");
-			result = 1;
-		}
-		return result;
-	}
+        updateCustomerImg = customerMapper.updateCustomerImg(customerImg) == 1;
 
-	// 상세보기
-	public Map<String, Object> customerOne(Customer paramCustomer) {
-		Map<String, Object> resultMap = customerMapper.customerOne(paramCustomer);
-		return resultMap;
-	}
-	
-	// 정보수정
-	// 마이페이지 수정 + Image 수정
-	public void updateCustomerOne(String path, CustomerForm paramCustomerForm, int customerNo) {
-		// customerDetail 수정
-		CustomerDetail customerDetail = new CustomerDetail();
-		customerDetail.setCustomerNo(customerNo);
-		customerDetail.setCustomerName(paramCustomerForm.getCustomerName());
-		customerDetail.setCustomerGender(paramCustomerForm.getCustomerGender());
-		customerDetail.setCustomerHeight(paramCustomerForm.getCustomerHeight());
-		customerDetail.setCustomerWeight(paramCustomerForm.getCustomerWeight());
-		customerDetail.setCustomerPhone(paramCustomerForm.getCustomerPhone());
-		customerDetail.setCustomerAddress(paramCustomerForm.getCustomerAddress());
-		customerDetail.setCustomerEmail(paramCustomerForm.getCustomerEmail());
-		int row = customerMapper.updateCustomerOne(customerDetail);
+        if (!updateCustomerImg) {
+            updateCustomerImg =
+                customerMapper.insertCustomerImg(customerImg) == 1;
+        }
 
-		if (row != 1) {
-			throw new RuntimeException();
-		}
+        if (updateCustomerDetail && updateCustomerImg) {
+            result = 1;
+        }
 
-		MultipartFile mf = paramCustomerForm.getCustomerImg();
+        return result;
+    }
 
-		if (mf.getSize() != 0) { // 사용자가 지정한 Image 정보가 있다면
-			CustomerImg customerImg = new CustomerImg();
-			customerImg.setCustomerNo(customerNo);
-			customerImg.setCustomerImgOriginName(mf.getOriginalFilename());
-			customerImg.setCustomerImgSize(mf.getSize());
-			customerImg.setCustomerImgType(mf.getContentType());
+    // 비밀번호 수정
+    public int updateCustomerPw(Customer checkCustomer) {
+        int result = 0;
+        result = customerMapper.updateCustomerPw(checkCustomer);
+        return result;
+    }
 
-			String fileName = UUID.randomUUID().toString();
+    // 전체 회원정보 조회 - 관리자용
+    public Map<String, Object> selectAllCustomer() {
+        Map<String, Object> resultMap = customerMapper.selectAllCustomer();
 
-			String oName = mf.getOriginalFilename();
-			String fileName2 = oName.substring(oName.lastIndexOf("."));
-			customerImg.setCustomerImgFileName(fileName + fileName2); // CustomerImg 매개값 세팅
+        return resultMap;
+    }
 
-			// 변수 삽입 전 customerImg정보가 있는지 확인
-			Customer checkImgCustomer = new Customer();
-			checkImgCustomer.setCustomerNo(customerNo);
-			CustomerImg check = customerMapper.checkCustomerImg(checkImgCustomer);
-
-			// 확인 후 조건에 따른 분기
-			int row2 = 0;
-			if (check == null) { // 이전 Image 정보가 아예 없음 --> 가입 시 미등록이라면 또는 등록 이후 삭제 했다면
-				row2 = customerMapper.insertCustomerImg(customerImg);
-			} else { // 원래 등록된 Image 정보가 있다면
-				row2 = customerMapper.updateCustomerImg(customerImg);
-			}
-
-			if (row2 != 1) {
-				throw new RuntimeException();
-			}
-
-		 		// path 저장
-				File file = new File(path +"/"+ fileName + fileName2);
-				try {
-					mf.transferTo(file);
-				} catch (IllegalStateException | IOException e) {
-					throw new RuntimeException();
-				} 
-
-		} 
-	}
-	 
-	
-	// 비밀번호 수정
-	public int updateCustomerPw(Customer checkCustomer, String customerNewPw) {
-		int result = 0;
-		Customer check = customerMapper.loginCustomer(checkCustomer);
-		if (check != null) {
-			Customer updatePw = new Customer();
-			updatePw.setCustomerNo(check.getCustomerNo());
-			updatePw.setCustomerPw(customerNewPw);
-			result = customerMapper.updateCustomerPw(updatePw);
-		}
-		return result;
-	}
-	
-	// 전체 회원정보 조회 - 관리자용
-	public Map<String, Object> selectAllCustomer() {
-
-		Map<String, Object> resultMap = customerMapper.selectAllCustomer();
-
-		return resultMap;
-	}
+    public List<String> selectAllCustomerImage() {
+        return customerMapper.selectAllCustomerImage();
+    }
 }

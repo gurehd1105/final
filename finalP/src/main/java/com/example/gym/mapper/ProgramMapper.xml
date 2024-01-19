@@ -2,62 +2,97 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ProgramMapper">
 	
-	<insert id="insertProgram" parameterType="com.example.gym.vo.Program">
+	<!-- program 추가 -->
+	<insert id="insert" parameterType="com.example.gym.vo.Program">
 		INSERT INTO program (
 			employee_no,
 			program_name,
-			program_max_customer
+			program_content,
+			program_max_customer,
+			active
 		) VALUES (
 			#{employeeNo},
 			#{programName},
-			#{programMaxCustomer}
+			#{programContent},
+			#{programMaxCustomer},
+			#{active}
 		)		
 	</insert>
+
+	<!-- program 리스트 출력 -->
+	<select id="selectProgramList" parameterType="java.util.Map" resultType="java.util.Map">
+	   	SELECT 
+			e.employee_id employeeId,
+			p.program_no programNo,
+			p.program_name programName,
+			p.program_max_customer maxCustomer,
+			p.program_content programContent,
+			p.createdate createdate,
+			p.updatedate updatedate,
+			p.active programActive
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != '' ">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	    ORDER BY p.createdate DESC
+   <if test="beginRow != null and rowPerPage != null">
+        <choose>
+            <when test="beginRow != null and rowPerPage != null">
+                LIMIT #{beginRow}, #{rowPerPage}
+            </when>
+        </choose>
+    </if>
+	</select>
 	
-	<delete id="deleteProgram" parameterType="com.example.gym.vo.Program">
-		DELETE FROM program
-			WHERE program_no = #{programNo}
-	</delete>
+	<!-- 총 program 수 -->
+	<select id="programCnt" parameterType="java.util.Map" resultType="int">
+	   	SELECT 
+			COUNT(DISTINCT p.program_no) 
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != ''">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	</select>
 	
-	<update id="updateProgram" parameterType="com.example.gym.vo.Program">
+	<!-- program 수정 폼 -->
+	<select id="selectProgramOne" parameterType="int"
+				resultType="java.util.Map">
+		SELECT
+			p.program_no programNo,
+			e.employee_id employeeId,
+			p.program_name programName,
+			p.program_content programContent,
+			p.program_max_customer maxCustomer,
+			p.active programActive,
+			p.createdate createdate,
+			p.updatedate updatedate
+		FROM program p
+		INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+		WHERE program_no = #{programNo}
+	</select>
+	
+	<!-- program 수정 액션 -->
+	<update id="updateProgram" parameterType="java.util.Map">
 		UPDATE program SET
-			employee_no = #{employeeNo},
-			program_name = #{programName},
-			program_max_customer = #{programMaxCustomer},
+			active = #{programActive},
+			program_max_customer = #{maxCustomer},
+			program_content = #{programContent},
 			updatedate = NOW()
 		WHERE program_no = #{programNo}
 	</update>
-	
-	<select id="selectProgramList" resultType="com.example.gym.vo.Program">
-		SELECT
-			program_no AS programNo,
-			employee_no AS employeeNo,
-			program_name AS programName,
-			program_max_customer AS programMaxCustomer,
-			createdate, updatedate			
-		FROM program		
-	</select>
-	
-	<select id="selectProgramOne" parameterType="com.example.gym.vo.Program"
-				resultType="java.util.Map">
-		SELECT
-			p.program_no AS programNo,
-			p.employee_no AS employeeNo,
-			p.program_name AS programName,
-			p.program_max_customer AS programMaxCustomer,
-			p.createdate, p.updatedate,
-			
-			ed.employee_name AS employeeName,
-			ed.employee_phone AS employeePhone,
-			ed.employee_email AS employeeEmail,
-			ed.employee_gender AS employeeGender
-			
-		FROM program p
-		INNER JOIN employee_detail ed
-		ON p.employee_no = ed.employee_no
-		
-		WHERE program_no = #{programNo}
-	</select>
 	
 			
 	

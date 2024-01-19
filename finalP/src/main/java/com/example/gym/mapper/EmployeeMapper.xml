@@ -6,7 +6,7 @@
 	<select id="checkId" parameterType="com.example.gym.vo.Employee"
 		resultType="com.example.gym.vo.Employee">
 		SELECT
-		employee_id AS employeeId,
+		    employee_id AS employeeId,
 		FROM employee
 		WHERE employee_id = #{employeeId}
 	</select>
@@ -15,46 +15,40 @@
 		<selectKey order="AFTER" resultType="Integer"
 			keyProperty="employeeNo">SELECT last_insert_id()</selectKey>
 		INSERT INTO employee (
-		branch_no ,
-		employee_id ,
-		employee_pw
+            branch_no ,
+            employee_id ,
+            employee_pw
 		) VALUES (
-		#{branchNo} ,
-		#{employeeId} ,
-		PASSWORD(#{employeePw})
+            #{branchNo} ,
+            #{employeeId} ,
+            PASSWORD(#{employeePw})
 		)
 	</insert>
 	<insert id="insertEmployeeDetail"
 		parameterType="com.example.gym.vo.EmployeeDetail">
 		INSERT INTO employee_detail (
-		employee_no ,
-		employee_name ,
-		employee_phone ,
-		employee_email ,
-		employee_gender
+            employee_no ,
+            employee_name ,
+            employee_phone ,
+            employee_email ,
+            employee_gender
 		) VALUES (
-		#{employeeNo} ,
-		#{employeeName} ,
-		#{employeePhone} ,
-		#{employeeEmail} ,
-		#{employeeGender}
+            #{employeeNo} ,
+            #{employeeName} ,
+            #{employeePhone} ,
+            #{employeeEmail} ,
+            #{employeeGender}
 		)
 	</insert>
-	<!-- customerImg Insert -->
+	<!-- empImg Insert -->
 	<insert id="insertEmployeeImg"
 		parameterType="com.example.gym.vo.EmployeeImg">
 		INSERT INTO employee_img (
-		employee_no,
-		employee_img_origin_name,
-		employee_img_file_name,
-		employee_img_size,
-		employee_img_type
+            employee_no,
+            employee_img_origin_name
 		) VALUES (
-		#{employeeNo},
-		#{employeeImgOriginName},
-		#{employeeImgFileName},
-		#{employeeImgSize},
-		#{employeeImgType}
+            #{employeeNo},
+            #{employeeImgOriginName}
 		)
 	</insert>
 	<!-- 직원추가 끝 -->
@@ -87,25 +81,30 @@
 		parameterType="com.example.gym.vo.Employee"
 		resultType="com.example.gym.vo.Employee">
 		SELECT
-		employee_no employeeNo ,
-		employee_id employeeId ,
-		employee_active employeeActive
-		FROM employee
-		WHERE employee_id = #{employeeId}
+		e.employee_no employeeNo ,
+		e.employee_id employeeId ,
+		e.employee_active employeeActive,
+		e.branch_no branchNo ,
+		b.branch_level branchLevel ,
+		b.branch_name branchName  
+		FROM employee e
+		INNER JOIN branch b ON
+		e.branch_no = b.branch_no 
+		WHERE e.employee_id = #{employeeId}
 		AND
-		employee_pw = PASSWORD(#{employeePw})
-		AND employee_active = 'Y'
+		e.employee_pw = PASSWORD(#{employeePw})
+		AND e.employee_active = 'Y'
 	</select>
 
 	<!-- 관리자 목록 -->
-	<select id="selectAllEmployee" resultType="java.util.Map">
+	<select id="list" parameterType="com.example.gym.vo.Page"
+				resultType="com.example.gym.vo.EmployeeForm">
 		SELECT
 		e.employee_no AS employeeNo,
 		e.branch_no AS branchNo,
 		e.employee_id AS employeeId,
-		e.employee_active AS employeeActive,
-		
 		b.branch_name AS branchName ,
+		DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
 		
 		ed.employee_name AS employeeName,
 		ed.employee_gender AS employeeGender,
@@ -113,49 +112,53 @@
 		ed.employee_email AS employeeEmail,
 
 		ei.employee_img_no AS employeeImgNo,
-		ei.employee_img_origin_name AS employeeImgOriginName,
-		ei.employee_img_file_name AS employeeImgFileName,
-		ei.employee_img_size AS employeeImgSize,
-		ei.employee_img_type AS employeeImgType
+		ei.employee_img_origin_name AS employeeImgOriginName
 		FROM
 		employee e 
-		INNER JOIN employee_detail ed
-		ON e.employee_no = ed.employee_no
 		INNER JOIN branch b
 		ON e.branch_no = b.branch_no
+		LEFT OUTER JOIN employee_detail ed
+		ON e.employee_no = ed.employee_no
 		LEFT OUTER JOIN employee_img ei
-		ON e.employee_no = ei_employee_no
+		ON e.employee_no = ei.employee_no
+		WHERE e.employee_active='Y'
+		ORDER BY createdate DESC
+		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
-	
+	<!--  전체 관리자 수 조회를 위한 쿼리 -->
+	<select id="selectEmployeeTotal"
+			resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			employee
+		WHERE employee_active='Y'
+	</select>
 	<!-- 상세정보/이미지 -> 마이페이지  -->
-	<select id="employeeOne" parameterType="com.example.gym.vo.Employee"
+	<select id="getEmployee" parameterType="com.example.gym.vo.Employee"
 										resultType="java.util.Map">
 		SELECT
-		e.employee_no AS employeeNo,
-		e.employee_id AS employeeId,
-		e.employee_active AS employeeActive,
-		
-		b.branch_name AS branchName ,
-		
-		ed.employee_name AS employeeName,
-		ed.employee_gender AS employeeGender,
-		ed.employee_phone AS employeePhone,
-		ed.employee_email AS employeeEmail,
-
-		ei.employee_img_no AS employeeImgNo,
-		ei.employee_img_origin_name AS employeeImgOriginName,
-		ei.employee_img_file_name AS employeeImgFileName,
-		ei.employee_img_size AS employeeImgSize,
-		ei.employee_img_type AS employeeImgType
-		FROM
-		employee e 
-		INNER JOIN employee_detail ed
-		ON e.employee_no = ed.employee_no
-		INNER JOIN branch b
-		ON e.branch_no = b.branch_no
-		LEFT OUTER JOIN employee_img ei
-		ON e.employee_no = ei_employee_no
-		s
+			e.employee_no AS employeeNo,
+			e.employee_id AS employeeId,
+			e.employee_active AS employeeActive,
+			DATE_FORMAT(e.createdate, '%Y-%m-%d') AS createdate ,
+			
+			b.branch_name AS branchName ,
+			
+			ed.employee_name AS employeeName,
+			ed.employee_gender AS employeeGender,
+			ed.employee_phone AS employeePhone,
+			ed.employee_email AS employeeEmail,
+	
+			ei.employee_img_no AS employeeImgNo,
+			ei.employee_img_origin_name AS employeeImgSrc
+		FROM employee e 
+			INNER JOIN branch b
+				ON e.branch_no = b.branch_no
+			LEFT OUTER JOIN employee_detail ed
+				ON e.employee_no = ed.employee_no
+			LEFT OUTER JOIN employee_img ei
+				ON e.employee_no = ei.employee_no
 		WHERE e.employee_no = #{employeeNo}
 	</select>
 	
@@ -172,15 +175,10 @@
 	</update>
 		<!-- 이미지 변경 -->
 	<update id="updateEmployeeImg" parameterType="com.example.gym.vo.EmployeeImg">
-		<if test="employeeImg != null">
 		UPDATE employee_img SET
-			employee_img_origin_name = #{employeeImgOriginName},
-			employee_img_file_name = #{employeeImgFileName},
-			employee_img_size = #{employeeImgSize},
-			employee_img_type = #{employeeImgType},
+			employee_img_origin_name = #{employeeImgOriginName} ,
 			updatedate = NOW()
-		WHERE employee_no = #{employeeNo}		
-		</if>
+		WHERE employee_no = #{employeeNo}
 	</update>
 		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkEmployeeImg" parameterType="com.example.gym.vo.Employee"
@@ -188,10 +186,7 @@
 		SELECT
 			employee_img_no AS employeeImgNo,
 			employee_no AS employeeNo,
-			employee_img_origin_name AS employeeImgOriginName,
-			employee_img_file_name AS employeeImgFileName,
-			employee_img_size AS employeeImgSize,
-			employee_img_type AS employeeImgType,
+			employee_img_origin_name AS employeeImgOriginName
 			createdate, updatedate
 		FROM employee_img
 			WHERE employee_no = #{employeeNo}
@@ -204,4 +199,12 @@
 		WHERE employee_no = #{employeeNo}
 	</update>
 	<!-- 수정 프로세스 종료 -->
+
+    <select id="selectAllEmployeeImage" resultType="String">
+        SELECT img.employee_img_origin_name
+        FROM employee_img img
+            INNER JOIN employee ON img.employee_no = employee.employee_no
+        WHERE employee.employee_active = 'Y'
+            AND img.employee_img_origin_name IS NOT NULL
+    </select>
 </mapper>

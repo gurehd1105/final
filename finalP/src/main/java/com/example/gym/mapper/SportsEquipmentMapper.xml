@@ -3,7 +3,7 @@
 <mapper namespace="com.example.gym.mapper.SportsEquipmentMapper">
 
 	<!-- sportsEquipment 추가  -->
-	<insert id="insertSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	<insert id="insert" parameterType="com.example.gym.vo.SportsEquipment">
 	
 		<selectKey order="AFTER" resultType="int" keyProperty="sportsEquipmentNo">
 		SELECT last_insert_id();<!-- 제일 마지막에 입력된 키값을 받아옴 -->
@@ -24,7 +24,7 @@
 	</insert> 
 	
 	<!-- sportsEquipmentImg 추가  -->
-	<insert id="insertSportsEquipmentImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
+	<insert id="insertImg" parameterType="com.example.gym.vo.SportsEquipmentImg">
 	    INSERT INTO sports_equipment_img(
 	        sports_equipment_no,
 	        sports_equipment_img_origin_name,
@@ -44,29 +44,8 @@
 	    )
 	</insert>
 	
-	<!-- sportsEquipment CRUD를 위해 본사소속 확인하기  -->
-	<select id="selectSearchEmployeeLevel" parameterType="int" resultType="int">
-		SELECT 
-			b.branch_level branchLevel,
-			b.branch_no branchNo
-		FROM employee e 
-		INNER JOIN branch b
-		ON e.branch_no = b.branch_no
-		WHERE employee_no = #{employeeNo}
-	</select>
-	
-	<!-- 지점 확인하기  -->
-	<select id="selectSearchEmployeeBranch" parameterType="int" resultType="int">
-		SELECT 
-			b.branch_no branchNo
-		FROM employee e 
-		INNER JOIN branch b
-		ON e.branch_no = b.branch_no
-		WHERE employee_no = #{employeeNo}
-	</select>
-
 	<!-- sportsEquipment 목록 + 검색 + 페이징  -->
-	<select id="selectSportsEquipmentByPage" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="list" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipment">
 	    SELECT 
 	        se.sports_equipment_no sportsEquipmentNo,
 	        se.item_name itemName,
@@ -79,42 +58,53 @@
 	        ) sportsEquipmentImgFileName
 	    FROM sports_equipment se
 	    <where>
-	        <if test="searchWord != ''">
-	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        <if test="where != null">
+		        <foreach collection="where" item="item" separator="AND">
+	                ${item.key} ${item.operator} #{item.value}
+	            </foreach>
 	        </if>
-			<if test="equipmentActive != ''">
-    			AND se.equipment_active = #{equipmentActive}
+	        
+	        <if test="query != ''">
+	            AND item_name LIKE CONCAT('%',#{query},'%')
+	        </if>
+			<if test="active != ''">
+    			AND equipment_active = #{active}
 			</if>
 	    </where>
-	    ORDER BY se.createdate DESC
+	    <if test="order != null">
+	    	<foreach collection="order" item="item" separator="AND">
+                ${item.key} ${item.value}
+            </foreach>
+	    </if>
+		ORDER BY se.createdate DESC
 	    LIMIT #{beginRow}, #{rowPerPage}
 	</select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipment 수 -->
-	<select id="selectSportsEquipmentCnt" parameterType="java.util.Map" resultType="int">
+	<select id="totalCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
 	    SELECT 
 	        COUNT(sports_equipment_no)
 	    FROM sports_equipment
 	    <where>
-	        <if test="searchWord != ''">
-	            AND item_name LIKE CONCAT('%',#{searchWord},'%')
+	        <if test="query != ''">
+	            AND item_name LIKE CONCAT('%',#{query},'%')
 	        </if>
-			<if test="equipmentActive != ''">
-    			AND equipment_active = #{equipmentActive}
+			<if test="active != ''">
+    			AND equipment_active = #{active}
 			</if>
 	    </where>
 	</select>
-	
+		
 	<!--sportsEquipment 상세보기(정보)-->
-	<select id="selectSportsEquipmentOne" parameterType="int" resultType="java.util.Map">
+	<select id="one" parameterType="int" resultType="com.example.gym.vo.SportsEquipment">
 		SELECT 
 			se.sports_equipment_no sportsEquipmentNo,
 			e.employee_id employeeId,
 			se.item_name itemName,
 			se.item_price itemPrice,
 			se.equipment_active equipmentActive,
-			se.createdate equipmentCreatedate,
-			se.updatedate equipmentUpdatedate
+			se.createdate as createdate,
+			se.updatedate as updatedate
 		FROM employee e 
 		INNER JOIN sports_equipment se
 		ON e.employee_no = se.employee_no
@@ -122,7 +112,7 @@
 	</select>
 	
 	<!--sportsEquipment 상세보기(이미지)-->
-	<select id="selectSportsEquipmentImgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
+	<select id="imgList" parameterType="int" resultType="com.example.gym.vo.SportsEquipmentImg">
 		SELECT 
 			sports_equipment_img_file_name sportsEquipmentImgFileName,
 			sports_equipment_img_no sportsEquipmentImgNo,
@@ -132,7 +122,7 @@
 	</select>
 	
 	<!--sportsEquipment 정보 수정-->
-	<update id="updateSportsEquipment" parameterType="com.example.gym.vo.SportsEquipment">
+	<update id="update" parameterType="com.example.gym.vo.SportsEquipment">
 		UPDATE sports_equipment
 		SET 
 			employee_no = #{employeeNo},
@@ -144,13 +134,13 @@
 	</update>
 	
 	<!--sportsEquipmentImg 개별 삭제-->
-	<delete id="deleteOneSportsEquipmentImg" parameterType="int">
+	<delete id="deleteImg" parameterType="int">
 		DELETE FROM sports_equipment_img
 		WHERE sports_equipment_img_no = #{sportsEquipmentImgNo}
 	</delete>
 	
 	<!-- sportsEquipmentOrder 추가  -->
-	<insert id="insertSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipmentOrder">
+	<insert id="insertOrder" parameterType="com.example.gym.vo.SportsEquipmentOrder">
 		INSERT INTO sports_equipment_order(
 				branch_no,
 				sports_equipment_no,
@@ -165,7 +155,7 @@
 	</insert> 
 	
    <!-- sportsEquipmentOrder 리스트 + 지점검색 + 페이징 (본사)  -->
-   <select id="selectSportsEquipmentOrderByHead" parameterType="java.util.Map" resultType="java.util.Map">
+   <select id="orderByHead" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipmentOrder">
        SELECT 
            b.branch_name branchName,
            se.item_name itemName,
@@ -186,24 +176,21 @@
        INNER JOIN sports_equipment se 
        ON se.sports_equipment_no = seo.sports_equipment_no
        <where>
-       		<!-- 본사 모든 order 리스트 -->
-	        <if test="loginBranchLevel == 1">
-	        	<if test="searchBranch != ''">
-	                <!-- 본사 branchName으로 검색 -->
-	                AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
-	            </if>
-	            <if test="searchItem != ''">
-	                <!-- 본사 itemName으로 검색 -->
-	                AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
-	            </if>
-	            <if test="beginDate != ''">
-	                <!-- 본사 시작날짜로 검색 -->
-	                AND seo.createdate >= #{beginDate}
-	            </if>
-	            <if test="endDate != ''">
-	                <!-- 본사 시작날짜,끝날짜로 검색 -->
-	                 <![CDATA[ AND seo.createdate <= #{endDate} ]]>
-	            </if>
+	       <if test="searchBranch != ''">
+	            <!-- 본사 branchName으로 검색 -->
+	            AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
+	        </if>
+	        <if test="query != ''">
+	            <!-- 본사 itemName으로 검색 -->
+	            AND se.item_name LIKE CONCAT('%',#{query},'%')
+	        </if>
+	        <if test="beginDate != ''">
+	            <!-- 본사 시작날짜로 검색 -->
+	            AND seo.createdate >= #{beginDate}
+	        </if>
+	        <if test="endDate != ''">
+	            <!-- 본사 시작날짜,끝날짜로 검색 -->
+	             <![CDATA[ AND seo.createdate <= #{endDate} ]]>
 	        </if>
         </where>
        ORDER BY seo.createdate DESC
@@ -211,7 +198,7 @@
    </select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipmentOrder 수 (본사) -->
-	<select id="selectSportsEquipmentOrderHeadCnt" parameterType="java.util.Map" resultType="int">
+	<select id="orderHeadCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
 		SELECT 
 			COUNT(seo.order_no)
 		FROM branch b
@@ -220,30 +207,27 @@
 		INNER JOIN sports_equipment se
 		ON se.sports_equipment_no = seo.sports_equipment_no
     <where>
-        <!-- 본사 모든 order 리스트 -->
-        <if test="loginBranchLevel == 1">
-         	<if test="searchBranch != ''">
-                <!-- 본사 branchName으로 검색 -->
-                AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
-            </if>
-            <if test="searchItem != ''">
-                <!-- 본사 itemName으로 검색 -->
-                AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
-            </if>
-            <if test="beginDate != ''">
-                <!-- 본사 시작날짜로 검색 -->
-                AND seo.createdate >= #{beginDate}
-            </if>
-            <if test="endDate != ''">
-                <!-- 본사 시작날짜,끝날짜로 검색 -->
-                 <![CDATA[ AND seo.createdate <= #{endDate} ]]>
-           </if>
-         </if>
+       	<if test="searchBranch != ''">
+              <!-- 본사 branchName으로 검색 -->
+              AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
+          </if>
+          <if test="query != ''">
+              <!-- 본사 itemName으로 검색 -->
+              AND se.item_name LIKE CONCAT('%',#{query},'%')
+          </if>
+          <if test="beginDate != ''">
+              <!-- 본사 시작날짜로 검색 -->
+              AND seo.createdate >= #{beginDate}
+          </if>
+          <if test="endDate != ''">
+              <!-- 본사 시작날짜,끝날짜로 검색 -->
+               <![CDATA[ AND seo.createdate <= #{endDate} ]]>
+        </if>
     </where>
 	</select>
 	
    <!-- sportsEquipmentOrder 리스트 + 지점검색 + 페이징 (지점)  -->
-   <select id="selectSportsEquipmentOrderByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+   <select id="orderByBranch" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipmentOrder">
        SELECT 
            b.branch_name branchName,
            se.item_name itemName,
@@ -265,11 +249,11 @@
        ON se.sports_equipment_no = seo.sports_equipment_no
        <where>
            <!-- 로그인한 계정의 소속 지점만 -->
-           <if test="loginBranchLevel == 0">
+           <if test="loginBranchNo != ''">
                AND b.branch_no = #{loginBranchNo}
-               <if test="searchItem != ''">
+               <if test="query != ''">
                    <!-- 지점 itemName으로 검색 -->
-                   AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+                   AND se.item_name LIKE CONCAT('%',#{query},'%')
                </if>
                <if test="beginDate != ''">
                    <!-- 지점 시작날짜로 검색 -->
@@ -286,7 +270,7 @@
    </select>
 	
 	<!-- lastPage 구하기 위한 sportsEquipmentOrder 수 (지점) -->
-	<select id="selectSportsEquipmentOrderBranchCnt" parameterType="java.util.Map" resultType="int">
+	<select id="orderBranchCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
 		SELECT 
 			COUNT(seo.order_no)
 		FROM branch b
@@ -296,11 +280,11 @@
 		ON se.sports_equipment_no = seo.sports_equipment_no
     <where>
        	<!-- 로그인한 계정의 소속 지점만 -->
-        <if test="loginBranchLevel == 0">
+        <if test="loginBranchNo != ''">
            AND b.branch_no = #{loginBranchNo}
-           <if test="searchItem != ''">
+           <if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->
-            	AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+            	AND se.item_name LIKE CONCAT('%',#{query},'%')
            </if>
            <if test="beginDate != ''">
                	<!-- 지점 시작날짜로 검색 -->
@@ -315,7 +299,7 @@
 	</select>
 	
 	<!--sportsEquipmentOrder 상태 수정 (본사)-->
-	<update id="updateSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipment">
+	<update id="updateOrder" parameterType="com.example.gym.vo.SportsEquipment">
 		UPDATE sports_equipment_order
 		SET 
 			order_status = #{orderStatus},
@@ -324,19 +308,25 @@
 	</update>
 	
 	<!--sportsEquipmentOrder 삭제 (지점)-->
-	<delete id="deleteSportsEquipmentOrder" parameterType="com.example.gym.vo.SportsEquipment">
+	<delete id="deleteOrder" parameterType="com.example.gym.vo.SportsEquipment">
 		DELETE FROM sports_equipment_order
 		WHERE order_no = #{orderNo}
 		AND order_status= '대기'
 	</delete>
 	
 	<!-- sportsEquipmentInventory 출력 (본사) -->
-	<select id="selectSportsEquipmentInventoryByHead" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT 
+	<select id="inventoryByHead" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipmentInventory">
+		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
 			se.sports_equipment_no sportsEquipmentNo,
-			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			(
+			SELECT sei.sports_equipment_img_file_name
+			FROM sports_equipment_img sei
+			WHERE sei.sports_equipment_no = se.sports_equipment_no
+			ORDER BY sei.sports_equipment_img_file_name
+			LIMIT 1
+			) sportsEquipmentImgFileName,
 			SUM(seo.quantity) AS totalQuantity,
 			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
    			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
@@ -353,9 +343,9 @@
                 <!-- 본사 branchName으로 검색 -->
                 AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
             </if>
-            <if test="searchItem != ''">
+            <if test="query != ''">
                 <!-- 본사 itemName으로 검색 -->
-                AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+                AND se.item_name LIKE CONCAT('%',#{query},'%')
             </if>
          </if>
 		GROUP BY b.branch_name, se.item_name, se.sports_equipment_no, sei.sports_equipment_no, sei.sports_equipment_img_file_name
@@ -364,13 +354,19 @@
 	</select>
 	
 	<!-- sportsEquipmentInventory 출력 (지점) -->
-	<select id="selectSportsEquipmentInventoryByBranch" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT 
+	<select id="inventoryByBranch" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="com.example.gym.vo.SportsEquipmentInventory">
+		SELECT DISTINCT
 			b.branch_name branchName,
 			se.item_name itemName,
 			se.item_Price itemPrice,
 			se.sports_equipment_no sportsEquipmentNo,
-			sei.sports_equipment_img_file_name sportsEquipmentImgFileName,
+			(
+			SELECT sei.sports_equipment_img_file_name
+			FROM sports_equipment_img sei
+			WHERE sei.sports_equipment_no = se.sports_equipment_no
+			ORDER BY sei.sports_equipment_img_file_name
+			LIMIT 1
+			) sportsEquipmentImgFileName,
 			SUM(seo.quantity) AS totalQuantity,
 			SUM(CASE WHEN seo.quantity > 0 THEN seo.quantity ELSE 0 END) AS inventoryQuantity,
    			<![CDATA[SUM(CASE WHEN seo.quantity < 0 THEN seo.quantity ELSE 0 END) AS discartdQuantity]]>
@@ -378,15 +374,16 @@
 		ON b.branch_no = seo.branch_no
 		INNER JOIN sports_equipment se
 		ON seo.sports_equipment_no = se.sports_equipment_no
-		INNER JOIN sports_equipment_img sei
+		INNER JOIN sports_equipment_img sei		
 		ON se.sports_equipment_no = sei.sports_equipment_no
+
 		WHERE seo.order_status = '승인'
        	<!-- 로그인한 계정의 소속 지점만 -->
         <if test="loginBranchLevel == 0">
            AND b.branch_no = #{loginBranchNo}
-           <if test="searchItem != ''">
+           <if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->
-            	AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+            	AND se.item_name LIKE CONCAT('%',#{query},'%')
            </if>
        	</if>
 		GROUP BY b.branch_name, se.item_name, se.sports_equipment_no, sei.sports_equipment_no, sei.sports_equipment_img_file_name
@@ -395,7 +392,7 @@
 	</select>
 	
 	<!--lastPage 구하기 위한 sportsEquipmentInventory 수 (본사) -->
-	<select id="selectSportsEquipmentInventoryByHeadCnt" parameterType="java.util.Map" resultType="int">
+	<select id="inventoryByHeadCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
 		SELECT 
     		(SELECT COUNT(*) 
      		FROM (
@@ -409,8 +406,8 @@
          		<if test="searchBranch != ''">
                		AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
            		</if>
-            	<if test="searchItem != ''">
-                	AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+            	<if test="query != ''">
+                	AND se.item_name LIKE CONCAT('%',#{query},'%')
             	</if>
          	</if>
          	GROUP BY b.branch_name, se.item_name
@@ -423,7 +420,7 @@
 	</select>
 	
 	<!--lastPage 구하기 위한 sportsEquipmentInventory 수 (지점) -->
-	<select id="selectSportsEquipmentInventoryByBranchCnt" parameterType="java.util.Map" resultType="int">
+	<select id="inventoryByBranchCnt" parameterType="com.example.gym.vo.SportsEquipmentSearchParam" resultType="int">
 		SELECT 
     		(SELECT COUNT(*) 
      		FROM (
@@ -436,9 +433,9 @@
       		<!-- 로그인한 계정의 소속 지점만 -->
         	<if test="loginBranchLevel == 0">
            		AND b.branch_no = #{loginBranchNo}
-           	<if test="searchItem != ''">
+           	<if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->
-            	AND se.item_name LIKE CONCAT('%',#{searchItem},'%')
+            	AND se.item_name LIKE CONCAT('%',#{query},'%')
            </if>
        		</if>
          	GROUP BY b.branch_name, se.item_name
@@ -451,7 +448,7 @@
 	</select>
 	
 	<!--장비 상세보기 창에서 지점 재고확인 (지점) -->
-	<select id="selectSportsEquipmentInventoryOneByBranch" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="inventoryOneByBranch" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
 			se.item_name,
 			SUM(seo.quantity) AS totalQuantity,
@@ -466,4 +463,11 @@
 		AND se.sports_equipment_no = #{sportsEquipmentNo}
 		GROUP BY se.item_name
 	</select>
+
+
+    <select id="countNotYetOrder" resultType="Integer">
+        SELECT COUNT(1)
+        FROM sports_equipment_order 
+        WHERE order_status = '대기'
+    </select>
 </mapper>

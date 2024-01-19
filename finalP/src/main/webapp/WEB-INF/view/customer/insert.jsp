@@ -10,9 +10,25 @@
 <c:set var="body">
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg"
 		 action="${ctp}/customer/insert" method="post" enctype="multipart/form-data" id="insertForm">
+		 
+			<el-form-item label="사진">
+		<el-upload 
+		   class="avatar-uploader"
+		   action="/file/upload/customer"
+		   :show-file-list="false"
+		   :on-success="handleSuccess"
+		 >
+		   <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar"/>		   	
+		   <el-icon v-else class="avatar-uploader-icon" ><Plus /><span>(선택)</span></el-icon>
+		 </el-upload>
+		 <input v-if="customer.customerImg" type="hidden" :value="customer.customerImg" name="customerImg"/>
+				 </el-form-item>
+		  
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>
-	    </el-form-item>
+	        <el-input v-model="customer.id" placeholder="ID"><template #append>
+        <el-button @click="idCheck()">중복확인</el-button>
+      </template></el-input>
+	    </el-form-item>   
 	    
 	    <el-form-item label="비밀번호">
 	        <el-input v-model="customer.pw" type="password" show-password name="customerPw" placeholder="PASSWORD"/>
@@ -38,15 +54,15 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="키">
-			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight"/>
+			<el-input-number v-model="customer.height" controls-position="right" name="customerHeight" max="250"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="몸무게">
-			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight"/>
+			<el-input-number v-model="customer.weight" controls-position="right" name="customerWeight" max="150"/>
 	    </el-form-item>
 	    
 	    <el-form-item label="우편번호">
-	        <el-input v-model="customer.address.postCode" disabled>
+	        <el-input v-model="customer.address.postCode" id="postCode" disabled>
 		      <template #append>
 		        <el-button @click="openPostCode()">
 		        	우편번호 찾기
@@ -56,23 +72,15 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="customer.address.address" name="address1" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.address" name="customerAddress" id="address" placeholder="ADDRESS"/>
 	    </el-form-item>
-	    
-	    <el-form-item label="상세주소">
-			<el-input v-model="customer.address.detailAddr" name="address2" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    
-	    <el-form-item label="참고주소">
-			<el-input v-model="customer.address.extraAddr" name="address3" placeholder="ADDRESS"/>
-	    </el-form-item>
-	    
+	
 	    <el-form-item label="이메일">
-	    	<el-col :span="14">
-		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
+	    	<el-col :span="12">
+		        <el-input v-model="customer.customerEmailId" placeholder="EMAIL ID"/>
 	        </el-col>
 	        <el-col :span="2" class="text-center">@</el-col>
-	        <el-col :span="8">
+	        <el-col :span="10">
 	        	<el-autocomplete
 			        v-model="customer.customerEmailJuso"
 			        :fetch-suggestions="getSuggestion"
@@ -81,18 +89,20 @@
 			        placeholder="EMAIL ADDRESS"
 			      />
 	        </el-col>	      
-	    </el-form-item>
-	    <el-form-item>
-	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
-	    </el-input>
+	    </el-form-item>	   
 	    
-	    <el-form-item label="사진(선택)">
-	    	<el-input type="file" name="customerImg" v-model="customer.customerImg">
-	    </el-form-item>
-	   
 	    <el-form-item>
 	      	<el-button type="primary" @click="onSubmit(form)">회원가입</el-button>
 	    </el-form-item>
+	    
+	    <el-form-item>
+	        <el-input type="hidden" id="customerId" name="customerId"/>
+	    </el-form-item>
+	    
+	     <el-form-item>
+	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
+	    </el-input>	    
+	  
 	</el-form>
 </c:set>
 
@@ -110,7 +120,7 @@
 	    		weight: 70,
 	    		address: {
 	    			postCode: '',
-	    			
+	    			address: '',	
 	    		},
 	    		customerEmailId: '',
 	    		customerEmailJuso: '',
@@ -126,21 +136,22 @@
 	    	]
 	    }
 	},
-	watch: {
-	},
+
 	methods: {
 		validCheck() {
 			return true;
 		},
-		onSubmit() {
-			document.getElementById('insertForm').submit();
-		},
+		
 		getSuggestion(query, cb) {
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);
 			cb(result.map(x => { return { value: x } }));
 			console.log(query, result);
 		},
-			
+		
+		handleSuccess(response, uploadFile) {
+			this.customer.customerImg = '${ctp}/upload/customer/' + response;
+		},
+					
 		openPostCode() {
 			const self = this;
 			new daum.Postcode(
@@ -185,13 +196,91 @@
 					self.customer.address = {
 						postCode: data.zonecode,
 						address: addr,
-						detailAddress: '',
-						extraAddr: extraAddr,
 					}
 				}
 			}).open();
-		}
+		},
+		
+		onSubmit() {	
+		const finalId = document.getElementById('customerId').value;
+		const address = document.getElementById('address').value;
+		const postCode = document.getElementById('postCode').value;
+			//if(finalId.length < 1){
+				//alert('ID 중복을 확인해주세요.');
+		  if(this.customer.pw.length < 4 || this.customer.phone.length < 4
+			 || this.customer.customerEmailId.length < 4 || this.customer.customerEmailJuso.length < 4 ){
+				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+			} else if(this.customer.name.length < 2) {
+				alert('이름은 2글자 이상 입력해주세요.');
+			} else if(this.customer.gender.length < 1) {
+				alert('성별을 선택해주세요.');
+			} else if(this.customer.pw != this.customer.pwChk) {
+				alert('비밀번호 확인 란이 정확하지 않습니다.');
+			} else if(postCode.length < 1 || address.length < 1) {
+				console.log(postCode , ' , ' , address);
+				alert('우편번호 및 주소를 입력해주세요.');
+			} else {
+				document.getElementById('insertForm').submit();
+			}		
+		},
+				
+		idCheck(){	
+			if(this.customer.id.length < 4){
+				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+				document.getElementById('customerId').value = '';
+			} else {
+				const self = this;
+				const customer = {
+					customerId: this.customer.id,
+				};
+				axios.post('${ctp}/customer/idCheck', customer)
+				.then((res) => {
+					console.log(res.data);
+					if(res.data){
+						alert('사용가능한 아이디입니다.')
+						document.getElementById('customerId').value = this.customer.id;
+					} else {
+						alert('중복 아이디입니다.')
+					}
+				}).catch((res) => {
+					alert('error');
+				})
+			}			
+		},
+		
 	}
 </c:set>
+
+<style scoped>
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+  margin-left: 40%;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+</style>
 
 <%@ include file="/inc/user_layout.jsp" %>

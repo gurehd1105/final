@@ -6,13 +6,12 @@
 						resultType="com.example.gym.vo.Review">
 		SELECT 
 			r.review_no AS reviewNo,
-			r.review_title AS reviewTitle,
-			r.createdate,
-			r.updatedate,
+			r.review_title AS reviewTitle,	
 			
 			b.branch_name AS branchName,
 			
-			p.program_name AS programName
+			p.program_name AS programName,
+			c.customer_id AS customerId
 			
 		FROM review r
 		INNER JOIN customer_attendance ca
@@ -24,16 +23,36 @@
 		INNER JOIN program p
 		ON pd.program_no = p.program_no
 		INNER JOIN branch b
-		ON pr.branch_no = b.branch_no				
-		<if test="branchName != null and branchName != ''">
-			WHERE b.branch_name = #{branchName}
+		ON pr.branch_no = b.branch_no
+		INNER JOIN payment pa
+		ON pa.payment_no = pr.payment_no
+		INNER JOIN customer c
+		ON c.customer_no = pa.customer_no
+		<if test="programName != ''">
+			WHERE p.program_name= #{programName}
 		</if>
+		ORDER BY r.updatedate DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
-	<select id="selectCountOfReview" resultType="Integer">
-		SELECT 
+	<select id="selectCountOfReview" parameterType="String" resultType="Integer">
+		SELECT
 			COUNT(*)
-		FROM review
+		FROM review r
+		
+			INNER JOIN customer_attendance c
+		ON r.customer_attendance_no = c.customer_attendance_no
+		
+			INNER JOIN program_reservation pr 
+		ON pr.program_reservation_no = c.program_reservation_no
+		
+			INNER JOIN program_date pd
+		ON pd.program_date_no = pr.program_date_no
+		
+			INNER JOIN program p
+		ON p.program_no = pd.program_no
+		<if test="programName != ''">
+		WHERE p.program_name = #{programName}
+		</if>
 	</select>
 	
 	<insert id="insertReview" parameterType="com.example.gym.vo.Review">
@@ -66,16 +85,17 @@
 		SELECT 
 			r.review_no AS reviewNo,
 			r.review_title AS reviewTitle,
-			r.review_content AS reviewContent,
+			r.review_content AS reviewContent,		<!-- 리뷰내용 -->
 			r.createdate AS createdate,
-			r.updatedate AS updatedate,								<!-- 리뷰내용 -->
-			
-			ca.customer_attendance_date AS customerAttendanceDate,	<!-- 방문시간 -->
-					
+			r.updatedate AS updatedate,							
+			pr.program_reservation_no AS programReservationNo,
+			ca.customer_attendance_enter_time AS customerAttendanceEnterTime,			<!-- 방문시시간 -->
+			pro.program_name AS programName,
 			pr.branch_no AS branchNo,			
-			b.branch_name AS branchName,			<!-- 어느지점 -->
+			b.branch_name AS branchName,		<!-- 방문지점 -->
 			
-			c.customer_id AS customerId				<!-- 방문자 -->
+			c.customer_no AS customerNo,			<!-- 방문자 -->
+			c.customer_id AS customerId		
 			
 		FROM review r 
 		INNER JOIN customer_attendance ca
@@ -90,6 +110,8 @@
 		ON p.payment_no = pr.payment_no
 		INNER JOIN customer c
 		ON c.customer_no = p.customer_no
+		INNER JOIN program pro
+		ON pro.program_no = pd.program_no
 		
 		WHERE review_no = #{reviewNo}	
 	</select>

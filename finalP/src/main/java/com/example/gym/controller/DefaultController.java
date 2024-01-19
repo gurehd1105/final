@@ -14,5 +14,8 @@ public class DefaultController {
 		}
 		return rtn;
 	}
-	
+	// path 경로 지정으로 Rediret 메서드 생성.
+	public String Redirect(String path) {
+	    return "redirect:" + path;
+	}	
 }

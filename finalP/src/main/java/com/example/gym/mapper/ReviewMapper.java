@@ -11,9 +11,9 @@ import com.example.gym.vo.ReviewReply;
 @Mapper
 public interface ReviewMapper {
 	
-		/*			review			*/
+	//review
 	List<Map<String, Object>> selectReviewList(Map<String, Object> paramMap);
-	Integer selectCountOfReview();
+	Integer selectCountOfReview(String programName);
 	
 	int insertReview(Review review);
 	
@@ -23,7 +23,7 @@ public interface ReviewMapper {
 	
 	Map<String, Object> selectReviewOne(Review review);
 	
-		/*			reply			*/
+	//reply
 	Map<String, Object> selectReviewReply(Review review);
 	
 	int insertReviewReply(ReviewReply reviewReply);

@@ -21,7 +21,7 @@
 	          		관리자
 	        	</div>
 	      	</template>
-	      	{{employeeId}}
+	      	{{model.employeeId}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -30,7 +30,7 @@
 	          		장비
 	        	</div>
 	      	</template>
-	      	{{itemName}}
+	      	{{model.itemName}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -39,7 +39,7 @@
 	          		가격
 	        	</div>
 	      	</template>
-	      	{{itemPrice}}원
+	      	{{model.itemPrice}}원
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -48,7 +48,7 @@
 	          		상태
 	        	</div>
 	      	</template>
-	      	{{equipmentActive === 'Y' ? '주문가능' : '품절' }}
+	      	{{model.equipmentActive === 'Y' ? '주문가능' : '품절' }}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -57,7 +57,7 @@
 	          		등록일
 	        	</div>
 	      	</template>
-	      	{{equipmentCreatedate}}
+	      	{{model.equipmentCreatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -66,7 +66,7 @@
 	          		수정일
 	        	</div>
 	      	</template>
-	      	{{equipmentUpdatedate}}
+	      	{{model.equipmentUpdatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item :column="1">
@@ -77,9 +77,9 @@
 	      	</template>
 	      	<div class="image-list">
 				<el-image
-	    			v-for="(img, index) in sportsEquipmentImgList"
+	    			v-for="(img, index) in imgList"
 	    			:key="index"
-	    			:src="'/finalP/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" 
+	    			:src="'/upload/sportsEquipment/' + img.sportsEquipmentImgFileName" 
 	    			style="max-width: 300px; max-height: 300px; margin-right: 10px;" 
 	    			fit="cover"
 	  			></el-image>
@@ -101,7 +101,7 @@
 	                재고
 	            </div>
 	        </template>
-	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.totalQuantity : '없음' }}
+	        {{ inventory ? inventory.totalQuantity : '없음' }}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -110,7 +110,7 @@
 	                발주
 	            </div>
 	        </template>
-	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.inventoryQuantity : '없음' }}
+	        {{ inventory ? inventory.inventoryQuantity : '없음' }}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -119,12 +119,12 @@
 	                폐기
 	            </div>
 	        </template>
-	        {{ sportsEquipmentInventory ? sportsEquipmentInventory.discartdQuantity : '없음' }}
+	        {{ inventory ? inventory.discartdQuantity : '없음' }}
 	    </el-descriptions-item>
 	</el-descriptions>
 		<br>
 <c:set var="totalPrice" value="'\${model.quantity * itemPrice}'" />		
-	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertSportsEquipmentOrder" method="post" id="insertOrderForm">
+	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" action="${ctp}/sportsEquipment/insertOrder" method="post" id="insertOrderForm">
   		<el-form-item label="수량">
     		<el-input-number v-model="model.quantity" :min="0" name="quantity" :max="100" @change="handleChange" />
  		 </el-form-item>
@@ -134,40 +134,46 @@
   		<input type="hidden" name="sportsEquipmentNo" :value="sportsEquipmentNo">
  		<input type="hidden" name="itemPrice" :value="itemPrice">
   		<el-form-item>
-    		<el-button type="primary" @click="onSubmit(form)">발주</el-button>
+    		<el-button type="success" @click="onSubmit(form)">발주</el-button>
   		</el-form-item>
 	</el-form>
 
 </c:set>
 <c:set var="script">
+
 	data() {
 	  	return {
 	  			model: {
-	    			quantity: '',
+	    	    	quantity: '',
 	    			totalPrice:'',
-	    		},
-	    		
-	     
-	    			sportsEquipmentNo: '${sportsEquipmentNo}', 
-				    itemPrice: '${itemPrice}',
-				    employeeId: '${employeeId}',
-				    itemName: '${itemName}',
-				    equipmentActive: '${equipmentActive}',
-				    equipmentCreatedate: '${equipmentCreatedate}',
-				    equipmentUpdatedate: '${equipmentUpdatedate}',
-				    sportsEquipmentImgList: JSON.parse('${sportsEquipmentImgList}'),		     
-				    sportsEquipmentInventory: JSON.parse('${sportsEquipmentInventory}'),
-	  	};
-	},
+	    			sportsEquipmentNo: '${one.sportsEquipmentNo}', 
+				    itemPrice: '${one.itemPrice}',
+				    employeeId: '${one.employeeId}',
+				    itemName: '${one.itemName}',
+				    equipmentActive: '${one.equipmentActive}',
+				    equipmentCreatedate: '${one.createdate}',
+				    equipmentUpdatedate: '${one.updatedate}',
+	  			},
+	  				inventory: JSON.parse('${inventory}'),
+				    imgList: JSON.parse('${imgList}'),
+				    img: [],	  
+	  				updateModel : {},
+			};
+		},
+	
 	methods: {
 	
 		handleChange() {
-    		this.model.totalPrice = this.model.quantity * this.itemPrice;
+		
+    		this.model.totalPrice = this.model.quantity * this.model.itemPrice;
     		console.log('Total Price:', this.model.totalPrice);
+		
 		},
 		
 		onSubmit() {
+		
 			document.getElementById('insertOrderForm').submit();
+		
 		},
 	}
 </c:set>

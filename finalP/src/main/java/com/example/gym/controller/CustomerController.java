@@ -7,9 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.CustomerService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.CustomerForm;
 
@@ -19,90 +22,68 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("customer")
-public class CustomerController {
+public class CustomerController extends DefaultController{
 	@Autowired
 	private CustomerService customerService;
-
+	
 	// login (로그인) Form
 	@GetMapping("/login")
 	public String loginCustomer(HttpSession session) {
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer != null) {
-			return "home";
-		}
-
-		return "customer/login";
+	
+		return ViewRoutes.사용자_로그인;
 	}
-
 	// login 후 Act -> session 세팅 후 home.jsp로 이동
 	@PostMapping("/login")
-	public String loginCustomer(HttpSession session, Customer customer) {
-		Customer loginCustomer = customerService.loginCustomer(customer);
+	@ResponseBody
+	public int loginCustomer(HttpSession session, @RequestBody Customer customer) {
+		Map<String,Object> loginCustomer = customerService.loginCustomer(customer);
+		int result = 0;
 		if (loginCustomer != null) { // 등록된 ID가 있을 시
 			session.setAttribute("loginCustomer", loginCustomer);
-			return "home";
+			log.info("login");
+			result = 1;
 
 		} else { // 정보 없을 시
-			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + "  <-- login 실패");
-			return "redirect:login";
+			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");			
 		}
+			return result;
 	}
+	
 	// insert (회원가입) Form
 	@GetMapping("/insert")
-	public String insertCustomer(HttpSession session) {
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer != null) {
-			return "home";
-		}
-		return "customer/insert";
+	public String insertCustomer() {	
+		return ViewRoutes.사용자_추가;
 	}
-
 	// insert (회원가입) Act
 	@PostMapping("/insert")
-	public String insertCustomer(HttpSession session, CustomerForm customerForm,
-								String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
-
-		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-
-		int result = customerService.insertCustomer(customerForm, path);
-		if (result == 1) { // 가입 완
-			return "customer/login";
+	public String insertCustomer(CustomerForm customerForm) {
+		int result = customerService.insertCustomer(customerForm); 
+		
+		if (result == 1) {// 가입 완 		  
+			return ViewRoutes.사용자_로그인; 
 		} else { // 예외발생
-			return "customer/insert";
-		}
+			return ViewRoutes.사용자_추가;
+		}		
 	}
 
 	// delete (탈퇴) update(customerActive : Y -> N), delete(customerImg ,
 	// customerDetail)
 	@GetMapping("/delete")
-	public String deleteCustomer(HttpSession session, Model model) { // 탈퇴화면 아이디정보 표기위한 세션 전달
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-
-		model.addAttribute("loginCustomer", loginCustomer);
-		return "customer/delete";
+	public String deleteCustomer(Model model) {
+		return ViewRoutes.사용자_삭제;
 	}
 
 	// delete (탈퇴) Act
 	@PostMapping("/delete")
-	public String deleteCustomer(String customerId, String customerPw, int customerNo, HttpSession session) {
-		Customer paramCustomer = new Customer();
-		paramCustomer.setCustomerId(customerId);
-		paramCustomer.setCustomerPw(customerPw);
-		paramCustomer.setCustomerNo(customerNo);
-		int result = customerService.deleteCustomer(paramCustomer);
-
+	public String deleteCustomer(Customer customer, HttpSession session) {
+		
+		
+		int result = customerService.deleteCustomer(customer);
 		if (result == 1) { // 탈퇴 완 --> login 창으로 이동
 			session.invalidate();
-			return "customer/login";
+			return ViewRoutes.사용자_로그인;
 		} else { // 예외발생
-			return "customer/delete";
+			return ViewRoutes.사용자_삭제;
 		}
 
 	}
@@ -110,44 +91,27 @@ public class CustomerController {
 	// 마이페이지
 	@GetMapping("/customerOne")
 	public String customerOne(HttpSession session, Model model) {
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
+		Map<String,Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
 
-		Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
+		Map<String, Object> resultMap = customerService.customerOne((int) loginCustomer.get("customerNo"));
 		model.addAttribute("resultMap", resultMap);
 
-		return "customer/customerOne";
+		return ViewRoutes.사용자_정보_확인;
 	}
 
 	// 내정보 수정 Form
 	// 접속 전 PW 확인
 	@GetMapping("/updateOneForPw")
-	public String customerOneForCheckPw(HttpSession session) {
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/loginCustomer";
-		}
-
-		return "customer/updateOneForPw";
+	public String customerOneForCheckPw() {
+		return ViewRoutes.사용자_암호_확인;
 	}
-
 	// PW확인 후 Form 접속
 	@PostMapping("/updateOneForm")
-	public String updateCustomerOne(HttpSession session, Model model, String customerPw) {
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		loginCustomer.setCustomerPw(customerPw);
-		Customer checkCustomer = customerService.loginCustomer(loginCustomer);
-		if (checkCustomer == null) { // PW 확인 불일치 --> PW 확인 페이지로 return
-			log.info("PW 불일치, 접속실패");
-			return "customer/updateOneForPw";
-		} else {
+	public String updateCustomerOne(HttpSession session, Model model , Customer customer) {
+		
 			log.info("PW 일치, 접속성공");
 
-			Map<String, Object> resultMap = customerService.customerOne(loginCustomer);
+			Map<String, Object> resultMap = customerService.customerOne(customer.getCustomerNo());
 
 			// Email 값 표기
 			String customerEmail = (String) resultMap.get("customerEmail");
@@ -155,69 +119,60 @@ public class CustomerController {
 			String customerEmailJuso = customerEmail.substring(customerEmail.lastIndexOf("@") + 1);
 			resultMap.put("emailId", customerEmailId);
 			resultMap.put("emailJuso", customerEmailJuso);
-
-			// 성별 option 값 표기
-			String customerGender = (String) resultMap.get("customerGender");
-			String customerOtherGender = null;
-			if (customerGender.equals("남")) {
-				customerOtherGender = "여";
-			} else {
-				customerOtherGender = "남";
-			}
-			resultMap.put("customerOtherGender", customerOtherGender);
-
 			model.addAttribute("resultMap", resultMap);
 
-			return "customer/updateOne";
-		}
+			return ViewRoutes.사용자_정보_수정;	
 	}
-
 	// 내정보 수정 Act
 	@PostMapping("/updateOne")
-	public String updateCustomerOne(HttpSession session, CustomerForm customerForm, 
-									String address1, String address2, String address3) {
-		String path = session.getServletContext().getRealPath("/upload/customer");
+	public String updateCustomerOne(HttpSession session, CustomerForm customerForm) {
 
-		customerForm.setCustomerAddress(address1 + " " + address2 + address3);
-
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		customerService.updateCustomerOne(path, customerForm, loginCustomer.getCustomerNo()); // 반환값 없음 (void)
-		return "redirect:customerOne";
+		Map<String,Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+		customerService.updateCustomerOne(customerForm, (int) loginCustomer.get("customerNo"));
+		return Redirect(ViewRoutes.사용자_정보_확인);
+				
 	}
 
 	// PW 수정 Form
 	@GetMapping("/updatePw")
-	public String updateCustomerPw(HttpSession session, Model model) { // ID값 표기 위한 세션 세팅
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/login";
-		}
-
-		model.addAttribute("loginCustomer", loginCustomer);
+	public String updateCustomerPw(Model model) { // ID값 표기 위한 세션 세팅
 		return "customer/updatePw";
 	}
-
 	// PW 수정 Act
 	@PostMapping("/updatePw")
-	public String updateCustomerPw(HttpSession session, String customerPw, String customerNewPw) {
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		loginCustomer.setCustomerPw(customerPw);
-
-		int result = customerService.updateCustomerPw(loginCustomer, customerNewPw);
-		if (result > 0) { // PW 수정 완 --> 재로그인
-			session.invalidate();
-
-			return "customer/login";
-		} else { // 수정 실패 현재 페이지로 return
-			return "customer/updatePw";
-		}
+	public String updateCustomerPw(HttpSession session, Customer customer) {
+		int result = 0;
+		result = customerService.updateCustomerPw(customer);	
+			
+		if(result == 1) {
+			session.invalidate();		
+			return ViewRoutes.사용자_로그인;
+		} else {			
+			return ViewRoutes.사용자_암호_변경;
+		}	
 	}
 
 	// logout -> login.jsp로 이동
 	@GetMapping("/logout")
 	public String logoutCustomer(HttpSession session) {
-		session.invalidate();
-		return "customer/login";
+		if(session.getAttribute("loginCustomer") != null) {
+			session.invalidate();
+		}
+		return  ViewRoutes.사용자_로그인;
+	}
+	
+	@PostMapping("/pwCheck")
+	@ResponseBody	// PW 체크로직
+	public boolean pwCheck(@RequestBody Customer customer) {
+		boolean exist = customerService.loginCustomer(customer) != null;				
+		return exist;
+	}
+	
+	// ID 중복체크
+	@PostMapping("/idCheck")
+	@ResponseBody
+	public boolean idCheck(@RequestBody Customer customer) {
+		boolean exist = customerService.checkId(customer).isEmpty();
+		return exist;
 	}
 }
