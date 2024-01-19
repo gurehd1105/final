@@ -37,27 +37,28 @@ pageEncoding="UTF-8"%>
                             프로그램 진행일 조회 및 추가
                         </el-menu-item>
                     </el-sub-menu>
-                </el-sub-menu>
-                <el-sub-menu index="2">
-                    <template #title> 스포츠 장비 </template>
-                    <el-menu-item-group>
-                        <template #title>본사</template>
-                        <el-menu-item index="2-1">
-                            장비리스트 추가
+                    <el-sub-menu index="1-5">
+                        <template #title>소모품 관리</template>
+                        <el-menu-item index="1-5-1">
+                            (본사)소모품 목록 & 추가
                         </el-menu-item>
-                        <el-menu-item index="2-2"> 발주내역 </el-menu-item>
-                        <el-menu-item index="2-3"> 재고 </el-menu-item>
-                    </el-menu-item-group>
-                    <el-menu-item-group title="지점">
-                        <el-menu-item index="2-4"> 장비리스트 </el-menu-item>
-                        <el-menu-item index="2-5">
-                            발주내역(지점:부산점)
+                        <el-menu-item index="1-5-2">
+                            (본사)발주 목록
                         </el-menu-item>
-                        <el-menu-item index="2-6">
-                            재고(지점:부산점)
+                        <el-menu-item index="1-5-3">
+                            (본사)재고 목록
                         </el-menu-item>
-                    </el-menu-item-group>
-                </el-sub-menu>
+                        <el-menu-item index="1-5-4">
+                            (지점)소모품 목록
+                        </el-menu-item>
+                        <el-menu-item index="1-5-5">
+                            (지점)발주 목록
+                        </el-menu-item>
+                        <el-menu-item index="1-5-6">
+                            (지점)재고 목록
+                        </el-menu-item>
+                    </el-sub-menu>
+                </el-sub-menu>                       
             </el-menu>
         </el-scrollbar>
     </el-aside>
@@ -89,15 +90,15 @@ pageEncoding="UTF-8"%>
                         "${ctp}/programDate/update",
                         "${ctp}/programDate/insert",
                     ],
-                    "2-1": ["${ctp}/sportsEquipment/insert"],
-                    "2-2": ["${ctp}/sportsEquipment/orderByHead"],
-                    "2-3": ["${ctp}/sportsEquipment/inventoryByHead"],
-                    "2-4": [
+                    "1-5-1": ["${ctp}/sportsEquipment/insert"],
+                    "1-5-2": ["${ctp}/sportsEquipment/orderByHead"],
+                    "1-5-3": ["${ctp}/sportsEquipment/inventoryByHead"],
+                    "1-5-4": [
                         "${ctp}/sportsEquipment/list",
                         "${ctp}/sportsEquipment/sportsEquipmentOne",
                     ],
-                    "2-5": ["${ctp}/sportsEquipment/orderByBranch"],
-                    "2-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
+                    "1-5-5": ["${ctp}/sportsEquipment/orderByBranch"],
+                    "1-5-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
                 },
             };
         },
