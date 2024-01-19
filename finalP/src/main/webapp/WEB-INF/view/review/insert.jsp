@@ -93,12 +93,10 @@ position: 'top-left',
             return new Date(cellValue).toLocaleString();
         },
 		
-		rowClick(row, column, cellValue){
+		rowClick(row, column){
 			console.log(row);
 			if(column.property){
-				this.customerAttendanceNo = row.customerAttendanceNo;
-				this.customerAttendanceEnterTime = cellValue;
-				console.log(cellValue);
+				this.customerAttendanceNo = row.customerAttendanceNo;				
 			}
      	},
      	
