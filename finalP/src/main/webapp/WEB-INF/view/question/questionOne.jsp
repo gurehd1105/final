@@ -95,7 +95,7 @@
 	
 	data() {
 		return{
-		<!-- question 관련 데이터 -->
+		// question 관련 데이터
 			question: {
 				문의번호: '${ questionMap.questionNo }',
 				작성자: '${ questionMap.customerId }',
@@ -104,7 +104,7 @@
 			},
 			questionContent: '${ questionMap.questionContent }',
 			
-		<!-- reply 관련 데이터 -->	
+		// reply 관련 데이터
 			reply: {
 				답변번호: '${ replyMap.questionReplyNo }' ,
 				직원ID: '${ replyMap.employeeId }' ,				
@@ -112,7 +112,7 @@
 			},
 			replyContent: '${ replyMap.questionReplyContent }',
 			
-		<!-- reply insert 시 필요 데이터 -->	
+		// reply insert 시 필요 데이터	
 			employee: {
 				employeeNo: '${ loginEmployee.employeeNo }',
 				employeeId: '${ loginEmployee.employeeId }',
@@ -123,19 +123,19 @@
 	},
 	
 	methods: {
-		updateForm(){	<!-- 문의내용 수정 기능  -->
-			if(this.reply.답변번호 == ''){ <!-- 등록된 답변이 없다면 (정의되지 않음) -->
+		updateForm(){	// 문의내용 수정 기능 
+			if(this.reply.답변번호 == ''){ // 등록된 답변이 없다면
 				location.href = '${ctp}/question/update?questionNo=${ questionMap.questionNo }';
 			} else {
 				alert('답변 등록된 글은 수정할 수 없습니다.');
 			}			
 		},		
 		
-		deleteForm(){	<!-- 문의내용 삭제 폼 (비번 입력창) 조회 기능  -->
+		deleteForm(){	// 문의내용 삭제 폼 (비번 입력창) 조회 기능
 			document.getElementById('deleteForm').style.display = "flex";
 			document.getElementById('deleteBtn').style.display = "none";
 		},		
-		deleteAct(){	<!-- 문의내용 삭제 기능  -->
+		deleteAct(){	// 문의내용 삭제 기능
 			if(confirm('삭제 후에는 복구할 수 없습니다. 정말로 삭제하시겠습니까?')){
 				const self = this;
 				const question = {
@@ -158,12 +158,12 @@
 		},
 		
 			
-		insertReply(){	<!-- 답변 입력 기능  -->
+		insertReply(){	// 답변 입력 기능
 			document.getElementById('insertReplyAct').submit();
 		},
 		
 			
-		updateReply(){	<!-- 답변 수정 기능  -->
+		updateReply(){	// 답변 수정 기능
 			document.getElementById('questionReply').readOnly = false;
 			document.getElementById('replyBtn').style.display = "none";
 			document.getElementById('updateReplyBtn').style.display = "flex";			
@@ -187,7 +187,7 @@
 		},
 		
 		
-		deleteReply(){	<!-- 답변 삭제 기능  -->			
+		deleteReply(){	// 답변 삭제 기능	
 			if(confirm('답변을 삭제하시겠습니까?')){
 			const self = this;
 			const reply = {

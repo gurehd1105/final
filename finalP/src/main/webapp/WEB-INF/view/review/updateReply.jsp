@@ -43,7 +43,7 @@
 					
 				},
 				
-					<!-- 표로 작성하지 않을 부분 / 따로 바인딩 -->			
+					// 표로 작성하지 않을 부분 / 따로 바인딩
 				replyContent : '${ replyMap.reviewReplyContent }',
 				employeeNo : '1',
 				employeeId : '${ loginEmployee.employeeId }',

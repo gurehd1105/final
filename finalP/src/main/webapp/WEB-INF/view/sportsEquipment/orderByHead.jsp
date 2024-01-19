@@ -8,7 +8,7 @@
 <c:set var="body">
 
 	<!-- 검색창 -->
-	<h2>검색</h2>
+	<el-text size="large" tag="b">검색</el-text>
 	<el-form label-position="right" 
 			 ref="form" 
 			 label-width="150px" 
@@ -16,7 +16,7 @@
 			 action="${ctp}/sportsEquipment/orderByHead" 
 			 method="get" 
 			 id="searchForm"
-			 style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;"
+             class="border rounded-sm p-3"
 	>
 	
 		<el-form-item label="지점검색">
@@ -39,85 +39,87 @@
 	</el-form>
 	
     <!-- 발주 리스트 출력 -->
-    <table class="custom-table">
-      	<thead>
-        	<tr>
-          		<th>발주/폐기</th>
-		        <th>지점</th>
-		        <th>이미지</th>
-		        <th>아이템</th>
-		        <th>가격</th>
-		        <th>수량</th>
-		        <th>총가격</th>
-		        <th>발주일</th>
-		        <th>결재일</th>
-		        <th>현재상태</th>
-		        <th>승인/거부</th>
-
-        	</tr>
-      	</thead>
-	    <tbody>
-	    	<tr v-for="(order, i) in list" :key="i">
-	        	<td>
-	          		<span v-if="order.quantity > 0" style="color: blue;">발주</span>
-	          		<span v-else-if="order.quantity < 0" style="color: red;">폐기</span>
-	        	</td>
-	        	<td>{{ order.branchName }}</td>
-	        	<td>
-	          		<img :src="'/upload/sportsEquipment/' + order.sportsEquipmentImgFileName" class="image" style="width: 50px; height: 50px;" />
-	        	</td>
-	        	<td>{{ order.itemName }}</td>
-			    <td>{{ order.itemPrice }}</td>
-			    <td>{{ order.quantity }}</td>
-			    <td>{{ order.totalPrice }}</td>
-				<td>{{ new Date(order.createdate).toLocaleString() }}</td>
-	        	<td>
-	          		<span v-if="order.updatedate == order.createdate">대기중</span>
-	          		<span v-else>{{ new Date(order.updatedate).toLocaleString() }}</span>
-	        	</td>
-	        	<td :style="{ backgroundColor: order.orderStatus === '승인' ? 'blue' : 'red', color: 'white' }">{{ order.orderStatus }}</td>
-	        	<td>
-					<span v-if="order.orderStatus === '대기'">
-  						<el-form label-position="right" 
-  								 ref="form" 
-  								 label-width="150px" 
-  								 status-icon class="max-w-lg" 
-  								 action="${ctp}/sportsEquipment/updateOrder"
-  								 method="post" 
-  						 		 id="updateOrder1"
-  						 >
-  						 
-	   						<el-form-item>
-								<el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
-	   						</el-form-item>
-	   					<input type="hidden" name="orderNo" :value="order.orderNo">
-	   					<input type="hidden" name="orderStatus" value="승인">
-						</el-form>
-					</span>
-					
-					<span v-if="order.orderStatus === '대기'">
-  						<el-form label-position="right" 
-  								 ref="form" 
-  								 label-width="150px" 
-  								 status-icon class="max-w-lg" 
-  								 action="${ctp}/sportsEquipment/updateOrder" 
-  								 method="post" 
-  								 id="updateOrder2"
-  						>
-	   						<el-form-item>
-								<el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
-	   						</el-form-item>
-	   					<input type="hidden" name="orderNo" :value="order.orderNo">
-	   					<input type="hidden" name="orderStatus" value="거부">
-						</el-form>
-					</span>
-					
-	          		<span v-else style="color: blue; font-weight: bold;" >{{ order.orderStatus }} 완료</span>
-	        	</td>
-	     	</tr>
-	    </tbody>
-    </table>	
- 	<br>
+    <el-table
+        :data="list"
+        :key="loading"
+        class="w-full"
+        align="center"
+        border
+    >
+        <el-table-column width="100" label="발주/폐기">
+            <template #default="scope">
+                <el-text :type="scope.row.quantity > 0 ? 'primary' : 'danger'" tag="b">
+                    {{ scope.row.quantity > 0 ? '발주' : '폐기' }}
+                </el-text>
+            </template>
+        </el-table-column>
+        <el-table-column width="100" prop="branchName" label="지점"></el-table-column>
+        <el-table-column label="이미지">
+            <template #default="scope">
+                <img :src="'/upload/sportsEquipment/' + scope.row.sportsEquipmentImgFileName" class="image" style="height:auto" />
+            </template>
+        </el-table-column>
+        <el-table-column width="180" prop="itemName" label="아이템"></el-table-column>
+        <el-table-column width="120" prop="itemPrice" label="가격"></el-table-column>
+        <el-table-column width="100" prop="quantity" label="수량"></el-table-column>
+        <el-table-column width="120" prop="totalPrice" label="총가격"></el-table-column>
+        <el-table-column label="발주일">
+            <template #default="scope">
+                <span>{{ moment(scope.row.createdate).format('yyyy-MM-DD HH:mm') }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="결재일">
+            <template #default="scope">
+                <span v-if="scope.row.updatedate == scope.row.createdate">대기중</span>
+                <span v-else>{{ moment(scope.row.updatedate).format('yyyy-MM-DD HH:mm') }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="현재상태">
+            <template #default="scope">
+                <el-tag class="ml-2" :type="scope.row.orderStatus === '승인' ? '' : 'danger'">{{ scope.row.orderStatus }}</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column label="승인/거부">
+            <template #default="scope">
+                <span v-if="scope.row.orderStatus === '대기'">
+                    <el-form label-position="right" 
+                        ref="form" 
+                        label-width="150px" 
+                        status-icon class="max-w-lg" 
+                        action="${ctp}/sportsEquipment/updateOrder"
+                        method="post" 
+                        id="updateOrder1"
+                    >
+                     
+                        <el-form-item>
+                            <el-button type="success" plain round @click="onSubmit1(form)">승인</el-button>
+                        </el-form-item>
+                        <input type="hidden" name="orderNo" :value="scope.row.orderNo">
+                        <input type="hidden" name="orderStatus" value="승인">
+                    </el-form>
+              </span>
+              
+              <span v-if="scope.row.orderStatus === '대기'">
+                    <el-form label-position="right" 
+                        ref="form" 
+                        label-width="150px" 
+                        status-icon class="max-w-lg" 
+                        action="${ctp}/sportsEquipment/updateOrder" 
+                        method="post" 
+                        id="updateOrder2"
+                    >
+                        <el-form-item>
+                            <el-button type="danger" plain round @click="onSubmit2(form)">거부</el-button>
+                        </el-form-item>
+                        <input type="hidden" name="orderNo" :value="scope.row.orderNo">
+                        <input type="hidden" name="orderStatus" value="거부">
+                    </el-form>
+                </span>
+              
+                <el-button type="primary" plain round v-else >{{ scope.row.orderStatus }} 완료</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
  	
     <!-- 페이징 네비게이션 -->
     <div class="flex justify-center">
@@ -149,9 +151,12 @@
 			searchBranch: model.param.searchBranch,
 			beginDate: model.param.beginDate,
 			endDate: model.param.endDate,
+            loading: false,
 	  	};
 	},
-	
+	mounted() {
+        this.loading = true;
+    },
 	methods: {
 		searchSubmit() {
 			document.getElementById('searchForm').submit();
@@ -180,34 +185,10 @@
 
 			location.href = '/sportsEquipment/orderByHead?' + param.toString();
       	},
+        moment(date) {
+            return moment(date);
+        }
 	}
 </c:set>
-<style>
-  .custom-table {
-    border: 1px solid #ccc;
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .custom-table th, .custom-table td {
-    padding: 10px;
-    text-align: center;
-  }
-
-  .custom-table th {
-    background-color: #f0f0f0; 
-  }
-
-  .custom-table img {
-    width: 50px;
-    height: 50px;
-  }
-
- .custom-table button {
-    border: 1px solid #ccc;
-   padding: 5px 10px;
-    text-align: center; 
- }
-</style>
 
 <%@ include file="/inc/admin_layout.jsp"%>

@@ -46,4 +46,7 @@ prefix="c" %>
     [v-cloak] {
         display: none;
     }
+    .el-menu-item.is-active {
+        font-weight: bold !important;
+    }
 </style>

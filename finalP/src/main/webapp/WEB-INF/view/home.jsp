@@ -24,7 +24,7 @@ prefix="c"%>
         <!-- 프로그램일정 -->
         <div class="space-y-4">
             <el-text size="large" tag="b">프로그램 일정</el-text>
-            <el-row>
+            <el-row :gutter="10">
                 <el-col :span="12">
                     <el-select
                         v-model="selectBranch"
@@ -135,29 +135,68 @@ prefix="c"%>
     </template>
 </c:set>
 
+<!-- prettier-ignore -->
 <c:set var="script">
-    data() { return { images: [ { title: '본점', src: '/place0.jpg' }, { title:
-    '본점', src: '/place1.jpg' }, { title: '부산점', src: '/place2.jpg' }, {
-    title: '부산점', src: '/place6.jpg' }, { title: '대전점', src: '/place3.jpg'
-    }, { title: '여수점', src: '/place4.jpg' }, { title: '까치산점', src:
-    '/place5.jpg' }, ], branchList: JSON.parse('${branchList}'), programList:
-    JSON.parse('${programList}'), selectBranch: null, selectProgram: null,
-    reservationInfos: [], selectDate: new Date(), notices:
-    JSON.parse('${noticeList}'), isEmployee: Boolean('${loginEmployee}'), } },
-    watch: { selectProgram: function(now, before) { const self = this; if (now)
-    { axios.get('${ctp}/reservation/program/' + now + '/reservationInfo') .then((res) =>
-    self.reservationInfos = res.data); } }, }, methods: { validCheck() { let
-    message = ''; const day = moment(this.selectDate).format('yyyy-MM-DD'); if
-    (!this.getInfo(day)) { message = '예약 가능한 일자를 선택해 주세요.'; } if
-    (!this.selectProgram) { message = "프로그램을 선택해 주세요."; } if
-    (!this.selectBranch) { message = "지점을 선택해 주세요."; } return message;
-    }, getDayString(date) { const [year, month, day] = date.split('-'); const
-    dateString = [month, day].join('-'); const info = this.getInfo(date); let
-    reservationString = ''; if (info) { reservationString = '(' +
-    (info.maxCustomer - info.cntCustomer) + '개 남음)'; } return dateString +
-    reservationString; }, getInfo(date) { const info =
-    this.reservationInfos.find(info => info.programDate === date); return info;
-    }, }
+    data() { 
+        return { 
+            images: [ 
+                { title: '본점', src: '/place0.jpg' }, 
+                { title: '본점', src: '/place1.jpg' }, 
+                { title: '부산점', src: '/place2.jpg' }, 
+                { title: '부산점', src: '/place6.jpg' }, 
+                { title: '대전점', src: '/place3.jpg' }, 
+                { title: '여수점', src: '/place4.jpg' }, 
+                { title: '까치산점', src: '/place5.jpg' }, 
+            ], 
+            branchList: JSON.parse('${branchList}'), 
+            programList: JSON.parse('${programList}'), 
+            selectBranch: null, 
+            selectProgram: null,
+            reservationInfos: [], 
+            selectDate: new Date(), 
+            notices: JSON.parse('${noticeList}'), 
+            isEmployee: Boolean('${loginEmployee}'), 
+        } 
+    },
+    watch: { 
+        selectProgram: function(now, before) { 
+            const self = this; 
+            if (now) { 
+                axios.get('${ctp}/reservation/program/' + now + '/reservationInfo')
+                    .then((res) => self.reservationInfos = res.data); 
+            } 
+        }, 
+    }, 
+    methods: {
+        validCheck() { 
+            let message = ''; 
+            const day = moment(this.selectDate).format('yyyy-MM-DD'); 
+            if (!this.getInfo(day)) {
+                message = '예약 가능한 일자를 선택해 주세요.'; 
+            } 
+            if (!this.selectProgram) {
+                message = "프로그램을 선택해 주세요."; 
+            } 
+            if (!this.selectBranch) { 
+                message = "지점을 선택해 주세요."; 
+            } 
+            return message; 
+        }, 
+        getDayString(date) { 
+            const [year, month, day] = date.split('-'); 
+            const dateString = [month, day].join('-'); 
+            const info = this.getInfo(date); 
+            let reservationString = '';
+            if (info) { 
+                reservationString = '(' + (info.maxCustomer - info.cntCustomer) + '개 남음)'; 
+            } 
+            return dateString + reservationString; 
+        }, 
+        getInfo(date) {
+            const info = this.reservationInfos.find(info => info.programDate === date);
+            return info; 
+        }, 
+    }
 </c:set>
 
 <style>
@@ -170,13 +209,5 @@ prefix="c"%>
     }
 </style>
 
-<%-- Check if loginEmployee session attribute exists --%> 
-<% Object loginEmployee = session.getAttribute("loginEmployee"); 
-if (loginEmployee != null) { 
-%> 
-<%@ include file="/inc/admin_layout.jsp" %> 
-<% } 
-else { %> 
-<%@include file="/inc/user_layout.jsp" %> 
-<% } 
-%>
+<!-- prettier-ignore -->
+<%@include file="/inc/user_layout.jsp" %>

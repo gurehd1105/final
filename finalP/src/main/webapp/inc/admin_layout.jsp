@@ -7,10 +7,10 @@ pageEncoding="UTF-8"%>
     </head>
     <body class="m-0 h-[100vh]">
         <jsp:include page="/inc/admin_navbar.jsp" />
-        <div class="flex flex-row divide-x">
+        <div class="flex flex-row divide-x min-h-[calc(100vh-60px)]">
             <jsp:include page="/inc/admin_sidebar.jsp" />
-            <div id="app" class="w-full" v-cloak>
-                <el-scrollbar class="h-[calc(100vh-60px)]">
+            <div id="app" class="w-[calc(100vw-250px)]" v-cloak>
+                <el-scrollbar>
                     <el-main>
                         <c:out value="${body}" escapeXml="false" />
                     </el-main>
