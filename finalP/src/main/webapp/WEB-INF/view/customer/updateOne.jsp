@@ -8,6 +8,10 @@
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 
 <c:set var="body">
+
+<el-row :gutter="40">
+	<el-col :span="12">	
+
 	<el-form label-position="right" ref="form" label-width="150px" status-icon class="max-w-lg" 
 			action="${ctp}/customer/updateOne" method="post"  id="updateOne" enctype="multipart/form-data">
 			
@@ -19,14 +23,14 @@
 		    :on-success="handleSuccess"
 		  >
 		    <img v-if="customer.customerImg" :src="customer.customerImg" class="avatar" />
-		    <el-icon v-else class="avatar-uploader-icon"><Plus /><span>+</span></el-icon>
+		    <el-icon v-else class="avatar-uploader-icon"><Plus /><span>(선택)</span></el-icon>
 		  </el-upload> 
 		 <input v-if="customer.customerImg" type="hidden" :value="customer.customerImg" name="customerImg"/>
 		 
 		  </el-form-item>
 			
 	    <el-form-item label="아이디">
-	        <el-input v-model="customer.id" name="customerId" placeholder="ID"/>
+	        <el-input readonly v-model="customer.id" name="customerId" placeholder="ID"/>
 	    </el-form-item>
 
 	    <el-form-item label="이름">
@@ -63,23 +67,23 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="customer.address.address" name="customerAddress" placeholder="ADDRESS"/>
+			<el-input v-model="customer.address.address" name="customerAddress" id="address" placeholder="ADDRESS"/>
 	    </el-form-item>	    
 	   
 	    <el-form-item label="이메일">
-	    	<el-col :span="14">
+	    	<el-col :span="12">
 		        <el-input v-model="customer.customerEmailId" placeholder="EMAILID"/>
 	        </el-col>
-	        <el-col :span="2" class="text-center">@</el-col>
-	        <el-col :span="8">
+	        <span>@</span>
+	        <el-col :span="10">
 	        	<el-autocomplete
 			        v-model="customer.customerEmailJuso"
 			        :fetch-suggestions="getSuggestion"
 			        clearable
 			        class="inline-input w-full"
-			        placeholder="EMAIL ADDRESS"
+			        placeholder="EMAIL"
 			      />
-	        </el-col>	      
+	        </el-col>
 	    </el-form-item>
 	     <el-form-item>
 	    	  <el-input type="hidden" name="customerEmail" :value="customer.customerEmailId + '@' +customer.customerEmailJuso">
@@ -90,6 +94,15 @@
 	    </el-form-item>
 
 	</el-form>
+	</el-col>
+	
+	<el-col :span="10">	
+		<el-alert title="작성 시 확인해주세요." type="warning" style="margin-top:10%;">
+			<p>사진을 제외한 모든 정보는 필수정보로 정확히 입력해주세요.</p><br>
+			<p>주소 오등록으로 추후 프로그램 출석 시 미조회되는 경우가 있음을 주의바랍니다.</p>
+		</el-alert>
+	</el-col>
+</el-row>
 </c:set>
 <c:set var="script">
 		data() {
@@ -127,8 +140,20 @@
 			return true;
 		},
 		onSubmit() {
-			document.getElementById('updateOne').submit();
-		},
+			const address = document.getElementById('address').value;
+				
+			  	if(this.customer.phone.length < 4 || this.customer.customerEmailId.length < 4 || 
+			  		this.customer.customerEmailJuso.length < 4 ){
+					alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
+				} else if(this.customer.name.length < 2) {
+					alert('이름은 2글자 이상 입력해주세요.');
+				} else if(address.length < 1) {
+					alert('우편번호 및 주소를 입력해주세요.');
+				} else {
+					document.getElementById('updateOne').submit();
+				}
+			},
+				
 		getSuggestion(query, cb) {
 			const result = this.emailSuggestion.filter(x => x.indexOf(query) !== -1);
 			cb(result.map(x => { return { value: x } }));
@@ -139,12 +164,15 @@
 		},
 			
 		openPostCode() {
+			this.customer.address.address = '';
+			document.querySelector('#address').disabled = true;
 			const self = this;
 			new daum.Postcode(
 			{
 				oncomplete : function(data) {
+					document.querySelector('#address').disabled = false;
 					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
+					
 					// 각 주소의 노출 규칙에 따라 주소를 조합한다.
 					// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
 					var addr = ''; // 주소 변수

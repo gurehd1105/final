@@ -77,14 +77,16 @@ public class CustomerController extends DefaultController{
 	@PostMapping("/delete")
 	public String deleteCustomer(Customer customer, HttpSession session) {
 		
-		
-		int result = customerService.deleteCustomer(customer);
+		int result = 0;
+		result = customerService.deleteCustomer(customer);
+		log.info(result + " / 1 성공 / 0 실패");
 		if (result == 1) { // 탈퇴 완 --> login 창으로 이동
 			session.invalidate();
 			return ViewRoutes.사용자_로그인;
 		} else { // 예외발생
 			return ViewRoutes.사용자_삭제;
 		}
+		
 
 	}
 
@@ -164,7 +166,8 @@ public class CustomerController extends DefaultController{
 	@PostMapping("/pwCheck")
 	@ResponseBody	// PW 체크로직
 	public boolean pwCheck(@RequestBody Customer customer) {
-		boolean exist = customerService.loginCustomer(customer) != null;				
+		boolean exist = customerService.loginCustomer(customer) != null;
+		// PW 일치 시 ture 반환
 		return exist;
 	}
 	

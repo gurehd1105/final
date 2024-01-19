@@ -76,8 +76,8 @@ position: 'top-left',
 	
 	methods: {
 		submit() {
-			if(this.reviewTitle.length < 10 || this.reviewContent.length < 10){
-				alert('제목 및 내용은 각 10글자 이상 입력해주세요.');
+			if(this.reviewTitle.length < 5 || this.reviewContent.length < 10){
+				alert('제목 및 내용은 각 5자 , 10자 이상 입력해주세요.');
 			} else if(this.customerAttendanceNo.length < 1 || this.check == ''){
 				alert('출석정보를 선택해주세요');
 			} else {

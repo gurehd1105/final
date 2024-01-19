@@ -86,7 +86,7 @@
 			        :fetch-suggestions="getSuggestion"
 			        clearable
 			        class="inline-input w-full"
-			        placeholder="EMAIL ADDRESS"
+			        placeholder="EMAIL"
 			      />
 	        </el-col>	      
 	    </el-form-item>	   
@@ -153,10 +153,13 @@
 		},
 					
 		openPostCode() {
+			this.customer.address.address = '';
+			document.querySelector('#address').disabled = true;
 			const self = this;
 			new daum.Postcode(
 			{
 				oncomplete : function(data) {
+					document.querySelector('#address').disabled = false;
 					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
 					// 각 주소의 노출 규칙에 따라 주소를 조합한다.
@@ -205,9 +208,9 @@
 		const finalId = document.getElementById('customerId').value;
 		const address = document.getElementById('address').value;
 		const postCode = document.getElementById('postCode').value;
-			//if(finalId.length < 1){
-				//alert('ID 중복을 확인해주세요.');
-		  if(this.customer.pw.length < 4 || this.customer.phone.length < 4
+			if(finalId.length < 1){
+				alert('ID 중복을 확인해주세요.');
+		  	} else if(this.customer.pw.length < 4 || this.customer.phone.length < 4
 			 || this.customer.customerEmailId.length < 4 || this.customer.customerEmailJuso.length < 4 ){
 				alert('이름 외 모든 란은 4글자 이상 입력해주세요.');
 			} else if(this.customer.name.length < 2) {

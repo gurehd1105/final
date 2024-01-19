@@ -66,7 +66,7 @@ public class CustomerService {
         insertCustomerImg =
             customerMapper.insertCustomerImg(paramCustomerImg) == 1;
 
-        if (insertCustomer && insertCustomerDetail) { // Image 정보 없어도 가입가능
+        if (insertCustomer && insertCustomerDetail) { // Image 정보 없어도 가입/탈퇴 가능
             result = 1;
         }
         return result;
@@ -85,7 +85,7 @@ public class CustomerService {
 
         deleteImg = customerMapper.deleteCustomerImg(paramCustomer) == 1;
 
-        if (updateActive && deleteDetail && deleteImg) {
+        if (updateActive && deleteDetail) {	// Image 정보 없어도 가입/탈퇴 가능
             result = 1;
         }
         return result;

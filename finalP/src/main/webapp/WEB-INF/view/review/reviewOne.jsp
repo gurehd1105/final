@@ -36,17 +36,25 @@
 
 	<c:if test="${ replyMap != null }">
 		<!-- 답변 있을 시 답변표시 -->
-		<el-descriptions title="리뷰 답변" column="2" border> <el-descriptions-item
-			v-for:="key of Object.keys(reply)" :label="key">{{
-		reply[key] }}</el-descriptions-item> </el-descriptions>
-		<span id="replyBtn"> <el-button type="primary"
-				@click="updateReply()">수정</el-button> <el-button type="primary"
-				@click="deleteReply()">삭제</el-button>
+		<el-descriptions title="리뷰 답변" column="2" border> 
+			<el-descriptions-item
+				v-for:="key of Object.keys(reply)" :label="key">
+				{{ reply[key] }}
+			</el-descriptions-item> 
+		</el-descriptions>
+	<br>
+		<span id="replyBtn"> 
+			<el-button type="primary" @click="updateReply()">수정</el-button> 
+			<el-button type="primary" @click="deleteReply()">삭제</el-button>
 		</span>
-		<span id="updateReplyBtn" style="display: none;"> <el-button
-				type="primary" @click="updateReplyAct()">완료</el-button>
+		<span id="updateReplyBtn" style="display: none;"> 
+			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
 			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
 		</span>
+	<br>
+	<br>
+
+		<strong>Reply</strong>
 		<textarea id="reviewReplyContent" readonly rows="10" cols="160"
 			style="resize: none;">{{ replyContent }}</textarea>
 
@@ -63,13 +71,21 @@
 		<!-- 등록답변 없음 + 관리자 로그인 시 표시 -->
 		<el-form label-position="right" ref="form" label-width="150px"
 			status-icon class="max-w-lg" action="${ctp}/review/insertReply"
-			method="post" id="insertReplyAct"> <el-form-item column="2">
-		<input type="hidden" name="reviewNo" v-model="reviewNo" /> <input
-			type="hidden" name="employeeNo" v-model="employeeNo" /> </el-form-item> <el-form-item
-			label="작성자"> <input readonly v-model="employeeId" />
-		</el-form-item> <el-form-item label="답변"> <textarea rows="10"
-			cols="160" style="resize: none;" name="reviewReplyContent"></textarea>
-		</el-form-item> <el-button type="primary" @click="insertReply()">등록</el-button> </el-form>
+			method="post" id="insertReplyAct"> 
+			<el-form-item column="2">
+				<input type="hidden" name="reviewNo" v-model="reviewNo" /> 
+				<input type="hidden" name="employeeNo" v-model="employeeNo" /> 
+			</el-form-item> 
+			
+			<el-form-item label="작성자"> 
+				<el-input readonly v-model="employeeId" />
+			</el-form-item> 
+			
+			<el-form-item label="답변"> 
+				<textarea rows="10" cols="160" style="resize: none;" name="reviewReplyContent"></textarea>
+			</el-form-item> 
+			
+			<el-button type="primary" @click="insertReply()">등록</el-button> </el-form>
 	</c:if>
 
 	<br>
@@ -104,7 +120,8 @@
 			replyContent : '${ replyMap.reviewReplyContent }',
 			reviewReplyNo: '${ replyMap.reviewReplyNo }',
 			employeeNo : '${ loginEmployee.employeeNo }',
-			employeeId : '${ loginEmployee.employeeId }',			
+			employeeId : '${ loginEmployee.employeeId }',
+			
 		}
 	},
 	

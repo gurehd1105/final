@@ -11,23 +11,24 @@
 		<el-button type="primary" @click="insert()" v-if="isEmployee">상품추가</el-button>
     </div>
 
-	<el-table :data="membershipList" style="width: 100%">	
-		<el-table-column prop="membershipNo" label="No"></el-table-column>
+	<el-table :data="membershipList" border style="width: 100%">
+		<el-table-column type="index" label="No" width="120"></el-table-column>
+		<el-table-column prop="membershipNo" label="상품번호"></el-table-column>
 		<el-table-column prop="membershipName" label="상품명"></el-table-column>
 		<el-table-column prop="membershipPrice" label="가격"></el-table-column>
-	 		<c:if test="${ loginCustomer == null && loginEmployee != null }"> 
-				<el-table-column label="수정/삭제"> <template #default="scope">
+	 		
+				<el-table-column v-if="isEmployee" label="수정/삭제"> <template #default="scope">
 					<el-button type="primary" @click="update(scope.row)">수정</el-button> 
 					<el-button type="primary" @click="remove(scope.row)">삭제</el-button></template> 
 				</el-table-column>
-	 		</c:if> 
-		 	<c:if test="${ loginEmployee == null }">
-				<el-table-column label="결제"> 
+	 		
+		 	
+				<el-table-column v-if="isCustomer" label="결제"> 
 					<template #default="scope">
 						<el-button type="primary" @click="insertPayment(scope.row)">상품결제</el-button> 
 					</template>
 				</el-table-column>
-			</c:if>	
+
 	</el-table>
 
 </c:set>
@@ -36,6 +37,7 @@
 		return {
 			membershipList : JSON.parse('${ membershipList }'),
             isEmployee: Boolean('${ loginEmployee }'),
+            isCustomer: Boolean('${loginCustomer}'),
 		}
 	},
 	methods: {
@@ -79,6 +81,8 @@
 			if(${ loginCustomer == null }){
 				alert('로그인 후 이용해주세요.');
 				location.href = '${ctp}/customer/login';
+			} else if(${ loginCustomer.paymentActive == '사용중' }) {
+				alert('이전 구매한 멤버십 기간만료 후 결제 가능합니다.');
 			} else {
 				if(confirm(membership.membershipName + ' 상품을 결제하시겠습니까?')){
 					const self = this;
