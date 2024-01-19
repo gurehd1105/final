@@ -31,8 +31,9 @@ public interface ReservationMapper {
    
    // 고객용 프로그램 예약 가능 정보 조회
    List<ProgramDate> selectProgramDates(int program_no);
-   // check
-   List<Map<String, Object>> check(int customerNo);
+   
+   // 예약 중복 체크
+   List<ProgramDate> check(int customerNo);
 
   
 }

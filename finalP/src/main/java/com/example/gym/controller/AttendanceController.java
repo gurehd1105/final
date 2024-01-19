@@ -28,6 +28,7 @@ import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.Builder.Default;
 
 @Controller
@@ -45,8 +46,7 @@ public class AttendanceController {
 	   model.addAttribute("attendanceList", mapper.writeValueAsString(attendanceList));
 	   System.out.println(attendanceList + "<--attendanceList");
 	   return ViewRoutes.출석_조회;
-	   
-	   
+	   	   
 	}
 	//출석 체크
 	@GetMapping("/insert")
@@ -54,27 +54,39 @@ public class AttendanceController {
 		Map<String, Object> paramMap = new HashMap<>();
 		
 	    Map<String, Object> resultMap = reservationService.selectReservationList(paramMap);
-	    model.addAttribute("reservationList", resultMap.get("reservationList")); 
-	    System.out.println(resultMap + "<--resultMap");
 
+	    
+	    model.addAttribute("reservationList", resultMap.get("reservationList")); 
+	    	    
+	    System.out.println(resultMap + "<--resultMap");
+	    
 	    return ViewRoutes.출석_추가;
 	}
 	
 	  @PostMapping("/insert")
 	    @ResponseBody
-	    public int insertAttendance(@RequestBody Map<String, Object> paramMap ) {
+	    public int insertAttendance(@RequestBody Map<String, Object> paramMap, HttpSession session ) {
 		  System.out.println(paramMap + "<-- paramMap");
-	    // 출석 정보 생성 및 처리 로직
-	    CustomerAttendance attendance = new CustomerAttendance();
-	    attendance.setProgramReservationNo(Integer.parseInt((String)paramMap.get("reservationNo")));
-	    attendance.setCustomerAttendanceEnterTime((String) paramMap.get("currentTime"));
-
-	    // 출석 정보 저장
-	    int result = attendanceService.insertAttendance(attendance);
-		
-	    return result;
-   
-	  }
+		  String a = (String)paramMap.get("currentTime");
+		  String b = a.substring(0,10);
+		  System.out.println(b + "<-- b");
+	    // 출석 정보 생성
+		int result = 0;
+		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+		Map<String, Object> attendanceCheck = attendanceService.selectCustomerAttendanceby(loginCustomer);
+		if(b!= attendanceCheck.get("programDate")){
+			return result;
+		}else {
+		    CustomerAttendance attendance = new CustomerAttendance();
+		    attendance.setProgramReservationNo(Integer.parseInt((String)paramMap.get("reservationNo")));
+		    attendance.setCustomerAttendanceEnterTime((String) paramMap.get("currentTime"));
+	
+		    // 출석 정보 저장
+		    result = attendanceService.insertAttendance(attendance);
+			
+		    return result;
+		}
+	 }
 		
 
 	

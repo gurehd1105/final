@@ -141,21 +141,17 @@ public class ReservationController extends DefaultController {
 		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
         System.out.println(loginCustomer + "<--loginCustomer");
-        Map<String, Object> check = null;
-        List<Map<String, Object>> list = reservationService.check((int) loginCustomer.get("customerNo"));
-        if(!list.isEmpty()) {
-        	 check = list.get(0);
-        }      
+ 
+        List<ProgramDate> list = reservationService.check((int) loginCustomer.get("customerNo"));
+      
         page.setRowPerPage(-1);
         List<Branch> branchList = branchService.getBranchList(page);
         Map<String, Object> programList = programService.selectProgramListService(
 											session, currentPage, programActive, searchWord);
 		model.addAttribute("programList", toJson(programList));
         model.addAttribute("branchList", toJson(branchList));
-        if(check != null) {
-        	model.addAttribute("check", check);
-        }        
-        System.out.println(check +"<--check");
+              
+       
         System.out.println(loginCustomer +"<-- loginCustomer");
         System.out.println(branchList + "<--branchList");
         System.out.println(programList + "<--programList");
@@ -170,18 +166,62 @@ public class ReservationController extends DefaultController {
         System.out.println(result + "<--result");
         return ResponseEntity.ok(result);
     }
-
+  
     @PostMapping("/insert")
     @ResponseBody
-    public ResponseEntity<?> insertReservation2(@RequestBody ProgramReservation reservation, HttpSession session) {
-		log.info(reservation.toString());
-		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+    public ResponseEntity<Map<String, String>> insertReservation2(@RequestBody ProgramReservation reservation, HttpSession session) {
+        log.info(reservation.toString());
+        Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
+        
+        // 클라이언트로부터 전달받은 예약 날짜
+        int programDate = reservation.getProgramDateNo(); 
+        
+        // 중복 체크를 위한 데이터 생성
+        ProgramDate targetProgramDate = new ProgramDate();
+        targetProgramDate.setProgramDateNo(programDate);
+        
+        // 중복 체크
+        List<ProgramDate> check = reservationService.check((int) loginCustomer.get("customerNo"));
+        System.out.println(check + "<--check");
+        boolean duplicate = check.contains(targetProgramDate);
+        System.out.println(programDate + "<--programdate");
 
-        reservationService.insertReservation(reservation);
-        return ResponseEntity.ok("예약이 정상적으로 완료되었습니다.");
+        // 응답 메시지 생성
+        Map<String, String> response = new HashMap<>();
+
+        // 중복이 아닌 경우에만 예약 진행
+        if (!duplicate) {
+            reservationService.insertReservation(reservation);
+            response.put("message", "예약이 정상적으로 완료되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            // 중복인 경우에는 예약을 진행하지 않고 클라이언트에게 알림
+            response.put("message", "중복된 예약이 있습니다. 다른 날짜를 선택해주세요.");
+            return ResponseEntity.ok(response);
+        }
     }
 
+    
+    /**
+    @PostMapping("/check")
+    @ResponseBody
+    public int check(@RequestBody Map<String, Object> programDate, HttpSession session) {
+    	int result = 0;
+    	Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+    	
+    	List<ProgramDate> check = reservationService.check((int) loginCustomer.get("customerNo"));
+    	System.out.println(check +"<--check");
+    	boolean duplicate = check.stream()
+    		    .anyMatch(pd -> pd.getProgramDate().equals(programDate.get("programDate")));
+    	System.out.println(programDate +"<--programdate");
+    	if(duplicate) {
+    		result =1;
+    	}
+   	
+    	return result;
+    }
+*/
     // 예약 삭제
     @GetMapping("/delete")
     public String deleteReservation(ProgramReservation reservation,
