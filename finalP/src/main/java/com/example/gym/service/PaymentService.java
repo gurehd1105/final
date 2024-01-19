@@ -30,8 +30,8 @@ public class PaymentService {
 		List<Map<String, Object>> paymentList = paymentMapper.select(paramMap);
 		return paymentList;
 	}
-	public int countOfPayment() {
-		int result = paymentMapper.countOfPayment();
+	public int countOfPayment(Map<String, Object> paramMap) {
+		int result = paymentMapper.countOfPayment(paramMap);
 		return result;
 	}
 }
