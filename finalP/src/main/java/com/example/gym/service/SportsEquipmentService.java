@@ -333,12 +333,12 @@ public class SportsEquipmentService {
         //sportsEquipment 추가를 시도하는 employeeNo가 지점 소속인지 확인
         //employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
         //mapper 호출
-        log.warn("임시 데이터 부산점 직원NO");
-        int branchLevel = 0;
-        log.info(branchLevel + " <-- 1:본사 0:지점");
-        if (branchLevel != 0) {
-            throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
-        }
+//        log.warn("임시 데이터 부산점 직원NO");
+//        int branchLevel = 0;
+//        log.info(branchLevel + " <-- 1:본사 0:지점");
+//        if (branchLevel != 0) {
+//            throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
+//        }
 
         //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
         SportsEquipmentOrder order = new SportsEquipmentOrder();

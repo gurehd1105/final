@@ -56,7 +56,7 @@
 	        	<td>{{ list.programNo }}</td>
 			    <td>{{ list.employeeId }}</td>
 			    <td>{{ list.programName }}</td>
-			    <td>{{ list.programContent }}</td>
+			    <td >{{ list.programContent }}</td>
 			    <td>{{ list.maxCustomer }}</td>
 			    <td>{{ list.programActive === 'Y' ? '활성화' : '비활성화' }}</td>
 			    <td>{{ new Date(list.createdate).toLocaleString() }}</td>
@@ -68,15 +68,7 @@
 	    </tbody>
     </table>
     <br>
-
-    <!-- 페이징 네비게이션 -->
-    <div class="flex justify-center">
-      <el-pagination layout="prev, pager, next" 
-      	:page-size="rowPerPage" 
-		v-model:current-page="pageNum" 
-		:total="totalCount"
-		@change="loadPage" />
-    </div>
+	<%@ include file="/inc/pagination.jsp" %>
 	
 </c:set>
 <c:set var="script">
