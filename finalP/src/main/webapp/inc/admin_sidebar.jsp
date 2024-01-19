@@ -58,6 +58,15 @@ pageEncoding="UTF-8"%>
                             (지점)재고 목록
                         </el-menu-item>
                     </el-sub-menu>
+                    <el-sub-menu index="1-6">
+                    	<template #title>멤버십 및 결제관리</template>
+                        <el-menu-item index="1-6-1">
+                            멤버십 종류관리
+                        </el-menu-item>
+                        <el-menu-item index="1-6-2">
+                            고객 결제내역 확인
+                        </el-menu-item>
+                    </el-sub-menu>
                 </el-sub-menu>                       
             </el-menu>
         </el-scrollbar>
@@ -99,6 +108,8 @@ pageEncoding="UTF-8"%>
                     ],
                     "1-5-5": ["${ctp}/sportsEquipment/orderByBranch"],
                     "1-5-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
+                    "1-6-1": ["${ctp}/membership/list"],
+                    "1-6-2": ["${ctp}/payment/list"],
                 },
             };
         },
