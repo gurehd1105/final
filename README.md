@@ -68,7 +68,7 @@
 - **형상 관리**: Git, GitHub
 
 ## 사용 방법
-- 권도헌 : [QA 방법](여기에 링크를 입력해주세요.)
+- 권도헌 : [QA 방법](https://peppermint-falcon-0f8.notion.site/QA-d48b7318b98046148b0bfd4e6c200413?pvs=4)
 - 주가희 : [QA 방법](https://peppermint-falcon-0f8.notion.site/QA-cd71c15e40a6481e9148e4c23cc9f887?pvs=4)
 - 박겨레 : [QA 방법](https://www.notion.so/QA-490d756e34c24713b3cd68c75ca8229a?pvs=4)
 - 김지산 : [QA 방법](https://peppermint-falcon-0f8.notion.site/QA-3ac3df88996f479da47d4dfe7712d757?pvs=4)
