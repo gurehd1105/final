@@ -4,17 +4,43 @@
 
 		<!-- 로그인 -->
 	<select id="loginCustomer" parameterType="com.example.gym.vo.Customer"
-						resultType="com.example.gym.vo.Customer">
+						resultType="java.util.Map">
 		SELECT
-				customer_no AS customerNo,
-				customer_id AS customerId,
-				customer_active AS customerActive,
-				createdate, updatedate
-		FROM customer
-	
-	WHERE customer_id = #{customerId}
-	AND customer_pw = PASSWORD(#{customerPw})
-	AND customer_active = 'Y'
+		   c.customer_no AS customerNo,
+		   c.customer_id AS customerId,
+		   c.customer_active AS customerActive,
+		   c.createdate, c.updatedate,
+		   n.paymentNo,
+		   n.payment_active AS paymentActive,
+		   case when n.membershipName IS not NULL 
+				then n.membershipName 
+				ELSE '구매내역 없음' END
+				AS membershipName
+		FROM customer c
+		LEFT OUTER JOIN 
+		(SELECT 
+		      p.payment_no AS paymentNo,
+		      p.customer_no AS customerNo,
+		      p.membership_no AS membershipNo,
+		      p.payment_date AS paymentDate,
+		      p.createdate, p.updatedate,
+		      m.membership_name AS membershipName,
+		      case 
+				when TIMESTAMPDIFF(MONTH ,  p.payment_date, NOW()) <![CDATA[ >= ]]> m.membership_month
+				then '기한만료' ELSE '사용중' END  AS payment_active			<!-- 세션 내 가장 최근 결제정보 활성화 상태 저장 / '사용중' or '기한만료'  -->
+		   FROM payment p
+		   INNER JOIN customer c
+		   ON p.customer_no = c.customer_no
+		   
+		   INNER JOIN membership m
+		   ON p.membership_no = m.membership_no
+		WHERE c.customer_id = #{customerId}
+		ORDER BY createdate DESC
+		LIMIT 0,1) n
+		ON c.customer_no = n.customerNo
+		WHERE c.customer_id = #{customerId}
+		AND c.customer_pw = PASSWORD(#{customerPw})
+		AND c.customer_active = 'Y'
 	</select>
 	
 	<!-- 가입 프로세스 시작 -->
@@ -68,16 +94,10 @@
 	<insert id="insertCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
 		INSERT INTO customer_img (
 			customer_no,
-			customer_img_origin_name,
-			customer_img_file_name,
-			customer_img_size,
-			customer_img_type			
+			customer_img_origin_name			
 		) VALUES (
 			#{customerNo},
-			#{customerImgOriginName},
-			#{customerImgFileName},
-			#{customerImgSize},
-			#{customerImgType}
+			#{customerImgOriginName}
 		)			
 	</insert>
 	<!-- 가입 프로세스 종료 -->
@@ -103,7 +123,7 @@
 	<!-- 탈퇴 프로세스 종료 -->
 	
 	<!-- 상세정보/이미지 -> 마이페이지  -->
-	<select id="customerOne" parameterType="com.example.gym.vo.Customer"
+	<select id="customerOne" parameterType="Integer"
 										resultType="java.util.Map">
 		SELECT
 			c.customer_no AS customerNo,
@@ -126,13 +146,10 @@
 			
 			ci.customer_img_no AS customerImgNo,
 			ci.customer_img_origin_name AS customerImgOriginName,
-			ci.customer_img_file_name AS customerImgFileName,
-			ci.customer_img_size AS customerImgSize,
-			ci.customer_img_type AS customerImgType,
 			ci.createdate AS ciCreatedate, 
 			ci.updatedate AS ciUpdatedate
 		FROM customer c 
-		INNER JOIN customer_detail cd
+		LEFT OUTER JOIN customer_detail cd
 		ON c.customer_no = cd.customer_no
 		LEFT OUTER JOIN customer_img ci
 		ON c.customer_no = ci.customer_no
@@ -155,16 +172,12 @@
 		WHERE customer_no = #{customerNo}
 	</update>
 		<!-- 이미지 변경 -->
-	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">
-		<if test="customerImg != null">
+	<update id="updateCustomerImg" parameterType="com.example.gym.vo.CustomerImg">		
 		UPDATE customer_img SET
 			customer_img_origin_name = #{customerImgOriginName},
-			customer_img_file_name = #{customerImgFileName},
-			customer_img_size = #{customerImgSize},
-			customer_img_type = #{customerImgType},
 			updatedate = NOW()
 		WHERE customer_no = #{customerNo}		
-		</if>
+		
 	</update>
 		<!-- Img 변경 위한 정보조회 -->
 	<select id="checkCustomerImg" parameterType="com.example.gym.vo.Customer"
@@ -195,8 +208,8 @@
 			c.customer_id AS customerId,
 			c.customer_active AS customerActive,
 			
-			c.createdate AS cCreatedate, 
-			c.updatedate AS cUpdatedate,
+			c.createdate AS createdate, 
+			c.updatedate AS updatedate,
 			
 			cd.customer_name AS customerName,
 			cd.customer_gender AS customerGender,
@@ -204,24 +217,18 @@
 			cd.customer_weight AS customerWeight,
 			cd.customer_phone AS customerPhone,
 			cd.customer_address AS customerAddress,
-			cd.customer_email AS customerEmail,
+			cd.customer_email AS customerEmail
 			
-			cd.createdate AS cdCreatedate, 
-			cd.updatedate AS cdUpdatedate, 
-			
-			ci.customer_img_no AS customerImgNo,
-			ci.customer_img_origin_name AS customerImgOriginName,
-			ci.customer_img_file_name AS customerImgFileName,
-			ci.customer_img_size AS customerImgSize,
-			ci.customer_img_type AS customerImgType,
-			ci.createdate AS ciCreatedate, 
-			ci.updatedate AS ciUpdatedate
 		FROM customer c 
 		INNER JOIN customer_detail cd
 		ON c.customer_no = cd.customer_no
-		LEFT OUTER JOIN customer_img ci
-		ON c.customer_no = ci.customer_no
-		
 	</select>
 	
+    <select id="selectAllCustomerImage" resultType="String">
+        SELECT img.customer_img_origin_name
+        FROM customer_img img
+            INNER JOIN customer ON img.customer_no = customer.customer_no
+        WHERE customer.customer_active = 'Y'
+            AND img.customer_img_origin_name IS NOT NULL
+    </select>
 </mapper>

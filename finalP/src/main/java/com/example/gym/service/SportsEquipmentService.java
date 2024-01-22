@@ -13,9 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.gym.mapper.SportsEquipmentMapper;
+import com.example.gym.vo.Employee;
+import com.example.gym.vo.SearchResult;
 import com.example.gym.vo.SportsEquipment;
 import com.example.gym.vo.SportsEquipmentImg;
 import com.example.gym.vo.SportsEquipmentOrder;
+import com.example.gym.vo.SportsEquipmentSearchParam;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -24,664 +27,461 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class SportsEquipmentService {
-	@Autowired private SportsEquipmentMapper sportsEquipmentMapper;
-	
-//----------------------------------------- SportsEquipment -------------------------------------
-	
-	//sportsEquipment 추가
-	public void insertSportsEquipmentService(HttpSession session,
-												String path,
-												String itemName, 
-												int itemPrice, 
-												MultipartFile[] sportsEquipmentImgList) {
-		
-		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
-		log.warn( "employee session 구현 후 수정");
-		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 1) {	
-			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
-		}
-		
-		//sportsEquipment 추가
-		SportsEquipment sportsEquipment = new SportsEquipment();
-		log.warn("employee session 구현 후 수정 -> employee_no 컬럼은 세션에서 받아와서 설정 " );
-		sportsEquipment.setEmployeeNo(1); 
-		sportsEquipment.setItemName(itemName);
-		sportsEquipment.setItemPrice(itemPrice);
-			
-		//mapper 호출
-		int row1 = sportsEquipmentMapper.insertSportsEquipment(sportsEquipment);
-		
-		//sportsEquipment 정보 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-		if(row1 != 1) {
-			throw new RuntimeException("예외발생 : sportsEquipment 정보 추가 실패");
-		}
-		
-		//추가 된 sportsEquipment 디버깅
-		System.err.println(sportsEquipment + " <-- 추가 된 sportsEquipment");
-		log.info(sportsEquipment + " <-- 추가 된 sportsEquipment");
-		
-		//sportsEquipmentImg 추가
-		for (MultipartFile equipmentImg : sportsEquipmentImgList) {
-			SportsEquipmentImg sportsEquipmentImg = new SportsEquipmentImg();
-			
-			//portsEquipmentImgFileName
-			String fileName = UUID.randomUUID().toString();
-			//확장자
-			String originName = equipmentImg.getOriginalFilename();
-			String extensionName = originName.substring(originName.lastIndexOf("."));
-			
-			sportsEquipmentImg.setSportsEquipmentNo(sportsEquipment.getSportsEquipmentNo());
-			sportsEquipmentImg.setSportsEquipmentImgSize((int)equipmentImg.getSize());
-			sportsEquipmentImg.setSportsEquipmentImgType(equipmentImg.getContentType());
-			sportsEquipmentImg.setSportsEquipmentImgOriginName(originName);
-			sportsEquipmentImg.setSportsEquipmentImgFileName(fileName+extensionName);
-		
-			//mapper 호출
-			int row2 = sportsEquipmentMapper.insertSportsEquipmentImg(sportsEquipmentImg);
-			//sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-			if(row2 != 1) {
-				throw new RuntimeException("예외발생 : sportsEquipmentImg 추가 실패");
-			}
-			File file = new File(path+"/"+fileName+extensionName);
-			try {
-				equipmentImg.transferTo(file);
-			} catch (IllegalStateException e) {
-				 e.printStackTrace();
-				throw new RuntimeException();
-			} catch (IOException e) {
-				 e.printStackTrace();
-				throw new RuntimeException();
-			}
-		}
-	}
 
-	//sportsEquipmentList 출력
-	public Map<String,Object> selectSportsEquipmentByPageService(HttpSession session,
-																	int currentPage,
-																	String equipmentActive,
-																	String searchWord) {
-		//디버깅
-		log.info(searchWord);
-		log.info("Current page: {}", currentPage);
-		log.info("equipmentActive : {}", equipmentActive);
-		
-		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap1 = new HashMap<>();
-		paramMap1.put("searchWord", searchWord);
-		paramMap1.put("equipmentActive", equipmentActive);
-		
-		//mapper 호출 
-		int sportsEquipmentCnt = sportsEquipmentMapper.selectSportsEquipmentCnt(paramMap1);
-		int lastPage = sportsEquipmentCnt/rowPerPage;
-		
-		if(sportsEquipmentCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentCnt : {}", sportsEquipmentCnt);
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap2 = new HashMap<>();
-		paramMap2.put("searchWord", searchWord);
-		paramMap2.put("equipmentActive", equipmentActive);
-		paramMap2.put("beginRow", beginRow);
-		paramMap2.put("rowPerPage", rowPerPage);
-		
-		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentList = sportsEquipmentMapper.selectSportsEquipmentByPage(paramMap2);
-		
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
-		resultMap.put("searchWord", searchWord);
-		resultMap.put("equipmentActive", equipmentActive);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentList", sportsEquipmentList);
-		
-		return resultMap;
-	}
-	
-	//sportsEquipment 수정 폼
-	public Map<String,Object> sportsEquipmentOneService(HttpSession session,
-																int sportsEquipmentNo) {
-		//디버깅
-		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+    @Autowired
+    private SportsEquipmentMapper mapper;
 
-		
-		//mapper 호출
-		Map<String,Object> resultMap  = sportsEquipmentMapper.selectSportsEquipmentOne(sportsEquipmentNo);
-		List<SportsEquipmentImg> sportsEquipmentImgList = sportsEquipmentMapper.selectSportsEquipmentImgList(sportsEquipmentNo);
-		
-		log.warn("employee session 구현 후 수정 " );
-		int branchLevel = 0;
-		int branchNo = 2;
-		if(branchLevel != 1) {
-			Map<String,Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
-			paramMap.put("branchNo", branchNo);
-			
-			//mapper 호출
-			Map<String,Object> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryOneByBranch(paramMap);
-			resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
-			
-		}
-		
-		resultMap.put("sportsEquipmentImgList", sportsEquipmentImgList);
-		
-		return resultMap;
-	}
-	
-	//sportsEquipment 수정 액션
-	public int updateSportsEquipmentService(HttpSession session,
-																int sportsEquipmentNo,
-																String itemName,
-																int itemPrice,
-																String equipmentActive) {
-		//디버깅
-		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
-		log.info("itemName : {}", itemName);
-		log.info("itemPrice : {}", itemPrice);
-		log.info("equipmentActive : {}", equipmentActive);
-	
-		//sportsEquipment 수정을 시도하는 employeeNo가 본사 소속인지 확인
-		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 1) {	
-			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
-		}
-		
-		//mapper에 보내줄 sportsEquipment 객체 세팅
-		SportsEquipment sportsEquipment = new SportsEquipment();
-		sportsEquipment.setSportsEquipmentNo(sportsEquipmentNo);
-		sportsEquipment.setItemName(itemName);
-		sportsEquipment.setItemPrice(itemPrice);
-		sportsEquipment.setEquipmentActive(equipmentActive);
-		log.warn("employee session 구현 후 수정 -> employee_no 컬럼은 세션에서 받아와서 설정 " );
-		sportsEquipment.setEmployeeNo(1);
-		
-		//mapper 호출
-		int row = sportsEquipmentMapper.updateSportsEquipment(sportsEquipment);
-		
-		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipment 수정실패 : row - {}", row);
-		} else {
-		    log.info("sportsEquipment 수정성공: row - {}", row);
-		}
-		return sportsEquipmentNo;
-	}
-	
-	//sportsEquipmentImg 개별 삭제 액션
-	public int deleteOneSportsEquipmentImgService(HttpSession session,
-																int sportsEquipmentNo,
-																int sportsEquipmentImgNo,
-																String sportsEquipmentImgFileName) {
-		//디버깅
-		log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
-		log.info("sportsEquipmentImgNo : {}", sportsEquipmentImgNo);
-		log.info("sportsEquipmentImgFileName : {}", sportsEquipmentImgFileName);
-	
-		//sportsEquipmentImg 삭제를 시도하는 employeeNo가 본사 소속인지 확인
-		log.warn("employee session 구현 후 수정 " );
-		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 1) {	
-			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
-		}
-		
-		//실제 img파일 먼저 삭제
-	    String path = session.getServletContext().getRealPath("/upload/sportsEquipment");
-	    File file = new File(path + "/" + sportsEquipmentImgFileName);
-		
-	    // 파일 삭제
-	    if (file.exists()) {
-	        if (file.delete()) {
-	            log.info("sportsEquipmentImg 파일 개별 삭제 성공");
-	        } else {
-	            log.info("sportsEquipmentImg 파일 개별 삭제 실패");
-	            throw new RuntimeException("sportsEquipmentImg 파일 개별 삭제 실패");
-	        }
-	    } else {
-	        log.info("sportsEquipmentImg 파일이 이미 존재하지 않습니다.");
-	    }
+    //----------------------------------------- SportsEquipment -------------------------------------
 
-		
-	    //데이터베이스 삭제
-		//mapper 호출
-		int row = sportsEquipmentMapper.deleteOneSportsEquipmentImg(sportsEquipmentImgNo);
-		
-		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentImg 개별 데이터베이스 삭제실패 : row - {}", row);
-		    throw new RuntimeException("데이터베이스 삭제 실패");
-		} else {
-		    log.info("sportsEquipmentImg 개별 삭제성공: row - {}", row);
-		}
-		return sportsEquipmentNo;
-	}
-	
-	//sportsEquipment 개별 Img 추가
-	public int insertOneSportsEquipmentImgService(HttpSession session,
-												String path,
-												int sportsEquipmentNo,
-												MultipartFile[] sportsEquipmentImgList) {
-		
-		//sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
-		log.warn("employee session 구현 후 수정 " );
-		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 1) {	
-			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
-		}
-		
-		//sportsEquipmentImg 추가
-		for (MultipartFile equipmentImg : sportsEquipmentImgList) {
-			SportsEquipmentImg sportsEquipmentImg = new SportsEquipmentImg();
-			
-			//portsEquipmentImgFileName
-			String fileName = UUID.randomUUID().toString();
-			//확장자
-			String originName = equipmentImg.getOriginalFilename();
-			String extensionName = originName.substring(originName.lastIndexOf("."));
-			
-			sportsEquipmentImg.setSportsEquipmentNo(sportsEquipmentNo);
-			sportsEquipmentImg.setSportsEquipmentImgSize((int)equipmentImg.getSize());
-			sportsEquipmentImg.setSportsEquipmentImgType(equipmentImg.getContentType());
-			sportsEquipmentImg.setSportsEquipmentImgOriginName(originName);
-			sportsEquipmentImg.setSportsEquipmentImgFileName(fileName+extensionName);
-		
-			//mapper 호출
-			int row = sportsEquipmentMapper.insertSportsEquipmentImg(sportsEquipmentImg);
-			//sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
-			if(row != 1) {
-				throw new RuntimeException("예외발생 : sportsEquipmentImg 추가 실패");
-			}
-			File file = new File(path+"/"+fileName+extensionName);
-			try {
-				equipmentImg.transferTo(file);
-			} catch (IllegalStateException e) {
-				 e.printStackTrace();
-				throw new RuntimeException();
-			} catch (IOException e) {
-				 e.printStackTrace();
-				throw new RuntimeException();
-			}
-		}
-		return sportsEquipmentNo;
-	}
-	
-//----------------------------------------- SportsEquipmentOrder -------------------------------------
-	
-	//sportsEquipmentOrder 추가
-	public void insertSportsEquipmentOrderService(HttpSession session,
-													int sportsEquipmentNo,
-													int quantity,
-													int itemPrice) {
-		
-		//sportsEquipment 추가를 시도하는 employeeNo가 지점 소속인지 확인
-		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-		//mapper 호출
-		log.warn("임시 데이터 부산점 직원NO" );
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(2);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 0) {	
-			throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
-		}
-		
-		//mapper에 보내줄 sportsEquipmentOrder 객체 세팅
-		SportsEquipmentOrder sportsEquipmentOrder = new SportsEquipmentOrder();
-		sportsEquipmentOrder.setSportsEquipmentNo(sportsEquipmentNo);
-		log.warn("employee session 구현 후 수정 -> branchNo 컬럼은 세션에서 받아와서 설정" );
-		sportsEquipmentOrder.setBranchNo(2);
-		sportsEquipmentOrder.setQuantity(quantity);
-		if(quantity > 0) {
-			sportsEquipmentOrder.setTotalPrice(itemPrice*quantity);
-		}else {
-			sportsEquipmentOrder.setTotalPrice(0);
-		}
-		//mapper 호출
-		int row = sportsEquipmentMapper.insertSportsEquipmentOrder(sportsEquipmentOrder);
-		
-		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 추가 실패 : row - {}", row);
-		} else {
-		    log.info("sportsEquipmentOrder 추가 성공 : row - {}", row);
-		}
-		
-	}
-	
-	//sportsEquipmentOrderList 출력(본사)
-	public Map<String,Object> selectSportsEquipmentOrderByHeadService(HttpSession session,
-																	int currentPage,
-																	String searchBranch,
-																	String searchItem,
-																	String beginDate,
-																	String endDate) {
-		//디버깅
-		log.info("currentPage: {}", currentPage);
-		log.info("searchBranch: {}", searchBranch);
-		log.info("searchItem: {}", searchItem);
-		log.info("beginDate: {}", beginDate);
-		log.info("endDate: {}", endDate);
-		
-		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap = new HashMap<>();
-		paramMap.put("searchBranch", searchBranch);
-		paramMap.put("searchItem", searchItem);
-		paramMap.put("beginDate", beginDate);
-		paramMap.put("endDate", endDate);
-		
-		//본사직원은 모든 데이터 
-		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 1;
-		
-		paramMap.put("loginBranchLevel", loginBranchLevel);
-		
-		//mapper 호출 
-		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderHeadCnt(paramMap);
-		int lastPage = sportsEquipmentOrderCnt/rowPerPage;
-		
-		if(sportsEquipmentOrderCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
-		
-		//페이징 변수 Map에 put
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("rowPerPage", rowPerPage);
-		
-		//디버깅
-		System.out.println(paramMap);
-		
-		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentOrderList = sportsEquipmentMapper.selectSportsEquipmentOrderByHead(paramMap);
-				
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
+    //sportsEquipment 추가
+    public void insert(
+        HttpSession session,
+        String path,
+        String itemName,
+        int itemPrice,
+        MultipartFile[] sportsEquipmentImgList
+    ) {
+        //sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
+        log.warn("employee session 구현 후 수정 완료");
 
-		resultMap.put("endDate", endDate);
-		resultMap.put("beginDate", beginDate);
-		resultMap.put("searchItem", searchItem);
-		resultMap.put("searchBranch", searchBranch);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentOrderList", sportsEquipmentOrderList);
-		
-		return resultMap;
-	}
+        //mapper 호출
+        int branchLevel = 1;
 
-	//sportsEquipmentOrderList 출력(지사)
-	public Map<String,Object> selectSportsEquipmentOrderByBranchService(HttpSession session,
-																	int currentPage,
-																	String searchItem,
-																	String beginDate,
-																	String endDate) {
-		//디버깅
-		log.info("currentPage: {}", currentPage);
-		log.info("searchItem: {}", searchItem);
-		log.info("beginDate: {}", beginDate);
-		log.info("endDate: {}", endDate);
-		
-		//페이징
-		int rowPerPage = 10; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap = new HashMap<>();
-		paramMap.put("searchItem", searchItem);
-		paramMap.put("beginDate", beginDate);
-		paramMap.put("endDate", endDate);
-		
-		//지점직원은 소속된 지점의 데이터 출력
-		log.warn("employee session 구현 후 수정");
-		int loginBranchNo = 2;
-		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 0;
-		
-		paramMap.put("loginBranchNo", loginBranchNo);
-		paramMap.put("loginBranchLevel", loginBranchLevel);
-		
-		//mapper 호출 
-		int sportsEquipmentOrderCnt = sportsEquipmentMapper.selectSportsEquipmentOrderBranchCnt(paramMap);
-		int lastPage = sportsEquipmentOrderCnt/rowPerPage;
-		
-		if(sportsEquipmentOrderCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentOrderCnt : {}", sportsEquipmentOrderCnt);
-		
-		//페이징 변수 Map에 put
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("rowPerPage", rowPerPage);
-		
-		//디버깅
-		System.out.println(paramMap);
-		
-		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentOrderList = sportsEquipmentMapper.selectSportsEquipmentOrderByBranch(paramMap);
-		
-		
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
+        log.info(branchLevel + " <-- 1:본사 0:지점");
+        if (branchLevel != 1) {
+            throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+        }
 
-		resultMap.put("endDate", endDate);
-		resultMap.put("beginDate", beginDate);
-		resultMap.put("searchItem", searchItem);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentOrderList", sportsEquipmentOrderList);
-		
-		return resultMap;
-	}
+        //sportsEquipment 추가
+        SportsEquipment sportsEquipment = new SportsEquipment();
 
-	//sportsEquipmentOrder 수정 액션
-	public void updateSportsEquipmentOrderService(HttpSession session,
-														int orderNo,
-														String orderStatus) {
-		//디버깅
-		log.info("orderNo : {}", orderNo);
-		log.info("orderStatus : {}", orderStatus);
-	
-		//sportsEquipment 수정을 시도하는 employeeNo가 본사 소속인지 확인
-		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-		//mapper 호출
-		int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		log.info( branchLevel + " <-- 1:본사 0:지점");
-		if(branchLevel != 1) {	
-			throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
-		}
-		
-		//mapper에 보내줄 sportsEquipmentOrder 객체 세팅
-		SportsEquipmentOrder sportsEquipmentOrder = new SportsEquipmentOrder();
-		sportsEquipmentOrder.setOrderNo(orderNo);
-		sportsEquipmentOrder.setOrderStatus(orderStatus);
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        sportsEquipment.setEmployeeNo(loginEmployee.getEmployeeNo());
+        sportsEquipment.setItemName(itemName);
+        sportsEquipment.setItemPrice(itemPrice);
 
-		//mapper 호출
-		int row = sportsEquipmentMapper.updateSportsEquipmentOrder(sportsEquipmentOrder);
-		
-		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 수정실패 : row - {}", row);
-		} else {
-		    log.info("sportsEquipmentOrder 수정성공: row - {}", row);
-		}
-	}
+        //mapper 호출
+        boolean success = mapper.insert(sportsEquipment) != 1;
 
-	//sportsEquipmentOrder 삭제 액션
-	public void deleteSportsEquipmentOrderService(HttpSession session,
-														int orderNo,
-														String orderStatus) {
-		//디버깅
-		log.info("orderNo : {}", orderNo);
-		log.info("orderStatus : {}", orderStatus);
-	
-		log.warn("employee session 구현 후 수정");
-		//sportsEquipmentOrder 삭제을 시도하는 employeeNo가 지점 소속인지 확인
-		//employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-		//mapper 호출
-		//int branchLevel = sportsEquipmentMapper.selectSearchEmployeeLevel(1);
-		//log.info( branchLevel + " <-- 1:본사 0:지점");
-		//if(branchLevel != 0) {	
-			//throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
-		//}
-		
-		//mapper에 보내줄 sportsEquipmentOrder 객체 세팅
-		SportsEquipmentOrder sportsEquipmentOrder = new SportsEquipmentOrder();
-		sportsEquipmentOrder.setOrderNo(orderNo);
-		sportsEquipmentOrder.setOrderStatus(orderStatus);
+        //sportsEquipment 정보 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
+        if (success) {
+            throw new RuntimeException(
+                "예외발생 : sportsEquipment 정보 추가 실패"
+            );
+        }
 
-		//mapper 호출
-		int row = sportsEquipmentMapper.deleteSportsEquipmentOrder(sportsEquipmentOrder);
-		
-		//mapper 호출 디버깅
-		if (row != 1) {
-		    log.info("sportsEquipmentOrder 삭제실패 : row - {}", row);
-		} else {
-		    log.info("sportsEquipmentOrder 삭제성공: row - {}", row);
-		}
-	}
-	
-//----------------------------------------- SportsEquipmentOrder -------------------------------------	
-	
-	//sportsEquipmentInventory 출력(본사)
-	public Map<String,Object> selectSportsEquipmentInventoryHeadService(HttpSession session,
-																	int currentPage,
-																	String searchBranch,
-																	String searchItem) {
-		//디버깅
-		log.info("currentPage: {}", currentPage);
-		log.info("searchBranch: {}", searchBranch);
-		log.info("searchItem: {}", searchItem);
+        //추가 된 sportsEquipment 디버깅
+        System.err.println(sportsEquipment + " <-- 추가 된 sportsEquipment");
+        log.info(sportsEquipment + " <-- 추가 된 sportsEquipment");
 
-		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap = new HashMap<>();
-		paramMap.put("searchBranch", searchBranch);
-		paramMap.put("searchItem", searchItem);
-		
-		//본사직원은 모든 데이터 
-		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 1;
-		
-		paramMap.put("loginBranchLevel", loginBranchLevel);
-		
-		//mapper 호출 
-		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByHeadCnt(paramMap);
-		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
-		
-		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
-		
-		//페이징 변수 Map에 put
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("rowPerPage", rowPerPage);
-		
-		//디버깅
-		System.out.println(paramMap);
-		
-		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByHead(paramMap);
-				
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
+        //sportsEquipmentImg 추가
+        for (MultipartFile equipmentImg : sportsEquipmentImgList) {
+            SportsEquipmentImg img = new SportsEquipmentImg();
 
-		resultMap.put("searchItem", searchItem);
-		resultMap.put("searchBranch", searchBranch);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
-		
-		return resultMap;
-	}
-	
-	//sportsEquipmentInventory 출력(지점)
-	public Map<String,Object> selectSportsEquipmentInventoryBranchService(HttpSession session,
-																	int currentPage,
-																	String searchItem) {
-		//디버깅
-		log.info("currentPage: {}", currentPage);
-		log.info("searchItem: {}", searchItem);
+            //portsEquipmentImgFileName
+            String fileName = UUID.randomUUID().toString();
+            //확장자
+            String originName = equipmentImg.getOriginalFilename();
+            String extensionName = originName.substring(
+                originName.lastIndexOf(".")
+            );
 
-		//페이징
-		int rowPerPage = 2; //한 페이지에 표시할 equipment 수 
-		int beginRow = (currentPage - 1) * rowPerPage;
-		
-		//mapper의 매개변수로 들어갈 paramMap 생성
-		Map<String,Object> paramMap = new HashMap<>();
-		paramMap.put("searchItem", searchItem);
-		
-		//지점직원은 소속된 지점의 데이터 출력
-		log.warn("employee session 구현 후 수정");
-		int loginBranchNo = 2;
-		log.warn("employee session 구현 후 수정");
-		int loginBranchLevel = 0;
-		
-		paramMap.put("loginBranchNo", loginBranchNo);
-		paramMap.put("loginBranchLevel", loginBranchLevel);
-		
-		
-		//mapper 호출 
-		int sportsEquipmentInventoryCnt = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranchCnt(paramMap);
-		int lastPage = sportsEquipmentInventoryCnt/rowPerPage;
-		
-		if(sportsEquipmentInventoryCnt%rowPerPage != 0) {
-			lastPage = lastPage + 1;
-		}
-		
-		//디버깅
-		log.info("lastPage : {}", lastPage);
-		log.info("sportsEquipmentInventoryCnt : {}", sportsEquipmentInventoryCnt);
-		
-		//페이징 변수 Map에 put
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("rowPerPage", rowPerPage);
-		
-		//디버깅
-		System.out.println(paramMap);
-		
-		//mapper 호출
-		List<Map<String,Object>> sportsEquipmentInventory = sportsEquipmentMapper.selectSportsEquipmentInventoryByBranch(paramMap);
-				
-		//controller에 보내줄 resultMap 생성
-		Map<String,Object> resultMap = new HashMap<>();
-		
+            img.setSportsEquipmentNo(sportsEquipment.getSportsEquipmentNo());
+            img.setSportsEquipmentImgSize((int) equipmentImg.getSize());
+            img.setSportsEquipmentImgType(equipmentImg.getContentType());
+            img.setSportsEquipmentImgOriginName(originName);
+            img.setSportsEquipmentImgFileName(fileName + extensionName);
 
-		resultMap.put("searchItem", searchItem);
-		resultMap.put("lastPage", lastPage);
-		resultMap.put("sportsEquipmentInventory", sportsEquipmentInventory);
-		
-		return resultMap;
-	}
+            //mapper 호출
+            boolean success2 = mapper.insertImg(img) != 1;
+            //sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
+            if (success2) {
+                throw new RuntimeException(
+                    "예외발생 : sportsEquipmentImg 추가 실패"
+                );
+            }
+            File file = new File(path + "/" + fileName + extensionName);
+            try {
+                equipmentImg.transferTo(file);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                throw new RuntimeException();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException();
+            }
+        }
+    }
+
+    //sportsEquipmentList 출력
+    public SearchResult list(SportsEquipmentSearchParam param) {
+        log.info("param : {}", param);
+        int total = mapper.totalCnt(param);
+        param.setTotalCount(total);
+        log.info("total : {}", total);
+        log.info("totalPage : {}", param.getTotalPage());
+
+        var list = mapper.list(param);
+
+        return SearchResult.builder().list(list).param(param).build();
+    }
+
+    //sportsEquipment 상세보기(본점 -> 수정 폼, 지점 -> 발주 폼)
+    public Map<String, Object> one(HttpSession session, int sportsEquipmentNo) {
+        //디버깅
+        log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+
+        //mapper 호출
+        SportsEquipment one = mapper.one(sportsEquipmentNo);
+        List<SportsEquipmentImg> imgList = mapper.imgList(sportsEquipmentNo);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("one", one);
+
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        int branchNo = loginEmployee.getBranchNo();
+        if (branchLevel != 1) {
+            Map<String, Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
+            paramMap.put("branchNo", branchNo);
+
+            //mapper 호출
+            Map<String, Object> inventory = mapper.inventoryOneByBranch(
+                paramMap
+            );
+            resultMap.put("inventory", inventory);
+        }
+
+        resultMap.put("imgList", imgList);
+
+        return resultMap;
+    }
+
+    //sportsEquipment 수정 액션
+    public int update(
+        HttpSession session,
+        int sportsEquipmentNo,
+        String itemName,
+        int itemPrice,
+        String equipmentActive
+    ) {
+        //디버깅
+        log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+        log.info("itemName : {}", itemName);
+        log.info("itemPrice : {}", itemPrice);
+        log.info("equipmentActive : {}", equipmentActive);
+
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info(branchLevel + " <-- 1:본사 0:지점");
+        if (branchLevel != 1) {
+            throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+        }
+
+        //mapper에 보내줄 sportsEquipment 객체 세팅
+        SportsEquipment sportsEquipment = new SportsEquipment();
+        sportsEquipment.setSportsEquipmentNo(sportsEquipmentNo);
+        sportsEquipment.setItemName(itemName);
+        sportsEquipment.setItemPrice(itemPrice);
+        sportsEquipment.setEquipmentActive(equipmentActive);
+        sportsEquipment.setEmployeeNo(loginEmployee.getBranchNo());
+
+        //mapper 호출
+        boolean success = mapper.update(sportsEquipment) != 1;
+
+        //mapper 호출 디버깅
+        if (success) {
+            log.info("sportsEquipment 수정실패 : success - {}", success);
+        } else {
+            log.info("sportsEquipment 수정성공: success - {}", success);
+        }
+        return sportsEquipmentNo;
+    }
+
+    //sportsEquipmentImg 개별 삭제 액션
+    public int deleteImg(
+        HttpSession session,
+        int sportsEquipmentNo,
+        int sportsEquipmentImgNo,
+        String sportsEquipmentImgFileName
+    ) {
+        //디버깅
+        log.info("sportsEquipmentNo : {}", sportsEquipmentNo);
+        log.info("sportsEquipmentImgNo : {}", sportsEquipmentImgNo);
+        log.info("sportsEquipmentImgFileName : {}", sportsEquipmentImgFileName);
+
+        //sportsEquipmentImg 삭제를 시도하는 employeeNo가 본사 소속인지 확인
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info(branchLevel + " <-- 1:본사 0:지점");
+        if (branchLevel != 1) {
+            throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+        }
+
+        //실제 img파일 먼저 삭제
+        String path = session
+            .getServletContext()
+            .getRealPath("/upload/sportsEquipment");
+        File file = new File(path + "/" + sportsEquipmentImgFileName);
+
+        // 파일 삭제
+        if (file.exists()) {
+            if (file.delete()) {
+                log.info("sportsEquipmentImg 파일 개별 삭제 성공");
+            } else {
+                log.info("sportsEquipmentImg 파일 개별 삭제 실패");
+                throw new RuntimeException(
+                    "sportsEquipmentImg 파일 개별 삭제 실패"
+                );
+            }
+        } else {
+            log.info("sportsEquipmentImg 파일이 이미 존재하지 않습니다.");
+        }
+
+        //데이터베이스 삭제
+        //mapper 호출
+        boolean success = mapper.deleteImg(sportsEquipmentImgNo) != 1;
+
+        //mapper 호출 디버깅
+        if (success) {
+            log.info(
+                "sportsEquipmentImg 개별 데이터베이스 삭제실패 : success - {}",
+                success
+            );
+            throw new RuntimeException("데이터베이스 삭제 실패");
+        } else {
+            log.info(
+                "sportsEquipmentImg 개별 데이터베이스 삭제성공: success - {}",
+                success
+            );
+        }
+        return sportsEquipmentNo;
+    }
+
+    //sportsEquipment 개별 Img 추가
+    public int insertImg(
+        HttpSession session,
+        String path,
+        int sportsEquipmentNo,
+        MultipartFile[] imgList
+    ) {
+        //sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info(branchLevel + " <-- 1:본사 0:지점");
+        if (branchLevel != 1) {
+            throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+        }
+
+        //sportsEquipmentImg 추가
+        for (MultipartFile equipmentImg : imgList) {
+            SportsEquipmentImg img = new SportsEquipmentImg();
+
+            //portsEquipmentImgFileName
+            String fileName = UUID.randomUUID().toString();
+            //확장자
+            String originName = equipmentImg.getOriginalFilename();
+            String extensionName = originName.substring(
+                originName.lastIndexOf(".")
+            );
+
+            img.setSportsEquipmentNo(sportsEquipmentNo);
+            img.setSportsEquipmentImgSize((int) equipmentImg.getSize());
+            img.setSportsEquipmentImgType(equipmentImg.getContentType());
+            img.setSportsEquipmentImgOriginName(originName);
+            img.setSportsEquipmentImgFileName(fileName + extensionName);
+
+            //mapper 호출
+            boolean success = mapper.insertImg(img) != 1;
+            //sportsEquipmentImg 추가 실패했을 경우 -> 강제로 예외발생 트랜잭션 처리
+            if (success) {
+                throw new RuntimeException(
+                    "예외발생 : sportsEquipmentImg 추가 실패"
+                );
+            }
+            File file = new File(path + "/" + fileName + extensionName);
+            try {
+                equipmentImg.transferTo(file);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                throw new RuntimeException();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException();
+            }
+        }
+        return sportsEquipmentNo;
+    }
+
+    //----------------------------------------- SportsEquipmentOrder -------------------------------------
+
+    //sportsEquipmentOrder 추가
+    public void insertOrder(
+        HttpSession session,
+        int sportsEquipmentNo,
+        int quantity,
+        int itemPrice
+    ) {
+
+        //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        SportsEquipmentOrder order = new SportsEquipmentOrder();
+        order.setSportsEquipmentNo(sportsEquipmentNo);
+        order.setBranchNo(loginEmployee.getBranchNo());
+        order.setQuantity(quantity);
+        if (quantity > 0) {
+            order.setTotalPrice(itemPrice * quantity);
+        } else {
+            order.setTotalPrice(0);
+        }
+
+        //mapper 호출
+        boolean success = mapper.insertOrder(order) != 1;
+
+        //mapper 호출 디버깅
+        if (success) {
+            log.info("sportsEquipmentOrder 추가 실패 : success - {}", success);
+        } else {
+            log.info("sportsEquipmentOrder 추가 성공 : success - {}", success);
+        }
+    }
+
+    //sportsEquipmentOrderList 출력(본사)
+    public SearchResult orderByHead(SportsEquipmentSearchParam param) {
+        log.info("param : {}", param);
+        int total = mapper.orderHeadCnt(param);
+        param.setTotalCount(total);
+        log.info("total : {}", total);
+        log.info("totalPage : {}", param.getTotalPage());
+
+        var list = mapper.orderByHead(param);
+
+        return SearchResult.builder().list(list).param(param).build();
+    }
+
+    //sportsEquipmentOrderList 출력(지사)
+    public SearchResult orderByBranch(HttpSession session,SportsEquipmentSearchParam param) {
+
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        
+        Object branchNoObject = loginEmployee.getBranchNo();
+        String loginBranchNo = branchNoObject.toString();
+        System.out.println(loginBranchNo+" <---loginBranchNo");
+        param.setLoginBranchNo(loginBranchNo);
+
+        log.info("param : {}", param);
+        int total = mapper.orderBranchCnt(param);
+        param.setTotalCount(total);
+        log.info("total : {}", total);
+        log.info("totalPage : {}", param.getTotalPage());
+
+        var list = mapper.orderByBranch(param);
+
+        return SearchResult.builder().list(list).param(param).build();
+    }
+
+    //sportsEquipmentOrder 수정 액션
+    public void updateOrder(
+        HttpSession session,
+        int orderNo,
+        String orderStatus
+    ) {
+        //디버깅
+        log.info("orderNo : {}", orderNo);
+        log.info("orderStatus : {}", orderStatus);
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info(branchLevel + " <-- 1:본사 0:지점");
+        if (branchLevel != 1) {
+            throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
+        }
+
+        //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
+        SportsEquipmentOrder order = new SportsEquipmentOrder();
+        order.setOrderNo(orderNo);
+        order.setOrderStatus(orderStatus);
+
+        //mapper 호출
+        boolean success = mapper.updateOrder(order) != 1;
+
+        //mapper 호출 디버깅
+        if (success) {
+            log.info("sportsEquipmentOrder 수정실패 : success - {}", success);
+        } else {
+            log.info("sportsEquipmentOrder 수정성공: success - {}", success);
+        }
+    }
+
+    //sportsEquipmentOrder 삭제 액션
+    public void deleteOrder(
+        HttpSession session,
+        int orderNo,
+        String orderStatus
+    ) {
+        //디버깅
+        log.info("orderNo : {}", orderNo);
+        log.info("orderStatus : {}", orderStatus);
+
+        //sportsEquipmentOrder 삭제을 시도하는 employeeNo가 지점 소속인지 확인
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info( branchLevel + " <-- 1:본사 0:지점");
+        if(branchLevel != 0) {
+        throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
+        }
+
+        //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
+        SportsEquipmentOrder order = new SportsEquipmentOrder();
+        order.setOrderNo(orderNo);
+        order.setOrderStatus(orderStatus);
+
+        //mapper 호출
+        boolean success = mapper.deleteOrder(order) != 1;
+
+        //mapper 호출 디버깅
+        if (success) {
+            log.info("sportsEquipmentOrder 삭제실패 : success - {}", success);
+        } else {
+            log.info("sportsEquipmentOrder 삭제성공: success - {}", success);
+        }
+    }
+
+    //----------------------------------------- SportsEquipmentOrder -------------------------------------
+
+    //sportsEquipmentInventory 출력(본사)
+    public SearchResult inventoryHead(SportsEquipmentSearchParam param) {
+    	
+        log.info("param : {}", param);
+
+        int total = mapper.inventoryByHeadCnt(param);
+        param.setTotalCount(total);
+        log.info("total : {}", total);
+        log.info("totalPage : {}", param.getTotalPage());
+        var list = mapper.inventoryByHead(param);
+
+        return SearchResult.builder().list(list).param(param).build();
+    }
+
+    //sportsEquipmentInventory 출력(지점)
+    public SearchResult inventoryBranch(HttpSession session, SportsEquipmentSearchParam param) {
+    	
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        Object branchNoObject = loginEmployee.getBranchNo();
+        String loginBranchNo = (branchNoObject != null) ? branchNoObject.toString() : null;
+        param.setLoginBranchNo(loginBranchNo);
+        log.info("param : {}", param);
+
+        int total = mapper.inventoryByBranchCnt(param);
+        param.setTotalCount(total);
+        log.info("total : {}", total);
+        log.info("totalPage : {}", param.getTotalPage());
+        var list = mapper.inventoryByBranch(param);
+
+        return SearchResult.builder().list(list).param(param).build();
+    }
+
+    public int countNotYetOrder() {
+        return mapper.countNotYetOrder();
+    }
 }

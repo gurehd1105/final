@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.ReviewMapper">
+			
+	<select id="selectReviewList" parameterType="java.util.Map"
+						resultType="java.util.Map">
+		SELECT 
+			r.review_no AS reviewNo,
+			r.review_title AS reviewTitle,	
+			
+			b.branch_name AS branchName,
+			
+			p.program_name AS programName,
+			c.customer_id AS customerId
+			
+		FROM review r
+		INNER JOIN customer_attendance ca
+		ON r.customer_attendance_no = ca.customer_attendance_no
+		INNER JOIN program_reservation pr
+		ON ca.program_reservation_no = pr.program_reservation_no
+		INNER JOIN program_date pd
+		ON pr.program_date_no = pd.program_date_no
+		INNER JOIN program p
+		ON pd.program_no = p.program_no
+		INNER JOIN branch b
+		ON pr.branch_no = b.branch_no
+		INNER JOIN payment pa
+		ON pa.payment_no = pr.payment_no
+		INNER JOIN customer c
+		ON c.customer_no = pa.customer_no
+		<if test="programName != ''">
+			WHERE p.program_name= #{programName}
+		</if>
+		ORDER BY r.updatedate DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<select id="selectCountOfReview" parameterType="String" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM review r
+		
+			INNER JOIN customer_attendance c
+		ON r.customer_attendance_no = c.customer_attendance_no
+		
+			INNER JOIN program_reservation pr 
+		ON pr.program_reservation_no = c.program_reservation_no
+		
+			INNER JOIN program_date pd
+		ON pd.program_date_no = pr.program_date_no
+		
+			INNER JOIN program p
+		ON p.program_no = pd.program_no
+		<if test="programName != ''">
+		WHERE p.program_name = #{programName}
+		</if>
+	</select>
+	
 	<insert id="insertReview" parameterType="com.example.gym.vo.Review">
 		INSERT INTO review (
 			customer_attendance_no,
@@ -24,22 +78,24 @@
 			review_content = #{reviewContent},
 			updatedate = NOW()
 		WHERE review_no = #{reviewNo}
-	</update>
-	
+	</update>	
+
 	<select id="selectReviewOne" parameterType="com.example.gym.vo.Review"
 								resultType="java.util.Map">
 		SELECT 
 			r.review_no AS reviewNo,
 			r.review_title AS reviewTitle,
-			r.review_content AS reviewContent,
+			r.review_content AS reviewContent,		<!-- 리뷰내용 -->
 			r.createdate AS createdate,
-			r.updatedate AS updatedate,			
+			r.updatedate AS updatedate,							
+			pr.program_reservation_no AS programReservationNo,
+			ca.customer_attendance_enter_time AS customerAttendanceEnterTime,			<!-- 방문시시간 -->
+			pro.program_name AS programName,
+			pr.branch_no AS branchNo,			
+			b.branch_name AS branchName,		<!-- 방문지점 -->
 			
-			ca.customer_attendance_date AS customerAttendanceDate,
-					
-			pr.branch_no AS branchNo,
-			
-			b.branch_name AS branchName
+			c.customer_no AS customerNo,			<!-- 방문자 -->
+			c.customer_id AS customerId		
 			
 		FROM review r 
 		INNER JOIN customer_attendance ca
@@ -49,31 +105,64 @@
 		INNER JOIN branch b
 		ON pr.branch_no = b.branch_no
 		INNER JOIN program_date pd
-		ON pd.program_date_no = pr.program_date_no	
+		ON pd.program_date_no = pr.program_date_no
+		INNER JOIN payment p
+		ON p.payment_no = pr.payment_no
+		INNER JOIN customer c
+		ON c.customer_no = p.customer_no
+		INNER JOIN program pro
+		ON pro.program_no = pd.program_no
 		
 		WHERE review_no = #{reviewNo}	
 	</select>
 	
-	<select id="selectReviewList" resultType="java.util.Map">
-		SELECT 
+							<!-- review 관련 종료 / reply 관련 시작 -->
+	<select id="selectReviewReply" parameterType="com.example.gym.vo.Review"
+									resultType="java.util.Map">
+		SELECT
+			r.review_reply_no AS reviewReplyNo,
 			r.review_no AS reviewNo,
-			r.review_title AS reviewTitle,
-			r.createdate AS createdate,
+			r.employee_no AS employeeNo,
+			r.review_reply_content AS reviewReplyContent,
+			r.createdate, r.updatedate,
 			
-			b.branch_name AS branchName,
+			e.employee_id AS employeeId,
+			e.branch_no AS branchNo,
 			
-			p.program_name AS programName
-			
-		FROM review r
-		INNER JOIN customer_attendance ca
-		ON r.customer_attendance_no = ca.customer_attendance_no
-		INNER JOIN program_reservation pr
-		ON ca.program_reservation_no = pr.program_reservation_no
-		INNER JOIN program_date pd
-		ON pr.program_date_no = pd.program_date_no
-		INNER JOIN program p
-		ON pd.program_no = p.program_no
+			b.branch_name AS branchName
+		FROM review_reply r
+		INNER JOIN employee e
+		ON r.employee_no = e.employee_no
 		INNER JOIN branch b
-		ON pr.branch_no = b.branch_no
-	</select>
+		ON e.branch_no = b.branch_no
+		
+		WHERE r.review_no = #{reviewNo}
+	
+	</select>	
+										
+	<insert id="insertReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		INSERT INTO review_reply (
+			review_no,
+			employee_no,
+			review_reply_content
+		) VALUES (
+			#{reviewNo},
+			#{employeeNo},
+			#{reviewReplyContent}
+		)	
+	</insert>
+	
+	<delete id="deleteReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		DELETE FROM review_reply
+			WHERE review_no = #{reviewNo}	
+	</delete>
+	
+	<update id="updateReviewReply" parameterType="com.example.gym.vo.ReviewReply">
+		UPDATE review_reply SET
+			employee_no = #{employeeNo},
+			review_reply_content = #{reviewReplyContent},
+			updatedate = NOW()
+		WHERE review_reply_no = #{reviewReplyNo}	
+	</update>
+						
 </mapper>

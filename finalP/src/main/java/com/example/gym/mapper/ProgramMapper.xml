@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.ProgramMapper">
+	
+	<!-- program 추가 -->
+	<insert id="insert" parameterType="com.example.gym.vo.Program">
+		INSERT INTO program (
+			employee_no,
+			program_name,
+			program_content,
+			program_max_customer,
+			active
+		) VALUES (
+			#{employeeNo},
+			#{programName},
+			REPLACE(#{programContent}, '\r\n', '\\r\\n'),
+			#{programMaxCustomer},
+			#{active}
+		)		
+	</insert>
+
+	<!-- program 리스트 출력 -->
+	<select id="selectProgramList" parameterType="java.util.Map" resultType="java.util.Map">
+	   	SELECT 
+			e.employee_id employeeId,
+			p.program_no programNo,
+			p.program_name programName,
+			p.program_max_customer maxCustomer,
+			p.program_content programContent,
+			p.createdate createdate,
+			p.updatedate updatedate,
+			p.active programActive
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != '' ">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	    ORDER BY p.createdate DESC
+   <if test="beginRow != null and rowPerPage != null">
+        <choose>
+            <when test="beginRow != null and rowPerPage != null">
+                LIMIT #{beginRow}, #{rowPerPage}
+            </when>
+        </choose>
+    </if>
+	</select>
+	
+	<!-- 총 program 수 -->
+	<select id="programCnt" parameterType="java.util.Map" resultType="int">
+	   	SELECT 
+			COUNT(DISTINCT p.program_no) 
+		FROM program p INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+	    <where>
+	        <if test="searchWord != ''">
+	            AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
+	        </if>
+			<if test="programActive != ''">
+    			AND p.active = #{programActive}
+			</if>
+	    </where>
+	</select>
+	
+	<!-- program 수정 폼 -->
+	<select id="selectProgramOne" parameterType="int"
+				resultType="java.util.Map">
+		SELECT
+			p.program_no programNo,
+			e.employee_id employeeId,
+			p.program_name programName,
+			p.program_content programContent,
+			p.program_max_customer maxCustomer,
+			p.active programActive,
+			p.createdate createdate,
+			p.updatedate updatedate
+		FROM program p
+		INNER JOIN employee e
+		ON p.employee_no = e.employee_no
+		WHERE program_no = #{programNo}
+	</select>
+	
+	<!-- program 수정 액션 -->
+	<update id="updateProgram" parameterType="java.util.Map">
+		UPDATE program SET
+			active = #{programActive},
+			program_max_customer = #{maxCustomer},
+			program_content = #{programContent},
+			updatedate = NOW()
+		WHERE program_no = #{programNo}
+	</update>
+	
+			
+	
+	
+	
+</mapper>

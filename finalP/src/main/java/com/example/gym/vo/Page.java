@@ -2,6 +2,7 @@ package com.example.gym.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Page {
-	private int rowPerPage;
-	private int beginRow;
-	private String searchWord;
+
+    @Default
+    private int pageNum = 1;
+
+    @Default
+    private int rowPerPage = Integer.MAX_VALUE;
+
+    private int totalCount;
+
+    private int beginRow;
+    private int totalPage;
+
+    public int getBeginRow() {
+        return (pageNum - 1) * rowPerPage;
+    }
+
+    public int getTotalPage() {
+        return (int) Math.ceil(1.0 * totalCount / rowPerPage);
+    }
 }

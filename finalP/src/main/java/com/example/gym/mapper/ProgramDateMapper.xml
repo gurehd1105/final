@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.ProgramDateMapper">
+	
+	<!-- 프로그램 진행 날짜 조회 -->
+	<select	id="programDateList" resultType="java.util.Map" 
+			parameterType="com.example.gym.vo.ProgramDate">
+		SELECT 
+			   pd.program_date_no programDateNo,
+		  	    p.program_no programNo,
+		  	    p.program_name programName,
+		 	   pd.program_date programDate,
+		 	   pd.createdate,
+		 	   pd.updatedate
+ 	  	  FROM program_date pd INNER JOIN program p
+			ON pd.program_no = p.program_no	
+	  <if test="programDateNo!=null and programDateNo!=''">
+	  	WHERE pd.program_date_no = #{programDateNo}
+	  </if>
+	  ORDER BY program_date desc 
+	</select>
+	
+	<!-- 프로그램 진행 날짜 추가 -->
+	<insert id="insertProgramDate" parameterType="com.example.gym.vo.ProgramDate">
+		INSERT INTO program_date (
+			program_no,
+			program_date
+		) VALUES (
+			#{programNo},
+			#{programDate}
+		)
+	</insert>
+	
+	<!-- 프로그램 진행 날짜 수정 -->
+	<update id="updateProgramDate" parameterType="com.example.gym.vo.ProgramDate">
+		UPDATE program_date SET
+			   program_date = #{programDate},
+			   updatedate = now()
+		 WHERE program_date_no = #{programDateNo}	   
+				
+	</update>
+	<!-- 프로그램 진행 날짜 삭제 -->
+	<delete id="deleteProgramDate" parameterType="com.example.gym.vo.ProgramDate">
+		DELETE FROM program_date
+		 WHERE program_date_no = #{programDateNo}		
+	</delete>
+
+
+
+
+
+
+
+
+</mapper>
