@@ -111,14 +111,6 @@
 	            <groupId>org.codehaus.mojo</groupId>
 	            <artifactId>aspectj-maven-plugin</artifactId>
 	            <version>1.11</version> <!-- 최신 버전으로 업데이트 가능 -->
-	            <executions>
-	                <execution>
-	                    <goals>
-	                        <goal>compile</goal>
-	                        <goal>test-compile</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
 	            <configuration>
 	                <source>1.8</source> <!-- 프로젝트의 자바 버전 -->
 	                <target>1.8</target> <!-- 컴파일 대상 자바 버전 -->
