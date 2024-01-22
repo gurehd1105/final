@@ -28,6 +28,11 @@ public class AttendanceService {
 		return attendanceMapper.insertAttendance(attendance);
 		 
 	 }
+	 public Map<String, Object> selectCustomerAttendanceby(Map<String, Object> paramMap){
+		return attendanceMapper.selectCustomerAttendanceby(paramMap);		 
+	 }
+	 
+	 
 	//출석확인
 	 public List<Map<String, Object>> selectAttendance(int customerNo){
 		 List<Map<String, Object>> attendanceList = attendanceMapper.selectAttendance(customerNo);

@@ -16,6 +16,9 @@ public interface AttendanceMapper {
 	// 출석 체크
 	int insertAttendance(CustomerAttendance attendance);
 	
+	// 출석체크 조건
+	Map<String, Object> selectCustomerAttendanceby(Map<String, Object> paramMap);
+	
 	// 출석확인 
-	List<Map<String, Object>> selectAttendance (int customerNo);
+	List<Map<String, Object>> selectAttendance(int customerNo);
 }
