@@ -48,7 +48,7 @@
 			</el-descriptions-item>
 		</el-descriptions>
 	<br>
-		<span id="replyBtn"> 
+		<span v-if="isEmployee" id="replyBtn"> 
 			<el-button type="primary" @click="updateReply()">수정</el-button>			
 			<el-button type="primary" @click="deleteReply()">삭제</el-button>			
 		</span>
@@ -125,6 +125,7 @@
 				employeeId: '${ loginEmployee.employeeId }',
 				replyContent: '',
 				questionNo: '${ questionMap.questionNo }',
+				isEmployee: '${ loginEmployee != null }',
 			},		
 		}
 	},
