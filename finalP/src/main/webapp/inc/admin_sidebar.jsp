@@ -21,49 +21,54 @@ pageEncoding="UTF-8"%>
                         </el-menu-item>
                     </el-sub-menu>
                     <el-sub-menu index="1-3">
-                        <template #title>공지 관리</template>
-                        <el-menu-item index="1-3-1"> 공지 추가 </el-menu-item>
-                        <el-menu-item index="1-3-2"> 공지 목록 </el-menu-item>
+                        <template #title>고객 관리</template>
+                        <el-menu-item index="1-3-1">고객 목록 조회</el-menu-item>
+ 
                     </el-sub-menu>
                     <el-sub-menu index="1-4">
+                        <template #title>공지 관리</template>
+                        <el-menu-item index="1-4-1"> 공지 추가 </el-menu-item>
+                        <el-menu-item index="1-4-2"> 공지 목록 </el-menu-item>
+                    </el-sub-menu>
+                    <el-sub-menu index="1-5">
                         <template #title>프로그램 관리</template>
-                        <el-menu-item index="1-4-1">
+                        <el-menu-item index="1-5-1">
                             프로그램 추가
                         </el-menu-item>
-                        <el-menu-item index="1-4-2">
+                        <el-menu-item index="1-5-2">
                             프로그램 목록 조회
                         </el-menu-item>
-                        <el-menu-item index="1-4-3">
+                        <el-menu-item index="1-5-3">
                             프로그램 진행일 조회 및 추가
                         </el-menu-item>
                     </el-sub-menu>
-                    <el-sub-menu index="1-5">
+                    <el-sub-menu index="1-6">
                         <template #title>소모품 관리</template>
-                        <el-menu-item index="1-5-1">
+                        <el-menu-item index="1-6-1">
                             (본사)소모품 목록 & 추가
                         </el-menu-item>
-                        <el-menu-item index="1-5-2">
+                        <el-menu-item index="1-6-2">
                             (본사)발주 목록
                         </el-menu-item>
-                        <el-menu-item index="1-5-3">
+                        <el-menu-item index="1-6-3">
                             (본사)재고 목록
                         </el-menu-item>
-                        <el-menu-item index="1-5-4">
+                        <el-menu-item index="1-6-4">
                             (지점)소모품 목록
                         </el-menu-item>
-                        <el-menu-item index="1-5-5">
+                        <el-menu-item index="1-6-5">
                             (지점)발주 목록
                         </el-menu-item>
-                        <el-menu-item index="1-5-6">
+                        <el-menu-item index="1-6-6">
                             (지점)재고 목록
                         </el-menu-item>
                     </el-sub-menu>
-                    <el-sub-menu index="1-6">
+                    <el-sub-menu index="1-7">
                     	<template #title>멤버십 및 결제관리</template>
-                        <el-menu-item index="1-6-1">
+                        <el-menu-item index="1-7-1">
                             멤버십 종류관리
                         </el-menu-item>
-                        <el-menu-item index="1-6-2">
+                        <el-menu-item index="1-7-2">
                             고객 결제내역 확인
                         </el-menu-item>
                     </el-sub-menu>
@@ -86,30 +91,33 @@ pageEncoding="UTF-8"%>
                     ],
                     "1-2-1": ["${ctp}/employee/insert"],
                     "1-2-2": ["${ctp}/employee/list"],
-                    "1-3-1": ["${ctp}/notice/insert"],
-                    "1-3-2": [
+                    
+                    "1-3-1": ["${ctp}/customer/allCustomer"],
+   
+                    "1-4-1": ["${ctp}/notice/insert"],
+                    "1-4-2": [
                         "${ctp}/notice/list",
                         "${ctp}/notice/read",
                         "${ctp}/notice/update",
                     ],
-                    "1-4-1": ["${ctp}/program/insert"],
-                    "1-4-2": ["${ctp}/program/list", "${ctp}/program/update"],
-                    "1-4-3": [
+                    "1-5-1": ["${ctp}/program/insert"],
+                    "1-5-2": ["${ctp}/program/list", "${ctp}/program/update"],
+                    "1-5-3": [
                         "${ctp}/programDate/list",
                         "${ctp}/programDate/update",
                         "${ctp}/programDate/insert",
                     ],
-                    "1-5-1": ["${ctp}/sportsEquipment/insert"],
-                    "1-5-2": ["${ctp}/sportsEquipment/orderByHead"],
-                    "1-5-3": ["${ctp}/sportsEquipment/inventoryByHead"],
-                    "1-5-4": [
+                    "1-6-1": ["${ctp}/sportsEquipment/insert"],
+                    "1-6-2": ["${ctp}/sportsEquipment/orderByHead"],
+                    "1-6-3": ["${ctp}/sportsEquipment/inventoryByHead"],
+                    "1-6-4": [
                         "${ctp}/sportsEquipment/list",
                         "${ctp}/sportsEquipment/sportsEquipmentOne",
                     ],
-                    "1-5-5": ["${ctp}/sportsEquipment/orderByBranch"],
-                    "1-5-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
-                    "1-6-1": ["${ctp}/membership/list"],
-                    "1-6-2": ["${ctp}/payment/list"],
+                    "1-6-5": ["${ctp}/sportsEquipment/orderByBranch"],
+                    "1-6-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
+                    "1-7-1": ["${ctp}/membership/list"],
+                    "1-7-2": ["${ctp}/payment/list"],
                 },
             };
         },

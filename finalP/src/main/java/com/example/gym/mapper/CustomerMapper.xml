@@ -217,11 +217,14 @@
 			cd.customer_weight AS customerWeight,
 			cd.customer_phone AS customerPhone,
 			cd.customer_address AS customerAddress,
-			cd.customer_email AS customerEmail
+			cd.customer_email AS customerEmail,
+			p.payment_no AS paymentNo
 			
 		FROM customer c 
 		INNER JOIN customer_detail cd
-		ON c.customer_no = cd.customer_no
+		ON c.customer_no = cd.customer_no LEFT JOIN payment p
+		ON c.customer_no = p.customer_no
+		
 	</select>
 	
     <select id="selectAllCustomerImage" resultType="String">
