@@ -431,7 +431,7 @@
          	INNER JOIN sports_equipment se ON seo.sports_equipment_no = se.sports_equipment_no
          	WHERE seo.order_status = '승인'
       		<!-- 로그인한 계정의 소속 지점만 -->
-        	<if test="loginBranchLevel == 0">
+        	<if test="1=1">
            		AND b.branch_no = #{loginBranchNo}
            	<if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->

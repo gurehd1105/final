@@ -35,7 +35,7 @@
    </div>   
    <br>
    <!-- 프로그램 리스트 -->
-
+	<p>자세한 내용을 확인하려면 프로그램을 클릭하세요.</p>
     <el-table
         :data="list"
         :key="loading"
@@ -65,6 +65,11 @@
                <span>{{ moment(scope.row.updagedate).format('yyyy-MM-DD') }}</span>
             </template>
         </el-table-column>
+        <el-table-column fixed="right" label="수정" width="220">
+		  <template #default="scope">
+		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
+		  </template>
+		</el-table-column>
     </el-table>
     
    <el-dialog v-model="dialogVisible" title="프로그램 내용" width="30%" draggable>
@@ -88,8 +93,8 @@
              searchWord: '${searchWord}', 
              programActive: '${programActive}', 
           },
-      	  dialogVisible: false, // 다이얼로그 표시 여부
-      	  selectedProgram: {}, // 선택한 프로그램 정보
+      	  dialogVisible: false, 
+      	  selectedProgram: {}, 
       	  loading: false,
           list: JSON.parse('${programList}'),
           pageNum: ${page.pageNum},
@@ -97,7 +102,7 @@
           totalCount: ${page.totalCount},
           totalPage: ${page.totalPage },
           branchLevel : ${branchLevel},
-
+		  isEmployee: <%= session.getAttribute("loginEmployee") != null %>,
         };
    },
    methods: {
@@ -113,7 +118,13 @@
            location.href = '${ctp}/program/update?programNo=' + list.programNo;
         },
         
-         loadPage(pageNum) {
+        move(row, path) {
+		if (row.programNo != null) {
+		   	location.href = '${ctp}/program/update?programNo=' + row.programNo;
+			}
+		},
+        
+        loadPage(pageNum) {
             const param = new URLSearchParams();
             param.set('pageNum', this.pageNum);
             param.set('searchWord', this.model.searchWord);
@@ -133,6 +144,7 @@
         moment(date) {
             return moment(date);
         },
+        
         handleRowClick(row, event, column) {
       		this.selectedProgram = row;
       		this.dialogVisible = true;
@@ -171,6 +183,16 @@
   margin-right: 10px;
   }
 </style>
-
-
+<%-- Check if loginEmployee session attribute exists --%>
+<%
+    Object loginEmployee = session.getAttribute("loginEmployee");
+    if (loginEmployee != null) {
+%>
     <%@ include file="/inc/admin_layout.jsp" %>
+<%
+    } else {
+%>
+    <%@ include file="/inc/user_layout.jsp" %>
+<%
+    }
+%>
