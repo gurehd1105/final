@@ -27,7 +27,7 @@ public class CustomerLoginFilter implements Filter {
         
         // 로그인 정보체크
         boolean isLogin = request.getSession().getAttribute("loginCustomer") != null;
-        String[] allowPath = { "/customer/login", "/customer/insert", "/customer/idCheck" };
+        String[] allowPath = { "/customer/login", "/customer/insert", "/customer/idCheck" , "/customer/allCustomer"};
         boolean isAllowPath = Arrays.stream(allowPath).anyMatch(path -> path.equals(request.getServletPath()));
        
         if (!isLogin && !(isAllowPath)) {	 // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리           

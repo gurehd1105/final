@@ -1,5 +1,6 @@
 package com.example.gym.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public class CustomerController extends DefaultController{
 			return Redirect(ViewRoutes.홈);
 		} else { // 정보 없을 시
 			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");
-			return ViewRoutes.사용자_로그인; 
-		}			
+			return ViewRoutes.사용자_로그인;
+		}
 	}
 	
 	// insert (회원가입) Form
@@ -157,6 +158,18 @@ public class CustomerController extends DefaultController{
 			session.invalidate();
 		}
 		return  ViewRoutes.사용자_로그인;
+	}
+	
+	// 관리자용 - 전체 회원리스트 조회
+	@GetMapping("/allCustomer")
+	public String allCusotmer(HttpSession session, Model model) {
+		if(session.getAttribute("loginEmployee") == null) {	// 관리자만 접속 가능
+			return ViewRoutes.직원_로그인;
+		}
+		
+		List<Map<String, Object>> customerList = customerService.selectAllCustomer();
+		model.addAttribute("customerList", toJson(customerList));
+		return ViewRoutes.사용자_전체보기;
 	}
 	
 	@PostMapping("/pwCheck")

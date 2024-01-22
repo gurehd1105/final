@@ -40,5 +40,5 @@ public interface CustomerMapper {
     List<String> selectAllCustomerImage();
 
     // 전체 회원조회 - 관리자용
-    Map<String, Object> selectAllCustomer();
+    List<Map<String, Object>> selectAllCustomer();
 }
