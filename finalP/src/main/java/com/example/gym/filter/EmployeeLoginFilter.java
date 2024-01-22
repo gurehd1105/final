@@ -1,7 +1,10 @@
 package com.example.gym.filter;
 
-import com.example.gym.service.QuestionService;
-import com.example.gym.service.SportsEquipmentService;
+import java.io.IOException;
+import java.util.Arrays;
+
+import com.example.gym.vo.Employee;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -10,7 +13,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class EmployeeLoginFilter implements Filter {
 
@@ -30,6 +32,17 @@ public class EmployeeLoginFilter implements Filter {
 
         boolean isLogin =
             request.getSession().getAttribute("loginEmployee") != null;
+        
+        
+        // 본사, 지점 직원 세션에 따른 권한검사
+        boolean isLevel = false;
+        if(isLogin) {
+        	Employee loginEmployee = (Employee)request.getSession().getAttribute("loginEmployee");
+        	isLevel = loginEmployee.getBranchLevel() == 1;        	
+        }
+        String[] allowPath = { "/employee/insert"};
+        boolean isAllowPath = Arrays.stream(allowPath).anyMatch(path -> path.equals(request.getServletPath()));
+        
         boolean isLoginPath = request
             .getServletPath()
             .equals("/employee/login");
@@ -38,6 +51,9 @@ public class EmployeeLoginFilter implements Filter {
             // 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트 또는 예외 처리
             response.sendRedirect(request.getContextPath() + "/employee/login"); // 로그인 페이지로 리다이렉트하는 예시
             return;
+        }
+        if(!isLevel && isAllowPath) {
+        	response.sendRedirect(request.getContextPath() + "/employee/mypage");
         }
 
         // 로그인이 되어 있으면 다음 필터로 진행하거나 요청 처리
