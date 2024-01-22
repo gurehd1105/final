@@ -247,23 +247,20 @@
        ON b.branch_no = seo.branch_no
        INNER JOIN sports_equipment se 
        ON se.sports_equipment_no = seo.sports_equipment_no
+	   WHERE b.branch_no = #{loginBranchNo}
        <where>
-           <!-- 로그인한 계정의 소속 지점만 -->
-           <if test="loginBranchNo != ''">
-               AND b.branch_no = #{loginBranchNo}
-               <if test="query != ''">
-                   <!-- 지점 itemName으로 검색 -->
-                   AND se.item_name LIKE CONCAT('%',#{query},'%')
-               </if>
-               <if test="beginDate != ''">
-                   <!-- 지점 시작날짜로 검색 -->
-                   AND seo.createdate > #{beginDate}
-               </if>
-               <if test="endDate != ''">
-                   <!-- 지점 시작날짜,끝날짜로 검색 -->
-                   <![CDATA[ AND seo.createdate < #{endDate} ]]>
-               </if>
-           </if>
+	       <if test="query != ''">
+	           <!-- 지점 itemName으로 검색 -->
+	           AND se.item_name LIKE CONCAT('%',#{query},'%')
+	       </if>
+	       <if test="beginDate != ''">
+	           <!-- 지점 시작날짜로 검색 -->
+	           AND seo.createdate > #{beginDate}
+	       </if>
+	       <if test="endDate != ''">
+	           <!-- 지점 시작날짜,끝날짜로 검색 -->
+	           <![CDATA[ AND seo.createdate < #{endDate} ]]>
+	       </if>
         </where>
        ORDER BY seo.createdate DESC
        LIMIT #{beginRow}, #{rowPerPage}
@@ -278,23 +275,20 @@
 		ON b.branch_no = seo.branch_no
 		INNER JOIN sports_equipment se
 		ON se.sports_equipment_no = seo.sports_equipment_no
+		WHERE b.branch_no = #{loginBranchNo}
     <where>
-       	<!-- 로그인한 계정의 소속 지점만 -->
-        <if test="loginBranchNo != ''">
-           AND b.branch_no = #{loginBranchNo}
-           <if test="query != ''">
-            	<!-- 지점 itemName으로 검색 -->
-            	AND se.item_name LIKE CONCAT('%',#{query},'%')
-           </if>
-           <if test="beginDate != ''">
-               	<!-- 지점 시작날짜로 검색 -->
-                AND seo.createdate > #{beginDate}
-           </if>
-           <if test="endDate != ''">
-                <!-- 지점 시작날짜,끝날짜로 검색 -->
-                <![CDATA[ AND seo.createdate < #{endDate} ]]>
-           </if>
-       	</if>
+       <if test="query != ''">
+        	<!-- 지점 itemName으로 검색 -->
+        	AND se.item_name LIKE CONCAT('%',#{query},'%')
+       </if>
+       <if test="beginDate != ''">
+           	<!-- 지점 시작날짜로 검색 -->
+            AND seo.createdate > #{beginDate}
+       </if>
+       <if test="endDate != ''">
+            <!-- 지점 시작날짜,끝날짜로 검색 -->
+            <![CDATA[ AND seo.createdate < #{endDate} ]]>
+       </if>
     </where>
 	</select>
 	
@@ -338,7 +332,6 @@
 		ON se.sports_equipment_no = sei.sports_equipment_no
 		WHERE seo.order_status = '승인'
 		<!-- 본사 모든 Inventory 리스트 -->
-        <if test="loginBranchLevel == 1">
          	<if test="searchBranch != ''">
                 <!-- 본사 branchName으로 검색 -->
                 AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
@@ -347,7 +340,6 @@
                 <!-- 본사 itemName으로 검색 -->
                 AND se.item_name LIKE CONCAT('%',#{query},'%')
             </if>
-         </if>
 		GROUP BY b.branch_name, se.item_name, se.sports_equipment_no, sei.sports_equipment_no, sei.sports_equipment_img_file_name
 		ORDER BY se.item_name
 		LIMIT #{beginRow}, #{rowPerPage}
@@ -402,14 +394,12 @@
          	INNER JOIN sports_equipment_order seo ON b.branch_no = seo.branch_no
          	INNER JOIN sports_equipment se ON seo.sports_equipment_no = se.sports_equipment_no
          	WHERE seo.order_status = '승인'
-         	<if test="loginBranchLevel == 1">
          		<if test="searchBranch != ''">
                		AND b.branch_name LIKE CONCAT('%',#{searchBranch},'%')
            		</if>
             	<if test="query != ''">
                 	AND se.item_name LIKE CONCAT('%',#{query},'%')
             	</if>
-         	</if>
          	GROUP BY b.branch_name, se.item_name
      	) AS subquery) AS totalRowCount 
 		FROM branch b 

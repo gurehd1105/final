@@ -65,7 +65,7 @@
                <span>{{ moment(scope.row.updagedate).format('yyyy-MM-DD') }}</span>
             </template>
         </el-table-column>
-        <el-table-column fixed="right" label="수정" width="220">
+        <el-table-column fixed="right" v-if="isEmployee" label="수정" width="220">
 		  <template #default="scope">
 		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
 		  </template>

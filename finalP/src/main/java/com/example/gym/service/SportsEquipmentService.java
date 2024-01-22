@@ -366,7 +366,8 @@ public class SportsEquipmentService {
         Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
         
         Object branchNoObject = loginEmployee.getBranchNo();
-        String loginBranchNo = (branchNoObject != null) ? branchNoObject.toString() : null;
+        String loginBranchNo = branchNoObject.toString();
+        System.out.println(loginBranchNo+" <---loginBranchNo");
         param.setLoginBranchNo(loginBranchNo);
 
         log.info("param : {}", param);
