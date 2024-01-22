@@ -34,19 +34,16 @@ public class CustomerController extends DefaultController{
 	}
 	// login 후 Act -> session 세팅 후 home.jsp로 이동
 	@PostMapping("/login")
-	@ResponseBody
-	public int loginCustomer(HttpSession session, @RequestBody Customer customer) {
+	public String loginCustomer(HttpSession session, Customer customer) {
 		Map<String,Object> loginCustomer = customerService.loginCustomer(customer);
-		int result = 0;
 		if (loginCustomer != null) { // 등록된 ID가 있을 시
 			session.setAttribute("loginCustomer", loginCustomer);
 			log.info("login");
-			result = 1;
-
+			return ViewRoutes.홈; 
 		} else { // 정보 없을 시
-			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");			
-		}
-			return result;
+			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");
+			return ViewRoutes.사용자_로그인; 
+		}			
 	}
 	
 	// insert (회원가입) Form
@@ -167,7 +164,7 @@ public class CustomerController extends DefaultController{
 	@ResponseBody	// PW 체크로직
 	public boolean pwCheck(@RequestBody Customer customer) {
 		boolean exist = customerService.loginCustomer(customer) != null;
-		// PW 일치 시 ture 반환
+		// PW 일치 시 true 반환
 		return exist;
 	}
 	
