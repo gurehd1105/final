@@ -370,14 +370,11 @@
 		ON se.sports_equipment_no = sei.sports_equipment_no
 
 		WHERE seo.order_status = '승인'
-       	<!-- 로그인한 계정의 소속 지점만 -->
-        <if test="loginBranchLevel == 0">
            AND b.branch_no = #{loginBranchNo}
            <if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->
             	AND se.item_name LIKE CONCAT('%',#{query},'%')
            </if>
-       	</if>
 		GROUP BY b.branch_name, se.item_name, se.sports_equipment_no, sei.sports_equipment_no, sei.sports_equipment_img_file_name
 		ORDER BY se.item_name
 		LIMIT #{beginRow}, #{rowPerPage}
@@ -420,14 +417,11 @@
          	INNER JOIN sports_equipment_order seo ON b.branch_no = seo.branch_no
          	INNER JOIN sports_equipment se ON seo.sports_equipment_no = se.sports_equipment_no
          	WHERE seo.order_status = '승인'
-      		<!-- 로그인한 계정의 소속 지점만 -->
-        	<if test="1=1">
-           		AND b.branch_no = #{loginBranchNo}
+           	AND b.branch_no = #{loginBranchNo}
            	<if test="query != ''">
             	<!-- 지점 itemName으로 검색 -->
             	AND se.item_name LIKE CONCAT('%',#{query},'%')
            </if>
-       		</if>
          	GROUP BY b.branch_name, se.item_name
      	) AS subquery) AS totalRowCount 
 		FROM branch b 
