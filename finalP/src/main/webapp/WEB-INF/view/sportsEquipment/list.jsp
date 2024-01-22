@@ -50,15 +50,8 @@
     		<br>
   		</el-col>
 	</el-row>
-	
     <!-- 페이징 네비게이션 -->
-    <div class="flex justify-center">
-      <el-pagination layout="prev, pager, next" 
-      	:page-size="rowPerPage" 
-		v-model:current-page="pageNum" 
-		:total="totalCount"
-		@change="loadPage" />
-    </div>	
+	<%@ include file="/inc/pagination.jsp" %>
 	
 </c:set>
 <c:set var="script">

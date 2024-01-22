@@ -46,7 +46,11 @@
 	
 	methods: {
 		submit(){
-			document.getElementById('insert').submit();
+			if(this.questionTitle.length < 5 || this.questionContent.length < 10){
+				alert('제목 및 내용은 각 5자 , 10자 이상 입력해주세요.');
+			} else {
+				document.getElementById('insert').submit();
+			}
 		}
 	},
 </c:set>	

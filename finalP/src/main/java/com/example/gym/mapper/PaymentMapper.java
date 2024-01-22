@@ -16,5 +16,5 @@ public interface PaymentMapper {
 	
 	List<Map<String, Object>> select(Map<String, Object> paramMap);
 	
-	int countOfPayment();
+	int countOfPayment(Map<String, Object> paramMap);
 }

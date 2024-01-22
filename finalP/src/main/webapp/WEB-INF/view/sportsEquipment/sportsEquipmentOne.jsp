@@ -21,7 +21,7 @@
 	          		관리자
 	        	</div>
 	      	</template>
-	      	{{model.employeeId}}
+	      	{{one.employeeId}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -30,7 +30,7 @@
 	          		장비
 	        	</div>
 	      	</template>
-	      	{{model.itemName}}
+	      	{{one.itemName}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -39,7 +39,7 @@
 	          		가격
 	        	</div>
 	      	</template>
-	      	{{model.itemPrice}}원
+	      	{{one.itemPrice}}원
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -48,7 +48,7 @@
 	          		상태
 	        	</div>
 	      	</template>
-	      	{{model.equipmentActive === 'Y' ? '주문가능' : '품절' }}
+	      	{{one.equipmentActive === 'Y' ? '주문가능' : '품절' }}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -57,7 +57,7 @@
 	          		등록일
 	        	</div>
 	      	</template>
-	      	{{model.equipmentCreatedate}}
+	      	{{one.equipmentCreatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item>
@@ -66,7 +66,7 @@
 	          		수정일
 	        	</div>
 	      	</template>
-	      	{{model.equipmentUpdatedate}}
+	      	{{one.equipmentUpdatedate}}
 	    </el-descriptions-item>
 	    
 	    <el-descriptions-item :column="1">
@@ -131,8 +131,8 @@
  		 <el-form-item label="총 가격">
     		{{ model.totalPrice }}원
   		</el-form-item>
-  		<input type="hidden" name="sportsEquipmentNo" :value="sportsEquipmentNo">
- 		<input type="hidden" name="itemPrice" :value="itemPrice">
+  		<input type="hidden" name="sportsEquipmentNo" :value="one.sportsEquipmentNo">
+ 		<input type="hidden" name="itemPrice" :value="one.itemPrice">
   		<el-form-item>
     		<el-button type="success" @click="onSubmit(form)">발주</el-button>
   		</el-form-item>
@@ -144,8 +144,10 @@
 	data() {
 	  	return {
 	  			model: {
-	    	    	quantity: '',
+	    	    	quantity: 0,
 	    			totalPrice:'',
+	  			},
+	  			one:{
 	    			sportsEquipmentNo: '${one.sportsEquipmentNo}', 
 				    itemPrice: '${one.itemPrice}',
 				    employeeId: '${one.employeeId}',
@@ -165,15 +167,19 @@
 	
 		handleChange() {
 		
-    		this.model.totalPrice = this.model.quantity * this.model.itemPrice;
+    		this.model.totalPrice = this.model.quantity * this.one.itemPrice;
     		console.log('Total Price:', this.model.totalPrice);
 		
 		},
 		
 		onSubmit() {
-		
-			document.getElementById('insertOrderForm').submit();
-		
+		    var form = document.getElementById('insertOrderForm');
+		    if (form) {
+		        console.log('Form:', form); 
+		        form.submit();
+		    } else {
+		        console.error('Form not found.');
+		    }	
 		},
 	}
 </c:set>

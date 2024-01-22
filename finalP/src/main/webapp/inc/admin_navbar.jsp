@@ -5,7 +5,7 @@ pageEncoding="UTF-8"%>
         <a :class="a_class" href="/home">HOME</a>
 
         <div class="flex flex-row space-x-3 items-center">
-            <a :class="a_class" href="/customer/question/list" v-if="isLogin">
+            <a :class="a_class" href="/question/list" v-if="isLogin">
                 <el-badge :value="question" class="item">
                     미답변 문의
                 </el-badge>

@@ -61,17 +61,23 @@
 			};
 			axios.post('${ctp}/customer/pwCheck', customer)
 			.then((res) => {
-				if(res.data){
-					if(this.newPw != this.newPwCk){
+				if(res.data){	// 현재 PW는 일치 확인
+					if(this.newPw != this.newPwCk){	// 변경 PW / 변경 PW 확인 불일치
 						self.$notify({
 						  title: '새 PW 오류',
-						  message: 'PW 확인이 일치하지 않습니다.',
+						  message: '비밀번호 확인이 일치하지 않습니다.',
+						  type: 'error',
+						})
+					} else if(this.pw == this.newPw) {
+						self.$notify({
+						  title: '새 PW 오류',
+						  message: '현재 비밀번호와 새 비밀번호가 같습니다.',
 						  type: 'error',
 						})
 					} else{
 						document.getElementById('updatePw').submit();
 					}
-				} else {
+				} else {	// 현재 PW 불일치
 					self.$notify({
 					  title: 'PW 오류',
 					  message: '비밀번호가 일치하지 않습니다.',

@@ -45,9 +45,17 @@
 		</if>
 		LIMIT #{beginRow}, #{rowPerPage}
 	</select>
-	<select id="countOfPayment" resultType="Integer">
+	<select id="countOfPayment" parameterType="java.util.Map"
+									resultType="Integer">
 		SELECT
 			COUNT(*)
-		FROM payment
+		FROM payment p
+		INNER JOIN customer c
+		ON p.customer_no = c.customer_no
+		INNER JOIN customer_detail cd
+		ON c.customer_no = cd.customer_no
+		<if test="customerName != ''">
+			WHERE cd.customer_name LIKE CONCAT('%',#{customerName},'%')
+		</if>
 	</select>
 </mapper>

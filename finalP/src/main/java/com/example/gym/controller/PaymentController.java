@@ -49,17 +49,40 @@ public class PaymentController extends DefaultController{
 	
 	@GetMapping("/list")
 	public String select(Map<String, Object> paramMap, @RequestParam(defaultValue = "") String customerName,  Model model, Page page) {
-		page.setTotalCount(paymentService.countOfPayment());
-		page.setRowPerPage(10);
-		
+
+
+		page.setRowPerPage(5);
+	
 		paramMap.put("beginRow", page.getBeginRow());
 		paramMap.put("rowPerPage", page.getRowPerPage());
 		paramMap.put("customerName", customerName);
+		page.setTotalCount(paymentService.countOfPayment(paramMap));
+		model.addAttribute("page", page);		
+		
 		List<Map<String, Object>> paymentList = paymentService.select(paramMap);
 		log.info("customerName: " + customerName);
 		log.info((paymentList.size() == 0 || paymentList == null) ? "출력값 없음" : "출력 성공");
 		model.addAttribute("paymentList", toJson(paymentList));
 		model.addAttribute("page", page);
+		model.addAttribute("customerName", customerName);
 		return ViewRoutes.결제정보_조회;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
