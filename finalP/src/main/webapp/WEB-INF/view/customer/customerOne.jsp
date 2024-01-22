@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!-- 카카오 주소API CDN -->
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <c:set var="title" value="회원상세" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
@@ -32,7 +30,7 @@
         <el-descriptions-item v-for="key of Object.keys(customer)" :label="key">{{ customer[key] }}</el-descriptions>
     </eldescriptions>
     
-    <div class="pt-10 flex flex-row space-x-6">
+    <div class="pt-10 flex flex-row space-x-6" v-if="isLogin">
         <el-button type="primary" @click="updateOne()">정보수정</el-button>
         
         <el-button type="primary" @click="updatePw()">PW변경</el-button>
@@ -57,6 +55,7 @@
 				만료여부: '${loginCustomer.paymentActive}',
 			},
 				url: '${ctp}${resultMap.customerImgOriginName}',
+				isLogin: '${loginCustomer != null}',
 		}
 	},
 	methods: {

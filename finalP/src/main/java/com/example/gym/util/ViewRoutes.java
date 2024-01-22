@@ -10,6 +10,8 @@ public class ViewRoutes {
 	public static final String 사용자_정보_수정 = "/customer/updateOne";
 	public static final String 사용자_암호_확인 = "/customer/updateOneForPw";
 	public static final String 사용자_암호_변경 = "/customer/updatePw";
+	public static final String 사용자_전체보기 = "/customer/allCustomer";
+	
 	// Branch 관련 path
 	public static final String 지점_목록 = "/branch/list";
 	public static final String 지점_추가 = "/branch/insert";
