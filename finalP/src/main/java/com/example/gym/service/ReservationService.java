@@ -49,9 +49,9 @@ public class ReservationService {
 	}
 
 	
-	//check
-	public List<Map<String, Object>> check(int customerNo){
-		List<Map<String, Object>> check = reservationMapper.check(customerNo);
+	// 예약 중복 체크
+	public List<ProgramDate> check(int customerNo){
+		List<ProgramDate> check = reservationMapper.check(customerNo);
 
 		return check;
 		

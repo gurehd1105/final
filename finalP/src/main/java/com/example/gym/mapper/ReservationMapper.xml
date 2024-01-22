@@ -69,15 +69,16 @@
 		WHERE program_reservation_no = #{programReservationNo}
 	</delete>
 	<select id="check" parameterType="int"
-			resultType="java.util.Map">
+			resultType="com.example.gym.vo.ProgramDate">
 	SELECT
-		customer_no customerNo,
-		program_date_no programDateNo
-		FROM program_reservation pr
-		INNER JOIN payment p
-		WHERE p.customer_no = #{customerNo}	
-		LIMIT 0,1
+		
+			pd.program_date programDate		
+	  FROM program_reservation pr INNER JOIN payment p 
+	    ON pr.payment_no = p.payment_no INNER JOIN program_date pd
+	    ON pr.program_date_no = pd.program_date_no
+	 WHERE p.customer_no = #{customerNo}
 	</select>
+
 	
 	
 

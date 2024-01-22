@@ -17,7 +17,7 @@
         </el-form-item>
         
         <el-form-item>
-            <el-input v-model="currentTime" readonly>
+            <el-input v-model="currentTime" name="customerAttendanceEnterTime" readonly>
                 {{ formattedTime }}
             </el-input>
         </el-form-item>

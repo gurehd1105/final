@@ -94,7 +94,7 @@
             if (this.checkChanges()) {
             	console.log('변경 사항 있음');
             	this.compareModels();
-               // document.getElementById('updateForm').submit();
+               	document.getElementById('updateForm').submit();
             } else {
                 alert('변경된 내용이 없습니다.');
             }

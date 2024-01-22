@@ -11,14 +11,35 @@
 					 #{customerAttendanceEnterTime}
 					)
 	</insert>
+
 	<!--출석정보 조회 -->
 	<select id="selectCustomerAttendance" parameterType="java.util.Map" 
 	        resultType="java.util.Map">
-        SELECT program_reservation_no programReservationNo,
-        	   customer_attendance_enter_time customerAttendanceEnterTime
-          FROM customer_attendance 
+        SELECT pr.program_reservation_no programReservationNo,
+               customer_attendance_enter_time customerAttendanceEnterTime,
+               pd.program_date programDate
+          FROM program_reservation pr INNER JOIN program_date pd
+            ON pr.program_date_no = pd.program_date_no LEFT OUTER JOIN customer_attendance ca
+            ON ca.program_reservation_no = pr.program_reservation_no
+   	
+    </select >
+  	<!-- 출석 조건 -->
+    <select id="selectCustomerAttendanceby" parameterType="java.util.Map" 
+	         resultType="java.util.Map">
+    	SELECT pd.program_date programDate,
+			   pr.program_reservation_no AS programReservationNo
+		  FROM program_reservation pr INNER JOIN program_date pd
+		    ON pd.program_date_no = pr.program_date_no INNER JOIN payment p
+		    ON p.payment_no = pr.payment_no LEFT OUTER JOIN customer_attendance ca
+		    ON pr.program_reservation_no = ca.program_reservation_no
+		 WHERE ca.customer_attendance_no IS NULL
+		   AND p.customer_no = #{customerNo}
+		   AND pd.program_date = DATE(NOW())
     </select>
     
+    
+    
+    <!--출석정보가 있을때 리뷰작성-->
     <select id="selectAttendance" parameterType="Integer"
                               resultType="java.util.Map">		
 	    SELECT ca.customer_attendance_no AS customerAttendanceNo,
