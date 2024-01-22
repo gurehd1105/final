@@ -40,7 +40,7 @@ public class EmployeeLoginFilter implements Filter {
         	Employee loginEmployee = (Employee)request.getSession().getAttribute("loginEmployee");
         	isLevel = loginEmployee.getBranchLevel() == 1;        	
         }
-        String[] allowPath = { "/employee/insert"};
+        String[] allowPath = { "/employee/insert", "/sportsEquipment/insert", "/sportsEquipment/inventoryByHead", "/sportsEquipment/orderByHead"};
         boolean isAllowPath = Arrays.stream(allowPath).anyMatch(path -> path.equals(request.getServletPath()));
         
         boolean isLoginPath = request
