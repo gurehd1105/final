@@ -28,8 +28,7 @@ public class CustomerController extends DefaultController{
 	
 	// login (로그인) Form
 	@GetMapping("/login")
-	public String loginCustomer(HttpSession session) {
-	
+	public String loginCustomer(HttpSession session) {	
 		return ViewRoutes.사용자_로그인;
 	}
 	// login 후 Act -> session 세팅 후 home.jsp로 이동
@@ -39,7 +38,7 @@ public class CustomerController extends DefaultController{
 		if (loginCustomer != null) { // 등록된 ID가 있을 시
 			session.setAttribute("loginCustomer", loginCustomer);
 			log.info("login");
-			return ViewRoutes.홈; 
+			return Redirect(ViewRoutes.홈);
 		} else { // 정보 없을 시
 			log.info(customer.getCustomerId() + " / " + customer.getCustomerPw() + " / login 실패");
 			return ViewRoutes.사용자_로그인; 
