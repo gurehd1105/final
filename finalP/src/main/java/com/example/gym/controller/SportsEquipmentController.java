@@ -220,7 +220,7 @@ public class SportsEquipmentController extends DefaultController {
 			@ModelAttribute("searchParam") SportsEquipmentSearchParam param) throws JsonProcessingException {
 		param.setRowPerPage(10);
 		// service 호출
-		var result = sportsEquipmentService.orderByBranch(param);
+		var result = sportsEquipmentService.orderByBranch(session, param);
 
 		model.addAttribute("result", toJson(result));
 
@@ -279,7 +279,7 @@ public class SportsEquipmentController extends DefaultController {
 		
 		param.setRowPerPage(10);
 		// service 호출
-		var result = sportsEquipmentService.inventoryBranch(param);
+		var result = sportsEquipmentService.inventoryBranch(session, param);
 
 		model.addAttribute("result", toJson(result));
 

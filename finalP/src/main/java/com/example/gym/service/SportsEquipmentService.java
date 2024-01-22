@@ -1,23 +1,27 @@
 package com.example.gym.service;
 
-import com.example.gym.mapper.SportsEquipmentMapper;
-import com.example.gym.vo.SearchResult;
-import com.example.gym.vo.SportsEquipment;
-import com.example.gym.vo.SportsEquipmentImg;
-import com.example.gym.vo.SportsEquipmentOrder;
-import com.example.gym.vo.SportsEquipmentSearchParam;
-import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.example.gym.mapper.SportsEquipmentMapper;
+import com.example.gym.vo.Employee;
+import com.example.gym.vo.SearchResult;
+import com.example.gym.vo.SportsEquipment;
+import com.example.gym.vo.SportsEquipmentImg;
+import com.example.gym.vo.SportsEquipmentOrder;
+import com.example.gym.vo.SportsEquipmentSearchParam;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -40,10 +44,7 @@ public class SportsEquipmentService {
         //sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
         log.warn("employee session 구현 후 수정 완료");
 
-        //Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
-
         //mapper 호출
-        //int branchLevel = mapper.selectSearchEmployeeLevel(loginEmployee.getEmployeeNo());
         int branchLevel = 1;
 
         log.info(branchLevel + " <-- 1:본사 0:지점");
@@ -53,10 +54,9 @@ public class SportsEquipmentService {
 
         //sportsEquipment 추가
         SportsEquipment sportsEquipment = new SportsEquipment();
-        log.warn(
-            "employee session 구현 후 수정 -> employee_no 컬럼은 세션에서 받아와서 설정 "
-        );
-        sportsEquipment.setEmployeeNo(1);
+
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        sportsEquipment.setEmployeeNo(loginEmployee.getEmployeeNo());
         sportsEquipment.setItemName(itemName);
         sportsEquipment.setItemPrice(itemPrice);
 
@@ -138,9 +138,9 @@ public class SportsEquipmentService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("one", one);
 
-        log.warn("employee session 구현 후 수정 ");
-        int branchLevel = 0;
-        int branchNo = 2;
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        int branchNo = loginEmployee.getBranchNo();
         if (branchLevel != 1) {
             Map<String, Object> paramMap = new HashMap<String, Object>();
             paramMap.put("sportsEquipmentNo", sportsEquipmentNo);
@@ -172,10 +172,8 @@ public class SportsEquipmentService {
         log.info("itemPrice : {}", itemPrice);
         log.info("equipmentActive : {}", equipmentActive);
 
-        //sportsEquipment 수정을 시도하는 employeeNo가 본사 소속인지 확인
-        //employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-        //mapper 호출
-        int branchLevel = 1;
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
         log.info(branchLevel + " <-- 1:본사 0:지점");
         if (branchLevel != 1) {
             throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
@@ -187,10 +185,7 @@ public class SportsEquipmentService {
         sportsEquipment.setItemName(itemName);
         sportsEquipment.setItemPrice(itemPrice);
         sportsEquipment.setEquipmentActive(equipmentActive);
-        log.warn(
-            "employee session 구현 후 수정 -> employee_no 컬럼은 세션에서 받아와서 설정 "
-        );
-        sportsEquipment.setEmployeeNo(1);
+        sportsEquipment.setEmployeeNo(loginEmployee.getBranchNo());
 
         //mapper 호출
         boolean success = mapper.update(sportsEquipment) != 1;
@@ -217,9 +212,8 @@ public class SportsEquipmentService {
         log.info("sportsEquipmentImgFileName : {}", sportsEquipmentImgFileName);
 
         //sportsEquipmentImg 삭제를 시도하는 employeeNo가 본사 소속인지 확인
-        log.warn("employee session 구현 후 수정 ");
-        //mapper 호출
-        int branchLevel = 1;
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
         log.info(branchLevel + " <-- 1:본사 0:지점");
         if (branchLevel != 1) {
             throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
@@ -273,9 +267,8 @@ public class SportsEquipmentService {
         MultipartFile[] imgList
     ) {
         //sportsEquipment 추가를 시도하는 employeeNo가 본사 소속인지 확인
-        log.warn("employee session 구현 후 수정 ");
-        //mapper 호출
-        int branchLevel = 1;
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
         log.info(branchLevel + " <-- 1:본사 0:지점");
         if (branchLevel != 1) {
             throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
@@ -330,23 +323,12 @@ public class SportsEquipmentService {
         int quantity,
         int itemPrice
     ) {
-        //sportsEquipment 추가를 시도하는 employeeNo가 지점 소속인지 확인
-        //employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-        //mapper 호출
-//        log.warn("임시 데이터 부산점 직원NO");
-//        int branchLevel = 0;
-//        log.info(branchLevel + " <-- 1:본사 0:지점");
-//        if (branchLevel != 0) {
-//            throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
-//        }
 
         //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
         SportsEquipmentOrder order = new SportsEquipmentOrder();
         order.setSportsEquipmentNo(sportsEquipmentNo);
-        log.warn(
-            "employee session 구현 후 수정 -> branchNo 컬럼은 세션에서 받아와서 설정"
-        );
-        order.setBranchNo(2);
+        order.setBranchNo(loginEmployee.getBranchNo());
         order.setQuantity(quantity);
         if (quantity > 0) {
             order.setTotalPrice(itemPrice * quantity);
@@ -379,9 +361,14 @@ public class SportsEquipmentService {
     }
 
     //sportsEquipmentOrderList 출력(지사)
-    public SearchResult orderByBranch(SportsEquipmentSearchParam param) {
-        log.warn("employee session 구현 후 수정");
-        param.setLoginBranchNo("2");
+    public SearchResult orderByBranch(HttpSession session,SportsEquipmentSearchParam param) {
+
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        
+        Object branchNoObject = loginEmployee.getBranchNo();
+        String loginBranchNo = branchNoObject.toString();
+        System.out.println(loginBranchNo+" <---loginBranchNo");
+        param.setLoginBranchNo(loginBranchNo);
 
         log.info("param : {}", param);
         int total = mapper.orderBranchCnt(param);
@@ -403,11 +390,8 @@ public class SportsEquipmentService {
         //디버깅
         log.info("orderNo : {}", orderNo);
         log.info("orderStatus : {}", orderStatus);
-
-        //sportsEquipment 수정을 시도하는 employeeNo가 본사 소속인지 확인
-        //employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-        //mapper 호출
-        int branchLevel = 1;
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
         log.info(branchLevel + " <-- 1:본사 0:지점");
         if (branchLevel != 1) {
             throw new RuntimeException("예외발생 : 본사직원이 아닙니다. ");
@@ -439,15 +423,13 @@ public class SportsEquipmentService {
         log.info("orderNo : {}", orderNo);
         log.info("orderStatus : {}", orderStatus);
 
-        log.warn("employee session 구현 후 수정");
         //sportsEquipmentOrder 삭제을 시도하는 employeeNo가 지점 소속인지 확인
-        //employee session 구현 후 수정 mapper -> employeeMapper로 이동해야함
-        //mapper 호출
-        //int branchLevel = mapper.selectSearchEmployeeLevel(1);
-        //log.info( branchLevel + " <-- 1:본사 0:지점");
-        //if(branchLevel != 0) {
-        //throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
-        //}
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        int branchLevel = loginEmployee.getBranchLevel();
+        log.info( branchLevel + " <-- 1:본사 0:지점");
+        if(branchLevel != 0) {
+        throw new RuntimeException("예외발생 : 지점직원이 아닙니다. ");
+        }
 
         //mapper에 보내줄 sportsEquipmentOrder 객체 세팅
         SportsEquipmentOrder order = new SportsEquipmentOrder();
@@ -469,8 +451,7 @@ public class SportsEquipmentService {
 
     //sportsEquipmentInventory 출력(본사)
     public SearchResult inventoryHead(SportsEquipmentSearchParam param) {
-        log.warn("employee session 구현 후 수정");
-        param.setLoginBranchLevel("1");
+    	
         log.info("param : {}", param);
 
         int total = mapper.inventoryByHeadCnt(param);
@@ -483,10 +464,12 @@ public class SportsEquipmentService {
     }
 
     //sportsEquipmentInventory 출력(지점)
-    public SearchResult inventoryBranch(SportsEquipmentSearchParam param) {
-        log.warn("employee session 구현 후 수정");
-        param.setLoginBranchLevel("0");
-        param.setLoginBranchNo("2");
+    public SearchResult inventoryBranch(HttpSession session, SportsEquipmentSearchParam param) {
+    	
+        Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+        Object branchNoObject = loginEmployee.getBranchNo();
+        String loginBranchNo = (branchNoObject != null) ? branchNoObject.toString() : null;
+        param.setLoginBranchNo(loginBranchNo);
         log.info("param : {}", param);
 
         int total = mapper.inventoryByBranchCnt(param);
