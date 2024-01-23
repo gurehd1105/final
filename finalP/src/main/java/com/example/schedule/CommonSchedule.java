@@ -31,7 +31,7 @@ public class CommonSchedule {
 		for (String path : images) {
 			File file = new File(DEFAULT_PATH + path);
 			String message = file.exists() ? "은 존재하는 파일입니다." : "은 존재하지 않습니다. (삭제가능)";
-			System.out.println(path + " : " + message);
+			// System.out.println(path + " : " + message);
 		}
 	}
 }

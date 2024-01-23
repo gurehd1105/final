@@ -9,36 +9,28 @@
 
 <c:set var="body">
       <h1>출석 조회</h1>
-        <table>
-        <tr>
-            <th>번호</th>
-            <th>예약번호</th>            
-            <th>출석시간</th>        
-        </tr>
-        
-        <tbody v-for="(attendance, a) in  attendanceList" :key="a">
-            <tr>
-                <th>{{a+1}}</th>
-                <th>{{attendance.programReservationNo}}</th>        
-                <th>{{attendance.customerAttendanceEnterTime == null ? "미출석" 
-                    : new Date(attendance.customerAttendanceEnterTime).toLocaleDateString() + " "
-                      + new Date(attendance.customerAttendanceEnterTime).toLocaleTimeString()}}
-                </th>
- 
-                
-            </tr>            
-        </tbody>            
-    </table>
+       <el-table :data="attendanceList" style="width: 100%">
+            <el-table-column label="번호"type="index" width="60"></el-table-column>
+            <el-table-column label="예약번호" prop="programReservationNo"></el-table-column>
+            <el-table-column label="출석시간" prop="customerAttendanceEnterTime" :formatter="formatDate"></el-table-column>
+        </el-table>
 
 </c:set>
 
 <c:set var="script">
       data() {
-                return {
-                    attendanceList: JSON.parse('${attendanceList}'),
-                };
+          return {
+             attendanceList: JSON.parse('${attendanceList}'),
+                }
             },
-            methods: {
+      methods: {
+          formatDate(row, column, cellValue) {
+	      // 진행일 열은 시간을 표시하지 않고 날짜만 표시
+	      if (column.property === 'programDate') {
+	                return new Date(cellValue).toLocaleDateString();
+	            }
+	            return new Date(cellValue).toLocaleString();
+        },
                
             },
 
