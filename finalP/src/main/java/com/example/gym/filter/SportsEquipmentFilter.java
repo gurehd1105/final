@@ -14,8 +14,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class EmployeeLoginFilter implements Filter {
-
+public class SportsEquipmentFilter implements Filter{
+	
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // 필터 초기화 작업
@@ -40,7 +40,8 @@ public class EmployeeLoginFilter implements Filter {
         	Employee loginEmployee = (Employee)request.getSession().getAttribute("loginEmployee");
         	isLevel = loginEmployee.getBranchLevel() == 1;        	
         }
-        String[] allowPath = { "/employee/insert"};
+        String[] allowPath = { "/sportsEquipment/insert", "/sportsEquipment/inventoryByHead", 
+        		"/sportsEquipment/orderByHead"};
         boolean isAllowPath = Arrays.stream(allowPath).anyMatch(path -> path.equals(request.getServletPath()));
         
         boolean isLoginPath = request
