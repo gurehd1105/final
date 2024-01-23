@@ -2,26 +2,46 @@
 pageEncoding="UTF-8"%>
 <div id="footer" class="border-t p-10 bg-gray-50" v-cloak>
     <el-footer class="!h-auto">
-        <div class="flex flex-row justify-between">
-            <div>대충 이미지나 로고 때려박는 곳</div>
-            <div class="flex flex-row space-x-10">
+        <div
+            class="flex flex-col space-y-6 items-center lg:flex-row lg:justify-between lg:space-y-0"
+        >
+            <img class="w-fit h-fit" src="/goodee_logo.png" />
+            <div
+                class="flex flex-col space-y-6 lg:flex-row lg:space-x-10 lg:space-y-0"
+            >
                 <el-link href="/employee/login" type="info" class="h-fit"
                     >관리자 로그인</el-link
                 >
 
-                <div class="flex flex-col space-y-8">
+                <div class="flex flex-col space-y-6 lg:space-y-8">
                     <el-text size="large" tag="b">참여자</el-text>
-                    <div class="flex flex-col space-y-4">
-                        <el-text v-for="name of contributors">
+                    <div
+                        class="flex flex-row space-x-6 lg:flex-col lg:space-y-4 lg:space-x-0"
+                    >
+                        <el-text
+                            class="hidden lg:block"
+                            v-for="name of contributors"
+                        >
                             {{ name }}
                         </el-text>
+
+                        <el-link
+                            class="block lg:hidden !text-blue-500"
+                            v-for="(name, idx) of contributors"
+                            :href="github_links[idx]"
+                        >
+                            {{ name }}
+                        </el-link>
                     </div>
                 </div>
 
-                <div class="flex flex-col space-y-8">
+                <div class="flex flex-col space-y-8 hidden lg:block">
                     <el-text size="large" tag="b">GitHub</el-text>
                     <div class="flex flex-col space-y-4">
-                        <el-text v-for="url of github_links">
+                        <el-text
+                            class="!self-start"
+                            v-for="url of github_links"
+                        >
                             <el-link
                                 v-bind:href="url"
                                 target="_blank"
@@ -32,7 +52,7 @@ pageEncoding="UTF-8"%>
                     </div>
                 </div>
 
-                <div class="flex flex-col space-y-8">
+                <!-- <div class="flex flex-col space-y-8">
                     <el-text size="large" tag="b">몰라</el-text>
                     <div class="flex flex-col space-y-4">
                         <el-text v-for="url of blog_links">
@@ -44,7 +64,7 @@ pageEncoding="UTF-8"%>
                             >
                         </el-text>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </el-footer>
