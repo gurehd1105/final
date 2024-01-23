@@ -3,7 +3,7 @@ pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
 prefix="c" %>
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 <div id="header" v-cloak>
-    <el-header class="!p-0 mx-auto font-bold">
+    <el-header class="!p-0 mx-auto font-bold !hidden xl:!block">
         <el-menu
             :default-active="activeIndex"
             class="el-menu-demo"
@@ -77,6 +77,101 @@ prefix="c" %>
             </el-menu-item>
         </el-menu>
     </el-header>
+
+    <!-- 반응형 처리 -->
+    <el-header class="!p-0 mx-auto font-bold !block xl:!hidden">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            :ellipsis="false"
+            @select="handleSelect"
+        >
+            <el-menu-item @click="() => drawer = true">
+                <template #title>
+                    <el-icon v-html="svg.menu"></el-icon>
+                </template>
+            </el-menu-item>
+
+            <div class="flex-grow"></div>
+
+            <el-menu-item index="2" v-if="!loginCustomer">
+                <template #title>
+                    <el-icon v-html="svg.login"></el-icon>
+                    <span>로그인</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="10" v-else>
+                <template #title>
+                    <el-icon v-html="svg.logout"></el-icon>
+                    <span>로그아웃</span>
+                </template>
+            </el-menu-item>
+        </el-menu>
+    </el-header>
+
+    <el-drawer v-model="drawer" title="메뉴" direction="ltr">
+        <el-menu
+            :default-active="activeIndex"
+            class="!border-r-0"
+            mode="vertical"
+            :ellipsis="false"
+            @select="handleSelect"
+        >
+            <el-menu-item index="1" class="!px-0">
+                <template #title>
+                    <el-icon v-html="svg.home"></el-icon>
+                    <span>HOME</span>
+                </template>
+            </el-menu-item>
+
+            <div class="flex-grow"></div>
+
+            <el-menu-item index="3" class="!px-0">
+                <el-icon v-html="svg.membership"></el-icon>
+                <span>멤버쉽</span>
+            </el-menu-item>
+            <el-menu-item index="4" class="!px-0">
+                <el-icon v-html="svg.program"></el-icon>
+                <span>프로그램</span>
+            </el-menu-item>
+            <el-menu-item index="5" class="!px-0">
+                <template #title>
+                    <el-icon v-html="svg.question"></el-icon>
+                    <span>문의하기</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="6" class="!px-0">
+                <el-icon v-html="svg.review"></el-icon>
+                <span>리뷰</span>
+            </el-menu-item>
+            <el-menu-item index="7" class="!px-0">
+                <el-icon v-html="svg.notice"></el-icon>
+                <span>공지사항</span>
+            </el-menu-item>
+
+            <div class="flex-grow"></div>
+
+            <el-menu-item index="11" v-if="loginCustomer" class="!px-0">
+                <template #title>
+                    <el-icon v-html="svg.login"></el-icon>
+                    <span>출석</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="8" v-if="loginCustomer" class="!px-0">
+                <template #title>
+                    <el-icon v-html="svg.reservation"></el-icon>
+                    <span>예약</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="9" v-if="loginCustomer" class="!px-0">
+                <template #title>
+                    <el-icon v-html="svg.myinfo"></el-icon>
+                    <span>내정보</span>
+                </template>
+            </el-menu-item>
+        </el-menu>
+    </el-drawer>
 </div>
 <script>
     const header = Vue.createApp({
@@ -97,8 +192,9 @@ prefix="c" %>
                     "${ctp}/customer/logout",
                     "${ctp}/attendance/insert",
                 ],
-
+                drawer: false,
                 svg: {
+                    menu: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M160 448a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32zm448 0a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32zM160 896a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32zm448 0a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32z"></path></svg>`,
                     membership: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M896 324.096c0-42.368-2.496-55.296-9.536-68.48a52.352 52.352 0 0 0-22.144-22.08c-13.12-7.04-26.048-9.536-68.416-9.536H228.096c-42.368 0-55.296 2.496-68.48 9.536a52.352 52.352 0 0 0-22.08 22.144c-7.04 13.12-9.536 26.048-9.536 68.416v375.808c0 42.368 2.496 55.296 9.536 68.48a52.352 52.352 0 0 0 22.144 22.08c13.12 7.04 26.048 9.536 68.416 9.536h567.808c42.368 0 55.296-2.496 68.48-9.536a52.352 52.352 0 0 0 22.08-22.144c7.04-13.12 9.536-26.048 9.536-68.416zm64 0v375.808c0 57.088-5.952 77.76-17.088 98.56-11.136 20.928-27.52 37.312-48.384 48.448-20.864 11.136-41.6 17.088-98.56 17.088H228.032c-57.088 0-77.76-5.952-98.56-17.088a116.288 116.288 0 0 1-48.448-48.384c-11.136-20.864-17.088-41.6-17.088-98.56V324.032c0-57.088 5.952-77.76 17.088-98.56 11.136-20.928 27.52-37.312 48.384-48.448 20.864-11.136 41.6-17.088 98.56-17.088H795.84c57.088 0 77.76 5.952 98.56 17.088 20.928 11.136 37.312 27.52 48.448 48.384 11.136 20.864 17.088 41.6 17.088 98.56z"></path><path fill="currentColor" d="M64 320h896v64H64zm0 128h896v64H64zm128 192h256v64H192z"></path></svg>`,
                     program: ` <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M256 832a128 128 0 1 0 0-256 128 128 0 0 0 0 256m0 64a192 192 0 1 1 0-384 192 192 0 0 1 0 384"></path><path fill="currentColor" d="M288 672h320q32 0 32 32t-32 32H288q-32 0-32-32t32-32"></path><path fill="currentColor" d="M768 832a128 128 0 1 0 0-256 128 128 0 0 0 0 256m0 64a192 192 0 1 1 0-384 192 192 0 0 1 0 384"></path><path fill="currentColor" d="M480 192a32 32 0 0 1 0-64h160a32 32 0 0 1 31.04 24.256l96 384a32 32 0 0 1-62.08 15.488L615.04 192zM96 384a32 32 0 0 1 0-64h128a32 32 0 0 1 30.336 21.888l64 192a32 32 0 1 1-60.672 20.224L200.96 384z"></path><path fill="currentColor" d="m373.376 599.808-42.752-47.616 320-288 42.752 47.616z"></path></svg>`,
                     review: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="m199.04 672.64 193.984 112 224-387.968-193.92-112-224 388.032zm-23.872 60.16 32.896 148.288 144.896-45.696zM455.04 229.248l193.92 112 56.704-98.112-193.984-112-56.64 98.112zM104.32 708.8l384-665.024 304.768 175.936L409.152 884.8h.064l-248.448 78.336zm384 254.272v-64h448v64h-448z"></path></svg>`,

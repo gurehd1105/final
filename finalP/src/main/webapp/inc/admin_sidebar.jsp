@@ -100,6 +100,7 @@ pageEncoding="UTF-8"%>
                         "${ctp}/notice/read",
                         "${ctp}/notice/update",
                     ],
+
                     "1-5-1": ["${ctp}/program/insert"],
                     "1-5-2": ["${ctp}/program/list", "${ctp}/program/update"],
                     "1-5-3": [
@@ -118,6 +119,7 @@ pageEncoding="UTF-8"%>
                     "1-6-6": ["${ctp}/sportsEquipment/inventoryByBranch"],
                     "1-7-1": ["${ctp}/membership/list"],
                     "1-7-2": ["${ctp}/payment/list"],
+
                 },
             };
         },

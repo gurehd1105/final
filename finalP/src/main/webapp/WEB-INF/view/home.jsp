@@ -84,12 +84,7 @@ prefix="c"%>
                     >공지사항 전체보기 >
                 </el-link>
             </div>
-            <el-table
-                :data="notices"
-                border
-                class="w-fit"
-                @row-click="rowClick"
-            >
+            <el-table :data="notices" border class="w-fit">
                 <el-table-column
                     prop="noticeTitle"
                     label="제목"
@@ -104,7 +99,7 @@ prefix="c"%>
                     label="작성일"
                     width="180"
                 ></el-table-column>
-                <el-table-column fixed="right" label="관리" width="220">
+                <el-table-column fixed="right" label="관리" width="100">
                     <template #default="scope">
                         <el-button
                             plain
