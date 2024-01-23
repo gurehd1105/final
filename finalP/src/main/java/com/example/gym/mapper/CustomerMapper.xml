@@ -39,7 +39,7 @@
 		LIMIT 0,1) n
 		ON c.customer_no = n.customerNo
 		WHERE c.customer_id = #{customerId}
-		AND c.customer_pw = SHA2(#{customerPw}, 256)
+		AND c.customer_pw = PASSWORD(#{customerPw})
 		AND c.customer_active = 'Y'
 	</select>
 	
@@ -64,7 +64,7 @@
 			customer_pw
 		) VALUES (
 			#{customerId},
-			SHA2(#{customerPw}, 256)
+			PASSWORD(#{customerPw})
 		)	
 	</insert>
 		<!-- customerDetail Insert -->
@@ -196,7 +196,7 @@
 		<!-- 비밀번호 변경 -->
 	<update id="updateCustomerPw" parameterType="com.example.gym.vo.Customer">
 		UPDATE customer SET
-			customer_pw = SHA2(#{customerPw}, 256),
+			customer_pw = PASSWORD(#{customerPw}),
 			updatedate = now()
 		WHERE customer_no = #{customerNo}
 	</update>
