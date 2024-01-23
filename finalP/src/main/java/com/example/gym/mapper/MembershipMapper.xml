@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.MembershipMapper">
+<select id="list" resultType="com.example.gym.vo.Membership">
+	SELECT 
+		membership_no AS membershipNo,
+		employee_no AS employeeNo,
+		membership_name AS membershipName,  
+		membership_month AS membershipMonth,
+		membership_price AS membershipPrice,
+		createdate, updatedate
+	FROM membership
+	ORDER BY updatedate DESC
+</select>
+
+<insert id="insert" parameterType="com.example.gym.vo.Membership">
+	INSERT INTO membership (
+		employee_no,
+		membership_name,  
+		membership_month,
+		membership_price
+	) VALUES (
+		#{employeeNo},
+		#{membershipName},  
+		#{membershipMonth},
+		#{membershipPrice}
+	)
+</insert>
+
+<delete id="delete" parameterType="com.example.gym.vo.Membership">
+	DELETE FROM membership
+		WHERE membership_no = #{membershipNo}
+</delete>
+
+<update id="update" parameterType="com.example.gym.vo.Membership">
+	UPDATE membership SET
+		employee_no = #{employeeNo},
+		membership_name = #{membershipName},
+		membership_month = #{membershipMonth},
+		membership_price = #{membershipPrice},
+		updatedate = NOW()
+	WHERE membership_no = #{membershipNo}
+</update>
+
+<select id="membershipOne" parameterType="com.example.gym.vo.Membership"
+			resultType="com.example.gym.vo.Membership">
+	SELECT 
+		membership_no AS membershipNo,
+		employee_no AS employeeNo,
+		membership_name AS membershipName,  
+		membership_month AS membershipMonth,
+		membership_price AS membershipPrice,
+		createdate, updatedate
+	FROM membership
+	WHERE membership_no = #{membershipNo}
+</select>
+
+</mapper>

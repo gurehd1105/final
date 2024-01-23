@@ -3,29 +3,97 @@
 <mapper namespace="com.example.gym.mapper.BranchMapper">
 	<resultMap id="Branch" type="com.example.gym.vo.Branch">		
 		<result property="branchNo"		column="branch_no"/>
-		<result property ="branchName" column = "branch_name"/>
-		<result property = "branchTel" column = "branch_tel"/>
-		<result property = "branchAddress" column = "branch_address"/>
+		<result property="branchName" column="branch_name"/>
+		<result property="branchTel" column="branch_tel"/>
+		<result property="branchAddress" column="branch_address"/>
 		<result property="branchLevel"		column="branch_level"/>
 		<result property="branchActive"		column="branch_active"/>
 	</resultMap>
-	<select id="branchList" resultMap="Branch">
-		SELECT *
-		FROM branch
-	</select>
 
 	<insert id="insertBranch"
-		parameterType="com.example.gym.vo.Branch">
+		parameterType="map">
 		INSERT INTO branch (
-		branch_name ,
-		branch_tel ,
-		branch_address 
+            branch_name,
+            branch_tel,
+            branch_address
 		)
 		VALUES (
 			#{branchName} ,
 			#{branchTel} ,
-			#{branchAdderess} 
+			#{branchAddress} 
 		)
 	</insert>
 
+	<!-- 관리자 추가시 필요한 지점 조회 -->
+	<select id="branch" resultMap="Branch">
+		SELECT *
+		FROM branch
+		WHERE branch_active = 'Y'
+	</select>
+    
+	<!-- 고객과 본점 관리자를 위한 지점 목록 조회  -->
+	<select id="branchList"  parameterType="com.example.gym.vo.Page"
+						resultType="com.example.gym.vo.Branch">
+		SELECT 
+			branch_no branchNo,
+			branch_name branchName,
+			branch_tel branchTel,
+			branch_address branchAddress , 
+			DATE_FORMAT(createdate, '%Y-%m-%d') AS createdate
+		FROM branch
+		WHERE branch_active = 'Y'
+		ORDER BY branchNo asc
+		<if test="rowPerPage!= -1">
+		LIMIT #{beginRow},#{rowPerPage}
+		</if>
+	</select>
+	<!-- 전체 지점 갯수 확인 -->
+	<select id="totalBranch" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM branch
+		WHERE branch_active = 'Y'
+	</select>
+	
+	<!-- 지점정보 상세보기 -->
+	<select id="selectBranchOne"
+			parameterType="int"
+			resultType="map">
+		SELECT
+			branch_no branchNo,
+			branch_name branchName,
+			branch_tel branchTel,
+			branch_address branchAddress ,
+			DATE_FORMAT(createdate, '%Y-%m-%d') AS createdate
+		FROM branch
+		WHERE branch_active = 'Y'
+		AND
+			branch_no = #{branchNo}
+	</select>
+	
+	<!-- 지점 정보 수정 -->
+	<update id="updateBranch"
+			parameterType="com.example.gym.vo.Branch">
+		UPDATE branch
+		SET
+			branch_name = #{branchName},
+			branch_tel = #{branchTel},
+			branch_address = #{branchAddress},
+			updatedate = NOW()
+		<where>
+			branch_no = #{branchNo}
+		</where>
+	</update>
+	
+	<!-- 지점 비활성화 -->
+	<update id="deleteBranch"
+			parameterType="int">
+		UPDATE branch
+		SET
+			branch_active = 'N',
+			updatedate = NOW()
+		<where>
+			branch_no = #{branchNo}
+		</where>
+	</update>
 </mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gym.mapper.AttendanceMapper">
+	<!-- 출석체크 -->
+	<insert id="insertAttendance" parameterType="java.util.Map">
+		INSERT INTO customer_attendance (
+					program_reservation_no,
+					customer_attendance_enter_time
+		   )VALUES (
+					 #{programReservationNo},
+					 #{customerAttendanceEnterTime}
+					)
+	</insert>
+
+	<!--출석정보 조회 -->
+	<select id="selectCustomerAttendance" parameterType="java.util.Map" 
+	        resultType="java.util.Map">
+        SELECT pr.program_reservation_no programReservationNo,
+               customer_attendance_enter_time customerAttendanceEnterTime,
+               pd.program_date programDate
+          FROM program_reservation pr INNER JOIN program_date pd
+            ON pr.program_date_no = pd.program_date_no LEFT OUTER JOIN customer_attendance ca
+            ON ca.program_reservation_no = pr.program_reservation_no
+   	
+    </select >
+  	<!-- 출석 조건 -->
+    <select id="selectCustomerAttendanceby" parameterType="java.util.Map" 
+	         resultType="java.util.Map">
+    	SELECT pd.program_date programDate,
+			   pr.program_reservation_no AS programReservationNo
+		  FROM program_reservation pr INNER JOIN program_date pd
+		    ON pd.program_date_no = pr.program_date_no INNER JOIN payment p
+		    ON p.payment_no = pr.payment_no LEFT OUTER JOIN customer_attendance ca
+		    ON pr.program_reservation_no = ca.program_reservation_no
+		 WHERE ca.customer_attendance_no IS NULL
+		   AND p.customer_no = #{customerNo}
+		   AND pd.program_date = DATE(NOW())
+    </select>
+    
+    
+    
+    <!--출석정보가 있을때 리뷰작성-->
+    <select id="selectAttendance" parameterType="Integer"
+                              resultType="java.util.Map">		
+	    SELECT ca.customer_attendance_no AS customerAttendanceNo,
+			   ca.customer_attendance_enter_time AS customerAttendanceEnterTime,
+			   pro.program_name AS programName,
+			   b.branch_name AS branchName,
+			   n.reviewNo AS reviewNo
+		  FROM customer_attendance ca INNER JOIN program_reservation pr
+		    ON ca.program_reservation_no = pr.program_reservation_no INNER JOIN payment p
+			ON p.payment_no = pr.payment_no INNER JOIN program_date pd
+		    ON pr.program_date_no = pd.program_date_no INNER JOIN program pro
+		    ON pro.program_no = pd.program_no INNER JOIN branch b
+		    ON b.branch_no = pr.branch_no	
+		LEFT OUTER JOIN (SELECT 
+									review_no AS reviewNo,
+									customer_attendance_no AS customerAttendanceNo
+								FROM review) n
+		ON ca.customer_attendance_no = n.customerAttendanceNo
+			WHERE p.customer_no = #{customerNo}
+			AND n.reviewNo IS NULL
+			ORDER BY 2 DESC
+			LIMIT 0,5
+		
+	</select>
+
+</mapper>

@@ -1,205 +1,219 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="ctp" value="${pageContext.request.contextPath}"/>
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="title" value="문의작성" />
+<c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
+<c:set var="keywords" value="운동,헬스,헬스장,예약" />
+<c:set var="ctp" value="${pageContext.request.contextPath}" />
 
-	<!-- question table-->
-	<div style="display: table;">
+<c:set var="body">
 
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Question No</div>
-			<div style="display: table-cell;">${ questionMap.questionNo }</div>
-		</div>
+	
+	<!-- 문의 작성자 / 제목 정보 등 표기  -->
+	<el-descriptions title="문의 상세" :column="1" border> <el-descriptions-item
+		v-for="key of Object.keys(question)" :label="key">{{
+	question[key] }}</el-descriptions>
+	</eldescriptions>
 
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Customer Id</div>
-			<div style="display: table-cell;">${ questionMap.customerId }</div>
-		</div>
+	<br>
 
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Date</div>
-			<div style="display: table-cell;">${ questionMap.qUpdatedate }</div>
-		</div>
+	<c:if test="${ loginCustomer.customerNo == questionMap.customerNo }">
+		<!-- 로그인된 본인 글에만 표시 -->
+		<el-button type="primary" @click="updateForm(question)">수정</el-button>
+		<!-- 수정Form으로 이동 -->
+		<el-button type="primary" @click="deleteForm()" id="deleteBtn">삭제</el-button>
+		<!-- 고객PW 입력Form 표시 / 입력 후 삭제가능 -->
 
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Title</div>
-			<div style="display: table-cell;">${ questionMap.questionTitle }
-			</div>
-		</div>
-
-		<div style="display: table-row;">
-			<div style="display: table-cell;">Content</div>
-			<div style="display: table-cell;">
-				<textarea readonly="readonly">${ questionMap.questionContent }</textarea>
-			</div>
-		</div>
-
-	</div>
-
-	<c:if test="${ loginCustomer.customerId == questionMap.customerId }">
-		<div>
-			<input type="button" value="수정" onclick="location='${ctp}/updateQuestion?questionNo=${ questionMap.questionNo }'">
-			<input type="button" value="삭제" id="deleteQuestionForm">
-			
-			<div id="deleteQuestionPw">
-				삭제를 위해 계정 Pw를 입력하세요<br>
-				<input type="password" id="customerPw" placeholder="PW 입력">&nbsp;
-				
-				<input type="button" value="삭제하기" id="deleteQuestionAct"> 
-				
-				<input type="hidden" id="customerId" value="${ loginCustomer.customerId }">
-				
-				<input type="hidden" id="questionNo" value="${ questionMap.questionNo }">
-			</div>
-		</div>
+		<!-- 삭제 시 고객PW 입력 form / 삭제버튼 클릭 시 보여지도록 구성 -->
+		<span id="deleteForm" style="display: none;"> <input
+			type="hidden" v-model="question.작성자"> <input type="hidden"
+			v-model="question.문의번호"> <input type="password"
+			id="customerPw" placeholder="PW 입력" /> <el-button type="primary"
+				@click="deleteAct()">삭제</el-button>
+		</span>
 	</c:if>
 	<br>
+
+
+	<strong>Content</strong>
 	<br>
+	<textarea readonly rows="20" cols="200" style="resize: none;">{{ questionContent }}</textarea>
 	
-<!-- 관리자 insert reply table : 관리자 로그인 시 조회되도록 설정 예정 -->
-<!-- 이미 답변이 있을 시 insert불가 -->
-<c:if test="${ replyMap == null }">
-<p>답변대기중 : 등록된 답변이 없습니다.</p>
-
-	<form action="${ctp}/insertQuestionReply" method="post">
-		<div style="display: table;">
-			<div style="display: table-row;">
-				<div style="display: table-cell;">작성자</div>
-				<div style="display: table-cell;">관리자<!-- 추후 ID 또는 name으로 변경 -->
-					<input type="hidden" value="${ loginEmployee.employeeNo }" id="employeeNo" name="employeeNo">
-				</div>
-			</div>
-			
-			<div style="display: table-row;">
-				<div style="display: table-cell;"><label for="questionReplyContent">답변</label></div>
-				<div style="display: table-cell;"><textarea name="questionReplyContent" id="questionReplyContent" placeholder="답변내용"></textarea></div>
-			</div>
-		</div>
-			<input type="hidden" value="${ questionMap.questionNo }" name="questionNo" id="questionNo">
-			<button type="submit">등록</button>
-	</form>
-</c:if>
-
 	<c:if test="${ replyMap != null }">
-		<div style="display: table;">
-			<!-- 관리자 reply -->
+		<!-- 답변 -->
+		<el-descriptions title="문의 답변" :column="1" border> 
+			<el-descriptions-item
+				v-for="key of Object.keys(reply)" :label="key">
+				{{ reply[key] }}
+			</el-descriptions-item>
+		</el-descriptions>
+	<br>
+		<span v-if="isEmployee" id="replyBtn"> 
+			<el-button type="primary" @click="updateReply()">수정</el-button>			
+			<el-button type="primary" @click="deleteReply()">삭제</el-button>			
+		</span>
+		<span id="updateReplyBtn" style="display: none;">
+			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
+			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
+		</span>
+	<br>
+	<br>
 
-			<div style="display: table-row;">
-				<div style="display: table-cell;">최종 작성자</div>
-				<div style="display: table-cell;">${ replyMap.employeeId }</div>
-			</div>
-
-			<div style="display: table-row;">
-				<div style="display: table-cell;">답변</div>
-				<div style="display: table-cell;">
-					<textarea readonly="readonly" id="questionReplyContent">${ replyMap.questionReplyContent }</textarea>
-					<input type="hidden" value="${ replyMap.questionReplyNo }" id="questionReplyNo">
-				</div>
-			</div>
-
-			<div style="display: table-row;">
-				<div style="display: table-cell;">최초작성일</div>
-				<div style="display: table-cell;">${ replyMap.qrCreatedate }</div>
-			</div>
-
-			<div style="display: table-row;">
-				<div style="display: table-cell;">최종수정일</div>
-				<div style="display: table-cell;">${ replyMap.qrUpdatedate }</div>
-				<!-- 관리자 로그인 시에는 ID 조회되도록 고려 중 -->
-			</div>
-
-		</div>
-
-		<input type="button" id="updateReplyBtn" value="수정">
-		<input type="hidden" id="updateReplyFinish" value="완료">
-
-		<a
-			href="${ctp}/deleteQuestionReply?questionReplyNo=${ replyMap.questionReplyNo }&questionNo=${ questionMap.questionNo }">삭제</a>
+		<strong>Reply</strong>
+		<textarea id="questionReply" rows="20" cols="170"
+			style="resize: none;" readonly>{{ replyContent }}</textarea>
 	</c:if>
 	<br>
 	<br>
+
+	<!-- 답변 없을 시 표시 -->
+	<c:if test="${ replyMap == null }">
+		<p>답변이 등록되지 않았습니다. 조금만 기다려주세요.</p>
+	</c:if>
+
+	<!-- 답변 없을 시 + 관리자에게만 표시 -->
+	<c:if test="${ replyMap == null && loginEmployee != null}">
+		<el-form label-position="right" ref="form" label-width="150px"
+			status-icon class="max-w-lg" action="${ctp}/question/insertReply"
+			method="post" id="insertReplyAct"> 
+			<el-form-item label="답변자" column="2"> 
+				<el-input v-model="employee.employeeId" readonly /> 
+			</el-form-item> 
+			
+			<el-form-item> 
+				<el-input type="hidden" name="employeeNo" v-model="employee.employeeNo" /> 
+			</el-form-item> 
+			
+			<el-form-item>
+				<el-input type="hidden" name="questionNo" v-model="employee.questionNo" /> 
+			</el-form-item> 
+			
+			<el-form-item label="답변내용">
+				<textarea rows="10" cols="50" style="resize: none;" name="questionReplyContent" v-model="employee.replyContent"></textarea>
+			</el-form-item> 
+			
+			<el-button type="primary" @click="insertReply()">등록</el-button>
+	</c:if>
+
 	<br>
+</c:set>
 
-</body>
-
-<script>
-// 고객
+<c:set var="script">
 	
-	// 삭제 Btn 클릭 시 비밀번호 입력창 조회
-	$(document).ready(function() { // 최초 페이지로드 시 deleteQuestionAct 버튼 hide()
-		$('#deleteQuestionPw').hide();
-	});
-	
-	$('#deleteQuestionForm').click(function() { // 삭제 Form 버튼 클릭 시 해당 버튼은 hide(), 로드 시 hide()한 Act 버튼 show()
-		$('#deleteQuestionForm').hide();
-		$('#deleteQuestionPw').show();
-	});
-	
-	$('#deleteQuestionAct').click(function() { // Act 버튼 클릭 시
-		if ($('#customerPw').val().length < 1) {
-			alert('Pw를 입력하세요.');
-			return;
-		} else {
-			$.ajax({
-				url : '${ctp}/deleteQuestion',
-				type : 'post',
-				data : {
-					customerId : $('#customerId').val(),
-					customerPw : $('#customerPw').val(),
-					questionNo : $('#questionNo').val(),
-				},
-				success : function(result) {
-					if (result == 1) {
-						alert('삭제가 완료되었습니다.');
-						$(location).attr("href", "${ctp}/questionList");
-					} else {
-						alert('Pw가 일치하지 않습니다.');
-					}
-				},
-				error : function() {
-					alert("페이지 오류 : 지속적인 오류 발생 시 관리자문의 바랍니다.");
-				}
-			});
+	data() {
+		return{
+		// question 관련 데이터
+			question: {
+				문의번호: '${ questionMap.questionNo }',
+				작성자: '${ questionMap.customerId }',
+				작성일: '${ questionMap.updatedate }',
+				제목: '${ questionMap.questionTitle }', 				
+			},
+			questionContent: '${ questionMap.questionContent }',
+			
+		// reply 관련 데이터
+			reply: {
+				답변번호: '${ replyMap.questionReplyNo }' ,
+				직원ID: '${ replyMap.employeeId }' ,				
+				작성일:  '${ replyMap.updatedate }',				
+			},
+			replyContent: '${ replyMap.questionReplyContent }',
+			
+		// reply insert 시 필요 데이터	
+			employee: {
+				employeeNo: '${ loginEmployee.employeeNo }',
+				employeeId: '${ loginEmployee.employeeId }',
+				replyContent: '',
+				questionNo: '${ questionMap.questionNo }',
+				isEmployee: '${ loginEmployee != null }',
+			},		
 		}
-	});
-
-// 관리자	
+	},
 	
-	// reply 수정 Btn 클릭 시 즉시수정 form으로 변경 + 해당버튼 완료버튼으로 변경 
-	$('#updateReplyBtn').click(function() {
-		$('#questionReplyContent').attr("readonly", false);
-		$('#updateReplyBtn').attr("type", "hidden");
-		$('#updateReplyFinish').attr("type", "button");
-	});
+	methods: {
+		updateForm(){	// 문의내용 수정 기능 
+			if(this.reply.답변번호 == ''){ // 등록된 답변이 없다면
+				location.href = '${ctp}/question/update?questionNo=${ questionMap.questionNo }';
+			} else {
+				alert('답변 등록된 글은 수정할 수 없습니다.');
+			}			
+		},		
+		
+		deleteForm(){	// 문의내용 삭제 폼 (비번 입력창) 조회 기능
+			document.getElementById('deleteForm').style.display = "flex";
+			document.getElementById('deleteBtn').style.display = "none";
+		},		
+		deleteAct(){	// 문의내용 삭제 기능
+			if(confirm('삭제 후에는 복구할 수 없습니다. 정말로 삭제하시겠습니까?')){
+				const self = this;
+				const question = {
+					questionNo:	this.question.문의번호,
+					customerId: this.question.작성자,
+					customerPw: document.getElementById('customerPw').value,				
+				};				
+				axios.post('${ctp}/question/delete', question)
+				.then((res) => {
+					if(res.data==1){
+					alert('삭제가 완료되었습니다.');
+					location.href = '${ctp}/question/list';
+				} else {
+					alert('비밀번호가 일치하지 않습니다.');
+				}
+				}).catch((res) => {
+					alert('error');
+				})
+			}			
+		},
+		
+			
+		insertReply(){	// 답변 입력 기능
+			document.getElementById('insertReplyAct').submit();
+		},
+		
+			
+		updateReply(){	// 답변 수정 기능
+			document.getElementById('questionReply').readOnly = false;
+			document.getElementById('replyBtn').style.display = "none";
+			document.getElementById('updateReplyBtn').style.display = "flex";			
+		},	
+		updateReplyAct(){
+			const self = this;
+			const reply = {
+				questionReplyNo: this.reply.답변번호,
+				employeeNo: this.employee.employeeNo,
+				questionReplyContent: document.getElementById('questionReply').value,
+			};			
+			axios.post('${ctp}/question/updateReply', reply)
+			.then((res) => {
+				if(res.data == 1){
+					alert('수정이 완료되었습니다.');
+					location.reload();
+				}
+			}).catch((res) => {
+				alert('error');
+			})			
+		},
+		
+		
+		deleteReply(){	// 답변 삭제 기능	
+			if(confirm('답변을 삭제하시겠습니까?')){
+			const self = this;
+			const reply = {
+				questionNo: this.question.문의번호,
+			};			
+			axios.post('${ctp}/question/deleteReply', reply)
+			.then((res) => {
+				alert('삭제가 완료되었습니다.');
+				location.reload();
+			}).catch((res) => {
+				alert('error');
+			})
+		}
+	},
+},
 	
-	// 수정 후 완료버튼 클릭 시	
-	$('#updateReplyFinish').click(function() {
-		$.ajax({
-			url : '${ctp}/updateQuestionReply',
-			type : 'post',
-			data : {
-				employeeNo0 : $('#employeeNo').val(),
-				questionReplyNo0 : $('#questionReplyNo').val(),
-				questionReplyContent : $('#questionReplyContent').val(),
-			},
-			success : function(result) {
-				// 접속 성공 시 readonly 재활성화 및 완료버튼 -> 수정버튼 원복위한 페이지 새로고침
-				alert("수정 완료");
-				location.reload(); // 새로고침
+</c:set>
 
-			},
-			error : function() {
-				alert("페이지 오류 : 지속적인 오류 발생 시 관리자문의 바랍니다.");
-			}
 
-		});
-	});
-</script>
-</html>
+
+<%@ include file="/inc/user_layout.jsp"%>

@@ -2,7 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.gym.mapper.QuestionMapper"> <!-- question / question_reply 모두진행 -->
 
-		<!-- question 시작 -->
+	
+		<!-- question 시작 -->	
+	<select id="selectQuestionList" parameterType="com.example.gym.vo.Page"
+									resultType="java.util.Map">
+		SELECT 
+			q.question_no AS questionNo,	
+			q.question_title AS questionTitle,
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId
+		FROM question q
+		INNER JOIN customer c
+		ON q.customer_no = c.customer_no
+		ORDER BY q.updatedate DESC
+		LIMIT #{beginRow},#{rowPerPage}
+	</select>
+		<!-- 페이징 기능위한 전체 Question Counting -->
+	<select id="selectCountOfQuestion" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM question
+	</select>
+	
 	<insert id="insertQuestion" parameterType="com.example.gym.vo.Question">
 		INSERT INTO question (
 			customer_no,
@@ -13,25 +34,7 @@
 			#{questionTitle},
 			#{questionContent}
 		)
-	</insert>
-	 
-	<select id="selectQuestionList" parameterType="java.util.Map"
-									resultType="com.example.gym.vo.Question">
-		SELECT 
-			question_no AS questionNo,
-			customer_no AS customerNo,
-			question_title AS questionTitle,
-			question_content AS questionContent,
-			createdate, updatedate
-		FROM question
-		LIMIT #{beginRow},#{rowPerPage}
-	</select>
-		<!-- 페이징 기능위한 전체 Question Counting -->
-	<select id="selectCountOfQuestion" resultType="Integer">
-		SELECT
-			COUNT(*)
-		FROM question
-	</select>
+	</insert>	 
 	
 	<select id="selectQuestionOne" parameterType="com.example.gym.vo.Question"
 										resultType="java.util.Map">
@@ -40,9 +43,10 @@
 			q.customer_no AS customerNo,
 			q.question_title AS questionTitle,
 			q.question_content AS questionContent,
-			q.createdate AS qCreatedate, 
-			q.updatedate AS qUpdatedate,
-						
+			q.createdate AS createdate, 
+			q.updatedate AS updatedate,
+				
+			c.customer_no AS customerNo,		
 			c.customer_id AS customerId
 			
 		FROM question q
@@ -64,6 +68,20 @@
 		DELETE FROM question 
 			WHERE question_no = #{questionNo}
 	</delete>	
+    
+	<select id="countNotYet" resultType="Integer">
+		SELECT COUNT(1)
+        FROM 
+            question AS q
+            LEFT OUTER JOIN (
+                SELECT question_no, COUNT(1) AS 'cnt'
+                FROM question_reply 
+                GROUP BY question_no
+            ) AS repl
+                ON q.question_no = repl.question_no
+        WHERE repl.cnt IS NULL
+
+	</select>
 		<!-- question  종료 -->
 	
 	
@@ -90,8 +108,8 @@
 			qr.question_no AS questionNo,
 			qr.employee_no AS employeeNo,
 			qr.question_reply_content AS questionReplyContent,
-			qr.createdate AS qrCreatedate,
-			qr.updatedate AS qrUpdatedate,
+			qr.createdate AS createdate,
+			qr.updatedate AS updatedate,
 			
 			e.employee_id AS employeeId
 			
@@ -112,7 +130,7 @@
 	
 	<delete id="deleteQuestionReply" parameterType="com.example.gym.vo.QuestionReply">
 		DELETE FROM question_reply
-			WHERE question_reply_no = #{questionReplyNo}
+			WHERE question_no = #{questionNo}
 	</delete>
 		
 		<!-- question_reply 종료 -->

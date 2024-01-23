@@ -1,6 +1,6 @@
 package com.example.gym.controller;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,79 +8,100 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.gym.service.CustomerService;
 import com.example.gym.service.QuestionService;
+import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Employee;
+import com.example.gym.vo.Page;
 import com.example.gym.vo.Question;
 import com.example.gym.vo.QuestionReply;
-
 import jakarta.servlet.http.HttpSession;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
-public class QuestionController {
+@RequestMapping("question")
+public class QuestionController extends DefaultController{
 	@Autowired
 	private QuestionService questionService;
-
-// Question
+	@Autowired
+	private CustomerService customerService;
 	
+	// 리스트
+	@GetMapping("/list")
+	public String questionList(HttpSession session, Page page, Model model) {
+		page.setTotalCount(questionService.totalCount());
+		page.setRowPerPage(10);	// 페이지당 조회량
+		List<Map<String, Object>> list = questionService.selectQuestionList(page);
+		log.info((list.size() == 0 || list == null) ? "리스트 결과값 없음" : "출력 성공");
+		model.addAttribute("questionList", toJson(list));
+		model.addAttribute("page", page);	// 페이징 위해 함께 전달		
+		return ViewRoutes.문의사항_목록;
+	}
+		
 	// insertForm
-	@GetMapping("/insertQuestion")
+	@GetMapping("/insert")
 	public String insertQuestion(HttpSession session, Model model) { // 작성자정보 표기위한 session 세팅
-		// id 유효성검사
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-		if (loginCustomer == null) {
-			return "customer/loginCustomer";
-		}
-		model.addAttribute("loginCustomer", loginCustomer);
-		return "question/insertQuestion";
-	}
-	
-	// insertAct
-	@PostMapping("/insertQuestion")
-	public String insertQuestion(Question question) {
-		questionService.insertQuestion(question);
-		return "redirect:/questionList";
-	}
-	
-	// selectQuestionList
-	@GetMapping("/questionList")
-	public String questionList(HttpSession session, @RequestParam(defaultValue = "1") int currentPage, Model model) {
-		// id 유효성검사
-		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
-
-		if (loginEmployee != null) {
-			model.addAttribute("loginEmployee", loginEmployee);
-		}
-
-		if (loginCustomer != null) {
-			model.addAttribute("loginCustomer", loginCustomer);
-		}
-
-		int rowPerPage = 10;
-		int beginRow = (currentPage - 1) * rowPerPage;
-		Map<String, Integer> paramMap = new HashMap<>();
-		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("beginRow", beginRow);
-
-		Map<String, Object> resultMap = questionService.selectQuestionList(paramMap);
-		model.addAttribute("questionList", resultMap.get("questionList")); // questionList 출력 완
-
-		// 페이징
-		int totalRow = (int) resultMap.get("totalRow");
-		int lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("lastPage", lastPage);
-		model.addAttribute("totalRow", totalRow);
-		model.addAttribute("rowPerPage", rowPerPage);
-
-		return "question/questionList";
+		return ViewRoutes.문의사항_추가;
 	}	
+	// insertAct
+	@PostMapping("/insert")
+	public String insertQuestion(Question question) {
+		log.info("접속 성공" + question.toString());
+		questionService.insertQuestion(question);
+		return Redirect(ViewRoutes.문의사항_목록);
+	}
+	
+	// updateForm
+	@GetMapping("/update")
+	public String updateQuestion(Question question, Model model) {
+		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
+		
+		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
+			return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + question.getQuestionNo());
+		} else {
+			model.addAttribute("questionMap", resultMap.get("questionMap"));
+			return ViewRoutes.문의사항_수정;
+		}
+		
+	}	
+	// updateAct
+	@PostMapping("/update")
+	public String updateQuestion(Question question) {
+		questionService.updateQuestion(question);
+		return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + question.getQuestionNo());
+	}	
+	
+	// delete
+	@PostMapping("/delete")
+	@ResponseBody
+	public int deleteQuestion(@RequestBody Map<String, Object> paramMap) { // questionNo , customerId, customerPw 정보
+																			// 필요하나 axios방식으로 두 vo값 받을 수 없어 Map형식 사용
+		boolean checked = false;
+		// 확인 후 customer 매개값 세팅
+		Customer checkCustomer = new Customer();
+		checkCustomer.setCustomerId((String) paramMap.get("customerId"));
+		checkCustomer.setCustomerPw((String) paramMap.get("customerPw"));
+		
+		checked = customerService.loginCustomer(checkCustomer) != null;
+		log.info("PW 일치여부 /" + checked);		 // 로그인 구조 이용해 입력한 작성자PW 일치여부 확인
+		
+		int result = 0;
+		if (checked) { // 입력한 계정PW 일치
+			QuestionReply questionReply = new QuestionReply();
+			questionReply.setQuestionNo(Integer.parseInt((String)paramMap.get("questionNo")));
+			questionService.deleteQuestionReply(questionReply); // 해당 글에 작성된 답변글 일괄 삭제
+
+			Question question = new Question();
+			question.setQuestionNo(Integer.parseInt((String)paramMap.get("questionNo")));
+			result = questionService.deleteQuestion(question); // 최종 문의글 삭제
+		}
+		return result;
+	}		
 	
 	// select - questionOne
 	@GetMapping("/questionOne")
@@ -88,58 +109,37 @@ public class QuestionController {
 		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
 		model.addAttribute("questionMap", resultMap.get("questionMap"));
 		model.addAttribute("replyMap", resultMap.get("questionReplyMap"));
-
-		// id 유효성검사
-		Employee loginEmployee = (Employee) session.getAttribute("loginEmployee");
-		Customer loginCustomer = (Customer) session.getAttribute("loginCustomer");
 		
-		if (loginEmployee != null) {
-			model.addAttribute("loginEmployee", loginEmployee);
-		}
 
-		if (loginCustomer != null) {
-			model.addAttribute("loginCustomer", loginCustomer);
-		}
-
-		return "question/questionOne";
+		return ViewRoutes.문의사항_상세보기;
 	}
 	
-	// updateForm
-	@GetMapping("/updateQuestion")
-	public String updateQuestion(Question question, Model model) {
-		Map<String, Object> resultMap = questionService.selectQuestionOne(question);
-		
-		if(resultMap.get("questionReplyMap") != null) {	// 답변 있을 시 접속불가
-			return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
-		}
-		model.addAttribute("questionMap", resultMap.get("questionMap"));
-		return "question/updateQuestion";
-	}
 	
-	// updateAct
-	@PostMapping("/updateQuestion")
-	public String updateQuestion(Question question) {
-		
-		questionService.updateQuestion(question);
-		return "redirect:/questionOne?questionNo=" + question.getQuestionNo();
-	}	
 	
 // Question	Reply
 	
 	// insertReply
-	@PostMapping("/insertQuestionReply")
-	public String insertQuestionReply(QuestionReply questionReply) {
+	@PostMapping("/insertReply")
+	public String insertReply(QuestionReply questionReply) {
 
 		questionService.insertQuestionReply(questionReply);
-		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
-	}
+		return Redirect(ViewRoutes.문의사항_상세보기 + "?questionNo=" + questionReply.getQuestionNo());
+	}	
 	
+	// updateReply
+	@PostMapping("/updateReply")
+	@ResponseBody
+	public int updateReply(@RequestBody QuestionReply questionReply) {
+		int result = questionService.updateQuestionReply(questionReply);
+		return result;
+	}
 
 	// deleteReply
-	@GetMapping("/deleteQuestionReply")
-	public String deleteQuestionReply(QuestionReply questionReply) {
-
-		questionService.deleteQuestionReply(questionReply);
-		return "redirect:/questionOne?questionNo=" + questionReply.getQuestionNo();
+	@PostMapping("/deleteReply")
+	@ResponseBody
+	public int deleteReply(@RequestBody QuestionReply questionReply) {		
+		int result = questionService.deleteQuestionReply(questionReply);
+		
+		return result;
 	}
 }
