@@ -28,7 +28,7 @@
 			p.program_max_customer maxCustomer,
 			p.program_content programContent,
 			p.createdate createdate,
-			p.updatedate updatedate,
+			p.updatedate updatedate
 			<!-- p.active programActive -->
 		FROM program p INNER JOIN employee e
 		ON p.employee_no = e.employee_no
