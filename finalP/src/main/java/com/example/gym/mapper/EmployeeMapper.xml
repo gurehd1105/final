@@ -21,7 +21,7 @@
 		) VALUES (
             #{branchNo} ,
             #{employeeId} ,
-            SHA2(#{employeePw}, 256)
+            PASSWORD(#{employeePw})
 		)
 	</insert>
 	<insert id="insertEmployeeDetail"
@@ -92,7 +92,7 @@
 		e.branch_no = b.branch_no 
 		WHERE e.employee_id = #{employeeId}
 		AND
-		e.employee_pw = SHA2(#{employeePw}, 256)
+		e.employee_pw = PASSWORD(#{employeePw})
 		AND e.employee_active = 'Y'
 	</select>
 
@@ -194,7 +194,7 @@
 		<!-- 비밀번호 변경 -->
 	<update id="updateEmployeePw" parameterType="com.example.gym.vo.Employee">
 		UPDATE employee SET
-			employee_pw = SHA2(#{employeePw}, 256),
+			employee_pw = PASSWORD(#{employeePw}),
 			updatedate = now()
 		WHERE employee_no = #{employeeNo}
 	</update>
