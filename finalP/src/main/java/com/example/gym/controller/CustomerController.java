@@ -37,6 +37,7 @@ public class CustomerController extends DefaultController{
 	public String loginCustomer(HttpSession session, Customer customer) {
 		Map<String,Object> loginCustomer = customerService.loginCustomer(customer);
 		if (loginCustomer != null) { // 등록된 ID가 있을 시
+			session.invalidate();	// 직원 로그인 되어있을 시 양측 중복로그인 방지
 			session.setAttribute("loginCustomer", loginCustomer);
 			log.info("login");
 			return Redirect(ViewRoutes.홈);
