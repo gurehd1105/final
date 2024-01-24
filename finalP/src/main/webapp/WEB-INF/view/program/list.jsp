@@ -5,6 +5,7 @@
 <c:set var="keywords" value="프로그램" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
+<div v-if="isEmployee">
    <div class="flex justify-start" class="w-auto">
       <!-- 검색창 -->
       <el-form label-position="right" 
@@ -65,9 +66,9 @@
                <span>{{ moment(scope.row.updagedate).format('yyyy-MM-DD') }}</span>
             </template>
         </el-table-column>
-        <el-table-column fixed="right" v-if="isEmployee" label="수정" width="220">
+        <el-table-column fixed="right" label="수정" width="220">
 		  <template #default="scope">
-		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
+		    <el-button plain type="primary" @click="move(scope.row, 'update')" size="small">수정</el-button>
 		  </template>
 		</el-table-column>
     </el-table>
@@ -80,8 +81,23 @@
       </span>
     </template>
   </el-dialog>
-   
-      
+</div>
+
+<div v-else>
+	    <el-table
+	        :data="list"
+	        :key="loading"
+	        class="w-full"
+	        align="center"
+	        border
+	        @row-click="handleRowClick"
+	    >   
+			<el-table-column prop="programNo" label="번호"></el-table-column>
+			<el-table-column prop="programName" label="이름"></el-table-column>
+			<el-table-column prop="maxCustomer" label="최대인원"></el-table-column>
+		</el-table>
+</div> 
+     
    <%@ include file="/inc/pagination.jsp" %>
 </c:set>
 

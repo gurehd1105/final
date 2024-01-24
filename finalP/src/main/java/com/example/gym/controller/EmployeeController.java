@@ -52,8 +52,7 @@ public class EmployeeController extends DefaultController {
 	@ResponseBody
 	public ResponseEntity<String> employeeLogin(HttpSession session, @RequestBody Employee employee) {
 		Employee loginEmployee = employeeService.loginEmployee(employee);
-		session.invalidate();	// 고객 로그인 되어있을 시 양측 중복로그인 방지
-		session.setAttribute("loginEmployee", loginEmployee);
+		session.setAttribute("loginEmployee", loginEmployee);			
 
 		return ResponseEntity.ok(loginEmployee == null ? "fail" : "success");
 	}
