@@ -109,8 +109,8 @@
 			qr.question_no AS questionNo,
 			qr.employee_no AS employeeNo,
 			qr.question_reply_content AS questionReplyContent,
-			qr.createdate AS createdate,
-			qr.updatedate AS updatedate,
+			DATE_FORMAT(qr.createdate,'20%y-%m-%d %T') AS createdate,
+			DATE_FORMAT(qr.updatedate,'20%y-%m-%d %T') AS updatedate,
 			
 			e.employee_id AS employeeId
 			
