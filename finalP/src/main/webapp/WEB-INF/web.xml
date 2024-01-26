@@ -37,4 +37,15 @@
     <filter-name>EmployeeLoginFilter</filter-name>
     <url-pattern>/employee/*</url-pattern>
   </filter-mapping>
+  
+  <filter>
+    <filter-name>SportsEquipmentFilter</filter-name>
+    <filter-class>com.example.gym.filter.SportsEquipmentFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SportsEquipmentFilter</filter-name>
+    <url-pattern>/sportsEquipment/*</url-pattern>
+  </filter-mapping>
+  
 </web-app>
+
