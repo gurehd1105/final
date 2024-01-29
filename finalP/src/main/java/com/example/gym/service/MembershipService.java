@@ -7,15 +7,20 @@ import org.springframework.stereotype.Service;
 
 import com.example.gym.mapper.MembershipMapper;
 import com.example.gym.vo.Membership;
+import com.example.gym.vo.Page;
 
 @Service
 public class MembershipService {
 	@Autowired
 	private MembershipMapper membershipMapper;
 	
-	public List<Membership> list() {
-		List<Membership> membershipList = membershipMapper.list();
+	public List<Membership> list(Page page) {
+		List<Membership> membershipList = membershipMapper.list(page);
 		return membershipList;
+	}
+	
+	public int totalCount() {
+		return membershipMapper.totalCount();		
 	}
 	
 	public int insert(Membership paramMembership) {
