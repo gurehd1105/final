@@ -230,5 +230,6 @@
             INNER JOIN customer ON img.customer_no = customer.customer_no
         WHERE customer.customer_active = 'Y'
             AND img.customer_img_origin_name IS NOT NULL
-    </select>
+    </select>    
+    
 </mapper>
