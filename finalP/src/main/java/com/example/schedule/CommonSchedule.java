@@ -14,26 +14,26 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CommonSchedule {
 
-	@Autowired
-	CustomerService customerService;
+   @Autowired
+   CustomerService customerService;
 
-	@Autowired
-	EmployeeService employeeService;
+   @Autowired
+   EmployeeService employeeService;
 
-	private final String DEFAULT_PATH = "src/main/webapp";
-	private final String CUSTOMER_PATH = "src/main/webapp/upload/customer";
-	private final String EMPLOYEE_PATH = "src/main/webapp/upload/employee";
+   private final String DEFAULT_PATH = "src/main/webapp";
+   private final String CUSTOMER_PATH = "src/main/webapp/upload/customer";
+   private final String EMPLOYEE_PATH = "src/main/webapp/upload/employee";
 
-	// 고정된 시간 간격으로 스케줄링
-	@Scheduled(fixedRate = 1000 * 30) // 30초마다 실행
-	public void ImageCleanup() {
-			
-		//현재 업로드 되어 있는 employee Img 리스트
-		File employeeImg = new File(EMPLOYEE_PATH);
-		String[] employeeImgList = employeeImg.list();
-		
-		List<String> employeeImages = new ArrayList<>();
-		
+   // 고정된 시간 간격으로 스케줄링
+   @Scheduled(fixedRate = 1000 * 30) // 30초마다 실행
+   public void ImageCleanup() {
+         
+      //현재 업로드 되어 있는 employee Img 리스트
+      File employeeImg = new File(EMPLOYEE_PATH);
+      String[] employeeImgList = employeeImg.list();
+      
+      List<String> employeeImages = new ArrayList<>();
+      
         if (employeeImgList != null) {
             for (int i = 0; i < employeeImgList.length; i++) {
                 employeeImgList[i] = EMPLOYEE_PATH + "/" + employeeImgList[i];
@@ -41,45 +41,45 @@ public class CommonSchedule {
             }
         }
         
-		//DB에 존재하는 Employee 이미지 
-		List<String> DBEmployeeimage = new ArrayList<>();
-		DBEmployeeimage.addAll(employeeService.selectAllEmployeeImage());
-		
-		List<String> DBEmployeeimages = new ArrayList<>();
-		for (String img : DBEmployeeimage) {
-			DBEmployeeimages.add(DEFAULT_PATH + img);
-		}
+      //DB에 존재하는 Employee 이미지 
+      List<String> DBEmployeeimage = new ArrayList<>();
+      DBEmployeeimage.addAll(employeeService.selectAllEmployeeImage());
+      
+      List<String> DBEmployeeimages = new ArrayList<>();
+      for (String img : DBEmployeeimage) {
+         DBEmployeeimages.add(DEFAULT_PATH + img);
+      }
 
-		System.out.println("직원 이미지 확인");
-		printAndCompareImages(employeeImages,DBEmployeeimages);
-		//-------------------------------------------------------------------------------------------------------------//
-		
-		//현재 업로드 되어 있는 customer Img 리스트
-		File customerImg = new File(CUSTOMER_PATH);
-		String[] customerImgList = customerImg.list();
+      System.out.println("직원 이미지 확인");
+      printAndCompareImages(employeeImages,DBEmployeeimages);
+      //-------------------------------------------------------------------------------------------------------------//
+      
+      //현재 업로드 되어 있는 customer Img 리스트
+      File customerImg = new File(CUSTOMER_PATH);
+      String[] customerImgList = customerImg.list();
         
-		List<String> customerImages = new ArrayList<>();
-		
+      List<String> customerImages = new ArrayList<>();
+      
         if (customerImgList != null) {
             for (int i = 0; i < customerImgList.length; i++) {
-            	customerImgList[i] = CUSTOMER_PATH + "/" + customerImgList[i];
-            	customerImages.add(customerImgList[i]);
+               customerImgList[i] = CUSTOMER_PATH + "/" + customerImgList[i];
+               customerImages.add(customerImgList[i]);
             }
         }
         
-		//DB에 존재하는 Employee 이미지 
-		List<String> DBCustomerimage = new ArrayList<>();
-		DBCustomerimage.addAll(customerService.selectAllCustomerImage());;
-		
-		List<String> DBCustomerimages = new ArrayList<>();
-		for (String img : DBCustomerimages) {
-			DBCustomerimage.add(DEFAULT_PATH + img);
-		}
-		System.out.println("고객 이미지 확인");
-		printAndCompareImages(customerImages,DBCustomerimages);
-		
-	}
-	
+      //DB에 존재하는 Employee 이미지 
+      List<String> DBCustomerimage = new ArrayList<>();
+      DBCustomerimage.addAll(customerService.selectAllCustomerImage());;
+      
+      List<String> DBCustomerimages = new ArrayList<>();
+      for (String img : DBCustomerimages) {
+         DBCustomerimage.add(DEFAULT_PATH + img);
+      }
+      System.out.println("고객 이미지 확인");
+      printAndCompareImages(customerImages,DBCustomerimages);
+      
+   }
+   
     private void printAndCompareImages(List<String> fileList, List<String> images) {
         for (String imgName : fileList) {
             System.out.println(imgName);

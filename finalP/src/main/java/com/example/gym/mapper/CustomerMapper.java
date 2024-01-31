@@ -38,8 +38,6 @@ public interface CustomerMapper {
     int updateCustomerPw(Customer customer);
 
     List<String> selectAllCustomerImage();
-    
-    List<String> selectAllImage();
 
     // 전체 회원조회 - 관리자용
     List<Map<String, Object>> selectAllCustomer();

@@ -7,8 +7,13 @@ prefix="c" %>
 <title><c:out value="${title}" /></title>
 <meta content="${keywords}" name="keywords" />
 <meta content="${description }" name="description" />
+
+<meta property="og:title" content="${title}" />
+<meta property="og:description" content="${description}" />
+<meta property="og:image" content="/goodee_logo.png" />
+
 <!-- Favicon -->
-<link href="img/favicon.ico" rel="icon" />
+<link href="/favicon.ico" rel="icon" />
 
 <!-- Google Web Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.gym.service.MembershipService;
 import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Membership;
+import com.example.gym.vo.Page;
 
 @Controller
 @RequestMapping("membership")
@@ -22,9 +23,12 @@ public class MembershipController extends DefaultController{
 	private MembershipService membershipService;
 	
 	@GetMapping("/list")
-	public String list(Model model) {
-		List<Membership> membershipList = membershipService.list();
+	public String list(Model model, Page page) {
+		page.setTotalCount(membershipService.totalCount());
+		page.setRowPerPage(10);
+		List<Membership> membershipList = membershipService.list(page);
 		model.addAttribute("membershipList", toJson(membershipList));
+		model.addAttribute("page", page);
 		return ViewRoutes.회원권_조회;
 	}
 	

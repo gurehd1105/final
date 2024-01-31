@@ -15,17 +15,16 @@
 
 
 	<el-table :data="questionList" @row-click="rowClick"> 
-		<el-table-column prop="questionNo" label="No"></el-table-column> 
+		<el-table-column prop="questionNo" label="No"  width="100"></el-table-column> 
 		<el-table-column prop="questionTitle" label="제목"></el-table-column> 
 		<el-table-column prop="customerId" label="작성자"></el-table-column>
+		<el-table-column prop="createdate" label="작성일"></el-table-column>
+		<el-table-column prop="updatedate" label="수정일"></el-table-column>
 	</el-table>
 	
 	
 	<!-- 페이징 네비게이션 -->
-	<div class="flex justify-center">
-		<el-pagination layout="prev, pager, next" :page-size="rowPerPage"
-			v-model:current-page="pageNum" :total="totalCount" @change="loadPage" />
-	</div>
+	<%@ include file="/inc/pagination.jsp" %>
 </c:set>
 
 <c:set var="script">
@@ -68,4 +67,11 @@
 	},
  
 </c:set>
-<%@ include file="/inc/user_layout.jsp"%>
+
+<c:if test="${ loginEmployee == null}">
+	<%@ include file="/inc/user_layout.jsp"%>
+</c:if>
+
+<c:if test="${ loginEmployee != null}">
+	<%@ include file="/inc/admin_layout.jsp"%>
+</c:if>

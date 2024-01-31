@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("employee/sportsEquipment")
+@RequestMapping("sportsEquipment")
 public class SportsEquipmentController extends DefaultController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired

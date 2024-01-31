@@ -163,5 +163,4 @@ public class CustomerService {
     public List<String> selectAllCustomerImage() {
         return customerMapper.selectAllCustomerImage();
     }
-    
 }
