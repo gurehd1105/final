@@ -29,7 +29,7 @@
         </el-form-item>
         
         <el-form-item label="우편번호">
-	        <el-input v-model="model.address.postCode" id="postCode" disabled>
+	        <el-input v-model="model.address.postCode" disabled>
 		      <template #append>
 		        <el-button @click="openPostCode()">
 		        	우편번호 찾기
@@ -39,10 +39,18 @@
 	    </el-form-item>
 	    
 	    <el-form-item label="주소">
-			<el-input v-model="model.address.address" name="branchAddress" 
-			id="address" placeholder="ADDRESS"/>
+			<el-input v-model="model.address.address" name="address1" placeholder="ADDRESS"/>
 	    </el-form-item>
 	    
+	    <el-form-item label="상세주소">
+			<el-input v-model="model.address.detailAddr" name="address2" placeholder="ADDRESS"/>
+	    </el-form-item>
+	    
+	    <el-form-item label="참고주소">
+			<el-input v-model="model.address.extraAddr" name="address3" placeholder="ADDRESS"/>
+	    </el-form-item>
+
+        
         <el-form-item>
             <el-button type="primary" @click="onSubmit(form)"
                 >지점등록</el-button
@@ -60,7 +68,6 @@
 	    		tel: '',
 	    		address: {
 	    			postCode: '',
-	    			address: '',	
 	    		},
 	    	},
 	    }
@@ -80,14 +87,11 @@
 			console.log(query, result);
 		},
 			
-				openPostCode() {
-			this.model.address.address = '';
-			document.querySelector('#address').disabled = true;
+		openPostCode() {
 			const self = this;
 			new daum.Postcode(
 			{
 				oncomplete : function(data) {
-					document.querySelector('#address').disabled = false;
 					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
 					// 각 주소의 노출 규칙에 따라 주소를 조합한다.
@@ -127,6 +131,8 @@
 					self.model.address = {
 						postCode: data.zonecode,
 						address: addr,
+						detailAddress: '',
+						extraAddr: extraAddr,
 					}
 				}
 			}).open();
