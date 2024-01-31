@@ -101,11 +101,8 @@
 					axios.post('${ctp}/payment/insert', payment)
 					.then((res) => {
 						if(res.data == 1){
-							self.$notify({
-							  title: '결제 완료',
-							  message: '결제가 완료되었습니다.',
-							  type: 'success',
-						})
+							alert('결제가 완료되었습니다. 재로그인 후 이용해주세요.');
+							location.href='${ctp}/customer/logout';
 						} 
 					}).catch((res) => {	
 						alert('error');
