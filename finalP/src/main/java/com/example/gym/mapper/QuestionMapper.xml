@@ -9,9 +9,8 @@
 		SELECT 
 			q.question_no AS questionNo,	
 			q.question_title AS questionTitle,
-			c.customer_id AS customerId,
-			DATE_FORMAT(q.createdate,'20%y-%m-%d %T') AS createdate, 
-			DATE_FORMAT(q.updatedate,'20%y-%m-%d %T') AS updatedate
+			c.customer_no AS customerNo,
+			c.customer_id AS customerId
 		FROM question q
 		INNER JOIN customer c
 		ON q.customer_no = c.customer_no
@@ -44,8 +43,8 @@
 			q.customer_no AS customerNo,
 			q.question_title AS questionTitle,
 			q.question_content AS questionContent,
-			DATE_FORMAT(q.createdate,'20%y-%m-%d %T') AS createdate,
-			DATE_FORMAT(q.updatedate,'20%y-%m-%d %T') AS updatedate,
+			q.createdate AS createdate, 
+			q.updatedate AS updatedate,
 				
 			c.customer_no AS customerNo,		
 			c.customer_id AS customerId
@@ -109,8 +108,8 @@
 			qr.question_no AS questionNo,
 			qr.employee_no AS employeeNo,
 			qr.question_reply_content AS questionReplyContent,
-			DATE_FORMAT(qr.createdate,'20%y-%m-%d %T') AS createdate,
-			DATE_FORMAT(qr.updatedate,'20%y-%m-%d %T') AS updatedate,
+			qr.createdate AS createdate,
+			qr.updatedate AS updatedate,
 			
 			e.employee_id AS employeeId
 			

@@ -46,7 +46,7 @@
                console.log(res.data);
                if(res.data == 1){
                   alert('삭제 성공.')
-                  
+                  location.reload();
                } else {
                   alert('삭제 실패.')
                }

@@ -58,7 +58,6 @@
                 } else {
                     // 출석 실패
                     alert('출석에 실패했습니다.');
-                     console.log(paramMap);
                 }
             })
             .catch((res) => {
