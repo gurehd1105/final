@@ -28,8 +28,8 @@
 <c:set var="script">
 	data() {
 		return{
-			id:'',
-			pw:'',
+			id:'test',
+			pw:'1234',
 		}		
 	},
 	methods: {

@@ -190,7 +190,14 @@ prefix="c"%>
         getInfo(date) {
             const info = this.reservationInfos.find(info => info.programDate === date);
             return info; 
-        }, 
+        },
+        move(row, path) {
+		if (row.noticeNo != null) {
+		   	location.href = ['/notice', path, row.noticeNo].join('/');
+		}
+	  },
+	  
+	  
     }
 </c:set>
 
