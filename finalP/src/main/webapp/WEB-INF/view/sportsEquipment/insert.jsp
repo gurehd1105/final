@@ -21,7 +21,6 @@
 			 style="border: 1px solid #ccc; padding: 50px; border-radius: 5px;"
 			 >
 			 
-			 
 		<el-form-item label="이름">
 			<el-input type="text" v-model="model.itemName" name="itemName" placeholder="이름을 입력하세요." />			
 		</el-form-item> 

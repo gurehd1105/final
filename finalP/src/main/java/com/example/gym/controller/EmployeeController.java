@@ -52,7 +52,7 @@ public class EmployeeController extends DefaultController {
 	@ResponseBody
 	public ResponseEntity<String> employeeLogin(HttpSession session, @RequestBody Employee employee) {
 		Employee loginEmployee = employeeService.loginEmployee(employee);
-		session.setAttribute("loginEmployee", loginEmployee);
+		session.setAttribute("loginEmployee", loginEmployee);			
 
 		return ResponseEntity.ok(loginEmployee == null ? "fail" : "success");
 	}

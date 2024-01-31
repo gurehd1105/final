@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("employee/program")
+@RequestMapping("program")
 public class ProgramController extends DefaultController{
 	@Autowired ProgramService programService;
 	
