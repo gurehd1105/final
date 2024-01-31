@@ -47,7 +47,7 @@ public class HomeController extends DefaultController {
         model.addAttribute("programList", toJson(programList));
         model.addAttribute("branchList", toJson(branchList));
 
-        page.setRowPerPage(13);
+        page.setRowPerPage(10);
         int totalCount = noticeService.getNoticeTotal(); // 게시글 총 갯수
         page.setTotalCount(totalCount);
 
