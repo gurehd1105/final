@@ -47,18 +47,22 @@ public class BranchController extends DefaultController {
 
 		return ViewRoutes.지점_목록;
 	}
-	
+
 	@GetMapping("insert")
 	public String insert() {
 		return ViewRoutes.지점_추가;
 	}
 
 	@PostMapping("insert")
-	public String insert(Branch branch) {
+	public String insert(Branch branch, String address1, String address2, String address3) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("branchName", branch.getBranchName());
 		map.put("branchTel", branch.getBranchTel());
-		map.put("branchAddress", branch.getBranchAddress());
+
+		// 주소 합치기
+		String fullAddress = address1 + " " + address2 + " " + address3;
+		map.put("branchAddress", fullAddress);
+		log.info(fullAddress);
 		int insertRow = branchService.insertBranch(map);
 		if (insertRow == 1) {
 			return Redirect(ViewRoutes.지점_목록); 
@@ -79,7 +83,8 @@ public class BranchController extends DefaultController {
 
 	// 지점 수정 액션
 	@PostMapping("/update")
-	public String updateBranch(Branch branch, HttpSession session) {
+	public String updateBranch(Branch branch, HttpSession session, String address1, String address2, String address3) {
+		branch.setBranchAddress(address1 + " " + address2 + address3);
 		// 매개변수 디버깅
 		log.info(branch.toString());
 		// 서비스 호출
@@ -90,7 +95,8 @@ public class BranchController extends DefaultController {
 
 	// 지점 삭제 액션
 	@GetMapping("/delete/{branchNo}")
-	public String delete(@PathVariable int branchNo, HttpSession session) {
+	public String delete(@PathVariable int branchNo, HttpSession session, String address1, String address2,
+			String address3) {
 		if (session.getAttribute("loginEmployee") == null) {
 			return Redirect(ViewRoutes.홈);
 		}
