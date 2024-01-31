@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="title" value="스포츠 장비 관리 및 리스트" />
+<c:set var="title" value="스포츠 장비 추가" />
 <c:set var="description" value="현재 발주 할 수 있는 장비를 추가할 수 있는 사이트" />
 <c:set var="keywords" value="장비,소모품,수정,삭제,추가" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>

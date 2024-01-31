@@ -30,10 +30,6 @@
 				</el-table-column>
 
 	</el-table>
-	
-	 <!-- 페이징 네비게이션 -->
-	<%@ include file="/inc/pagination.jsp" %>
-	
 
 </c:set>
 <c:set var="script">
@@ -42,10 +38,6 @@
 			membershipList : JSON.parse('${ membershipList }'),
             isEmployee: Boolean('${ loginEmployee }'),
             isCustomer: Boolean('${loginCustomer}'),
-            pageNum: ${page.pageNum},
-			rowPerPage: ${page.rowPerPage},
-			totalCount: ${page.totalCount},
-			totalPage: ${page.totalPage},
 		}
 	},
 	methods: {
@@ -101,11 +93,8 @@
 					axios.post('${ctp}/payment/insert', payment)
 					.then((res) => {
 						if(res.data == 1){
-							self.$notify({
-							  title: '결제 완료',
-							  message: '결제가 완료되었습니다.',
-							  type: 'success',
-						})
+							alert('결제가 완료되었습니다. 재로그인 후 이용해주세요.');
+							location.href='${ctp}/customer/logout';
 						} 
 					}).catch((res) => {	
 						alert('error');
@@ -113,23 +102,12 @@
 				}
 			}
 		},
-		
-		loadPage(pageNum) {	// 페이징
-      	const param = new URLSearchParams();
-      	param.set('pageNum', this.pageNum);
-      	param.set('rowPerPage', this.rowPerPage);
-      	
-		location.href = '/membership/list?' + param.toString();
-      }, 
-      
-      
 	},
 </c:set>
-
-<c:if test="${ loginEmployee == null}">
-	<%@ include file="/inc/user_layout.jsp"%>
+<c:if test="${ loginEmployee != null }">
+<%@ include file="/inc/admin_layout.jsp" %>
 </c:if>
 
-<c:if test="${ loginEmployee != null}">
-	<%@ include file="/inc/admin_layout.jsp"%>
+<c:if test="${ loginEmployee == null }">
+<%@ include file="/inc/user_layout.jsp" %>
 </c:if>
