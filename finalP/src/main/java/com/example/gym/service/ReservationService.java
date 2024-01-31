@@ -40,7 +40,6 @@ public class ReservationService {
 	// 예약 삭제
     public int deleteReservation(ProgramReservation reservation) {
     	int row = reservationMapper.deleteReservation(reservation);
-    	System.out.println(row + " row(s) deleted");
 		return row;
 		}
 	

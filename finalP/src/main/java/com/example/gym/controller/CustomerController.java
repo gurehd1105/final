@@ -169,7 +169,6 @@ public class CustomerController extends DefaultController{
 		
 		List<Map<String, Object>> customerList = customerService.selectAllCustomer();
 		model.addAttribute("customerList", toJson(customerList));
-		System.out.println(customerList + "<--customerList");
 		return ViewRoutes.사용자_전체보기;
 	}
 	

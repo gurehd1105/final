@@ -32,8 +32,9 @@
 	    <el-table-column prop="branchTel" label="연락처" width="180"></el-table-column>
 	    <el-table-column prop="branchAddress" label="지점주소" width="180"></el-table-column>
 	    <el-table-column prop="createdate" label="개점일" width="180"></el-table-column>
-		<el-table-column fixed="right" label="도구" width="220">
+		<el-table-column fixed="right" label="관리" width="220">
 		  <template #default="scope">
+		    <el-button plain size="small" @click="move(scope.row, 'read')">보기</el-button>
 		    <el-button plain type="primary" v-if="isEmployee" @click="move(scope.row, 'update')" size="small">수정</el-button>
 		    <el-button plain type="danger" v-if="isEmployee" @click="remove(scope.row,'delete')" size="small">삭제</el-button>
 		  </template>
