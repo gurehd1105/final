@@ -16,10 +16,9 @@
 		<el-table-column prop="customerPhone" label="Phone" ></el-table-column>
 		<el-table-column prop="customerAddress" label="Address" ></el-table-column>
 		<el-table-column prop="customerEamil" label="Email" ></el-table-column>
-		<el-table-column prop="paymentNo" label="paymentNo" ></el-table-column>
-		<el-table-column prop="createdate" label="Createdate" :formatter="formatDate" ></el-table-column>
+		<el-table-column prop="createdate" label="Createdate" ></el-table-column>
 		<el-table-column>
-			<el-button type="success" @click="attendanceCheck(row)">출석 내역</el-button>
+			<el-button type="success" @click="">뭔가를 보기</el-button>
 		</el-table-column>
 	</el-table>
 </c:set>
@@ -29,19 +28,5 @@
 			customerList: JSON.parse('${customerList}'),
 		}
 	},
-	methods:{
-		formatDate(row, column, cellValue) {
-       		// 진행일 열은 시간을 표시하지 않고 날짜만 표시         
-            return new Date(cellValue).toLocaleDateString();
-     
-        },
-        attendanceCheck(row){
-           var paymentNo = row.paymentNo; // 선택된 행의 paymentNo 값을 가져옴
-		   console.log("paymentNo:", paymentNo);
-		   location.href = "${ctp}/attendance/list?paymentNo=" + paymentNo;
-        }
-	
-	
-	}
 </c:set>
 <%@ include file="/inc/admin_layout.jsp" %>

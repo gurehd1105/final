@@ -9,7 +9,7 @@
 		   c.customer_no AS customerNo,
 		   c.customer_id AS customerId,
 		   c.customer_active AS customerActive,
-		   DATE_FORMAT(c.updatedate,'20%y-%m-%d %T') AS updatedate,
+		   c.createdate, c.updatedate,
 		   n.paymentNo,
 		   n.payment_active AS paymentActive,
 		   case when n.membershipName IS not NULL 
@@ -129,7 +129,9 @@
 			c.customer_no AS customerNo,
 			c.customer_id AS customerId,
 			c.customer_active AS customerActive,
-			DATE_FORMAT(c.createdate,'20%y-%m-%d %T') AS cCreatedate,
+			
+			c.createdate AS cCreatedate, 
+			c.updatedate AS cUpdatedate,
 			
 			cd.customer_name AS customerName,
 			cd.customer_gender AS customerGender,
@@ -137,7 +139,10 @@
 			cd.customer_weight AS customerWeight,
 			cd.customer_phone AS customerPhone,
 			cd.customer_address AS customerAddress,
-			cd.customer_email AS customerEmail,			
+			cd.customer_email AS customerEmail,
+			
+			cd.createdate AS cdCreatedate, 
+			cd.updatedate AS cdUpdatedate, 
 			
 			ci.customer_img_no AS customerImgNo,
 			ci.customer_img_origin_name AS customerImgOriginName,
@@ -203,8 +208,8 @@
 			c.customer_id AS customerId,
 			c.customer_active AS customerActive,
 			
-			DATE_FORMAT(c.createdate, '20%y-%m-%d %T') AS createdate, 
-			DATE_FORMAT(c.updatedate, '20%y-%m-%d %T') AS updatedate,
+			c.createdate AS createdate, 
+			c.updatedate AS updatedate,
 			
 			cd.customer_name AS customerName,
 			cd.customer_gender AS customerGender,
@@ -212,14 +217,11 @@
 			cd.customer_weight AS customerWeight,
 			cd.customer_phone AS customerPhone,
 			cd.customer_address AS customerAddress,
-			cd.customer_email AS customerEmail,
-			p.payment_no AS paymentNo
+			cd.customer_email AS customerEmail
 			
 		FROM customer c 
 		INNER JOIN customer_detail cd
-		ON c.customer_no = cd.customer_no LEFT JOIN payment p
-		ON c.customer_no = p.customer_no
-		
+		ON c.customer_no = cd.customer_no
 	</select>
 	
     <select id="selectAllCustomerImage" resultType="String">

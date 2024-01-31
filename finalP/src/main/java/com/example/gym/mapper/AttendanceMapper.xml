@@ -21,8 +21,6 @@
           FROM program_reservation pr INNER JOIN program_date pd
             ON pr.program_date_no = pd.program_date_no LEFT OUTER JOIN customer_attendance ca
             ON ca.program_reservation_no = pr.program_reservation_no
-         
-         
    	
     </select >
   	<!-- 출석 조건 -->

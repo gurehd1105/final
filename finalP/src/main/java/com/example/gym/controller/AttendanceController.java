@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.gym.service.AttendanceService;
-import com.example.gym.service.CustomerService;
 import com.example.gym.service.ReservationService;
 import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.CustomerAttendance;
@@ -38,26 +37,29 @@ public class AttendanceController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired AttendanceService attendanceService;
 	@Autowired ReservationService reservationService;
-	@Autowired CustomerService customerService;
 	
 	// 출석 조회
 	@GetMapping("/list")
-	public String attendanceList(HttpSession session, CustomerAttendance attendance, Model model) throws JsonProcessingException {
-	        
-	   List<Map<String, Object>> attendanceList = customerService.selectAllCustomer();
+	public String attendanceList(CustomerAttendance attendance, Model model) throws JsonProcessingException {
+   
+	   List<Map<String, Object>> attendanceList = attendanceService.selectCustomerAttendance(attendance);
 	   model.addAttribute("attendanceList", mapper.writeValueAsString(attendanceList));
 	   System.out.println(attendanceList + "<--attendanceList");
-	   return ViewRoutes.출석_조회;	   	   
+	   return ViewRoutes.출석_조회;
+	   	   
 	}
-	
 	//출석 체크
 	@GetMapping("/insert")
 	public String insertAttendance(Model model, CustomerAttendance attendance ) {
-		Map<String, Object> paramMap = new HashMap<>();		
+		Map<String, Object> paramMap = new HashMap<>();
+		
 	    Map<String, Object> resultMap = reservationService.selectReservationList(paramMap);
+
 	    
-	    model.addAttribute("reservationList", resultMap.get("reservationList")); 	    	    
-	    System.out.println(resultMap + "<--resultMap");	    
+	    model.addAttribute("reservationList", resultMap.get("reservationList")); 
+	    	    
+	    System.out.println(resultMap + "<--resultMap");
+	    
 	    return ViewRoutes.출석_추가;
 	}
 	
@@ -68,14 +70,11 @@ public class AttendanceController {
 		  String a = (String)paramMap.get("currentTime");
 		  String b = a.substring(0,10);
 		  System.out.println(b + "<-- b");
-		  
 	    // 출석 정보 생성
 		int result = 0;
-		
 		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
 		Map<String, Object> attendanceCheck = attendanceService.selectCustomerAttendanceby(loginCustomer);
-		System.out.println(attendanceCheck.get("programDate") + "<-- attendanceCheck.get(\"programDate\")");
-		if(b.equals(attendanceCheck.get("programDate"))){
+		if(b!= attendanceCheck.get("programDate")){
 			return result;
 		}else {
 		    CustomerAttendance attendance = new CustomerAttendance();

@@ -3,7 +3,7 @@ pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <%@ include file="/inc/admin_header.jsp"%>
+        <jsp:include page="/inc/admin_header.jsp" />
     </head>
     <body class="m-0 h-[100vh]">
         <jsp:include page="/inc/admin_navbar.jsp" />

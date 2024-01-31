@@ -18,13 +18,11 @@
 		
 	<el-table :data="reviewList" class="w-fit" @row-click="rowClick"
 		class-name="cursor-pointer"> 
-		<el-table-column prop="reviewNo" label="No" width="100"></el-table-column> 
+		<el-table-column prop="reviewNo" label="No"></el-table-column> 
 		<el-table-column prop="branchName" label="지점명"></el-table-column> 
 		<el-table-column prop="programName" label="프로그램명"></el-table-column> 
 		<el-table-column prop="reviewTitle" label="제목"></el-table-column> 
-		<el-table-column prop="customerId" label="작성자"></el-table-column>
-		<el-table-column prop="createdate" label="작성일"></el-table-column>
-		<el-table-column prop="updatedate" label="수정일"></el-table-column>
+		<el-table-column prop="customerId" label="작성자"></el-table-column> 		
 		<c:if test="${ loginEmployee != null }">
 			<el-table-column label="삭제">
 				<template #default="scope">
@@ -35,7 +33,10 @@
 	</el-table>
 
 	<!-- 페이징 네비게이션 -->
-	<%@ include file="/inc/pagination.jsp" %>
+	<div class="flex justify-center">
+		<el-pagination layout="prev, pager, next" :page-size="rowPerPage"
+			v-model:current-page="pageNum" :total="totalCount" @change="loadPage" />
+	</div>
 
 </c:set>
 <c:set var="script">
@@ -101,11 +102,4 @@
 		},  
    },
 </c:set>
-
-<c:if test="${ loginEmployee == null}">
-	<%@ include file="/inc/user_layout.jsp"%>
-</c:if>
-
-<c:if test="${ loginEmployee != null}">
-	<%@ include file="/inc/admin_layout.jsp"%>
-</c:if>
+<%@ include file="/inc/user_layout.jsp"%>
