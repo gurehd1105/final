@@ -5,85 +5,38 @@
 <c:set var="keywords" value="프로그램" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <c:set var="body">
-<div v-if="isEmployee">
-   <div class="flex justify-start" class="w-auto">
-      <!-- 검색창 -->
-      <el-form label-position="right" 
-            ref="form" 
-            label-width="150px" 
-            status-icon 
-            class="w-96" 
-            action="${ctp}/program/list" 
-            method="get" 
-            id="searchProgramForm"
-      > 
-            <el-form-item label="상태">
-            <el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
-               <el-radio label="Y">활성화</el-radio>
-               <el-radio label="N">비활성화</el-radio>
-            </el-radio-group>
-            </el-form-item>
-
-         <el-form-item label="검색">
-                <el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
-            </el-form-item>
-            
-            <el-form-item>
-                <el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
-                <el-button type="primary" @click="searchSubmit(form)">검색</el-button>
-            </el-form-item>
-      </el-form>
-   </div>   
-   <br>
-   <!-- 프로그램 리스트 -->
-	<p>자세한 내용을 확인하려면 프로그램을 클릭하세요.</p>
-    <el-table
-        :data="list"
-        :key="loading"
-        class="w-full"
-        align="center"
-        border
-        @row-click="handleRowClick"
-    >   
-		<el-table-column width="180" prop="programNo" label="번호"></el-table-column>
-		<el-table-column width="180" prop="programName" label="이름"></el-table-column>
-		<el-table-column width="180" prop="employeeId" label="관리자"></el-table-column>
-		<el-table-column width="180" prop="maxCustomer" label="최대인원"></el-table-column>
-        <el-table-column label="활성화">
-			<template #default="scope">
-			    <el-tag class="ml-2" :type="scope.row.programActive === 'Y' ? 'success' : 'danger'">
-			        {{ scope.row.programActive === 'Y' ? '활성화' : '비활성화' }}
-			    </el-tag>
-			</template>
-        </el-table-column>
-        <el-table-column label="생성일">
-            <template #default="scope">
-               <span>{{ moment(scope.row.createdate).format('yyyy-MM-DD') }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="수정일">
-            <template #default="scope">
-               <span>{{ moment(scope.row.updagedate).format('yyyy-MM-DD') }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="수정" width="220">
-		  <template #default="scope">
-		    <el-button plain type="primary" @click="move(scope.row, 'update')" size="small">수정</el-button>
-		  </template>
-		</el-table-column>
-    </el-table>
-    
-   <el-dialog v-model="dialogVisible" title="프로그램 내용" width="30%" draggable>
-    <span>{{ selectedProgram.programContent }}</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">닫기</el-button>
-      </span>
-    </template>
-  </el-dialog>
-</div>
-
-<div v-else>
+	<div v-if="isEmployee">
+	   <div class="flex justify-start" class="w-auto">
+	      <!-- 검색창 -->
+	      <el-form label-position="right" 
+	            ref="form" 
+	            label-width="150px" 
+	            status-icon 
+	            class="w-96" 
+	            action="${ctp}/program/list" 
+	            method="get" 
+	            id="searchProgramForm"
+	      > 
+	  
+			<el-form-item label="상태">
+				<el-radio-group v-model="model.programActive" name="programActive" class="ml-4" >
+		               <el-radio label="Y">활성화</el-radio>
+		               <el-radio label="N">비활성화</el-radio>
+		        </el-radio-group>
+		      </el-form-item>
+	         <el-form-item label="검색">
+	                <el-input v-model="model.searchWord" name="searchWord" placeholder="검색어를 입력하세요"/>
+	            </el-form-item>
+	            
+	            <el-form-item>
+	                <el-button type="info" @click="resetSearchSubmit()">전체보기</el-button>
+	                <el-button type="primary" @click="searchSubmit(form)">검색</el-button>
+	            </el-form-item>
+	      </el-form>
+	   </div>   
+	   <br>
+	   <!-- 프로그램 리스트 -->
+		<p>자세한 내용을 확인하려면 프로그램을 클릭하세요.</p>
 	    <el-table
 	        :data="list"
 	        :key="loading"
@@ -92,11 +45,68 @@
 	        border
 	        @row-click="handleRowClick"
 	    >   
-			<el-table-column prop="programNo" label="번호"></el-table-column>
-			<el-table-column prop="programName" label="이름"></el-table-column>
-			<el-table-column prop="maxCustomer" label="최대인원"></el-table-column>
-		</el-table>
-</div> 
+	
+			<el-table-column width="180" prop="programNo" label="번호"></el-table-column>
+			<el-table-column width="180" prop="programName" label="이름"></el-table-column>
+			<el-table-column width="180" prop="employeeId" label="관리자"></el-table-column>
+			<el-table-column width="180" prop="maxCustomer" label="최대인원"></el-table-column>
+	        <el-table-column label="활성화">
+				<template #default="scope">
+				    <el-tag class="ml-2" :type="scope.row.programActive === 'Y' ? 'success' : 'danger'">
+				        {{ scope.row.programActive === 'Y' ? '활성화' : '비활성화' }}
+				    </el-tag>
+				</template>
+	        </el-table-column>
+	        <el-table-column label="생성일">
+	            <template #default="scope">
+	               <span>{{ moment(scope.row.createdate).format('yyyy-MM-DD') }}</span>
+	            </template>
+	        </el-table-column>
+	        <el-table-column label="수정일">
+	            <template #default="scope">
+	               <span>{{ moment(scope.row.updagedate).format('yyyy-MM-DD') }}</span>
+	            </template>
+	        </el-table-column>
+	        <el-table-column fixed="right" label="수정" width="220">
+			  <template #default="scope">
+			    <el-button plain type="primary" @click="move(scope.row, 'update')" size="small">수정</el-button>
+			  </template>
+			</el-table-column>
+	    </el-table>
+	 </div>   
+
+ 
+	<div v-else>
+		    <el-table
+	        :data="list"
+	        :key="loading"
+	        class="w-full"
+	        align="center"
+	        border
+	        @row-click="handleRowClick"
+	    >   
+	    	<el-table-column width="180" prop="programName" label="이름"></el-table-column>
+			<el-table-column width="180" prop="employeeId" label="관리자"></el-table-column>
+			<el-table-column width="180" prop="maxCustomer" label="최대인원"></el-table-column>
+	        <el-table-column label="예약">
+				<template #default="scope">
+				    <el-tag class="ml-2" :type="scope.row.programActive === 'Y' ? 'success' : 'danger'">
+				        {{ scope.row.programActive === 'Y' ? '예약가능' : '예약불가' }}
+				    </el-tag>
+				</template>
+	        </el-table-column>
+	</div>
+
+   <el-dialog v-model="dialogVisible" title="프로그램 내용" width="50%" draggable>
+	    <span>{{ selectedProgram.programContent }}</span>
+	    <template #footer>
+	      <span class="dialog-footer">
+	        <el-button @click="dialogVisible = false">닫기</el-button>
+	      </span>
+    	</template>
+    </el-dialog>
+    
+    
      
    <%@ include file="/inc/pagination.jsp" %>
 </c:set>
@@ -105,6 +115,7 @@
    
    data() {
         return {
+      
           model: {
              searchWord: '${searchWord}', 
              programActive: '${programActive}', 
@@ -119,6 +130,7 @@
           totalPage: ${page.totalPage },
           branchLevel : ${branchLevel},
 		  isEmployee: <%= session.getAttribute("loginEmployee") != null %>,
+
         };
    },
    methods: {
