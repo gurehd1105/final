@@ -97,7 +97,7 @@
 	        </el-table-column>
 	</div>
 
-   <el-dialog v-model="dialogVisible" title="프로그램 내용" width="30%" draggable>
+   <el-dialog v-model="dialogVisible" title="프로그램 내용" width="50%" draggable>
 	    <span>{{ selectedProgram.programContent }}</span>
 	    <template #footer>
 	      <span class="dialog-footer">
@@ -115,6 +115,7 @@
    
    data() {
         return {
+      
           model: {
              searchWord: '${searchWord}', 
              programActive: '${programActive}', 
@@ -129,6 +130,7 @@
           totalPage: ${page.totalPage },
           branchLevel : ${branchLevel},
 		  isEmployee: <%= session.getAttribute("loginEmployee") != null %>,
+
         };
    },
    methods: {
