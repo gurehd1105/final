@@ -25,7 +25,7 @@ public class CommonSchedule {
    private final String EMPLOYEE_PATH = "src/main/webapp/upload/employee";
 
    // 고정된 시간 간격으로 스케줄링
-   @Scheduled(fixedRate = 1000 * 30) // 30초마다 실행
+   @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
    public void ImageCleanup() {
          
       //현재 업로드 되어 있는 employee Img 리스트
@@ -47,12 +47,12 @@ public class CommonSchedule {
       
       List<String> DBEmployeeimages = new ArrayList<>();
       for (String img : DBEmployeeimage) {
+    
          DBEmployeeimages.add(DEFAULT_PATH + img);
       }
 
-      System.out.println("직원 이미지 확인");
+      log.info("직원 이미지");
       printAndCompareImages(employeeImages,DBEmployeeimages);
-      //-------------------------------------------------------------------------------------------------------------//
       
       //현재 업로드 되어 있는 customer Img 리스트
       File customerImg = new File(CUSTOMER_PATH);
@@ -75,7 +75,7 @@ public class CommonSchedule {
       for (String img : DBCustomerimages) {
          DBCustomerimage.add(DEFAULT_PATH + img);
       }
-      System.out.println("고객 이미지 확인");
+      log.info("고객 이미지");
       printAndCompareImages(customerImages,DBCustomerimages);
       
    }
@@ -84,12 +84,11 @@ public class CommonSchedule {
         for (String imgName : fileList) {
             System.out.println(imgName);
             boolean existsInDB = images.contains(imgName);
-            System.out.println("DB 존재 : " + (existsInDB ? "O" : "X"));
+            log.info("DB 존재 : {}", existsInDB ? "O" : "X");
             
             if (!existsInDB) {
                 deleteFile(imgName);
-                System.out.println("파일 삭제: " + imgName);
-                System.out.println();
+                log.info("파일 삭제: {}\n", imgName);
             }
         }
     }
@@ -99,12 +98,12 @@ public class CommonSchedule {
 
         if (file.exists()) {
             if (file.delete()) {
-                System.out.println("파일 삭제 성공");
+            	log.info("파일 삭제 성공");
             } else {
-                System.out.println("파일 삭제 실패");
+            	log.info("파일 삭제 실패");
             }
         } else {
-            System.out.println("파일이 존재하지 않습니다.");
+        	log.info("파일이 존재하지 않습니다.");
         }
     }
     
