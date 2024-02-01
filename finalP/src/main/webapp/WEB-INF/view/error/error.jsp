@@ -7,9 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<div>${errorMessage}</div>
     <script>
-        alert("${errorMessage}");
-        window.location.href = "/home";
+       /*  alert("${errorMessage}");
+        window.location.href = "/home"; */
     </script>
 </body>
 </html>

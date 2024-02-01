@@ -44,6 +44,6 @@ public class FileController {
 				e.printStackTrace();
 			}
 		}
-		return "error";
+		return "zz";
 	}
 }
