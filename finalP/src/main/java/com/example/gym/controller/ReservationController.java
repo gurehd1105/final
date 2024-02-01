@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
+@Transactional
 @Controller
 @RequestMapping("/reservation")
 public class ReservationController extends DefaultController {
@@ -223,17 +225,20 @@ public class ReservationController extends DefaultController {
     }
 */
     // 예약 삭제
-    @GetMapping("/delete")
-    public String deleteReservation(ProgramReservation reservation,
+    @PostMapping("/delete")
+    public String deleteReservation(@RequestBody ProgramReservation reservation,
 							        Integer targetDay,
 							        Integer targetYear,
 							        Integer targetMonth){
         System.out.println(targetYear + " " + targetMonth + " " + targetDay + " " + "<--날짜");
+        System.out.println(reservation + "<-- reservation");
 
-        reservationService.deleteReservation(reservation);
+        int deletedRows = reservationService.deleteReservation(reservation);
 		System.out.println(reservation.getProgramReservationNo() + "<-- 예약번호");
-		return Redirect(ViewRoutes.예약_조회 +"?targetYear=" + targetYear + "&targetMonth=" + targetMonth + 
-				"							&targetDay="+ targetDay);
+		System.out.println(reservation.getProgramReservationNo() + " deleted. " + deletedRows + " row(s) deleted");
+
+		return Redirect(ViewRoutes.예약_조회 +"?targetYear=" + targetYear + "&targetMonth=" + targetMonth 
+					                       + "&targetDay="+ targetDay);
     }
     
     

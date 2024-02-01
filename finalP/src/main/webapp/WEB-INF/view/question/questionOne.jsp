@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="title" value="문의작성" />
+<c:set var="title" value="문의상세" />
 <c:set var="description" value="헬스 관련 업무들을 할 수 있는 사이트" />
 <c:set var="keywords" value="운동,헬스,헬스장,예약" />
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
@@ -37,7 +37,7 @@
 
 	<strong>Content</strong>
 	<br>
-	<textarea readonly rows="20" cols="200" style="resize: none;">{{ questionContent }}</textarea>
+	<textarea readonly rows="20" cols="200" style="resize: none; border: 20em;">{{ questionContent }}</textarea>
 	
 	<c:if test="${ replyMap != null }">
 		<!-- 답변 -->
@@ -48,7 +48,8 @@
 			</el-descriptions-item>
 		</el-descriptions>
 	<br>
-		<span v-if="isEmployee" id="replyBtn"> 
+	<c:if test="${ loginEmployee != null }">
+		<span id="replyBtn"> 
 			<el-button type="primary" @click="updateReply()">수정</el-button>			
 			<el-button type="primary" @click="deleteReply()">삭제</el-button>			
 		</span>
@@ -56,11 +57,12 @@
 			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
 			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
 		</span>
+	</c:if>
 	<br>
 	<br>
 
 		<strong>Reply</strong>
-		<textarea id="questionReply" rows="20" cols="170"
+		<textarea id="questionReply" rows="20" cols="170" 
 			style="resize: none;" readonly>{{ replyContent }}</textarea>
 	</c:if>
 	<br>
@@ -105,9 +107,9 @@
 		// question 관련 데이터
 			question: {
 				문의번호: '${ questionMap.questionNo }',
+				제목: '${ questionMap.questionTitle }',
 				작성자: '${ questionMap.customerId }',
-				작성일: '${ questionMap.updatedate }',
-				제목: '${ questionMap.questionTitle }', 				
+				최종수정일: '${ questionMap.updatedate }',			
 			},
 			questionContent: '${ questionMap.questionContent }',
 			
@@ -125,7 +127,6 @@
 				employeeId: '${ loginEmployee.employeeId }',
 				replyContent: '',
 				questionNo: '${ questionMap.questionNo }',
-				isEmployee: '${ loginEmployee != null }',
 			},		
 		}
 	},
@@ -215,5 +216,10 @@
 </c:set>
 
 
+<c:if test="${ loginEmployee == null}">
+	<%@ include file="/inc/user_layout.jsp"%>
+</c:if>
 
-<%@ include file="/inc/user_layout.jsp"%>
+<c:if test="${ loginEmployee != null}">
+	<%@ include file="/inc/admin_layout.jsp"%>
+</c:if>

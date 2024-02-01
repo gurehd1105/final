@@ -11,11 +11,11 @@ prefix="c"%>
             <el-carousel
                 :interval="1000 * 4"
                 arrow="always"
-                height="300px"
+                height="400px"
                 class="w-full"
             >
                 <el-carousel-item v-for="image of images" :key="image">
-                    <img :src="image.src" width="100%" />
+                    <img :src="image.src" width="100%"/>
                     <h3>{{ image.title }}</h3>
                 </el-carousel-item>
             </el-carousel>
@@ -84,12 +84,7 @@ prefix="c"%>
                     >공지사항 전체보기 >
                 </el-link>
             </div>
-            <el-table
-                :data="notices"
-                border
-                class="w-fit"
-                @row-click="rowClick"
-            >
+            <el-table :data="notices" border class="w-fit">
                 <el-table-column
                     prop="noticeTitle"
                     label="제목"
@@ -104,7 +99,7 @@ prefix="c"%>
                     label="작성일"
                     width="180"
                 ></el-table-column>
-                <el-table-column fixed="right" label="관리" width="220">
+                <el-table-column fixed="right" label="관리" width="100">
                     <template #default="scope">
                         <el-button
                             plain
@@ -140,13 +135,13 @@ prefix="c"%>
     data() { 
         return { 
             images: [ 
-                { title: '본점', src: '/place0.jpg' }, 
-                { title: '본점', src: '/place1.jpg' }, 
-                { title: '부산점', src: '/place2.jpg' }, 
-                { title: '부산점', src: '/place6.jpg' }, 
-                { title: '대전점', src: '/place3.jpg' }, 
-                { title: '여수점', src: '/place4.jpg' }, 
-                { title: '까치산점', src: '/place5.jpg' }, 
+                { title: '본점', src: '/place0.png' }, 
+                { title: '본점', src: '/place1.png' }, 
+                { title: '부산점', src: '/place2.png' }, 
+                { title: '부산점', src: '/place6.png' }, 
+                { title: '대전점', src: '/place3.png' }, 
+                { title: '여수점', src: '/place4.png' }, 
+                { title: '까치산점', src: '/place5.png' }, 
             ], 
             branchList: JSON.parse('${branchList}'), 
             programList: JSON.parse('${programList}'), 
@@ -195,7 +190,14 @@ prefix="c"%>
         getInfo(date) {
             const info = this.reservationInfos.find(info => info.programDate === date);
             return info; 
-        }, 
+        },
+        move(row, path) {
+		if (row.noticeNo != null) {
+		   	location.href = ['/notice', path, row.noticeNo].join('/');
+		}
+	  },
+	  
+	  
     }
 </c:set>
 

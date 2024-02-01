@@ -43,7 +43,8 @@
 			</el-descriptions-item> 
 		</el-descriptions>
 	<br>
-		<span v-if="isEmployee" id="replyBtn"> 
+	<c:if test="${ loginEmployee != null }">
+		<span id="replyBtn"> 
 			<el-button type="primary" @click="updateReply()">수정</el-button> 
 			<el-button type="primary" @click="deleteReply()">삭제</el-button>
 		</span>
@@ -51,6 +52,7 @@
 			<el-button type="primary" @click="updateReplyAct()">완료</el-button>
 			<div>&nbsp; 수정 후 완료버튼 클릭 시 직원 ID 및 작성일 모두 자동변경됩니다.</div>
 		</span>
+	</c:if>
 	<br>
 	<br>
 
@@ -121,7 +123,6 @@
 			reviewReplyNo: '${ replyMap.reviewReplyNo }',
 			employeeNo : '${ loginEmployee.employeeNo }',
 			employeeId : '${ loginEmployee.employeeId }',
-			isEmployee: '${ loginEmployee != null }',
 			
 		}
 	},
@@ -207,4 +208,10 @@
 	
 </c:set>
 
-<%@ include file="/inc/user_layout.jsp"%>
+<c:if test="${ loginEmployee == null}">
+	<%@ include file="/inc/user_layout.jsp"%>
+</c:if>
+
+<c:if test="${ loginEmployee != null}">
+	<%@ include file="/inc/admin_layout.jsp"%>
+</c:if>

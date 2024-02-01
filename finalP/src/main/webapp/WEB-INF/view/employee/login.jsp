@@ -24,8 +24,8 @@
 	data() {
 	    return {
 	        formData: {
-	        	employeeId: '',
-	        	employeePw: ''
+	        	employeeId: 'admin',
+	        	employeePw: '1234'
 	        }
 	    };
 	},
