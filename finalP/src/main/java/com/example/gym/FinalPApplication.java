@@ -2,6 +2,8 @@
 package com.example.gym;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.NoSuchElementException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+@Slf4j
 @ControllerAdvice(annotations = Controller.class)
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.example", "com.example.gym.controller" })
@@ -31,10 +33,12 @@ public class FinalPApplication {
         HttpServletRequest request
     ) {
         if (ex instanceof NoSuchElementException) {
-            model.addAttribute("errorMessage", "올바르지 않은 접근입니다.");
+        	model.addAttribute("errorMessage", ex.getMessage());
+        	log.info(ex.getMessage());
             return "error/error";
         } else {
-            model.addAttribute("errorMessage", "올바르지 않은 접근입니다.");
+        	model.addAttribute("errorMessage", ex.getMessage());
+        	log.info(ex.getMessage());
             return "error/error";
         }
     }

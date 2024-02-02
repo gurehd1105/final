@@ -1,5 +1,6 @@
 package com.example.gym.controller;
 
+import java.io.Console;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,9 @@ public class NoticeController extends DefaultController {
 		// 페이징 변수들
 		int totalCount = noticeService.getNoticeTotal(); // 게시글 총 갯수
 		page.setTotalCount(totalCount);
-
+		if(page.getRowPerPage() > 100) {
+			page.setRowPerPage(10);			
+		}
 		// 서비스 호출
 		List<Notice> noticeList = noticeService.getNoticeList(page);
 		model.addAttribute("noticeList", toJson(noticeList));
