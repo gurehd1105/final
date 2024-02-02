@@ -43,9 +43,9 @@
 		FROM branch
 		WHERE branch_active = 'Y'
 		ORDER BY branchNo asc
-		<if test="rowPerPage!= -1">
+
 		LIMIT #{beginRow},#{rowPerPage}
-		</if>
+		
 	</select>
 	<!-- 전체 지점 갯수 확인 -->
 	<select id="totalBranch" resultType="Integer">
