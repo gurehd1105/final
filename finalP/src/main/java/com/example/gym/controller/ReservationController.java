@@ -69,9 +69,7 @@ public class ReservationController extends DefaultController {
         @RequestParam(required = false) Integer targetMonth
     ) {
         // id 유효성검사
-        Map<String, Object> loginCustomer = (Map) session.getAttribute(
-            "loginCustomer"
-        );
+        Map<String, Object> loginCustomer = (Map) session.getAttribute( "loginCustomer" );
         if (loginCustomer == null) {
             return "customer/login";
         }
@@ -93,46 +91,52 @@ public class ReservationController extends DefaultController {
 
     // 예약 리스트
     @GetMapping("/list")
-	public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear,
-								  Integer targetMonth, ProgramReservation reservation, Page page,
-								  @RequestParam(defaultValue = "1") int currentPage,
-								  @RequestParam(defaultValue = "") String programActive, 
-								  @RequestParam(defaultValue = "") String searchWord
-								 ) {
+   public String reservationList(HttpSession session, Model model, Integer targetDay, Integer targetYear,
+                          Integer targetMonth, ProgramReservation reservation, Page page,
+                          @RequestParam(defaultValue = "1") int currentPage,
+                          @RequestParam(defaultValue = "") String programActive, 
+                          @RequestParam(defaultValue = "") String searchWord
+                         ) {
         String targetYear2 = toJson(targetYear);
         String targetMonth2 = toJson(targetMonth);
         String targetDay2 = toJson(targetDay);
 
-        String date = targetYear2 + targetMonth2 + targetDay2;
-        if (targetMonth2.length() == 1) {
-            date = targetYear2 + "0" + targetMonth2 + targetDay2;
-        }
+        if(targetDay2.length() == 1) {
+            targetDay2 = "0" + targetDay2;
+         }
+         if(targetMonth2.length() == 1) {
+            targetMonth2 = "0" + targetMonth2;
+         }
+         
+         
+         String date = targetYear2+ "-" + targetMonth2 + "-" + targetDay2;
         System.out.println(date + "날짜");
 
         Map<String, Object> paramMap = new HashMap<>();
-		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+      Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         paramMap.put("paymentNo", loginCustomer.get("paymentNo"));
         paramMap.put("programDate", date);
         System.out.println(paramMap + "<-- paramMap");
 
-		Map<String, Object> list = reservationService.selectReservationList(paramMap);
+      Map<String, Object> list = reservationService.selectReservationList(paramMap);
         Object reservationList = list.get("reservationList");
+        
         List<Branch> branchList = branchService.getBranchList(page);   
-		Map<String, Object> programList = programService.selectProgramListService(session, currentPage, programActive,
-																				  searchWord);
+      Map<String, Object> programList = programService.selectProgramListService(session, currentPage, programActive,
+                                                              searchWord);
 
-		model.addAttribute("programList", toJson(programList));
-		model.addAttribute("reservationList", toJson(reservationList));
+      model.addAttribute("programList", toJson(programList));
+      model.addAttribute("reservationList", toJson(reservationList));
         model.addAttribute("branchList", toJson(branchList));
-        model.addAttribute("targetYear", targetYear);
-        model.addAttribute("targetMonth", targetMonth);
-        model.addAttribute("targetDay", targetDay);
+        model.addAttribute("targetYear", targetYear)
+             .addAttribute("targetMonth", targetMonth)
+            .addAttribute("targetDay", targetDay);
+
         System.out.println(programList + "<---programList");
         System.out.println(reservationList + "<---reservationList");
         System.out.println(branchList + "<---branchList");
-        System.out.println(targetYear + "<-- targetYear");
-        System.out.println(targetMonth + "<-- targetMonth");
-        System.out.println(targetDay + "<-- targetDay");
+        System.out.println(targetYear + "<-- targetYear\n" + targetMonth + "<-- targetMonth\n" + targetDay + "<-- targetDay");
+
 
         return ViewRoutes.예약_조회;
     }
@@ -140,11 +144,11 @@ public class ReservationController extends DefaultController {
     // 예약 추가
     @GetMapping("/insert")
     public String insertReservation(
-			HttpSession session, Model model, Page page, ProgramReservation reservation, ProgramDate programDate,							 
-								 @RequestParam(defaultValue = "Y") String programActive,
-								 @RequestParam(defaultValue = "") String searchWord) {
-								 
-		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+         HttpSession session, Model model, Page page, ProgramReservation reservation, ProgramDate programDate,                      
+                         @RequestParam(defaultValue = "Y") String programActive,
+                         @RequestParam(defaultValue = "") String searchWord) {
+                         
+      Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
         System.out.println(loginCustomer + "<--loginCustomer");
  
@@ -156,7 +160,7 @@ public class ReservationController extends DefaultController {
         map.put("programActive", programActive);
         map.put("searchWord", searchWord);
         List<Map<String, Object>> programList = programMapper.selectProgramList(map); 
-		model.addAttribute("programList", toJson(programList));
+      model.addAttribute("programList", toJson(programList));
         model.addAttribute("branchList", toJson(branchList));
               
        
@@ -169,12 +173,12 @@ public class ReservationController extends DefaultController {
 
     @GetMapping("/program/{program_no}/reservationInfo")
     @ResponseBody
-	public ResponseEntity<List<ProgramDate>> reservationInfos(@PathVariable int program_no) {
+   public ResponseEntity<List<ProgramDate>> reservationInfos(@PathVariable int program_no) {
         var result = reservationService.selectProgramDates(program_no);
         System.out.println(result + "<--result");
         return ResponseEntity.ok(result);
     }
-  
+    
     @PostMapping("/insert")
     @ResponseBody
     public ResponseEntity<Map<String, String>> insertReservation2(@RequestBody ProgramReservation reservation, HttpSession session) {
@@ -215,36 +219,36 @@ public class ReservationController extends DefaultController {
     @PostMapping("/check")
     @ResponseBody
     public int check(@RequestBody Map<String, Object> programDate, HttpSession session) {
-    	int result = 0;
-    	Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
-    	
-    	List<ProgramDate> check = reservationService.check((int) loginCustomer.get("customerNo"));
-    	System.out.println(check +"<--check");
-    	boolean duplicate = check.stream()
-    		    .anyMatch(pd -> pd.getProgramDate().equals(programDate.get("programDate")));
-    	System.out.println(programDate +"<--programdate");
-    	if(duplicate) {
-    		result =1;
-    	}
-   	
-    	return result;
+       int result = 0;
+       Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
+       
+       List<ProgramDate> check = reservationService.check((int) loginCustomer.get("customerNo"));
+       System.out.println(check +"<--check");
+       boolean duplicate = check.stream()
+              .anyMatch(pd -> pd.getProgramDate().equals(programDate.get("programDate")));
+       System.out.println(programDate +"<--programdate");
+       if(duplicate) {
+          result =1;
+       }
+      
+       return result;
     }
 */
     // 예약 삭제
     @PostMapping("/delete")
     public String deleteReservation(@RequestBody ProgramReservation reservation,
-							        Integer targetDay,
-							        Integer targetYear,
-							        Integer targetMonth){
+                             Integer targetDay,
+                             Integer targetYear,
+                             Integer targetMonth){
         System.out.println(targetYear + " " + targetMonth + " " + targetDay + " " + "<--날짜");
         System.out.println(reservation + "<-- reservation");
 
         int deletedRows = reservationService.deleteReservation(reservation);
-		System.out.println(reservation.getProgramReservationNo() + "<-- 예약번호");
-		System.out.println(reservation.getProgramReservationNo() + " deleted. " + deletedRows + " row(s) deleted");
+      System.out.println(reservation.getProgramReservationNo() + "<-- 예약번호");
+      System.out.println(reservation.getProgramReservationNo() + " deleted. " + deletedRows + " row(s) deleted");
 
-		return Redirect(ViewRoutes.예약_조회 +"?targetYear=" + targetYear + "&targetMonth=" + targetMonth 
-					                       + "&targetDay="+ targetDay);
+      return Redirect(ViewRoutes.예약_조회 +"?targetYear=" + targetYear + "&targetMonth=" + targetMonth 
+                                      + "&targetDay="+ targetDay);
     }
     
     

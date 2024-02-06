@@ -41,20 +41,19 @@
     },
     methods: {
     insert() {
-    	const self = this;
-    	const paramMap = {
-    		reservationNo: this.reservationNo,
-        	currentTime: this.currentTime.toString(),
-    	};
-    	
+       const self = this;
+       const paramMap = {
+          reservationNo: this.reservationNo,
+           currentTime: this.currentTime.toString(),
+       };
+       
         // 출석 정보를 서버로 전송하는 비동기 요청
         axios.post(`${ctp}/attendance/insert`, paramMap)
             .then((res) => {
                 if (res.data == 1) {
                     // 출석 성공
                     alert('출석이 완료되었습니다.');
-                    // 페이지 리디렉션
-                    location.href = `${ctp}/attendance/list`;
+                    
                 } else {
                     // 출석 실패
                     alert('출석에 실패했습니다.');

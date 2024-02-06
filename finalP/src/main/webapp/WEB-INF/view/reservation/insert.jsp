@@ -24,7 +24,7 @@
         </el-form-item>
         
         <el-form-item>
-            <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택">
+            <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택" :disabled="!selectBranch">
                 <el-option v-for="(program, p) in programList" 
                     :key="p" 
                     :label="program.programName" 
@@ -39,14 +39,15 @@
             <el-calendar v-model="selectDate" >
                 <template #date-cell="{ data }">
                     <p
+                       
                         :key="selectProgram" 
                         :class="[
                             data.isSelected ? 'is-selected' : '',
                             getInfo(data.day) ? '' : 'text-gray-200 hover:cursor-not-allowed',
                         ]"
-                    
                     >
                         {{ getDayString(data.day) }}
+                        
                     </p>
                 </template>
             </el-calendar>
@@ -71,11 +72,15 @@
         }
     },
     watch: {
+
         selectProgram: function(now, before) {
             const self = this;
             if (now) {
                 axios.get('${ctp}/reservation/program/' + now + '/reservationInfo')
-                    .then((res) => self.reservationInfos = res.data);
+                    .then((res) => {
+                        self.reservationInfos = res.data
+                    
+                    })     
             }
         },
     },
@@ -111,7 +116,7 @@
         },
         
         confirm(){
-        	location.href = '${ctp}/reservation/calendar';
+           location.href = '${ctp}/reservation/calendar';
         },
 
         insert() {
@@ -173,21 +178,35 @@
                 });
             });
         },
-        getDayString(date) {
-            const [year, month, day] = date.split('-');
-            const dateString = [month, day].join('-');
-            const info = this.getInfo(date);
-            let reservationString = '';
-            if (info) {
-                reservationString = '(' + (info.maxCustomer - info.cntCustomer) + '개 남음)';
-            }
-            return dateString + reservationString;
-        },
-        getInfo(date) {
-            const info = this.reservationInfos.find(info => info.programDate === date);
-            return info;
-        }
-    },
+        getDayString(date) {     
+           const [year, month, day] = date.split('-');
+           const dateString = [month, day].join('-');
+           
+           // reservationInfos가 비어있는 경우 또는 비동기 요청이 완료되지 않은 경우 처리
+           if (!this.reservationInfos.length) {
+               return dateString + '(0명 남음)'; // 혹은 다른 적절한 메시지
+           }
+           
+           const info = this.getInfo(date);
+           console.log('info:', info); // info 값 확인
+           
+           let reservationString = '';
+           if (info) {
+               reservationString = '(' + (info.maxCustomer - info.cntCustomer) + '명 남음)';
+           } 
+           
+           return dateString + reservationString;
+       },
+       
+       getInfo(date) {
+           const info = this.reservationInfos.find(info => info.programDate === date);
+           return info;
+       },
+
+
+       
+        
+    }
 </c:set>
 
 <%@ include file="/inc/user_layout.jsp"%>
