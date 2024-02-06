@@ -25,24 +25,24 @@ public class FileController {
 	public String upload(@RequestParam("file") MultipartFile file, HttpSession session, @PathVariable String folder) {
 		//String path = session.getServletContext().getRealPath("/upload/" + folder);
 		String path2 = "C:\\Users\\GD\\git\\final\\finalP\\src\\main\\webapp\\upload\\"+folder;
-		//String path3 = "/home/ubuntu/upload/" + folder;
-		log.info(path2 + " is path2");
+		String path3 = "/home/ubuntu/upload/" + folder;
+		log.info(path3 + " is path3");
 
 	
-		File f = new File(path2);
+		File f = new File(path3);
          
 		if (!f.exists()) {
 		    // 폴더가 존재하지 않으면 생성
 		    log.info("path2 does not exist");
-		    boolean success = f.mkdir(); // 디렉토리 생성
+		    boolean success = f.mkdirs(); // 디렉토리 생성
 		    if (success) {
-		        log.info("Successfully created directory: " + path2);
+		        log.info("Successfully created directory: " + path3);
 		    } else {
-		        log.error("Failed to create directory: " + path2);
+		        log.error("Failed to create directory: " + path3);
 		    }
 		} else {
 		    // 폴더가 이미 존재할 경우
-		    log.info("path2 already exists 이게 떠야 돼 제발");
+		    log.info("path3 already exists 이게 떠야 돼 제발");
 		}
 		 
 		 
