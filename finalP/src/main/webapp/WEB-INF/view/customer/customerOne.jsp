@@ -11,22 +11,12 @@
         <div>
             <div class="demo-image__preview">
             <strong style="margin-bottom: 40%">회원 상세</strong>
-                <el-image
-                style="width: 300px; height: 200px; margin-left: 40%;"
-                :src="url"
-                :zoom-rate="1.2"
-                :max-scale="7"
-                :min-scale="0.2"
-                :preview-src-list="srcList"
-                :initial-index="4"
-                fit="cover"
-                />
             </div>
         </div>
     </c:if>	
+		<img src="${resultMap.customerImgOriginName}" style="max-width: 200px;">
 		
-		
-    <el-descriptions :column="1" border>
+    <el-descriptions :column="2" border>
         <el-descriptions-item v-for="key of Object.keys(customer)" :label="key">{{ customer[key] }}</el-descriptions>
     </eldescriptions>
     
@@ -52,10 +42,10 @@
 				주소: '${resultMap.customerAddress}',
 				이메일: '${resultMap.customerEmail}',
 				최초가입일: '${resultMap.cCreatedate}',
+				정보수정일: '${resultMap.cdUpdatedate}',
 				결제상품: '${loginCustomer.membershipName}',
 				만료여부: '${loginCustomer.paymentActive}',
 			},
-				url: '${ctp}${resultMap.customerImgOriginName}',
 				isLogin: '${loginCustomer != null}',
 		}
 	},

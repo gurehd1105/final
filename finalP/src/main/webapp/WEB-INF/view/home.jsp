@@ -43,21 +43,14 @@ prefix="c"%>
                     </el-select>
                 </el-col>
                 <el-col :span="12">
-                    <el-select
-                        v-model="selectProgram"
-                        id="selectProgram"
-                        clearable
-                        placeholder="프로그램 선택"
-                    >
-                        <el-option
-                            v-for="(program, p) in programList.programList"
-                            :key="p"
-                            :label="program.programName"
-                            :value="program.programNo"
-                            :selected="p === 0"
-                        >
-                        </el-option>
-                    </el-select>
+                   <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택">
+		                <el-option v-for="(program, p) in programList" 
+		                    :key="p" 
+		                    :label="program.programName" 
+		                    :value="program.programNo"
+		                    :selected="p === 0">
+		                </el-option> 
+		            </el-select>
                 </el-col>
             </el-row>
 
@@ -190,7 +183,14 @@ prefix="c"%>
         getInfo(date) {
             const info = this.reservationInfos.find(info => info.programDate === date);
             return info; 
-        }, 
+        },
+        move(row, path) {
+		if (row.noticeNo != null) {
+		   	location.href = ['/notice', path, row.noticeNo].join('/');
+		}
+	  },
+	  
+	  
     }
 </c:set>
 

@@ -130,6 +130,7 @@
 			c.customer_id AS customerId,
 			c.customer_active AS customerActive,
 			DATE_FORMAT(c.createdate,'20%y-%m-%d %T') AS cCreatedate,
+			DATE_FORMAT(c.updatedate,'20%y-%m-%d %T') AS cUpdatedate,
 			
 			cd.customer_name AS customerName,
 			cd.customer_gender AS customerGender,
@@ -137,7 +138,9 @@
 			cd.customer_weight AS customerWeight,
 			cd.customer_phone AS customerPhone,
 			cd.customer_address AS customerAddress,
-			cd.customer_email AS customerEmail,			
+			cd.customer_email AS customerEmail,		
+			DATE_FORMAT(cd.createdate,'20%y-%m-%d %T') AS cdCreatedate,	
+			DATE_FORMAT(cd.updatedate,'20%y-%m-%d %T') AS cdUpdatedate,
 			
 			ci.customer_img_no AS customerImgNo,
 			ci.customer_img_origin_name AS customerImgOriginName,

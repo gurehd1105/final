@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="title" value="프로그램 리스트" />
+<c:set var="title" value="프로그램 수정" />
 <c:set var="description" value="프로그램 목록을 보여주고 검색 할 수 있는 사이느" />
 <c:set var="keywords" value="프로그램" />
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>

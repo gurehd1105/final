@@ -11,12 +11,12 @@
 			program_max_customer,
 			active
 		) VALUES (
-			#{employeeNo},
-			#{programName},
-			REPLACE(#{programContent}, '\r\n', '\\r\\n'),
-			#{programMaxCustomer},
-			#{active}
-		)		
+		   #{employeeNo},
+		   #{programName},
+		   REPLACE(#{programContent}, '\r\n', '\\r\\n'),
+		   #{programMaxCustomer},
+		   #{active}
+		) 	
 	</insert>
 
 	<!-- program 리스트 출력 -->
@@ -28,17 +28,17 @@
 			p.program_max_customer maxCustomer,
 			p.program_content programContent,
 			p.createdate createdate,
-			p.updatedate updatedate
-			<!-- p.active programActive -->
+			p.updatedate updatedate,
+			p.active programActive 
 		FROM program p INNER JOIN employee e
 		ON p.employee_no = e.employee_no
 	    <where>
 				<if test="searchWord != '' ">
 						AND p.program_name LIKE CONCAT('%',#{searchWord},'%')
 				</if>
-				<!-- <if test="programActive != ''">
+				<if test="programActive != ''">
 						AND p.active = #{programActive}
-				</if> -->
+				</if> 
 	    </where>
 	    ORDER BY p.createdate DESC
    <if test="beginRow != null and rowPerPage != null">

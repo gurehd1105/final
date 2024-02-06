@@ -1,5 +1,6 @@
 package com.example.gym.controller;
 
+import com.example.gym.mapper.ProgramMapper;
 import com.example.gym.service.BranchService;
 import com.example.gym.service.CalendarService;
 import com.example.gym.service.CustomerService;
@@ -9,6 +10,7 @@ import com.example.gym.util.ViewRoutes;
 import com.example.gym.vo.Branch;
 import com.example.gym.vo.Customer;
 import com.example.gym.vo.Page;
+import com.example.gym.vo.Program;
 import com.example.gym.vo.ProgramDate;
 import com.example.gym.vo.ProgramReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,6 +56,8 @@ public class ReservationController extends DefaultController {
 
     @Autowired
     ProgramService programService;
+    @Autowired
+    ProgramMapper programMapper;
 
     // 캘린더 출력
     @GetMapping("/calendar")
@@ -113,7 +117,7 @@ public class ReservationController extends DefaultController {
 
 		Map<String, Object> list = reservationService.selectReservationList(paramMap);
         Object reservationList = list.get("reservationList");
-        List<Branch> branchList = branchService.getBranchList(page);
+        List<Branch> branchList = branchService.getBranchList(page);   
 		Map<String, Object> programList = programService.selectProgramListService(session, currentPage, programActive,
 																				  searchWord);
 
@@ -136,20 +140,22 @@ public class ReservationController extends DefaultController {
     // 예약 추가
     @GetMapping("/insert")
     public String insertReservation(
-			HttpSession session, Model model, Page page, ProgramReservation reservation, ProgramDate programDate,
-								 @RequestParam(defaultValue = "1") int currentPage, 
+			HttpSession session, Model model, Page page, ProgramReservation reservation, ProgramDate programDate,							 
 								 @RequestParam(defaultValue = "Y") String programActive,
-								 @RequestParam(defaultValue = "") String searchWord){
+								 @RequestParam(defaultValue = "") String searchWord) {
+								 
 		Map<String, Object> loginCustomer = (Map) session.getAttribute("loginCustomer");
         reservation.setPaymentNo((Integer) loginCustomer.get("paymentNo"));
         System.out.println(loginCustomer + "<--loginCustomer");
  
         List<ProgramDate> list = reservationService.check((int) loginCustomer.get("customerNo"));
       
-        page.setRowPerPage(-1);
+
         List<Branch> branchList = branchService.getBranchList(page);
-        Map<String, Object> programList = programService.selectProgramListService(
-											session, currentPage, programActive, searchWord);
+        Map<String, Object> map = new HashMap<>();
+        map.put("programActive", programActive);
+        map.put("searchWord", searchWord);
+        List<Map<String, Object>> programList = programMapper.selectProgramList(map); 
 		model.addAttribute("programList", toJson(programList));
         model.addAttribute("branchList", toJson(branchList));
               

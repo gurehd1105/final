@@ -25,7 +25,7 @@
         
         <el-form-item>
             <el-select v-model="selectProgram" id="selectProgram" clearable placeholder="프로그램 선택">
-                <el-option v-for="(program, p) in programList.programList" 
+                <el-option v-for="(program, p) in programList" 
                     :key="p" 
                     :label="program.programName" 
                     :value="program.programNo"
@@ -33,6 +33,7 @@
                 </el-option> 
             </el-select>
         </el-form-item>
+        
         
         <el-form-item>
             <el-calendar v-model="selectDate" >
