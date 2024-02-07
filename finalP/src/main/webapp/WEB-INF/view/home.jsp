@@ -56,7 +56,7 @@ prefix="c"%>
 
             <el-calendar v-model="selectDate">
                 <template #date-cell="{ data }">
-                    <p
+                    <p	@click="msg()"
                         :key="selectProgram"
                         :class="[
                         data.isSelected ? 'is-selected' : '',
@@ -156,20 +156,10 @@ prefix="c"%>
         }, 
     }, 
     methods: {
-        validCheck() { 
-            let message = ''; 
-            const day = moment(this.selectDate).format('yyyy-MM-DD'); 
-            if (!this.getInfo(day)) {
-                message = '예약 가능한 일자를 선택해 주세요.'; 
-            } 
-            if (!this.selectProgram) {
-                message = "프로그램을 선택해 주세요."; 
-            } 
-            if (!this.selectBranch) { 
-                message = "지점을 선택해 주세요."; 
-            } 
-            return message; 
-        }, 
+       msg(){
+       	alert('로그인 후, 상단 메뉴바 예약하기 버튼을 통해 이용해주세요.');
+       },
+       
         getDayString(date) { 
             const [year, month, day] = date.split('-'); 
             const dateString = [month, day].join('-'); 
