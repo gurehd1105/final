@@ -35,7 +35,7 @@
 		return {
 			no: '${loginCustomer.customerNo}',
 			id: '${loginCustomer.customerId}',
-			pw: '',
+			pw: '1234',
 		}
 	},
 	

@@ -31,7 +31,7 @@
 	data() {
 		return {
 			id: '${loginEmployee.employeeId}',
-			pw: '',
+			pw: '1234',
 		}
 	},
 	methods: {
