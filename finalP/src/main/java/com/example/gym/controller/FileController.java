@@ -23,27 +23,34 @@ public class FileController {
 	@PostMapping("upload/{folder}")
 	@ResponseBody
 	public String upload(@RequestParam("file") MultipartFile file, HttpSession session, @PathVariable String folder) {
-		String path = session.getServletContext().getRealPath("/upload/" + folder);
-		{
-			File f = new File(path);
-			if (!f.exists()) f.mkdir();
-		}
-		if (file.getSize() != 0) {
+		//String path = session.getServletContext().getRealPath("/upload/" + folder);
+		String path2 = "/upload/" + folder;
+		
+			File f = new File(path2);
+			if (!f.exists()) {
+				boolean success = f.mkdir();
+				
+				if(success) {
+				log.info("success f.mkdir()");
+				}
+			}
+		
 			// fileName 값 세팅
 			String fileName = UUID.randomUUID().toString();
 			String oName = file.getOriginalFilename();
 			String fileName2 = oName.substring(oName.lastIndexOf("."));
 
 			// path 저장
-			File copy = new File(path + "/" + fileName + fileName2);
+			File copy = new File(path2 + "/" + fileName + fileName2);
 			log.info(copy.toString());
+			log.info(copy.getAbsolutePath().toString());
 			try {
-				file.transferTo(copy);
+				file.transferTo(copy.getAbsoluteFile());
 				return copy.getName();
 			} catch (IllegalStateException | IOException e) {
 				e.printStackTrace();
 			}
-		}
-		return "error";
+		
+		return copy.getName();
 	}
 }
